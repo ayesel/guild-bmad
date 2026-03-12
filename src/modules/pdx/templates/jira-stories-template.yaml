@@ -1,0 +1,104 @@
+# Jira Stories Template
+#
+# Generate developer stories from design artifacts with
+# acceptance criteria, story points, and dependencies.
+
+template:
+  name: Jira Stories
+  artifact_type: jira-stories
+  output_file: "_bmad-output/pdx-artifacts/handoff-jira-stories-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Jira Stories"
+    - feature: "{scope-name}"
+    - epic: "{epic-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Relay (Design Ops)"
+    - target_sprint: "{sprint}"
+
+  sections:
+    - name: "Epic Overview"
+      description: >
+        Epic name, description, success metrics, and how stories map to
+        Kai's flow phases. Link to handoff spec.
+
+    - name: "Story Map"
+      description: >
+        Visual story map showing sequence and dependencies:
+        | Phase (from Kai's flow) | Stories | Dependencies | Sprint Target |
+
+    - name: "Stories"
+      description: >
+        For each story:
+
+        ---
+        **[EPIC-KEY]-[N]: [Story Title]**
+        **As a** [persona/user type],
+        **I want to** [action/capability],
+        **So that** [benefit/outcome].
+
+        **Description:**
+        [Context, design intent, reference to spec section]
+
+        **Design Assets:**
+        - Figma: [frame URL]
+        - Spec: [handoff spec section reference]
+        - Flow: [Kai's flow reference]
+        - Copy: [Echo's content reference]
+
+        **Acceptance Criteria:**
+        - [ ] Given [context], When [action], Then [result]
+        - [ ] Given [context], When [action], Then [result]
+        - [ ] Given [error condition], When [trigger], Then [error handling]
+
+        **States to Implement:**
+        - [ ] Empty state
+        - [ ] Loading state
+        - [ ] Populated state
+        - [ ] Error state
+        - [ ] Disabled state (if applicable)
+
+        **Responsive Requirements:**
+        - [ ] Mobile (375px): [behavior]
+        - [ ] Tablet (768px): [behavior]
+        - [ ] Desktop (1440px): [behavior]
+
+        **Accessibility Requirements:**
+        - [ ] Keyboard navigable
+        - [ ] Screen reader tested
+        - [ ] ARIA attributes: [list]
+
+        **Dependencies:**
+        - Blocked by: [story keys]
+        - Blocks: [story keys]
+
+        **Estimation:** [S/M/L/XL] — [reasoning]
+
+        **QA Criteria (from Sage):**
+        - [what to test]
+        ---
+
+    - name: "Dependency Graph"
+      description: >
+        Mermaid diagram showing story dependencies:
+      format: |
+        ```mermaid
+        graph LR
+            S1[Story 1] --> S2[Story 2]
+            S1 --> S3[Story 3]
+            S2 --> S4[Story 4]
+            S3 --> S4
+        ```
+
+    - name: "Sprint Allocation"
+      description: >
+        | Sprint | Stories | Total Points | Notes |
+        Recommended order of implementation based on dependencies and user value.
+
+    - name: "Next Steps"
+      description: >
+        Typically: component specs for new components in the stories,
+        or design tokens if new tokens are needed.

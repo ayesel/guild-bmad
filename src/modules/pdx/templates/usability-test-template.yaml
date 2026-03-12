@@ -1,0 +1,140 @@
+# Usability Test Template
+#
+# Structured usability test plan with task scenarios,
+# success metrics, and analysis framework.
+
+template:
+  name: Usability Test Plan
+  artifact_type: usability-test
+  output_file: "_bmad-output/pdx-artifacts/usability-test-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "Usability Test Plan"
+    - feature: "{feature-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - test_type: "{moderated|unmoderated}"
+    - estimated_duration: "{minutes} per participant"
+
+  sections:
+    - name: "Test Objective"
+      description: >
+        What are we testing and why? What specific questions will this test answer?
+        What decisions will the results inform?
+
+    - name: "Methodology"
+      description: >
+        | Parameter | Value |
+        |-----------|-------|
+        | Test type | Moderated / Unmoderated |
+        | Format | Remote / In-person |
+        | Participants | [number] |
+        | Duration | [minutes] per session |
+        | Prototype | [link or description] |
+        | Fidelity | Low / Medium / High |
+        | Recording | Video / Screen / Audio / Notes only |
+        | Think-aloud | Concurrent / Retrospective |
+        | Metrics | Task success, time on task, errors, SUS, satisfaction |
+
+    - name: "Participant Criteria"
+      description: >
+        Recruitment screener:
+        | Criterion | Requirement | Screener Question |
+
+        Target demographics:
+        - [number] participants matching [persona A]
+        - [number] participants matching [persona B]
+        - Include at least 1 participant using assistive technology
+        - Include range of technical proficiency levels
+
+    - name: "Task Scenarios"
+      description: >
+        4-6 task scenarios ordered from simple to complex.
+        For each task:
+
+        **Task [N]: [Task Name]**
+        - **Scenario** (read to participant): "[Realistic scenario in user's language]"
+        - **Starting point**: [where the user begins]
+        - **Success criteria**: [what counts as successful completion]
+        - **Optimal path**: [expected steps for benchmark]
+        - **Time limit**: [max time before moving on]
+        - **Metrics to capture**:
+          - Task success: Complete / Partial / Fail
+          - Time on task: [seconds]
+          - Error count: [number]
+          - Assists needed: [number] (moderated only)
+          - Satisfaction: [1-5 rating]
+        - **Observation focus**: [what to watch for specifically]
+
+    - name: "Pre-Test Questionnaire"
+      description: >
+        Background questions administered before testing:
+        - Demographics (relevant to product use)
+        - Prior experience with similar products
+        - Current tools and workflows
+        - Expectations for this type of product
+        - Accessibility needs or preferences
+
+    - name: "Post-Test Questionnaire"
+      description: >
+        Administered after all tasks:
+
+        **System Usability Scale (SUS)**:
+        Rate 1 (Strongly Disagree) to 5 (Strongly Agree):
+        1. I think that I would like to use this system frequently
+        2. I found the system unnecessarily complex
+        3. I thought the system was easy to use
+        4. I think that I would need the support of a technical person to use this system
+        5. I found the various functions in this system were well integrated
+        6. I thought there was too much inconsistency in this system
+        7. I would imagine that most people would learn to use this system very quickly
+        8. I found the system very cumbersome to use
+        9. I felt very confident using the system
+        10. I needed to learn a lot of things before I could get going with this system
+
+        **Open-ended:**
+        - What was the easiest part of the experience?
+        - What was the most frustrating part?
+        - What would you change first?
+        - Would you recommend this to a colleague? Why or why not?
+
+    - name: "Analysis Plan"
+      description: >
+        How results will be analyzed:
+
+        **Quantitative Analysis:**
+        - Task success rate (% complete per task)
+        - Average time on task per scenario
+        - Error frequency and types
+        - SUS score calculation and interpretation
+        - Task satisfaction ratings
+
+        **Qualitative Analysis:**
+        - Affinity diagramming of observational notes
+        - Quote extraction and categorization
+        - Pattern identification across participants
+        - Severity rating for each issue found
+
+        **Reporting:**
+        - Issues will be rated using Nielsen's severity scale (0-4)
+        - Top issues table with frequency, severity, and recommendation
+        - Video highlight reel of critical moments (if recorded)
+
+    - name: "Pilot Test Checklist"
+      description: >
+        Before running with real participants:
+        - [ ] Prototype is stable and all paths work
+        - [ ] Tasks are clear and achievable
+        - [ ] Time estimates are realistic
+        - [ ] Recording setup tested
+        - [ ] Screener questions validated
+        - [ ] Consent form reviewed
+        - [ ] Run 1 pilot session and adjust
+
+    - name: "Next Steps"
+      description: >
+        Typically: research synthesis combining test results with other data,
+        or design iteration addressing the highest-severity findings.

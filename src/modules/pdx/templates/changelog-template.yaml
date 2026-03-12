@@ -1,0 +1,74 @@
+# Changelog Template
+#
+# Design changelog between versions documenting what changed,
+# why, and the impact on implementation.
+
+template:
+  name: Design Changelog
+  artifact_type: changelog
+  output_file: "_bmad-output/pdx-artifacts/handoff-changelog-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Design Changelog"
+    - feature: "{scope-name}"
+    - from_version: "{previous version}"
+    - to_version: "{new version}"
+    - status: "draft"
+    - created: "{date}"
+    - author: "Relay (Design Ops)"
+
+  sections:
+    - name: "Changelog Summary"
+      description: >
+        | Change Type | Count |
+        | Breaking changes | |
+        | New additions | |
+        | Modifications | |
+        | Deprecations | |
+        | Bug fixes | |
+
+    - name: "Breaking Changes"
+      description: >
+        Changes that require implementation updates:
+        | # | What Changed | Before | After | Why | Screens Affected | Stories to Update |
+
+    - name: "New Additions"
+      description: >
+        New screens, components, states, or interactions:
+        | # | What's New | Description | Screens | New Stories Needed |
+
+    - name: "Modifications"
+      description: >
+        Changes to existing designs:
+        | # | What Changed | Before | After | Why | Impact |
+
+    - name: "Deprecations"
+      description: >
+        Components, patterns, or screens being removed:
+        | # | What's Deprecated | Replacement | Migration Notes | Timeline |
+
+    - name: "Bug Fixes"
+      description: >
+        Design issues corrected:
+        | # | Issue | Fix | Source (QA/Feedback/Research) |
+
+    - name: "Before/After Comparisons"
+      description: >
+        For each significant change:
+        - **Before**: [description of previous design]
+        - **After**: [description of new design]
+        - **Reason**: [research finding, QA issue, stakeholder feedback]
+
+    - name: "Migration Notes"
+      description: >
+        If design system changes affect existing implemented screens:
+        | Change | Existing Screens Affected | Migration Steps | Effort |
+
+    - name: "Token Changes"
+      description: >
+        | Token | Change Type (New/Modified/Deprecated) | Old Value | New Value |
+
+    - name: "Next Steps"
+      description: >
+        Update Jira stories, notify engineering, update component specs.

@@ -1,0 +1,117 @@
+# Interview Script Template
+#
+# Structured user interview script with warm-up, core questions,
+# probing techniques, and task scenarios.
+
+template:
+  name: Interview Script
+  artifact_type: interview-script
+  output_file: "_bmad-output/pdx-artifacts/interview-script-{study-name}.md"
+
+structure:
+  header:
+    - artifact: "Interview Script"
+    - study: "{study-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - estimated_duration: "{minutes} minutes"
+
+  sections:
+    - name: "Research Objective"
+      description: >
+        What are we trying to learn? What decisions will this research inform?
+        What hypotheses are we testing?
+
+    - name: "Participant Criteria"
+      description: >
+        Who should be interviewed:
+        | Criterion | Requirement | Screening Question |
+        Include: demographics, experience level, usage patterns, accessibility needs.
+        Target sample size and recruitment strategy.
+
+    - name: "Interview Setup"
+      description: >
+        Logistics checklist:
+        - [ ] Recording consent form ready
+        - [ ] Recording software tested
+        - [ ] Note-taker assigned
+        - [ ] Prototype/stimulus prepared (if applicable)
+        - [ ] Incentive confirmed
+        - [ ] Accessibility accommodations confirmed
+        - Estimated duration: {X} minutes
+        - Format: remote/in-person
+        - Tools: {video platform, prototype tool}
+
+    - name: "Introduction Script"
+      description: >
+        Read verbatim to each participant:
+        "Thank you for taking the time to speak with me today. My name is [name]
+        and I'm a researcher working on [product/project]. I'm here to learn about
+        your experience with [topic]. There are no right or wrong answers — I'm
+        genuinely interested in your honest perspective.
+
+        This session will take about [X] minutes. With your permission, I'd like
+        to record this session so I can focus on our conversation instead of taking
+        notes. The recording will only be used by our team for analysis.
+
+        Do you have any questions before we start?"
+
+    - name: "Warm-up Questions"
+      description: >
+        Easy, rapport-building questions (3-5 minutes):
+        - "Tell me a little about yourself and your role."
+        - "How would you describe your experience with [domain]?"
+        - "What tools or products do you currently use for [related task]?"
+
+    - name: "Core Questions"
+      description: >
+        Primary research questions organized by theme (15-25 minutes).
+        For each question include:
+        | # | Question | Theme | Probes (follow-ups) | What We're Learning |
+
+        Use TEDW stems: Tell, Explain, Describe, Walk me through.
+
+        Include probes for each question:
+        - "Can you tell me more about that?"
+        - "What happened next?"
+        - "How did that make you feel?"
+        - "What were you expecting to happen?"
+
+    - name: "Task Scenario Questions"
+      description: >
+        If showing a prototype or stimulus (10-15 minutes):
+        - Task description (what to ask the participant to do)
+        - Think-aloud instructions: "Please share your thoughts out loud as you go"
+        - Observation notes template:
+          | Task | Success (Y/N/Partial) | Time | Errors | Verbal Feedback | Body Language |
+        - Post-task questions:
+          - "How was that experience for you?"
+          - "What, if anything, was confusing?"
+          - "What would you change?"
+
+    - name: "Wrap-up Questions"
+      description: >
+        Closing questions (3-5 minutes):
+        - "Is there anything else about [topic] that I didn't ask about?"
+        - "If you could change one thing about [product/experience], what would it be?"
+        - "Is there anyone else you'd recommend I speak with?"
+        - "Thank you so much for your time. [Explain next steps and incentive]."
+
+    - name: "Debrief Notes Template"
+      description: >
+        Complete immediately after each interview:
+        - Participant ID:
+        - Date/Time:
+        - Key quotes (verbatim):
+        - Top 3 takeaways:
+        - Surprising observations:
+        - Body language / emotional cues:
+        - Questions that didn't work well:
+        - Follow-up questions for next participant:
+
+    - name: "Next Steps"
+      description: >
+        Typically: research synthesis after all interviews are complete,
+        or persona refinement based on interview findings.

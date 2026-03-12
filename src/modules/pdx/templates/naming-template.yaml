@@ -1,0 +1,60 @@
+# Naming Template
+#
+# Name features, screens, or navigation elements with
+# multiple options evaluated against objective criteria.
+
+template:
+  name: Naming
+  artifact_type: naming
+  output_file: "_bmad-output/pdx-artifacts/content-naming-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Naming"
+    - target: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Echo (Content Strategist)"
+
+  sections:
+    - name: "Naming Brief"
+      description: >
+        What needs naming, its purpose, target audience, constraints (character limit,
+        context in navigation, SEO considerations), and existing naming patterns in the product.
+
+    - name: "Name Options"
+      description: >
+        For each item that needs naming, provide 5 options evaluated against criteria:
+        | Option | Clarity (1-5) | Memorable (1-5) | Length (chars) | Verb/Noun | Fits Mental Model | Translation-Friendly | Total Score |
+
+    - name: "Competitive Naming Analysis"
+      description: >
+        What competitors call similar features:
+        | Competitor | Their Name | Why It Works/Doesn't |
+
+    - name: "Recommendations"
+      description: >
+        For each item:
+        - **Recommended name**: [name]
+        - **Reasoning**: Why this name over alternatives
+        - **Risks**: What could go wrong with this name
+        - **Validation suggestion**: How to test with users
+
+    - name: "Naming System Consistency"
+      description: >
+        How the new name fits with existing product naming:
+        | Existing Name | Pattern | New Name | Consistent |
+
+    - name: "User Testing Suggestions"
+      description: >
+        Recommended validation methods:
+        - Tree test: Can users find [feature] under this name in the nav?
+        - First-click test: Do users click the right label for [task]?
+        - Card sort: How do users expect this grouped/labeled?
+        - A/B test: Compare top 2 names on click-through rate.
+
+    - name: "Next Steps"
+      description: >
+        Typically: microcopy for the named feature,
+        or content audit to propagate the name consistently.

@@ -1,0 +1,18 @@
+installation:
+  version: 6.0.4
+  installDate: 2026-03-11T18:04:02.749Z
+  lastUpdated: 2026-03-11T18:04:02.749Z
+modules:
+  - name: core
+    version: 6.0.4
+    installDate: 2026-03-11T18:04:02.749Z
+    lastUpdated: 2026-03-11T18:04:02.749Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+ides:
+  - claude-code
+  - cursor
+  - codex
+  - gemini
+  - github-copilot

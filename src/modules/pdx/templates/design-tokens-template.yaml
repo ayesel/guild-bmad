@@ -1,0 +1,181 @@
+# Design Tokens Template
+#
+# Extract or define design tokens in W3C DTCG format
+# with semantic naming and descriptions.
+
+template:
+  name: Design Tokens
+  artifact_type: design-tokens
+  output_file: "_bmad-output/pdx-artifacts/handoff-design-tokens-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Design Tokens"
+    - feature: "{scope-name}"
+    - format: "W3C DTCG"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Relay (Design Ops)"
+
+  sections:
+    - name: "Token Overview"
+      description: >
+        What tokens are defined, what feature they support,
+        and how they relate to existing design system tokens.
+        | Category | New Tokens | Modified Tokens | Existing Reused |
+
+    - name: "Color Tokens"
+      description: >
+        ```json
+        {
+          "color": {
+            "background": {
+              "primary": { "$value": "#FFFFFF", "$type": "color", "$description": "" },
+              "secondary": { "$value": "#F9FAFB", "$type": "color", "$description": "" },
+              "inverse": { "$value": "#111827", "$type": "color", "$description": "" }
+            },
+            "text": {
+              "primary": { "$value": "#111827", "$type": "color", "$description": "" },
+              "secondary": { "$value": "#6B7280", "$type": "color", "$description": "" },
+              "disabled": { "$value": "#D1D5DB", "$type": "color", "$description": "" }
+            },
+            "border": {
+              "default": { "$value": "#E5E7EB", "$type": "color", "$description": "" },
+              "focus": { "$value": "#3B82F6", "$type": "color", "$description": "" }
+            },
+            "interactive": {
+              "default": { "$value": "#3B82F6", "$type": "color", "$description": "" },
+              "hover": { "$value": "#2563EB", "$type": "color", "$description": "" },
+              "active": { "$value": "#1D4ED8", "$type": "color", "$description": "" },
+              "disabled": { "$value": "#93C5FD", "$type": "color", "$description": "" }
+            },
+            "feedback": {
+              "error": { "$value": "#EF4444", "$type": "color", "$description": "" },
+              "success": { "$value": "#22C55E", "$type": "color", "$description": "" },
+              "warning": { "$value": "#F59E0B", "$type": "color", "$description": "" },
+              "info": { "$value": "#3B82F6", "$type": "color", "$description": "" }
+            }
+          }
+        }
+        ```
+
+    - name: "Spacing Tokens"
+      description: >
+        ```json
+        {
+          "spacing": {
+            "component": {
+              "xs": { "$value": "4px", "$type": "dimension", "$description": "Tight component spacing" },
+              "sm": { "$value": "8px", "$type": "dimension", "$description": "Default component spacing" },
+              "md": { "$value": "16px", "$type": "dimension", "$description": "Comfortable component spacing" },
+              "lg": { "$value": "24px", "$type": "dimension", "$description": "Loose component spacing" }
+            },
+            "layout": {
+              "sm": { "$value": "16px", "$type": "dimension", "$description": "Tight section spacing" },
+              "md": { "$value": "32px", "$type": "dimension", "$description": "Default section spacing" },
+              "lg": { "$value": "48px", "$type": "dimension", "$description": "Loose section spacing" },
+              "xl": { "$value": "64px", "$type": "dimension", "$description": "Page-level spacing" }
+            }
+          }
+        }
+        ```
+
+    - name: "Typography Tokens"
+      description: >
+        ```json
+        {
+          "typography": {
+            "heading": {
+              "1": { "$value": { "fontFamily": "Inter", "fontSize": "32px", "fontWeight": 700, "lineHeight": 1.2, "letterSpacing": "-0.02em" }, "$type": "typography" },
+              "2": { "$value": { "fontFamily": "Inter", "fontSize": "24px", "fontWeight": 600, "lineHeight": 1.3, "letterSpacing": "-0.01em" }, "$type": "typography" },
+              "3": { "$value": { "fontFamily": "Inter", "fontSize": "20px", "fontWeight": 600, "lineHeight": 1.4, "letterSpacing": "0" }, "$type": "typography" }
+            },
+            "body": {
+              "default": { "$value": { "fontFamily": "Inter", "fontSize": "16px", "fontWeight": 400, "lineHeight": 1.5, "letterSpacing": "0" }, "$type": "typography" },
+              "small": { "$value": { "fontFamily": "Inter", "fontSize": "14px", "fontWeight": 400, "lineHeight": 1.5, "letterSpacing": "0" }, "$type": "typography" }
+            },
+            "caption": {
+              "default": { "$value": { "fontFamily": "Inter", "fontSize": "12px", "fontWeight": 400, "lineHeight": 1.4, "letterSpacing": "0.01em" }, "$type": "typography" }
+            }
+          }
+        }
+        ```
+
+    - name: "Border Tokens"
+      description: >
+        ```json
+        {
+          "border": {
+            "radius": {
+              "sm": { "$value": "4px", "$type": "dimension" },
+              "md": { "$value": "8px", "$type": "dimension" },
+              "lg": { "$value": "12px", "$type": "dimension" },
+              "full": { "$value": "9999px", "$type": "dimension" }
+            },
+            "width": {
+              "default": { "$value": "1px", "$type": "dimension" },
+              "thick": { "$value": "2px", "$type": "dimension" }
+            }
+          }
+        }
+        ```
+
+    - name: "Shadow Tokens"
+      description: >
+        ```json
+        {
+          "shadow": {
+            "elevation": {
+              "1": { "$value": "0 1px 2px 0 rgba(0,0,0,0.05)", "$type": "shadow" },
+              "2": { "$value": "0 4px 6px -1px rgba(0,0,0,0.1)", "$type": "shadow" },
+              "3": { "$value": "0 10px 15px -3px rgba(0,0,0,0.1)", "$type": "shadow" }
+            }
+          }
+        }
+        ```
+
+    - name: "Motion Tokens"
+      description: >
+        ```json
+        {
+          "motion": {
+            "duration": {
+              "fast": { "$value": "150ms", "$type": "duration" },
+              "normal": { "$value": "250ms", "$type": "duration" },
+              "slow": { "$value": "400ms", "$type": "duration" }
+            },
+            "easing": {
+              "default": { "$value": "cubic-bezier(0.4, 0, 0.2, 1)", "$type": "cubicBezier" },
+              "in": { "$value": "cubic-bezier(0.4, 0, 1, 1)", "$type": "cubicBezier" },
+              "out": { "$value": "cubic-bezier(0, 0, 0.2, 1)", "$type": "cubicBezier" }
+            }
+          }
+        }
+        ```
+
+    - name: "Breakpoint Tokens"
+      description: >
+        ```json
+        {
+          "breakpoint": {
+            "sm": { "$value": "375px", "$type": "dimension", "$description": "Mobile" },
+            "md": { "$value": "768px", "$type": "dimension", "$description": "Tablet" },
+            "lg": { "$value": "1024px", "$type": "dimension", "$description": "Tablet landscape" },
+            "xl": { "$value": "1440px", "$type": "dimension", "$description": "Desktop" },
+            "2xl": { "$value": "1920px", "$type": "dimension", "$description": "Wide desktop" }
+          }
+        }
+        ```
+
+    - name: "Token Usage Guide"
+      description: >
+        How to consume these tokens in code:
+        - CSS custom properties: `var(--color-background-primary)`
+        - Tailwind config: mapped to theme extension
+        - JavaScript: import from tokens.json
+
+    - name: "Next Steps"
+      description: >
+        Typically: component specs referencing these tokens,
+        or handoff spec integrating tokens into screen specifications.

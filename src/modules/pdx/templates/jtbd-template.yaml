@@ -1,0 +1,115 @@
+# Jobs-to-be-Done Template
+#
+# Map functional, emotional, and social jobs with
+# outcome statements and competitive landscape.
+
+template:
+  name: Jobs-to-be-Done
+  artifact_type: jtbd
+  output_file: "_bmad-output/pdx-artifacts/jtbd-{domain-name}.md"
+
+structure:
+  header:
+    - artifact: "Jobs-to-be-Done Map"
+    - domain: "{domain-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+
+  sections:
+    - name: "Core Job Statement"
+      description: >
+        The main job the user is hiring a product to do, formatted as:
+        "When [situation], I want to [motivation], so I can [expected outcome]."
+
+        Context matters: the same person hires different solutions in different
+        circumstances. Define the triggering situation precisely.
+
+    - name: "Job Map (8 Stages)"
+      description: >
+        The universal job process broken into 8 stages:
+        | Stage | Description | What User Does | Pain Points | Opportunities |
+        |-------|-------------|----------------|-------------|---------------|
+        | 1. Define | Determine goals and plan approach | | | |
+        | 2. Locate | Gather inputs and resources needed | | | |
+        | 3. Prepare | Set up the environment for the job | | | |
+        | 4. Confirm | Verify readiness before executing | | | |
+        | 5. Execute | Perform the core job | | | |
+        | 6. Monitor | Track progress and results | | | |
+        | 7. Modify | Make adjustments as needed | | | |
+        | 8. Conclude | Finish the job and clean up | | | |
+
+    - name: "Functional Jobs"
+      description: >
+        The practical tasks the user needs to accomplish:
+        | Job ID | Functional Job | Importance (1-10) | Satisfaction (1-10) | Opportunity Score |
+
+        Opportunity Score = Importance + max(Importance - Satisfaction, 0)
+        High opportunity = high importance + low satisfaction.
+
+    - name: "Emotional Jobs"
+      description: >
+        How the user wants to feel during and after the job:
+        | Job ID | Emotional Job | Current Feeling | Desired Feeling | Gap |
+
+        Examples: feel confident, avoid anxiety, feel in control, avoid embarrassment.
+
+    - name: "Social Jobs"
+      description: >
+        How the user wants to be perceived by others:
+        | Job ID | Social Job | Audience | Current Perception | Desired Perception |
+
+        Examples: appear competent, be seen as innovative, avoid looking uninformed.
+
+    - name: "Hiring & Firing Criteria"
+      description: >
+        What makes users "hire" (adopt) or "fire" (abandon) a solution:
+
+        **Hiring Triggers** (push toward new solution):
+        | Trigger | Description | Strength (1-5) |
+        - Push of current situation (pain with status quo)
+        - Pull of new solution (attraction to alternative)
+
+        **Firing Triggers** (push away from solution):
+        | Trigger | Description | Strength (1-5) |
+        - Anxiety of new solution (risk and uncertainty)
+        - Habit of current behavior (inertia and comfort)
+
+        The push + pull must exceed anxiety + habit for adoption.
+
+    - name: "Outcome Statements"
+      description: >
+        Measurable outcomes users use to judge success.
+        Format: "[Direction] + [metric] + [object of control] + [context]"
+
+        Examples:
+        - "Minimize the time it takes to find relevant information when under deadline"
+        - "Reduce the likelihood of errors when entering financial data"
+        - "Increase the confidence in decision accuracy when comparing options"
+
+        | Outcome Statement | Importance (1-10) | Satisfaction (1-10) | Opportunity |
+
+    - name: "Competitive Job Landscape"
+      description: >
+        All solutions users currently hire for this job — including non-obvious ones:
+        | Solution | Type (Direct/Indirect/Compensatory) | Job Stages Covered | Strengths | Weaknesses |
+
+        Types:
+        - Direct: competitors solving the same job
+        - Indirect: different product categories solving the same job
+        - Compensatory: manual workarounds and DIY solutions
+
+    - name: "Opportunity Map"
+      description: >
+        Plot opportunities by importance vs satisfaction:
+        - Top right (high importance, low satisfaction) = underserved
+        - Bottom right (low importance, low satisfaction) = ignore
+        - Top left (high importance, high satisfaction) = table stakes
+        - Bottom left (low importance, high satisfaction) = overserved
+
+    - name: "Next Steps"
+      description: >
+        Typically: persona generation grounded in job performers,
+        or journey mapping following the job map stages.

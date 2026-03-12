@@ -1,0 +1,77 @@
+# Competitive Audit Template
+#
+# Structured competitive analysis comparing UX patterns,
+# features, and strategies across comparable products.
+
+template:
+  name: Competitive Audit
+  artifact_type: competitive-audit
+  output_file: "_bmad-output/pdx-artifacts/competitive-audit-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Competitive Audit"
+    - scope: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+
+  sections:
+    - name: "Executive Summary"
+      description: >
+        3-5 bullet overview: market positioning, key differentiators found,
+        biggest opportunities, and primary threats.
+
+    - name: "Audit Scope & Methodology"
+      description: >
+        What was compared, selection criteria for competitors, evaluation method,
+        and date of analysis (competitor products change frequently).
+
+    - name: "Competitor Selection"
+      description: >
+        Table of competitors analyzed:
+        | Competitor | Type (Direct/Indirect/Aspirational) | URL | Target Audience | Market Position | Why Included |
+
+    - name: "Feature Matrix"
+      description: >
+        Feature-by-feature comparison:
+        | Feature | Our Product | Competitor A | Competitor B | Competitor C | Notes |
+        Use: ✅ Has, ❌ Missing, 🔶 Partial, 🚀 Best-in-class
+
+    - name: "UX Pattern Analysis"
+      description: >
+        For key user tasks, compare how each competitor handles them:
+        | Task/Flow | Our Approach | Competitor A | Competitor B | Best Practice | Gap |
+        Focus on: onboarding, core task, error handling, navigation, mobile experience.
+
+    - name: "Strengths to Steal"
+      description: >
+        Best patterns and ideas from competitors worth adopting or adapting.
+        For each: what they do, why it works, how to adapt it.
+
+    - name: "Weaknesses to Exploit"
+      description: >
+        Competitor pain points and gaps that represent opportunities.
+        For each: the weakness, user impact, our opportunity.
+
+    - name: "Pricing & Positioning Comparison"
+      description: >
+        | Competitor | Free Tier | Entry Price | Pro Price | Enterprise | Positioning Statement |
+        Note value perception and packaging strategy differences.
+
+    - name: "Accessibility Comparison"
+      description: >
+        Quick comparison of accessibility maturity across competitors.
+        Any competitor with notably good or bad accessibility practices.
+
+    - name: "Opportunities & Recommendations"
+      description: >
+        Prioritized list of opportunities based on competitive gaps:
+        | Opportunity | Competitive Gap | User Impact | Effort | Priority |
+
+    - name: "Next Steps"
+      description: >
+        Typically: persona generation to define target users more precisely,
+        or journey mapping to identify where competitive gaps matter most.

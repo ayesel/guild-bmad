@@ -1,0 +1,116 @@
+# Swim Lane Template
+#
+# Generates a swim lane diagram showing responsibilities across
+# multiple actors/systems with handoff points and parallel processes.
+
+template:
+  name: Swim Lane Diagram
+  artifact_type: swim-lane
+  output_file: "_bmad-output/pdx-artifacts/swim-lane-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "Swim Lane Diagram"
+    - feature: "{feature-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Kai (Interaction Designer)"
+    - personas: "{referenced-personas}"
+    - requirements: "{referenced-requirements}"
+
+  sections:
+    - name: "Overview"
+      description: >
+        Describe the process being mapped, the actors involved,
+        and why this process matters to the user experience.
+
+    - name: "Actors"
+      description: >
+        List and describe each lane (actor/system). For each actor:
+        - Name and role
+        - What they're responsible for in this process
+        - Their primary goal
+        - Tools/systems they use
+
+    - name: "Swim Lane Diagram"
+      description: >
+        Mermaid sequence diagram showing interactions between actors.
+        Use these conventions:
+        - Each actor is a participant
+        - Solid arrows for actions
+        - Dashed arrows for responses
+        - Notes for important context
+        - Alt/opt blocks for conditional paths
+        - Loop blocks for repeated interactions
+        - Colored boxes for phase groupings
+      format: |
+        ```mermaid
+        sequenceDiagram
+            participant U as 👤 User
+            participant FE as 🖥️ Frontend
+            participant API as ⚙️ API
+            participant DB as 🗄️ Database
+
+            rect rgb(230, 240, 255)
+            Note over U,DB: Phase 1 - Initiation
+            U->>FE: {first-action}
+            FE->>API: Request
+            API->>DB: Query
+            DB-->>API: Result
+            API-->>FE: Response
+            FE-->>U: Display
+            end
+
+            alt Success
+                Note over U: Happy path
+            else Error
+                FE-->>U: Error message
+                Note over U: Recovery options
+            end
+        ```
+
+    - name: "Process Table"
+      description: >
+        Detailed step-by-step table showing each action across all lanes:
+        | Step | Actor | Action | Input | Output | Handoff To | Duration |
+
+    - name: "Handoff Points"
+      description: >
+        Critical moments where responsibility transfers between actors.
+        For each handoff:
+        - From (actor) → To (actor)
+        - What is being handed off (data, control, artifact)
+        - Validation required before handoff
+        - What happens if handoff fails
+
+    - name: "Parallel Processes"
+      description: >
+        Any activities that happen simultaneously across lanes.
+        Document timing dependencies and synchronization points.
+
+    - name: "Bottlenecks & Pain Points"
+      description: >
+        Known or suspected bottlenecks in the process:
+        - Wait states (user waiting for system, system waiting for user)
+        - Manual steps that could be automated
+        - Approval gates that slow the flow
+        - Data dependencies that create blocking
+
+    - name: "Error Scenarios"
+      description: >
+        For each lane, what can go wrong and how it affects other lanes:
+        | Lane | Error | Impact on Other Lanes | Recovery |
+
+    - name: "Design Decisions"
+      description: >
+        Key decisions about process flow and their rationale.
+
+    - name: "Open Questions"
+      description: >
+        Unresolved items needing stakeholder or engineering input.
+
+    - name: "Next Steps"
+      description: >
+        Recommended follow-up: typically detailed user flows for
+        complex phases, or wireframes for user-facing touchpoints.

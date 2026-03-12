@@ -1,0 +1,141 @@
+# Pre-Handoff Template
+#
+# Complete quality gate running all checks with go/no-go decision.
+# This is the final checkpoint before designs go to development.
+
+template:
+  name: Pre-Handoff Quality Gate
+  artifact_type: pre-handoff
+  output_file: "_bmad-output/pdx-artifacts/qa-pre-handoff-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Pre-Handoff Quality Gate"
+    - target: "{scope-name}"
+    - status: "{pass|fail|conditional-pass}"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Sage (Design QA)"
+    - verdict: "{READY FOR HANDOFF|CONDITIONAL|NOT READY}"
+
+  sections:
+    - name: "Verdict"
+      description: >
+        # [READY FOR HANDOFF ✅ | CONDITIONAL ⚠️ | NOT READY ❌]
+
+        Summary: [One paragraph explaining the verdict]
+
+        | Gate | Status | Blockers | Notes |
+        | Design system compliance | ✅/❌ | | |
+        | Accessibility | ✅/❌ | | |
+        | Responsive behavior | ✅/❌ | | |
+        | All states designed | ✅/❌ | | |
+        | Interactions specified | ✅/❌ | | |
+        | Edge cases documented | ✅/❌ | | |
+        | Copy finalized | ✅/❌ | | |
+        | Assets ready | ✅/❌ | | |
+        | Developer annotations | ✅/❌ | | |
+        | Motion specs | ✅/❌ | | |
+
+    - name: "Design System Compliance"
+      description: >
+        - [ ] All colors reference design tokens
+        - [ ] All spacing follows the spacing scale
+        - [ ] All typography uses the type scale
+        - [ ] Standard components used (no unnecessary custom builds)
+        - [ ] Deviations are documented and justified
+        Score: [X]/5 | Issues: [count]
+
+    - name: "Accessibility Pass"
+      description: >
+        - [ ] Color contrast meets WCAG AA (4.5:1 text, 3:1 UI)
+        - [ ] Focus indicators visible on all interactive elements
+        - [ ] Keyboard navigation works for entire flow
+        - [ ] Images have alt text
+        - [ ] Form labels are associated with inputs
+        - [ ] Error messages are descriptive with recovery actions
+        - [ ] Touch targets meet 44x44px minimum
+        - [ ] Motion respects prefers-reduced-motion
+        Score: [X]/8 | Issues: [count]
+
+    - name: "Responsive Behavior"
+      description: >
+        - [ ] Layout tested at 375px (mobile)
+        - [ ] Layout tested at 768px (tablet)
+        - [ ] Layout tested at 1440px (desktop)
+        - [ ] No horizontal scroll at any breakpoint
+        - [ ] Text is readable at all sizes
+        - [ ] Touch targets adequate on mobile
+        - [ ] Navigation adapts appropriately
+        Score: [X]/7 | Issues: [count]
+
+    - name: "States Coverage"
+      description: >
+        - [ ] Empty state designed with helpful copy and CTA
+        - [ ] Loading state designed (skeleton or spinner)
+        - [ ] Error state designed with recovery path
+        - [ ] Populated state (happy path) designed
+        - [ ] Disabled state designed with explanation
+        - [ ] Partial/incomplete state designed (if applicable)
+        Score: [X]/6 | Issues: [count]
+
+    - name: "Interactions Specified"
+      description: >
+        - [ ] Hover states for all interactive elements
+        - [ ] Focus states for all interactive elements
+        - [ ] Active/pressed states
+        - [ ] Transition/animation specs (duration, easing)
+        - [ ] Micro-interactions documented
+        Score: [X]/5 | Issues: [count]
+
+    - name: "Edge Cases Documented"
+      description: >
+        - [ ] Long text handling (truncation, wrapping)
+        - [ ] Extreme data (0 items, 1000+ items)
+        - [ ] Concurrent user actions
+        - [ ] Network failure scenarios
+        - [ ] Permission-based variations
+        Score: [X]/5 | Issues: [count]
+
+    - name: "Copy Status"
+      description: >
+        - [ ] All headings finalized
+        - [ ] All button labels finalized
+        - [ ] All error messages written
+        - [ ] All empty state copy written
+        - [ ] All tooltips and helper text written
+        - [ ] No placeholder text remaining ("Lorem ipsum", "TBD", etc.)
+        Score: [X]/6 | Issues: [count]
+
+    - name: "Assets & Annotations"
+      description: >
+        - [ ] Design files organized and named correctly
+        - [ ] Assets exported or exportable from design tool
+        - [ ] Developer annotations added for non-obvious specs
+        - [ ] Prototype linked for complex interactions
+        - [ ] Design tokens file updated (if new tokens)
+        Score: [X]/5 | Issues: [count]
+
+    - name: "Motion & Animation"
+      description: >
+        - [ ] Animation purpose is clear (feedback, transition, delight)
+        - [ ] Duration specified for each animation
+        - [ ] Easing curve specified
+        - [ ] Reduced motion alternative specified
+        Score: [X]/4 | Issues: [count]
+
+    - name: "Blocker List"
+      description: >
+        Issues that MUST be resolved before handoff:
+        | # | Issue | Category | Fix Required | Effort | Owner |
+
+    - name: "Conditional Items"
+      description: >
+        Issues that can be resolved during development with designer support:
+        | # | Issue | Category | Guidance | Effort |
+
+    - name: "Next Steps"
+      description: >
+        If READY: Proceed to Relay for handoff spec generation.
+        If CONDITIONAL: Fix [n] blockers, then re-run pre-handoff.
+        If NOT READY: Address critical gaps, run targeted QA checks.

@@ -1,0 +1,98 @@
+# Error Messages Template
+#
+# Systematic error message creation covering validation, network,
+# permission, and system errors with tone-appropriate copy.
+
+template:
+  name: Error Messages
+  artifact_type: error-messages
+  output_file: "_bmad-output/pdx-artifacts/content-error-messages-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Error Message System"
+    - target: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Echo (Content Strategist)"
+
+  sections:
+    - name: "Error Message Principles"
+      description: >
+        Pattern applied: "[What happened]. [What to do about it]."
+        Rules: never blame user, never show error codes as primary message,
+        always provide recovery action, match tone to severity.
+
+    - name: "Validation Errors"
+      description: >
+        | Field/Input | Error Condition | Technical Cause | User Message | Tone | Display (Inline/Toast/Modal) | Recovery Action |
+
+        Common validation errors:
+        - Required field empty
+        - Invalid email format
+        - Password too short/weak
+        - Invalid characters
+        - Value out of range
+        - Format mismatch
+        - Duplicate entry
+
+    - name: "Network Errors"
+      description: >
+        | Scenario | Technical Cause | User Message | Tone | Display | Retry Action |
+
+        - Connection lost
+        - Request timeout
+        - Server error (500)
+        - Service unavailable (503)
+        - Rate limited (429)
+
+    - name: "Permission Errors"
+      description: >
+        | Scenario | Technical Cause | User Message | Tone | Display | Resolution |
+
+        - Not authenticated (401)
+        - Not authorized (403)
+        - Feature requires upgrade
+        - Admin-only action
+        - Expired session
+
+    - name: "Not Found Errors"
+      description: >
+        | Scenario | Technical Cause | User Message | Tone | Display | Alternative |
+
+        - Page not found (404)
+        - Resource deleted
+        - Invalid link
+        - Search with no results
+
+    - name: "Conflict & Data Errors"
+      description: >
+        | Scenario | Technical Cause | User Message | Tone | Display | Resolution |
+
+        - Concurrent edit conflict
+        - Stale data
+        - Upload failed
+        - File too large
+        - Unsupported format
+
+    - name: "System Errors"
+      description: >
+        | Scenario | Technical Cause | User Message | Tone | Display | Fallback |
+
+        - Unexpected error
+        - Feature flag disabled
+        - Maintenance mode
+        - Deprecation notice
+
+    - name: "Error Icon & Color Guide"
+      description: >
+        | Severity | Icon | Color Token | Use When |
+        | Error | ❌ / alert circle | color-feedback-error | Action failed, data issue |
+        | Warning | ⚠️ / alert triangle | color-feedback-warning | Potential issue, proceed with caution |
+        | Info | ℹ️ / info circle | color-feedback-info | Non-blocking information |
+
+    - name: "Next Steps"
+      description: >
+        Typically: empty states for screens that can have errors,
+        or content audit to ensure error message consistency across features.

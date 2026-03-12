@@ -1,0 +1,94 @@
+# Accessibility QA Template
+#
+# Quick accessibility QA pass — lighter than Nova's full WCAG audit.
+# Covers the highest-impact accessibility checks.
+
+template:
+  name: Accessibility QA
+  artifact_type: a11y-qa
+  output_file: "_bmad-output/pdx-artifacts/qa-a11y-qa-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Accessibility QA"
+    - target: "{scope-name}"
+    - standard: "WCAG 2.2 AA (quick check)"
+    - status: "{pass|fail|conditional-pass}"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Sage (Design QA)"
+
+  sections:
+    - name: "Quick Check Summary"
+      description: >
+        | Check | Status | Issues |
+        | Color contrast | ✅/❌ | |
+        | Focus indicators | ✅/❌ | |
+        | Keyboard navigation | ✅/❌ | |
+        | Image alt text | ✅/❌ | |
+        | Form labels | ✅/❌ | |
+        | Error messages | ✅/❌ | |
+        | Touch targets | ✅/❌ | |
+        | Motion safety | ✅/❌ | |
+        Overall: [X]/8 passing
+
+    - name: "Color Contrast"
+      description: >
+        | Element | Foreground | Background | Ratio | Required | Pass |
+        Standards: normal text ≥ 4.5:1, large text (18px+ or 14px+ bold) ≥ 3:1,
+        UI components ≥ 3:1.
+
+    - name: "Focus Indicators"
+      description: >
+        | Element | Focus Visible | Focus Style | Contrast | Issue |
+        Check: every interactive element has visible focus indicator,
+        focus indicator has sufficient contrast, focus is not obscured by other elements.
+
+    - name: "Keyboard Navigation"
+      description: >
+        | Screen/Flow | Tab Order Logical | All Actions Reachable | No Traps | Issue |
+        Check: tab order follows visual layout, all interactive elements reachable,
+        no keyboard traps, Escape closes modals/overlays.
+
+    - name: "Images & Alt Text"
+      description: >
+        | Image | Type (Informative/Decorative) | Alt Text | Adequate | Issue |
+        Check: informative images have descriptive alt text, decorative images have
+        empty alt or aria-hidden, complex images have long description.
+
+    - name: "Form Labels"
+      description: >
+        | Input | Visible Label | Programmatic Label | Placeholder as Label | Issue |
+        Check: every input has a visible label, placeholder is not the only label,
+        labels are programmatically associated (for/id or aria-labelledby).
+
+    - name: "Error Messages"
+      description: >
+        | Error | Associated with Field | Descriptive | Recovery Action | Issue |
+        Check: errors are associated with fields (aria-describedby), errors describe
+        the problem and solution, errors are not color-only.
+
+    - name: "Touch Targets"
+      description: >
+        | Element | Size | Meets 44x44px | Spacing from Neighbors | Issue |
+        Check: interactive elements meet minimum touch target size,
+        adequate spacing prevents accidental taps.
+
+    - name: "Motion & Animation"
+      description: >
+        | Animation | Purpose | Duration | prefers-reduced-motion | Issue |
+        Check: animations respect prefers-reduced-motion, no autoplay video,
+        no content that flashes more than 3 times per second.
+
+    - name: "Issues Table"
+      description: >
+        | # | Check | Issue | Severity | Fix | Effort |
+
+    - name: "Recommendation"
+      description: >
+        If issues found, note whether a full WCAG audit from Nova (/accessibility-audit)
+        is recommended. This quick check covers ~60% of common issues.
+
+    - name: "Next Steps"
+      description: >
+        Fix issues, then proceed to pre-handoff check or request Nova's full audit.

@@ -1,0 +1,68 @@
+# State Diagram Template
+#
+# Maps all states, transitions, and conditions for a component or feature.
+
+template:
+  name: State Diagram
+  artifact_type: state-diagram
+  output_file: "_bmad-output/pdx-artifacts/state-diagram-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "State Diagram"
+    - feature: "{feature-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Kai (Interaction Designer)"
+
+  sections:
+    - name: "Overview"
+      description: >
+        What component/feature is this state diagram for?
+        Why is state management important for this element?
+
+    - name: "State Diagram"
+      format: |
+        ```mermaid
+        stateDiagram-v2
+            [*] --> Empty
+            Empty --> Loading : User triggers action
+            Loading --> Populated : Data received
+            Loading --> Error : Request fails
+            Error --> Loading : User retries
+            Populated --> Updating : User edits
+            Updating --> Populated : Save success
+            Updating --> Error : Save fails
+            Populated --> [*] : User exits
+        ```
+
+    - name: "State Definitions"
+      description: >
+        For each state, document:
+        | State | Description | Visual Treatment | User Can Do | System Is Doing |
+
+    - name: "Transitions"
+      description: >
+        For each transition:
+        | From | To | Trigger | Guard Condition | Action | Duration |
+
+    - name: "State Content Specs"
+      description: >
+        What the user sees in each state:
+        - Empty: illustration, message, CTA
+        - Loading: skeleton/spinner, estimated time
+        - Populated: data layout, available actions
+        - Error: error message, recovery actions, support link
+        - Disabled: visual treatment, tooltip explaining why
+        - Partial: what's shown vs hidden, progressive disclosure
+
+    - name: "Accessibility Per State"
+      description: >
+        ARIA attributes and announcements for each state transition:
+        | Transition | Screen Reader Announcement | Focus Management | Live Region |
+
+    - name: "Next Steps"
+      description: >
+        Typically: wireframes showing each state visually,
+        or interaction maps for states with complex behaviors.

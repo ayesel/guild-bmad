@@ -1,0 +1,62 @@
+# Empty States Template
+#
+# Write empty state copy for screens — encouraging, helpful,
+# and action-oriented. Never make empty feel like error.
+
+template:
+  name: Empty States
+  artifact_type: empty-states
+  output_file: "_bmad-output/pdx-artifacts/content-empty-states-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Empty States"
+    - target: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Echo (Content Strategist)"
+
+  sections:
+    - name: "Empty State Inventory"
+      description: >
+        List all screens/components that can be empty:
+        | Screen | When It's Empty | User's Likely Feeling | Goal |
+
+    - name: "Empty State Copy"
+      description: >
+        For each empty screen:
+
+        **[Screen Name]**
+        - **Illustration/Icon**: [recommendation — friendly, relevant to content type]
+        - **Headline Options**:
+          - Option A: [benefit-focused] — chars: [n]
+          - Option B: [action-focused] — chars: [n]
+          - Option C: [curiosity-focused] — chars: [n]
+          - Recommended: [choice] — Reasoning: [why]
+        - **Description Options**:
+          - Option A: [what will appear + how to populate] — chars: [n]
+          - Option B: [value proposition + action] — chars: [n]
+          - Recommended: [choice] — Reasoning: [why]
+        - **Primary CTA**: [specific action verb] — chars: [n]
+        - **Secondary Action**: [alternative path, if applicable]
+        - **Emotional Goal**: [motivate | educate | redirect]
+
+    - name: "Empty State Patterns"
+      description: >
+        | Pattern | When to Use | Example |
+        | First-use empty | User has never created content | "Create your first project" |
+        | No results | Search/filter returned nothing | "No results for 'xyz'. Try..." |
+        | Cleared/deleted | User removed all items | "All caught up!" or "Add items..." |
+        | Permission empty | User can see screen but can't add | "Ask your admin for access" |
+        | Error empty | Data failed to load | (Use error state, not empty state) |
+
+    - name: "Screen Reader Experience"
+      description: >
+        How each empty state reads for assistive technology users.
+        Ensure empty states are announced and the CTA is easily reachable.
+
+    - name: "Next Steps"
+      description: >
+        Typically: error messages for the same screens,
+        or onboarding copy if first-use empty states need a guided flow.

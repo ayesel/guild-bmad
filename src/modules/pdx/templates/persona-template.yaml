@@ -1,0 +1,103 @@
+# Persona Template
+#
+# Evidence-based user persona generation with detailed behavioral
+# profiles, accessibility needs, and design implications.
+
+template:
+  name: User Personas
+  artifact_type: persona
+  output_file: "_bmad-output/pdx-artifacts/personas.md"
+
+structure:
+  header:
+    - artifact: "User Personas"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - evidence_sources: "{list data sources}"
+
+  sections:
+    - name: "Overview"
+      description: >
+        Summary table of all personas:
+        | Persona | Role/Archetype | Primary Goal | Key Frustration | Priority (Primary/Secondary/Edge) |
+
+    - name: "Detailed Persona Cards"
+      description: >
+        For each persona, create a detailed card with these sections:
+
+        **Demographics & Context**
+        - Name (fictional), age range, role/occupation, location, education
+        - Relevant demographic context (not stereotyping — only what affects product use)
+
+        **Goals & Motivations**
+        - Primary goal (what they're trying to accomplish)
+        - Secondary goals
+        - Underlying motivation (why the goal matters to them)
+
+        **Frustrations & Pain Points**
+        - Current pain points with existing solutions
+        - Unmet needs
+        - Workarounds they've developed
+
+        **Behaviors & Patterns**
+        - How they currently accomplish the task
+        - Frequency of use
+        - Decision-making style (methodical, impulsive, consensus-seeking)
+        - Information seeking behavior
+
+        **Technology Context**
+        - Primary devices and platforms
+        - Technical proficiency level
+        - Tools and apps in their workflow
+        - Connectivity context (always-on, intermittent, offline-first)
+
+        **Accessibility Needs**
+        - Any assistive technology use
+        - Situational accessibility needs (e.g., one-handed use, bright sunlight, noisy environment)
+        - Cognitive load preferences
+
+        **Key Scenarios**
+        - 2-3 scenarios showing this persona interacting with the product
+        - Include at least one frustration scenario
+
+        **Design Implications**
+        - What this persona needs from the interface
+        - What would make them abandon the product
+        - What would make them a champion/advocate
+
+    - name: "Edge Case Personas"
+      description: >
+        Users at the extremes — power users, first-time users, users with
+        accessibility needs, users in constrained environments. These are not
+        primary design targets but must not be excluded.
+
+    - name: "Anti-Personas"
+      description: >
+        Who this product is NOT for. Defining anti-personas prevents scope
+        creep and clarifies design tradeoffs.
+
+    - name: "Persona Relationships"
+      description: >
+        Mermaid diagram showing how personas interact or overlap:
+      format: |
+        ```mermaid
+        graph LR
+            P1[Persona 1] -- "collaborates with" --> P2[Persona 2]
+            P1 -- "reports to" --> P3[Persona 3]
+            P2 -- "hands off to" --> P4[Persona 4]
+        ```
+
+    - name: "Validation Plan"
+      description: >
+        How to validate these personas against real users:
+        - Screening criteria for recruiting each persona type
+        - Key assumptions to test
+        - Signals that a persona needs revision
+
+    - name: "Next Steps"
+      description: >
+        Typically: journey mapping for primary personas,
+        or JTBD mapping to understand their core jobs.

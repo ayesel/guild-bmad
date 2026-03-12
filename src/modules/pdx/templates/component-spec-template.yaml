@@ -1,0 +1,111 @@
+# Component Spec Template
+#
+# Individual component specification with props, states,
+# tokens, keyboard behavior, and ARIA attributes.
+
+template:
+  name: Component Specification
+  artifact_type: component-spec
+  output_file: "_bmad-output/pdx-artifacts/handoff-component-spec-{component-name}.md"
+
+structure:
+  header:
+    - artifact: "Component Specification"
+    - component: "{component-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Relay (Design Ops)"
+    - engineering_framework: "{React|React Native|Vue|etc.}"
+
+  sections:
+    - name: "Component Overview"
+      description: >
+        Component name, purpose, when to use it, when NOT to use it.
+        Link to design system documentation if it extends an existing component.
+
+    - name: "Variants"
+      description: >
+        | Variant | Description | Visual Difference | Use When |
+        For each variant, describe the visual treatment and intended use case.
+
+    - name: "Props Table"
+      description: >
+        | Prop | Type | Default | Required | Description |
+        Include all props with TypeScript types, defaults, and clear descriptions.
+
+    - name: "States"
+      description: >
+        | State | Visual Treatment | Token: Background | Token: Text | Token: Border | Behavior |
+        | Default | | | | | |
+        | Hover | | | | | |
+        | Focus | | | | | |
+        | Active | | | | | |
+        | Disabled | | | | | |
+        | Loading | | | | | |
+        | Error | | | | | |
+        | Selected | | | | | |
+
+    - name: "Slots / Children"
+      description: >
+        | Slot | Type | Required | Description |
+        What content the component accepts (text, icons, custom elements).
+
+    - name: "Design Token References"
+      description: >
+        Every visual property mapped to a design token:
+        | Property | Token | Value | Notes |
+        | Background | color-interactive-default | #3B82F6 | |
+        | Text | color-text-on-primary | #FFFFFF | |
+        | Border radius | border-radius-md | 8px | |
+        | Padding X | spacing-component-md | 16px | |
+        | Padding Y | spacing-component-sm | 8px | |
+        | Font | typography-body-default | Inter 16/1.5 | |
+
+    - name: "Responsive Behavior"
+      description: >
+        | Breakpoint | Width | Height | Layout Change | Notes |
+        How the component adapts across breakpoints.
+
+    - name: "Keyboard Interaction"
+      description: >
+        | Key | Action | Context |
+        | Tab | Focus the component | Navigation |
+        | Enter/Space | Activate | When focused |
+        | Escape | Close/dismiss | When expanded |
+        | Arrow keys | Navigate options | When expanded |
+
+    - name: "ARIA Attributes"
+      description: >
+        | Attribute | Value | When Applied |
+        | role | [role] | Always |
+        | aria-label | [label] | When no visible text |
+        | aria-disabled | true/false | When disabled |
+        | aria-expanded | true/false | When expandable |
+        | aria-busy | true/false | When loading |
+
+    - name: "Usage Example"
+      description: >
+        React pseudocode showing typical usage:
+        ```jsx
+        <ComponentName
+          variant="primary"
+          size="md"
+          onClick={handleClick}
+          disabled={isSubmitting}
+          loading={isLoading}
+        >
+          Button Label
+        </ComponentName>
+        ```
+
+    - name: "Do / Don't"
+      description: >
+        | Do | Don't |
+        | Use primary for the main CTA | Don't use multiple primary buttons |
+        | Keep labels to 2-3 words | Don't wrap button text to two lines |
+
+    - name: "Next Steps"
+      description: >
+        Typically: create Jira story for component implementation,
+        or annotate the screens where this component appears.
