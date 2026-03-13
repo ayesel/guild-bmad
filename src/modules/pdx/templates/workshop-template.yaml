@@ -1,0 +1,233 @@
+# Design Workshop Facilitation Template
+#
+# Structured workshop plan with agenda, facilitation scripts,
+# and documentation guidance for collaborative design activities.
+
+template:
+  name: Design Workshop
+  artifact_type: workshop
+  output_file: "_bmad-output/pdx-artifacts/workshop-{topic}.md"
+
+structure:
+  header:
+    - artifact: "Design Workshop Plan"
+    - topic: "{topic}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - workshop_type: "{design-studio|crazy-8s|dot-voting|hmw|affinity-mapping|moscow|lightning-demos}"
+    - duration: "{minutes}"
+    - format: "{remote|in-person|hybrid}"
+
+  sections:
+    - name: "Objective and Outcomes"
+      required: true
+      description: >
+        **Workshop Objective:**
+        {What will this workshop accomplish? What question will it answer?}
+
+        **Expected Outcomes:**
+        1. {tangible deliverable, e.g., "Prioritized list of features for v1"}
+        2. {tangible deliverable, e.g., "Sketched concepts for onboarding flow"}
+        3. {tangible deliverable, e.g., "Aligned team understanding of user needs"}
+
+        **Out of Scope:**
+        - {What this workshop will NOT cover}
+        - {Decisions that will be made elsewhere}
+
+        **Success Criteria:**
+        - Participants leave with clear next steps
+        - {specific metric, e.g., "Top 5 priorities agreed upon"}
+        - All voices heard (facilitation check)
+
+    - name: "Participant List"
+      required: true
+      description: >
+        **Recommended group sizes:**
+        | Activity Type | Ideal Size | Maximum |
+        |--------------|-----------|---------|
+        | Generative (ideation, sketching) | 4-8 | 8 |
+        | Prioritization (voting, ranking) | 6-12 | 12 |
+        | Review (critique, feedback) | 4-6 | 8 |
+
+        **Participants:**
+        | # | Name | Role | Why Included | Pre-Work Required |
+        |---|------|------|-------------|-------------------|
+        | 1 | {name} | {role} | {domain expertise, decision authority, user perspective} | {yes/no: description} |
+
+        **Roles:**
+        - **Facilitator**: {name} — guides activities, manages time, ensures participation
+        - **Note-taker**: {name} — captures key decisions, ideas, and action items
+        - **Timekeeper**: {name or facilitator} — keeps activities on schedule
+        - **Decision maker**: {name} — has authority for final calls if needed
+
+    - name: "Duration and Format"
+      required: true
+      description: >
+        | Parameter | Value |
+        |-----------|-------|
+        | Total duration | {60 / 90 / 120 / 180 minutes} |
+        | Format | {remote / in-person / hybrid} |
+        | Platform (remote) | {Miro, FigJam, Mural, Zoom whiteboard} |
+        | Location (in-person) | {room, building} |
+        | Date and time | {scheduled datetime} |
+
+        **Remote Considerations:**
+        - Camera on encouraged for engagement
+        - Breakout rooms for small group work
+        - Digital whiteboard pre-configured with templates
+        - Tech check 10 minutes before start
+
+        **In-Person Considerations:**
+        - Room layout: {tables for groups, open wall space}
+        - Supplies: sticky notes, markers, dot stickers, timer
+        - Whiteboard or large paper for group work
+
+    - name: "Workshop Type and Activities"
+      required: true
+      description: >
+        **Workshop Type Reference:**
+        | Type | Purpose | Duration | Best For |
+        |------|---------|----------|----------|
+        | Design Studio | Sketch multiple solutions, critique, refine | 90-120 min | Exploring design directions |
+        | Crazy 8s | Rapid ideation (8 ideas in 8 minutes) | 30-45 min | Breaking out of obvious solutions |
+        | Dot Voting | Democratic prioritization | 15-20 min | Narrowing many options quickly |
+        | How Might We (HMW) | Reframe problems as opportunities | 30-45 min | Turning research into design prompts |
+        | Affinity Mapping | Organize ideas into themes | 30-60 min | Synthesizing brainstorm output |
+        | MoSCoW | Priority categorization | 30-45 min | Scope definition (Must/Should/Could/Won't) |
+        | Lightning Demos | Share inspiring examples | 20-30 min | Building shared reference and inspiration |
+
+        **Selected Activities (in order):**
+        1. {activity name} — {purpose} — {duration}
+        2. {activity name} — {purpose} — {duration}
+        3. {activity name} — {purpose} — {duration}
+
+    - name: "Agenda with Time Blocks"
+      required: true
+      description: >
+        | Time | Duration | Activity | Description | Facilitator Notes |
+        |------|----------|----------|-------------|-------------------|
+        | 0:00 | 5 min | Welcome and context | Set the stage, share objective | Read opening script |
+        | 0:05 | 5 min | Rules of engagement | Review participation norms | Display on screen/wall |
+        | 0:10 | 10 min | Scene setting | Share relevant research, data, or constraints | Keep brief, visual |
+        | 0:20 | {min} | Activity 1: {name} | {description of activity} | {facilitation tips} |
+        | {time} | {min} | Activity 2: {name} | {description} | {tips} |
+        | {time} | 5 min | Break | Stretch, bio break | Only for sessions >90 min |
+        | {time} | {min} | Activity 3: {name} | {description} | {tips} |
+        | {time} | 10 min | Synthesis and decisions | Summarize outcomes, confirm decisions | Capture on shared doc |
+        | {time} | 5 min | Next steps and close | Assign owners, set deadlines | Send follow-up same day |
+
+    - name: "Facilitator Script"
+      required: true
+      description: >
+        **Opening (5 min):**
+        "Welcome everyone. Today we're here to [objective]. By the end of this session,
+        we'll have [expected outcome]. Here's our agenda for the next [duration]."
+
+        **Context Setting (5 min):**
+        "Before we start, let me share what we know so far: [key research findings,
+        constraints, or user needs]. This is the foundation we're building on today."
+
+        **Activity Transitions:**
+        - "Great work on that exercise. Let me summarize what I'm seeing: [themes].
+          Now we're going to [next activity] to [purpose]."
+
+        **Engagement Prompts (use as needed):**
+        - "I'd love to hear from someone who hasn't spoken yet."
+        - "Let's hear a different perspective on this."
+        - "Can someone build on that idea?"
+        - "What are we missing? What's the opposite view?"
+
+        **Time Management:**
+        - "We have 2 minutes left on this activity."
+        - "I'm going to ask everyone to finish their current thought."
+        - "Let's capture that in the parking lot and move on."
+
+        **Closing (5 min):**
+        "Let me recap what we accomplished today: [outcomes]. The key decisions were:
+        [decisions]. Next steps are: [actions with owners]. I'll send a summary
+        by end of day. Thank you for your time and ideas."
+
+    - name: "Materials Needed"
+      required: true
+      description: >
+        **In-Person:**
+        - [ ] Sticky notes (multiple colors, at least 2 pads per person)
+        - [ ] Markers (thick tip, one per person — no pens for readability)
+        - [ ] Dot stickers (5-6 per person for voting)
+        - [ ] Large paper or whiteboard for group work
+        - [ ] Timer (visible to all)
+        - [ ] Printed templates or worksheets
+        - [ ] Snacks and drinks (for sessions >60 min)
+        - [ ] Camera to photograph physical artifacts
+
+        **Remote:**
+        - [ ] Digital whiteboard (Miro/FigJam/Mural) pre-configured with templates
+        - [ ] Timer tool (built-in or shared screen)
+        - [ ] Breakout room configuration
+        - [ ] Shared document for real-time notes
+        - [ ] Pre-loaded research slides or reference materials
+        - [ ] Backup plan if technology fails
+
+        **Pre-Work Materials (send 2 days before):**
+        - [ ] Workshop agenda and objective
+        - [ ] Background reading or research summary
+        - [ ] Any exercises to complete before the session
+
+    - name: "Rules of Engagement"
+      required: true
+      description: >
+        Display these at the start and enforce throughout:
+
+        1. **Defer judgment** — Build on ideas before critiquing them
+        2. **One conversation at a time** — Give each person the floor
+        3. **Encourage wild ideas** — Push past obvious solutions
+        4. **Go for quantity** — More ideas = better raw material
+        5. **Be visual** — Sketch, diagram, use sticky notes
+        6. **Stay on topic** — Parking lot for tangents
+        7. **Equal voice** — Everyone contributes, no dominant voices
+        8. **Phones away** — Full attention (or cameras on for remote)
+
+        **Parking Lot:** Capture important-but-off-topic items for follow-up.
+
+    - name: "Documentation Plan"
+      required: true
+      description: >
+        **During Workshop:**
+        - Note-taker captures: key ideas, decisions, votes, quotes, action items
+        - Photograph all physical artifacts (sticky note clusters, sketches, whiteboard)
+        - Screenshot digital whiteboard states at end of each activity
+
+        **Post-Workshop (same day):**
+        - [ ] Photograph/screenshot all artifacts
+        - [ ] Type up key decisions and action items
+        - [ ] Send summary email to all participants
+        - [ ] File raw materials in project repository
+
+        **Follow-Up Summary Template:**
+        ```
+        Workshop: {topic}
+        Date: {date}
+        Participants: {names}
+
+        Key Decisions:
+        1. {decision}
+
+        Action Items:
+        | Action | Owner | Deadline |
+        |--------|-------|----------|
+
+        Parking Lot Items:
+        - {item for future discussion}
+
+        Artifacts: {link to photos/files}
+        ```
+
+    - name: "Next Steps"
+      description: >
+        - Distribute workshop summary to all participants within 24 hours
+        - Follow up on action items with assigned owners
+        - Feed workshop outputs into design work (user flows, wireframes, specs)
+        - Schedule follow-up session if parking lot items need resolution
+        - Archive workshop artifacts in project documentation

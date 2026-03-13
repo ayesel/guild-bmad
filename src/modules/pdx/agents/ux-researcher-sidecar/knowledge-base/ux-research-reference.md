@@ -154,6 +154,62 @@ Structured prompt patterns for generating research artifacts with AI:
 - **Insight frame**: "This suggests [interpretation] because [reasoning]..."
 - **Action frame**: "We recommend [action] to address [problem] for [users]..."
 
+## /recommend-method Decision Framework
+
+When the user triggers `/recommend-method`, ask: "What are you trying to learn? What decision will this research inform?" Then recommend 1-3 methods using this table:
+
+| Question Type | Primary Method | Secondary Method |
+|--------------|---------------|-----------------|
+| "Is this usable?" | /usability-test | /heuristic-eval |
+| "What do users need?" | /interview-script | /diary-study |
+| "How do we compare?" | /competitive-audit | /ab-test |
+| "Is this accessible?" | /accessibility-audit | — |
+| "Who are our users?" | /persona-gen | /empathy-map |
+| "What's the experience like?" | /journey-map | /service-blueprint |
+| "Why do users do this?" | /jtbd | /interview-script |
+| "How should we organize content?" | /card-sort | /story-map |
+| "What do stakeholders want?" | /stakeholder-interview | /workshop |
+| "Which design is better?" | /ab-test | /usability-test |
+| "What are users saying?" | /survey | /affinity-diagram |
+| "How does the full service work?" | /service-blueprint | /journey-map |
+| "What should we build first?" | /story-map | /workshop |
+| "What themes are in our data?" | /affinity-diagram | /research-synthesis |
+| "How can we generate ideas?" | /workshop | /competitive-audit |
+
+For each recommendation, provide: method name and command, why it fits, time/effort estimate, confidence level of results, and what the user will learn that they don't know now.
+
+## New Method Reference
+
+### Card Sorting (/card-sort)
+Studies how users categorize and organize information. Open sort (users create categories), closed sort (predefined categories), hybrid, or tree test (validate existing IA). Use 8-15 participants for qualitative, 30+ for statistical. Analyze with similarity matrices and dendrograms. Hands off to Kai for site map.
+
+### A/B Testing (/ab-test)
+Structured experiment comparing two variants against a primary metric. Requires: hypothesis, sample size calculation, statistical significance threshold (p<0.05), and decision framework for all outcomes. Watch for novelty effect, peeking problem, and interaction effects.
+
+### Survey Design (/survey)
+Structured questionnaire using validated question types (Likert, NPS, SUS). Target under 5 minutes for consumer surveys. Order: easy/engaging → core → demographics. Always pilot with 5-10 people. Prevent bias with balanced options and randomized order.
+
+### Stakeholder Interviews (/stakeholder-interview)
+Discovery interviews with internal stakeholders to understand business goals, constraints, and politics. Ask every stakeholder the same 4 core questions for cross-referencing. Build alignment matrix to identify conflicts.
+
+### Design Workshop (/workshop)
+Facilitated group sessions: Design Studio (rapid sketching), Crazy 8s (8 ideas in 8 min), Dot Voting (democratic prioritization), How Might We (problem reframing), MoSCoW (scope definition), Lightning Demos (inspiration). 4-8 for generative, up to 12 for prioritization.
+
+### Affinity Diagramming (/affinity-diagram)
+Thematic analysis using three coding passes: open (tag observations), axial (group into categories), selective (identify themes). Name groups as insights, not topics. Requires 3+ data points per theme.
+
+### Service Blueprint (/service-blueprint)
+Maps 5 layers: physical evidence, customer actions, frontstage, backstage, support processes. Identifies fail points, wait points, and opportunity areas across the full service delivery system.
+
+### Empathy Map (/empathy-map)
+Four-quadrant analysis: Says (quotes), Thinks (beliefs), Does (behaviors), Feels (emotions). Centers on user's goal. Reveals Says-vs-Does contradictions and hidden pain points.
+
+### User Story Map (/story-map)
+Organizes stories by user journey: activities (top), tasks (middle), stories (bottom by priority). Draw horizontal lines for MVP, v2, future releases. Define walking skeleton — minimum slice through every activity.
+
+### Diary Study (/diary-study)
+Longitudinal research over 1-4 weeks. Participants log events or experiences on a schedule. Requires onboarding session, reminder strategy, compliance monitoring, and exit interviews. Best for behaviors that can't be observed in a lab.
+
 ## Research Repository File Structure
 
 Recommended organization for research outputs:

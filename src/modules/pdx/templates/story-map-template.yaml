@@ -1,0 +1,212 @@
+# User Story Map Template
+#
+# Structured story mapping with activities, tasks, stories,
+# release slicing, and walking skeleton definition.
+
+template:
+  name: User Story Map
+  artifact_type: story-map
+  output_file: "_bmad-output/pdx-artifacts/story-map-{feature}.md"
+
+structure:
+  header:
+    - artifact: "User Story Map"
+    - feature: "{feature-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - persona: "{primary persona}"
+
+  sections:
+    - name: "Product / Feature Overview"
+      required: true
+      description: >
+        **Product/Feature:** {name and brief description}
+        **Goal:** {what the user ultimately accomplishes}
+        **Persona:** {who this story map is for}
+
+        **Narrative:**
+        Tell the user's story in 2-3 sentences. What are they trying to do,
+        why, and what does success look like?
+
+        "As a {persona}, I need to {high-level goal} so that {outcome/value}."
+
+        **Scope:**
+        - In scope: {what this map covers}
+        - Out of scope: {what it does not cover}
+        - Assumptions: {key assumptions about user behavior or system state}
+
+    - name: "Activities (Top Row)"
+      required: true
+      description: >
+        Activities are the big things users do. They read left-to-right as a narrative.
+        Typically 4-8 activities across the top of the map.
+
+        | # | Activity | Description | User Goal |
+        |---|----------|-------------|-----------|
+        | 1 | {e.g., Discover} | {what the user does at this stage} | {their goal} |
+        | 2 | {e.g., Evaluate} | {description} | {goal} |
+        | 3 | {e.g., Purchase} | {description} | {goal} |
+        | 4 | {e.g., Onboard} | {description} | {goal} |
+        | 5 | {e.g., Use} | {description} | {goal} |
+        | 6 | {e.g., Share} | {description} | {goal} |
+
+    - name: "Tasks (Second Row)"
+      required: true
+      description: >
+        Tasks are the specific steps within each activity. They form the backbone
+        of the user journey and are the second row of the map.
+
+        **Activity 1: {name}**
+        | Task | Description | Essential for MVP? |
+        |------|-------------|--------------------|
+        | {task} | {what user does} | {yes/no} |
+
+        **Activity 2: {name}**
+        | Task | Description | Essential for MVP? |
+        |------|-------------|--------------------|
+        | {task} | {what user does} | {yes/no} |
+
+        (Repeat for each activity)
+
+    - name: "Stories (Below Tasks, by Priority)"
+      required: true
+      description: >
+        Stories hang below their parent task, ordered top-to-bottom by priority.
+        Higher = more important = earlier release.
+
+        **Story format:** "As a {user}, I want {action} so that {benefit}"
+
+        **Activity 1 > Task 1:**
+        | Priority | Story | Acceptance Criteria | Size |
+        |----------|-------|-------------------|------|
+        | MVP | {story} | {criteria} | {S/M/L} |
+        | v2 | {story} | {criteria} | {S/M/L} |
+        | Future | {story} | {criteria} | {S/M/L} |
+
+        (Repeat for each task under each activity)
+
+    - name: "Story Map Visualization"
+      required: true
+      description: >
+        ASCII representation of the story map structure:
+
+        ```
+        ACTIVITIES:  | Discover     | Evaluate     | Purchase     | Onboard      | Use          |
+        -------------|--------------|--------------|--------------|--------------|--------------|
+        TASKS:       | Browse       | Compare      | Add to cart  | Create acct  | Dashboard    |
+                     | Search       | Read reviews | Checkout     | Setup profile| Core feature |
+        =============|==============|==============|==============|==============|==============|
+        MVP          | Basic search | Feature list | Simple cart  | Email signup | View data    |
+        (Release 1)  | Category nav |              | Card payment | Onboard tour | Basic action |
+        -------------|--------------|--------------|--------------|--------------|--------------|
+        v2           | Filters      | User reviews | Save cart    | Social login | Export       |
+        (Release 2)  | Suggestions  | Comparisons  | Gift cards   | Preferences  | Notifications|
+        -------------|--------------|--------------|--------------|--------------|--------------|
+        Future       | AI recommend | Video demos  | Subscriptions| Team invite  | Integrations |
+        (Release 3+) | Saved search | AR preview   | Multi-currency| API keys    | Analytics    |
+        ```
+
+    - name: "Release Slicing"
+      required: true
+      description: >
+        **Release 1 — MVP:**
+        - Goal: {minimum viable experience that delivers core value}
+        - Stories included: {count}
+        - Estimated effort: {size}
+        - Success metric: {how we know MVP works}
+
+        | Activity | Included Stories | Excluded (deferred) |
+        |----------|-----------------|-------------------|
+        | {activity} | {MVP stories} | {v2+ stories} |
+
+        **Release 2 — Enhanced:**
+        - Goal: {what additional value this delivers}
+        - Stories included: {count}
+        - Prerequisite: {what must be true from MVP}
+
+        **Release 3+ — Future:**
+        - Goal: {long-term vision features}
+        - Stories included: {count}
+        - Conditions: {what triggers this release}
+
+        **Slicing Principles:**
+        - Each release must deliver a complete, usable experience
+        - Slice thin: prefer narrow-and-deep over broad-and-shallow
+        - Every release should be shippable and testable
+
+    - name: "Story Detail"
+      required: true
+      description: >
+        Detailed specification for high-priority stories:
+
+        **Story: {title}**
+        | Field | Detail |
+        |-------|--------|
+        | User story | "As a {user}, I want {action} so that {benefit}" |
+        | Activity | {parent activity} |
+        | Task | {parent task} |
+        | Release | {MVP / v2 / future} |
+        | Size | {S / M / L / XL} |
+        | Priority | {must / should / could / won't} |
+        | Acceptance criteria | {numbered list of specific, testable criteria} |
+        | Edge cases | {what could go wrong} |
+        | Dependencies | {other stories or systems required} |
+        | Design notes | {UX considerations, wireframe reference} |
+        | Technical notes | {implementation considerations} |
+
+    - name: "Dependencies"
+      required: true
+      description: >
+        **Story Dependencies:**
+        | Story | Depends On | Type | Risk |
+        |-------|-----------|------|------|
+        | {story} | {prerequisite story} | {technical, design, data, external} | {high|medium|low} |
+
+        **External Dependencies:**
+        | Dependency | Owner | Status | Impact if Delayed |
+        |-----------|-------|--------|------------------|
+        | {e.g., API from partner} | {team/person} | {confirmed, at risk, unknown} | {what happens} |
+
+        **Dependency Visualization:**
+        ```
+        Story A ──depends on──▶ Story B ──depends on──▶ Story C
+                                                          │
+        Story D ──depends on──▶ Story E ◀──depends on─────┘
+        ```
+
+    - name: "Walking Skeleton"
+      required: true
+      description: >
+        The thinnest possible end-to-end slice that proves the architecture works.
+        One story from each activity, wired together to deliver minimal value.
+
+        **Walking Skeleton Stories:**
+        | Activity | Story | Why This One |
+        |----------|-------|-------------|
+        | {activity 1} | {simplest story that proves this activity works} | {rationale} |
+        | {activity 2} | {simplest story} | {rationale} |
+        | {activity 3} | {simplest story} | {rationale} |
+
+        **What the walking skeleton proves:**
+        - End-to-end data flow works
+        - Core architectural decisions validated
+        - Integration points connected
+        - Deployable and testable
+
+        **What the walking skeleton does NOT include:**
+        - Error handling (beyond basic)
+        - Edge cases
+        - Polish or visual design
+        - Performance optimization
+
+    - name: "Next Steps"
+      description: >
+        - Review story map with product and engineering teams
+        - Validate MVP slice with user research (can users accomplish their goal?)
+        - Estimate stories for sprint planning
+        - Build walking skeleton first to validate architecture
+        - Create detailed designs for MVP stories
+        - Hand stories to engineering with acceptance criteria and design specs
