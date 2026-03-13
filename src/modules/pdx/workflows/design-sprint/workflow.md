@@ -6,124 +6,220 @@ User invokes this workflow with a feature or improvement area:
 - "Design sprint: add social features"
 - "PDX sprint: improve onboarding"
 
-## Pre-flight
-1. Read `_bmad-output/implementation-artifacts/sprint-status.yaml` — understand current project state
-   - Current sprint number and capacity
-   - Existing story and epic counts
-   - What's TODO vs IN PROGRESS vs DONE
-2. Read `_bmad-output/planning-artifacts/project-context.md` — understand the product
-3. Read `_bmad-output/planning-artifacts/prd.md` — understand requirements
-4. Read existing `_bmad-output/pdx-artifacts/` — don't repeat prior work
-5. Ask user ONE clarifying question if scope is ambiguous
-6. Confirm: "I'll run the full PDX pipeline on [scope]. This will produce research, designs, copy, QA, and dev-ready handoff. Ready?"
+## Step 0: Project Detection
 
-## Pipeline Execution
+Check for these files in order:
 
-### Phase 1: Nova (Research)
-Run automatically based on what's needed:
-- IF no personas exist in pdx-artifacts/ → generate personas
-- IF personas exist → skip (reference existing)
-- ALWAYS run a targeted heuristic eval on the feature scope
-- IF feature is new → run competitive audit
-- IF feature exists → run journey map for the feature
-- Save all to `_bmad-output/pdx-artifacts/`
-- Report: "Phase 1 complete — [n] research artifacts produced"
+1. `_bmad-output/implementation-artifacts/sprint-status.yaml` — exists?
+2. `_bmad-output/planning-artifacts/prd.md` — exists?
+3. `_bmad-output/planning-artifacts/architecture.md` — exists?
+4. `_bmad-output/pdx-artifacts/` — any files exist?
 
-### Phase 2: Kai (Design)
-Reads Nova's output automatically:
-- Generate user flow for the feature (reference personas from Phase 1)
-- IF flow has complex states → generate state diagram
-- IF flow has multiple actors → generate swim lane
-- Generate wireframe for key screens
-- Save all to `_bmad-output/pdx-artifacts/`
-- Report: "Phase 2 complete — [n] design artifacts produced"
+**If sprint-status.yaml exists → BROWNFIELD**
+This is an active project with existing sprints. Reference existing artifacts, continue numbering.
+Pipeline: Nova → Kai → Echo → Sage → Relay → PM → SM (7 phases)
 
-### Phase 3: Echo (Content)
-Reads Kai's wireframes and Nova's personas automatically:
-- Write microcopy for all screens in Kai's flow
-- Write error messages for all error states Kai identified
-- Write empty state copy for any empty states in the flow
-- IF onboarding is involved → write onboarding copy
-- Save all to `_bmad-output/pdx-artifacts/`
-- Report: "Phase 3 complete — [n] content artifacts produced"
+**If prd.md exists but no sprint-status.yaml → MID-PROJECT**
+Planning happened but implementation hasn't started. Skip Analyst, include Architect.
+Pipeline: PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM (9 phases)
 
-### Phase 4: Sage (QA)
-Reads everything from Phases 1-3 automatically:
-- Run design review on Kai's flows
-- Run a11y QA check
-- Check Echo's copy against voice/tone guidelines
-- Run pre-handoff quality gate
-- Issue GO / CONDITIONAL / NO-GO verdict
-- IF NO-GO → list blockers and STOP pipeline
-- IF CONDITIONAL → list conditions and continue
-- IF GO → continue to Phase 5
-- Save QA report to `_bmad-output/pdx-artifacts/`
-- Report: "Phase 4 complete — verdict: [GO/CONDITIONAL/NO-GO]"
+**If nothing exists → GREENFIELD**
+Brand new project. Run full pipeline including Analyst, PM, and Architect.
+Pipeline: Analyst → PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM (11 phases)
 
-### Phase 5: Relay (Handoff)
-Reads everything from Phases 1-4 + sprint-status.yaml:
-- Generate stories with correct numbering (continue from existing highest ID)
-- Assign to correct sprint (current or next based on capacity)
-- Write component specs for new UI elements
-- Extract design tokens
-- Update sprint-status.yaml with new stories (append, never overwrite)
-- Save story files to `_bmad-output/implementation-artifacts/stories/`
-- Save specs and tokens to `_bmad-output/pdx-artifacts/`
-- Report: "Phase 5 complete — [n] stories generated ([story range])"
+Report detection to user:
+"Detected: [GREENFIELD/BROWNFIELD/MID-PROJECT]. Running [X]-phase pipeline."
 
-### Phase 6: PM Review
-Load BMAD's PM agent to review Relay's output.
+## Pre-flight (after detection)
+1. Read any existing BMAD artifacts identified during detection
+2. Read `_bmad-output/planning-artifacts/project-context.md` if it exists
+3. Read existing `_bmad-output/pdx-artifacts/` — don't repeat prior work
+4. Ask user ONE clarifying question if scope is ambiguous
+5. Confirm: "I'll run the [GREENFIELD/BROWNFIELD/MID-PROJECT] pipeline on [scope]. Ready?"
 
-The PM validates:
-- Do the stories align with the PRD and product goals?
-- Is the prioritization correct (P0/P1/P2)?
-- Are the acceptance criteria complete and testable?
-- Do the story descriptions match the intended user outcomes?
-- Are there missing stories that the design artifacts imply but Relay didn't create?
-- Are there stories that are out of scope and should be removed or deferred?
-- Do epic groupings make sense?
+---
 
-PM actions:
-- IF stories are aligned → approve and pass to SM
-- IF stories need adjustment → modify titles, acceptance criteria, or priority, then pass to SM
-- IF stories are fundamentally misaligned with PRD → flag to user with specific concerns, suggest changes, get confirmation before continuing
+## GREENFIELD Pipeline (11 phases)
+For brand new projects with no existing BMAD artifacts.
 
-Output: Updated story files with PM approval status
-Save PM review notes to `_bmad-output/pdx-artifacts/pm-review-[scope].md`
-Report: "Phase 6 complete — PM review: [APPROVED/APPROVED WITH CHANGES/FLAGGED]"
+### Phase 0: Analyst (BMAD)
+Brainstorm and create product brief:
+- Interactive discovery session with user
+- Capture product vision, target users, core problem, key features
+- Output: `product-brief.md` → `_bmad-output/planning-artifacts/`
+- Report: "Phase 0 complete — product brief created"
 
-### Phase 7: SM Sprint Planning
-Load BMAD's SM agent to plan the sprint.
+### Phase 1: PM (BMAD)
+Create PRD from product brief:
+- Functional requirements, non-functional requirements
+- Epics and high-level story mapping
+- User types and success metrics
+- Output: `prd.md` → `_bmad-output/planning-artifacts/`
+- Report: "Phase 1 complete — PRD created with [n] epics"
 
-The SM validates and organizes:
-- Read sprint-status.yaml for current sprint capacity and velocity
-- Check what's already in the current sprint (don't overload)
-- Validate story point estimates against team velocity
-- Check dependencies between new stories and existing work
-- Sequence stories within the sprint (what needs to be built first?)
-- IF total points exceed sprint capacity → split across sprints, prioritize P0 first
-- Assign stories to appropriate sprint(s)
+### Phase 2: Nova (PDX Research)
+Generate foundational research from PRD:
+- Generate personas from PRD user descriptions
+- Competitive audit of similar products
+- JTBD mapping for core user jobs
+- Output: `personas.md`, `competitive-audit.md`, `jtbd.md` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 2 complete — [n] research artifacts produced"
 
-SM actions:
-- Update sprint-status.yaml with final sprint assignments
-- Set story statuses to ready-for-dev
-- Create sprint summary with:
-  - Sprint goal
-  - Stories included (with sequence)
-  - Total points
-  - Dependencies and blockers
-  - Capacity check (points assigned vs team velocity)
+### Phase 3: Kai (PDX Design)
+Create full product design from research:
+- Site map / information architecture for full product
+- User flows for each epic
+- Wireframes for key screens
+- State diagrams for complex components
+- Output: `site-map.md`, `user-flow-*.md`, `wireframe-*.md` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 3 complete — [n] design artifacts produced"
 
-Output: Updated sprint-status.yaml, sprint summary
-Save sprint plan to `_bmad-output/implementation-artifacts/sprint-plan-[sprint-number].md`
-Report: "Phase 7 complete — stories assigned to Sprint [number], [points] points planned"
+### Phase 4: Echo (PDX Content)
+Write all product content:
+- Voice and tone guidelines
+- All screen microcopy
+- Error message system
+- Empty states for all screens
+- Onboarding copy
+- Output: `voice-tone.md`, `microcopy-*.md`, `error-messages.md`, `empty-states.md` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 4 complete — [n] content artifacts produced"
+
+### Phase 5: Architect (BMAD)
+Create technical architecture:
+- System architecture based on PRD + PDX design artifacts
+- Tech stack decisions informed by component specs
+- Data model, API design, infrastructure
+- Output: `architecture.md` → `_bmad-output/planning-artifacts/`
+- Report: "Phase 5 complete — architecture document created"
+
+### Phase 6: Sage (PDX QA)
+Quality gate on all design work:
+- Design review on all Kai artifacts
+- Accessibility audit
+- Content QA on all Echo output
+- Pre-handoff quality gate
+- IF NO-GO → loop back to relevant phase with issues
+- IF GO/CONDITIONAL → continue
+- Output: `qa-report.md` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 6 complete — verdict: [GO/CONDITIONAL/NO-GO]"
+
+### Phase 7: Relay (PDX Handoff)
+Generate all implementation artifacts:
+- Generate epic and story files from design artifacts
+- Component specs for all new components
+- Design tokens in W3C DTCG format
+- Output: stories → `_bmad-output/implementation-artifacts/stories/`
+- Output: `component-specs.md`, `design-tokens.json` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 7 complete — [n] stories generated ([story range])"
+
+### Phase 8: PM (BMAD) — Story Review
+Validate stories against PRD:
+- Check story alignment with PRD and product goals
+- Validate prioritization (P0/P1/P2)
+- Verify acceptance criteria are complete and testable
+- Identify missing or out-of-scope stories
+- IF APPROVED → continue
+- IF FLAGGED → pause for user confirmation
+- Output: updated story files, `pm-review-[scope].md` → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 8 complete — PM review: [APPROVED/APPROVED WITH CHANGES/FLAGGED]"
+
+### Phase 9: SM (BMAD) — Sprint Planning
+Plan and assign sprints:
+- Read team velocity and capacity
+- Assign stories to sprints (P0 first)
+- Sequence work within sprints
+- IF total points exceed capacity → split across sprints
+- Output: updated `sprint-status.yaml`, `sprint-plan-[sprint-number].md` → `_bmad-output/implementation-artifacts/`
+- Report: "Phase 9 complete — stories assigned to Sprint [number], [points] points planned"
+
+### Phase 10: Dev (BMAD) — Implementation
+Stories are ready for development:
+- Pick up stories with `/ds`
+- All design context available in `pdx-artifacts/`
+- Architecture available in `planning-artifacts/`
+
+---
+
+## BROWNFIELD Pipeline (7 phases)
+For existing projects with sprint-status.yaml.
+
+### Phase 2: Nova (PDX Research)
+Targeted research on the feature scope:
+- Reference existing personas (update if needed)
+- Heuristic eval or journey map for the specific feature
+- Skip competitive audit unless feature is entirely new
+- Output → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 2 complete — [n] research artifacts produced"
+
+### Phase 3: Kai (PDX Design)
+Design solutions for the feature:
+- User flows for the specific feature
+- State diagrams for complex components
+- Wireframes for new/changed screens only
+- Output → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 3 complete — [n] design artifacts produced"
+
+### Phase 4: Echo (PDX Content)
+Content for new/changed screens:
+- Microcopy for new screens
+- Error messages for new error states
+- Empty states for new screens
+- Output → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 4 complete — [n] content artifacts produced"
+
+### Phase 6: Sage (PDX QA)
+Focused QA on new designs:
+- Design review on new designs only
+- Accessibility check on new/changed screens
+- IF NO-GO → loop back to Kai
+- Output → `_bmad-output/pdx-artifacts/`
+- Report: "Phase 6 complete — verdict: [GO/CONDITIONAL/NO-GO]"
+
+### Phase 7: Relay (PDX Handoff)
+Handoff continuing from existing state:
+- Stories continue from existing numbering
+- Append to existing epics or create new ones
+- Component specs for new components only
+- Tokens added to existing token file
+- Output: stories → `_bmad-output/implementation-artifacts/stories/`
+- Report: "Phase 7 complete — [n] stories generated ([story range])"
+
+### Phase 8: PM (BMAD) — Story Review
+Same as greenfield Phase 8.
+
+### Phase 9: SM (BMAD) — Sprint Planning
+Fit new stories into current or next sprint.
+
+---
+
+## MID-PROJECT Pipeline (9 phases)
+PRD exists but no sprints yet. Skip Analyst, include Architect.
+
+### Phase 1: PM (BMAD) — PRD Review
+Review existing PRD (validate, don't recreate):
+- Confirm PRD is current and complete
+- Flag any gaps or outdated sections
+- Output: updated `prd.md` if changes needed
+- Report: "Phase 1 complete — PRD validated"
+
+### Phases 2-4: Nova → Kai → Echo
+Same as greenfield Phases 2-4.
+
+### Phase 5: Architect (BMAD)
+Same as greenfield Phase 5.
+
+### Phases 6-9: Sage → Relay → PM → SM
+Same as greenfield Phases 6-9.
+
+---
 
 ## Post-Pipeline Report
-After all 7 phases complete, output a summary:
+After all phases complete, output a summary:
 ```
 PDX Design Sprint Complete — [Feature/Scope]
 
-Pipeline: Nova → Kai → Echo → Sage → Relay → PM → SM
+Detected: [GREENFIELD/BROWNFIELD/MID-PROJECT]
+Pipeline: [phase sequence]
 
 Artifacts produced: [count]
 Research: [list]
@@ -142,19 +238,19 @@ Ready for: @dev to pick up [first story ID] with /ds
 
 ## Error Handling
 - If any phase fails, save what was completed and report where it stopped
-- If sprint-status.yaml doesn't exist, warn user and create stories without sprint assignment
+- If sprint-status.yaml doesn't exist in brownfield, fall back to mid-project pipeline
 - If scope is too broad (>20 stories generated), suggest breaking into multiple sprints
-- If Sage issues NO-GO, the pipeline stops — report all blockers and which phase produced them
+- If Sage issues NO-GO, loop back to the relevant phase with specific issues
 - If PM flags stories as fundamentally misaligned, pause for user confirmation before continuing
 
 ## Quick Sprint Variant
-Skip Phase 1 (Nova) when research already exists. Runs: Kai → Echo → Sage → Relay → PM → SM.
+Skip research phase. Runs: Kai → Echo → Sage → Relay → PM → SM.
 Triggered by `/quick-sprint`.
 
 ## Research Only Variant
-Run only Phase 1 (Nova). Save findings for later pipeline execution.
+Run only Nova. Save findings for later pipeline execution.
 Triggered by `/research-only`.
 
 ## Handoff Only Variant
-Skip Phases 1-4. Run Relay → PM → SM against existing pdx-artifacts/.
+Run Relay → PM → SM against existing pdx-artifacts/.
 Triggered by `/handoff-only`.
