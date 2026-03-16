@@ -27,19 +27,19 @@ Built for designers who want structured, repeatable AI collaboration. The AI han
 ## The pipeline
 
 ```
-Nova (research) → Kai (design) → Echo (content) → Sage (QA) → Relay (handoff) → PM (review) → SM (sprint planning) → Dev (build)
+Nova (research) → Kai (design) → Lux (visual polish) → Echo (content) → Sage (QA) → Relay (handoff) → PM (review) → SM (sprint planning) → Dev (build)
 ```
 
 PDX auto-detects your project state and adapts:
 
-**Greenfield** (new project — 11 phases):
-Analyst → PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM → Dev
+**Greenfield** (new project — 12 phases):
+Analyst → PM → Nova → Kai → Lux → Echo → Architect → Sage → Relay → PM → SM → Dev
 
-**Brownfield** (existing project — 7 phases):
-Nova → Kai → Echo → Sage → Relay → PM → SM
+**Brownfield** (existing project — 8 phases):
+Nova → Kai → Lux → Echo → Sage → Relay → PM → SM
 
-**Mid-project** (PRD exists, no sprints — 9 phases):
-PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM
+**Mid-project** (PRD exists, no sprints — 10 phases):
+PM → Nova → Kai → Lux → Echo → Architect → Sage → Relay → PM → SM
 
 Every agent saves structured artifacts to `_bmad-output/pdx-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Kai.
 
@@ -57,6 +57,7 @@ Every agent saves structured artifacts to `_bmad-output/pdx-artifacts/`. Each do
 # Or run individual agents
 @ux-researcher          # Load Nova
 @interaction-designer   # Load Kai
+@visual-designer        # Load Lux
 @content-strategist     # Load Echo
 @design-qa              # Load Sage
 @design-ops             # Load Relay
@@ -72,6 +73,7 @@ A single `/design-sprint` run generates:
 
 - **Research artifacts** — personas, journey maps, competitive audits, heuristic evaluations
 - **Design artifacts** — user flows with Mermaid diagrams, swim lanes, wireframes, state diagrams
+- **Visual polish** — hierarchy, spacing, typography, and color refinements with code fixes
 - **Content artifacts** — all microcopy, error messages, empty states, onboarding copy
 - **QA reports** — design review, accessibility audit, pre-handoff quality gate verdict
 - **Dev handoff** — Jira stories with acceptance criteria, component specs with props/states/ARIA, design tokens in W3C DTCG format
@@ -96,6 +98,15 @@ mkdir -p _bmad-output/pdx-artifacts/components
 ```bash
 cp -r /path/to/pdx-design-framework/src/modules/pdx/ ./src/modules/pdx/
 ```
+
+Then add the PDX override to your project's CLAUDE.md:
+
+```bash
+cat src/modules/pdx/install/claude-md-snippet.md >> CLAUDE.md
+```
+
+This tells all BMAD agents that PDX is active and prevents them from
+recommending Sally for UX design work.
 
 Then open Claude Code and type `@pdx-orchestrator` to get started.
 
@@ -124,7 +135,7 @@ PDX is a standard BMAD expansion module. It:
 - Reads `sprint-status.yaml` and continues existing story numbering
 - Outputs stories to `_bmad-output/implementation-artifacts/stories/`
 - Uses BMAD's PM and SM agents for story review and sprint planning
-- Replaces BMAD's built-in UX Designer agent with 5 specialized design agents
+- Replaces BMAD's built-in UX Designer agent with 7 specialized design agents
 - Stories are immediately consumable by BMAD's `/dev-story` workflow
 
 ### Skyfleet / Gas Town
@@ -189,7 +200,7 @@ src/modules/pdx/
 
 **Artifact state machine** — Every artifact has a status (draft → in-review → approved) tracked in YAML frontmatter. Quality gates enforce transitions.
 
-**Context flows downstream** — Nova's personas inform Kai's flows. Kai's wireframes give Echo copy context. Sage checks everything. Relay packages it all. No agent works in isolation.
+**Context flows downstream** — Nova's personas inform Kai's flows. Kai's wireframes get polished by Lux. Lux's refined specs give Echo copy context. Sage checks everything. Relay packages it all. No agent works in isolation.
 
 **Error-first design** — Kai designs the error state before the happy path. Every flow includes edge cases, offline behavior, and recovery paths.
 
