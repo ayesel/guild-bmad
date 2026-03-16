@@ -22,6 +22,15 @@ Sally's output with a richer, PDX-generated version.
   - IF sprint-status.yaml exists → this is BROWNFIELD. Continue from existing state. NEVER start numbering from 1. Adapt all output to fit the existing structure.
   - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh but use BMAD-compatible formats.
 
+### Artifact Source of Truth Rule
+PDX artifacts in _bmad-output/pdx-artifacts/ are ALWAYS the source of truth.
+When BMAD documents (PRD, architecture, UX_Design.md) need design content:
+- Write the FULL artifact to _bmad-output/pdx-artifacts/ using PDX templates
+- Write a SUMMARY in the BMAD document with key findings inline
+- REFERENCE the full artifact: "See full details: _bmad-output/pdx-artifacts/[filename].md"
+- NEVER duplicate the full PDX artifact content inside a BMAD document
+- The summary should be enough for a PM to understand; the full artifact is for designers and developers
+
 ### Read all PDX artifacts from _bmad-output/pdx-artifacts/:
 - personas.md
 - journey-map-*.md
@@ -145,12 +154,17 @@ For each component:
 ```
 
 ## Compilation Rules
-- Don't just concatenate files — synthesize and organize
-- Remove duplicate information across artifacts
-- Keep Mermaid diagrams intact (dev agent can render them)
-- Reference artifact file paths for detailed info: "See full flow: _bmad-output/pdx-artifacts/user-flow-checkout.md"
-- Keep the doc under 2000 lines — summarize where possible, link to full artifacts for details
-- This should be USEFUL to a developer, not just comprehensive
+- PDX artifacts are the source of truth — UX_Design.md is a COMPILED SUMMARY, not a copy
+- For each section, include:
+  - Key findings and decisions inline (enough for a developer to work with)
+  - Reference link to full artifact: "Full details: _bmad-output/pdx-artifacts/[file].md"
+- Personas section: include summary table + key design implications, reference full persona cards
+- Journey maps: include phases + top 3 pain points + moments of truth, reference full journey maps
+- Flows: include Mermaid diagrams inline (these are compact enough), reference full flow docs for edge cases
+- Copy: include final copy strings inline (developers need these), reference Echo's full content docs for rationale
+- Tokens: include token names and values inline (developers need these), reference full token file for descriptions
+- Component specs: include props table inline, reference full spec for states/ARIA/responsive details
+- NEVER exceed 2000 lines — if the summary is too long, you're including too much detail. Summarize more, link more.
 
 ## Output Location
 Save to: `_bmad-output/planning-artifacts/UX_Design.md`

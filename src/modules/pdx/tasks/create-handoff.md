@@ -24,6 +24,15 @@ Before creating any handoff artifact, perform these checks in order:
   - Epic assignment (existing epic or new epic continuing the numbering)
   - What's already been built (don't hand off work that's DONE)
 
+### Artifact Source of Truth Rule
+PDX artifacts in _bmad-output/pdx-artifacts/ are ALWAYS the source of truth.
+When BMAD documents (PRD, architecture, UX_Design.md) need design content:
+- Write the FULL artifact to _bmad-output/pdx-artifacts/ using PDX templates
+- Write a SUMMARY in the BMAD document with key findings inline
+- REFERENCE the full artifact: "See full details: _bmad-output/pdx-artifacts/[filename].md"
+- NEVER duplicate the full PDX artifact content inside a BMAD document
+- The summary should be enough for a PM to understand; the full artifact is for designers and developers
+
 ### 1. Load ALL Prior PDX Artifacts
 - Read `_bmad-output/planning-artifacts/project-context.md` if it exists
 - Read `_bmad-output/planning-artifacts/prd.md` if it exists
@@ -53,6 +62,12 @@ Before generating, restate the scope back to the user:
 - "Here's what I'll create: [handoff type] for [feature/screen],
   targeting [framework] in [sprint/release]. I'll reference [n] existing
   artifacts from [Kai/Nova/Sage/Echo]. Sound right?"
+
+### When generating stories from PDX artifacts:
+- Each story's design_artifacts field should reference the specific PDX artifact files
+- Example: design_artifacts: ["_bmad-output/pdx-artifacts/user-flow-onboarding.md", "_bmad-output/pdx-artifacts/wireframe-onboarding.md"]
+- The dev agent follows these references to get full design context
+- Don't inline the entire design spec in the story — reference it
 
 ## Execution
 

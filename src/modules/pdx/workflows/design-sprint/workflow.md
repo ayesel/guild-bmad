@@ -37,6 +37,16 @@ Report detection to user:
 4. Ask user ONE clarifying question if scope is ambiguous
 5. Confirm: "I'll run the [GREENFIELD/BROWNFIELD/MID-PROJECT] pipeline on [scope]. Ready?"
 
+## Core Rule: Artifact Source of Truth
+
+All PDX artifacts are standalone documents in _bmad-output/pdx-artifacts/.
+When the pipeline interacts with BMAD documents (PRD, architecture, sprint-status.yaml):
+- PDX agents write FULL artifacts to pdx-artifacts/
+- BMAD agents receive SUMMARIES with references to PDX artifacts
+- If a PM or Architect asks for journey maps, personas, flows, etc. — generate the full PDX artifact AND provide a summary for their document
+- This prevents duplication and ensures one source of truth
+- When PDX artifacts are updated, BMAD documents don't need to be rewritten — the references still point to the current version
+
 ---
 
 ## GREENFIELD Pipeline (11 phases)

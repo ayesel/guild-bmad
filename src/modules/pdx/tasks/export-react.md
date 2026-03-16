@@ -15,6 +15,15 @@ handed off to the development pipeline.
 3. Check for project config output format preference (react/html/svg)
 4. Ask user: "Interactive prototype or static representation?"
 
+### Artifact Source of Truth Rule
+PDX artifacts in _bmad-output/pdx-artifacts/ are ALWAYS the source of truth.
+When BMAD documents (PRD, architecture, UX_Design.md) need design content:
+- Write the FULL artifact to _bmad-output/pdx-artifacts/ using PDX templates
+- Write a SUMMARY in the BMAD document with key findings inline
+- REFERENCE the full artifact: "See full details: _bmad-output/pdx-artifacts/[filename].md"
+- NEVER duplicate the full PDX artifact content inside a BMAD document
+- The summary should be enough for a PM to understand; the full artifact is for designers and developers
+
 ## Export Modes
 
 ### Mode A: Interactive Prototype
