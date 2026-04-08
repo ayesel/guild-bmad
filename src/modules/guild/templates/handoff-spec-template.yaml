@@ -1,0 +1,118 @@
+# Handoff Spec Template
+#
+# Complete developer handoff specification covering layout,
+# tokens, states, interactions, responsive behavior, and accessibility.
+
+template:
+  name: Handoff Specification
+  artifact_type: handoff-spec
+  output_file: "_bmad-output/guild-artifacts/handoff-spec-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Developer Handoff Specification"
+    - feature: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Relay (Design Ops)"
+    - target_sprint: "{sprint}"
+    - engineering_framework: "{React|React Native|Vue|etc.}"
+
+  sections:
+    - name: "Overview"
+      description: >
+        What is this feature, what does it do, and who is it for.
+        Link to PRD, user flows (Kai), research (Nova), QA report (Sage).
+
+    - name: "Source Artifacts"
+      description: >
+        | Artifact | Author | Path | Status |
+        | User flow | Kai | | |
+        | Wireframe | Kai | | |
+        | Personas | Nova | | |
+        | Research | Nova | | |
+        | QA report | Sage | | |
+        | Copy | Echo | | |
+        | Figma frame | — | [URL] | |
+
+    - name: "Screen-by-Screen Spec"
+      description: >
+        For each screen in the feature:
+
+        **[Screen Name]**
+        - Layout grid: [columns, gutter, margin]
+        - Components used: [list with variant]
+
+        | Element | Component | Token: Background | Token: Text | Token: Border | Token: Spacing | Notes |
+
+    - name: "Interaction Spec"
+      description: >
+        | Element | Trigger | Response | Transition Duration | Easing | Animation |
+
+        Include: hover, focus, active, click, swipe, keyboard, drag interactions.
+
+    - name: "State Specifications"
+      description: >
+        For each screen, specify all states:
+
+        **Empty State**
+        - Visual: [description]
+        - Copy: [from Echo] headline, description, CTA
+        - Behavior: [what user can do]
+
+        **Loading State**
+        - Visual: [skeleton / spinner / progress]
+        - Duration threshold: [show spinner after Xms]
+        - Screen reader: [announcement]
+
+        **Error State**
+        - Visual: [description]
+        - Copy: [from Echo] error message, recovery action
+        - Behavior: [retry, dismiss, redirect]
+
+        **Populated State**
+        - Visual: [happy path layout]
+        - Data shape: [expected data structure]
+
+        **Disabled State**
+        - Visual: [dimmed, tooltip on hover]
+        - Copy: [explanation of why disabled]
+
+    - name: "Responsive Spec"
+      description: >
+        | Element | 375px | 768px | 1024px | 1440px | Notes |
+        Document layout shifts, hidden elements, reordered elements,
+        navigation changes at each breakpoint.
+
+    - name: "Accessibility Spec"
+      description: >
+        | Element | ARIA Role | ARIA Attributes | Keyboard Behavior | Focus Order | Screen Reader Announcement |
+
+    - name: "API Requirements"
+      description: >
+        | Endpoint | Method | Request Shape | Response Shape | Loading State | Error Handling |
+        What data the UI needs, expected shape, and how to handle failures.
+
+    - name: "Edge Cases"
+      description: >
+        From Kai's flows and Sage's QA:
+        | Edge Case | Scenario | Expected Behavior | Fallback |
+
+    - name: "Known Constraints"
+      description: >
+        Technical or business constraints that affect implementation.
+
+    - name: "Acceptance Criteria"
+      description: >
+        Given/When/Then for every scenario:
+        ```
+        Given [precondition]
+        When [action]
+        Then [expected result]
+        ```
+        Include happy path, error states, edge cases, and accessibility.
+
+    - name: "Next Steps"
+      description: >
+        Generate Jira stories, or create component specs for new components.

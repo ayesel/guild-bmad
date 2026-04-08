@@ -1,0 +1,71 @@
+# Microcopy Template
+#
+# Write microcopy for UI elements with multiple options,
+# character counts, and screen reader considerations.
+
+template:
+  name: Microcopy
+  artifact_type: microcopy
+  output_file: "_bmad-output/guild-artifacts/content-microcopy-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Microcopy"
+    - target: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Echo (Content Strategist)"
+    - reading_level: "{grade level}"
+
+  sections:
+    - name: "Context"
+      description: >
+        Screen/component being written for, user's emotional state,
+        desired user action, voice/tone guidelines applied.
+
+    - name: "Copy Table"
+      description: >
+        For each UI element:
+        | Element | Type | Context | Option A | Option B | Option C | Recommended | Reasoning | Chars |
+
+        Element types to cover:
+        - Page/screen title
+        - Section headings
+        - Body text / descriptions
+        - Button labels (primary and secondary)
+        - Input labels
+        - Placeholder text
+        - Helper text
+        - Tooltips
+        - Navigation labels
+        - CTAs
+        - Confirmation messages
+        - Success messages
+
+    - name: "Truncation Behavior"
+      description: >
+        For elements with space constraints:
+        | Element | Full Copy | Truncated (mobile) | Min Width | Ellipsis |
+
+    - name: "Screen Reader Transcript"
+      description: >
+        How the screen reads linearly for assistive technology users.
+        Note any ARIA labels that differ from visible text.
+
+    - name: "Translation Notes"
+      description: >
+        | Element | Current Copy | Translation Concern | Expected Expansion |
+        Flag: idioms, cultural references, text that will expand 30-50% in translation,
+        text embedded in images, right-to-left considerations.
+
+    - name: "Reading Level Assessment"
+      description: >
+        Overall Flesch-Kincaid grade level: [X]
+        Target: [grade range]
+        Words flagged for complexity: [list]
+
+    - name: "Next Steps"
+      description: >
+        Typically: error messages for this screen, or voice/tone audit
+        if inconsistencies were noticed.

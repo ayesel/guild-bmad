@@ -41,7 +41,7 @@ Nova → Kai → Lux → Echo → Sage → Relay → PM → SM
 **Mid-project** (PRD exists, no sprints — 10 phases):
 PM → Nova → Kai → Lux → Echo → Architect → Sage → Relay → PM → SM
 
-Every agent saves structured artifacts to `_bmad-output/pdx-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Kai.
+Every agent saves structured artifacts to `_bmad-output/guild-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Kai.
 
 ---
 
@@ -49,7 +49,7 @@ Every agent saves structured artifacts to `_bmad-output/pdx-artifacts/`. Each do
 
 ```bash
 # Load the orchestrator
-@pdx-orchestrator
+@guild-master
 
 # Run the full pipeline on a feature
 /design-sprint improve the checkout flow
@@ -89,26 +89,26 @@ Real-world test: PDX produced 14 artifacts (6,532 lines) for a React Native ski 
 ```bash
 mkdir my-project && cd my-project
 npx bmad-method install          # Install BMAD core
-cp -r /path/to/pdx-design-framework/src/modules/pdx/ ./src/modules/pdx/
-mkdir -p _bmad-output/pdx-artifacts/components
+cp -r /path/to/guild-bmad/src/modules/guild/ ./src/modules/guild/
+mkdir -p _bmad-output/guild-artifacts/components
 ```
 
 ### Into an existing BMAD project
 
 ```bash
-cp -r /path/to/pdx-design-framework/src/modules/pdx/ ./src/modules/pdx/
+cp -r /path/to/guild-bmad/src/modules/guild/ ./src/modules/guild/
 ```
 
 Then add the PDX override to your project's CLAUDE.md:
 
 ```bash
-cat src/modules/pdx/install/claude-md-snippet.md >> CLAUDE.md
+cat src/modules/guild/install/claude-md-snippet.md >> CLAUDE.md
 ```
 
 This tells all BMAD agents that PDX is active and prevents them from
 recommending Sally for UX design work.
 
-Then open Claude Code and type `@pdx-orchestrator` to get started.
+Then open Claude Code and type `@guild-master` to get started.
 
 ### Requirements
 
@@ -147,7 +147,7 @@ PDX is designed to integrate with multi-agent orchestration systems. Relay outpu
 ## Module structure
 
 ```
-src/modules/pdx/
+src/modules/guild/
 ├── module.yaml                          # Module configuration
 ├── agents/
 │   ├── interaction-designer.agent.yaml  # Kai 🔀
@@ -165,7 +165,7 @@ src/modules/pdx/
 │   ├── design-ops.agent.yaml            # Relay 📦
 │   ├── design-ops-sidecar/
 │   │   └── knowledge-base/
-│   ├── pdx-orchestrator.agent.yaml      # PDX 🎯
+│   ├── guild-master.agent.yaml      # PDX 🎯
 │   └── shared-sidecar/
 │       └── figma-api-reference.md
 ├── tasks/
@@ -178,11 +178,11 @@ src/modules/pdx/
 │   ├── export-to-figma.md               # Figma native export
 │   └── audit-flow.md                    # Flow audit
 ├── templates/                           # 37+ structured templates
-│   ├── user-flow-tmpl.yaml
-│   ├── swim-lane-tmpl.yaml
-│   ├── persona-tmpl.yaml
-│   ├── heuristic-eval-tmpl.yaml
-│   ├── journey-map-tmpl.yaml
+│   ├── user-flow-template.yaml
+│   ├── swim-lane-template.yaml
+│   ├── persona-template.yaml
+│   ├── heuristic-eval-template.yaml
+│   ├── journey-map-template.yaml
 │   ├── ... (and 30+ more)
 ├── workflows/
 │   └── design-sprint/
@@ -216,7 +216,7 @@ src/modules/pdx/
 - [ ] Design token MCP server (bridge Figma Variables ↔ W3C DTCG ↔ Style Dictionary)
 - [ ] Expanded UX prompt library (card sorting, A/B test plans, survey design)
 - [ ] Figma native artifact output for all agents (flows as Figma diagrams, not just markdown)
-- [ ] Skyfleet integration (PDX agents as Skyfleet workflow modules)
+- [ ] Skyfleet integration (Guild agents as Skyfleet workflow modules)
 - [ ] npm package distribution (`npx bmad-method install` with PDX as selectable module)
 
 ---

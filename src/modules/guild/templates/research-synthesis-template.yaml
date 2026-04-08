@@ -1,0 +1,93 @@
+# Research Synthesis Template
+#
+# Synthesize data from multiple research activities into
+# themes, insights, and prioritized recommendations.
+
+template:
+  name: Research Synthesis
+  artifact_type: research-synthesis
+  output_file: "_bmad-output/guild-artifacts/research-synthesis-{topic-name}.md"
+
+structure:
+  header:
+    - artifact: "Research Synthesis"
+    - topic: "{topic-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - confidence_rationale: "{basis for rating}"
+
+  sections:
+    - name: "Research Inputs"
+      description: >
+        Table of all research activities synthesized:
+        | Study | Method | Date | Participants/Sample | Key Focus | Artifact Link |
+
+    - name: "Executive Summary"
+      description: >
+        3-5 bullet points for stakeholders who won't read the full synthesis.
+        Lead with the most actionable and surprising findings.
+
+    - name: "Themes"
+      description: >
+        For each theme identified across the research:
+
+        **Theme [N]: [Theme Name]**
+        - **Finding**: What the data says (objective, factual)
+        - **Evidence**: Specific data points, user quotes, metrics
+        - **Insight**: What it means for the product (interpretive)
+        - **Recommendation**: What to do about it (actionable)
+        - **Confidence**: High/Medium/Low with rationale
+
+    - name: "User Quotes Board"
+      description: >
+        Most impactful direct quotes from users, organized by theme:
+        | Quote | Participant | Context | Theme | Implication |
+        These are the quotes to use in presentations and documentation.
+
+    - name: "Contradictions & Tensions"
+      description: >
+        Where data conflicts across studies or user segments:
+        | Tension | Source A Says | Source B Says | Possible Explanation | Resolution Approach |
+        Contradictions are often the most valuable findings.
+
+    - name: "Confidence Map"
+      description: >
+        What we know with high, medium, and low confidence:
+
+        **High Confidence** (validated by multiple sources):
+        - [finding]
+
+        **Medium Confidence** (supported by limited evidence):
+        - [finding]
+
+        **Low Confidence** (hypothesis, needs validation):
+        - [finding]
+
+    - name: "Assumptions Validated & Invalidated"
+      description: >
+        | Assumption | Status (Validated/Invalidated/Partially) | Evidence | Implication |
+        Be explicit about what we got wrong — this is where learning happens.
+
+    - name: "Prioritized Recommendations"
+      description: >
+        Ranked recommendations using ICE scoring:
+        | # | Recommendation | Impact (1-10) | Confidence (1-10) | Ease (1-10) | ICE Score | Theme |
+
+        ICE = Impact × Confidence × Ease. Higher score = higher priority.
+
+    - name: "Open Questions"
+      description: >
+        What we still don't know. For each open question:
+        - The question
+        - Why it matters
+        - Recommended method to answer it
+        - Priority (must-answer-now vs. can-wait)
+
+    - name: "Next Steps"
+      description: >
+        Typically: persona updates based on new findings,
+        journey maps informed by synthesis, or design sprints
+        targeting the highest-priority recommendations.

@@ -1,0 +1,80 @@
+# Implementation Check Template
+#
+# Compare implemented UI against design spec to identify
+# deviations in spacing, color, typography, states, and interactions.
+
+template:
+  name: Implementation Check
+  artifact_type: implementation-check
+  output_file: "_bmad-output/guild-artifacts/qa-implementation-check-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Implementation Check"
+    - target: "{scope-name}"
+    - status: "{pass|fail|conditional-pass}"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Sage (Design QA)"
+    - fidelity_score: "{1-5}"
+
+  sections:
+    - name: "Fidelity Summary"
+      description: >
+        Overall implementation fidelity score: [1-5]
+        | Category | Score (1-5) | Deviations |
+        | Spacing | | |
+        | Color | | |
+        | Typography | | |
+        | Layout | | |
+        | States | | |
+        | Interactions | | |
+        | Responsive | | |
+
+    - name: "Spacing Deviations"
+      description: >
+        | Element | Design Spec (Token) | Implementation | Delta | Severity |
+        Note: deviations under 2px tolerance are acceptable.
+
+    - name: "Color Deviations"
+      description: >
+        | Element | Design Spec (Token/Hex) | Implementation (Hex) | Delta | Severity |
+        Check: exact hex match, opacity values, gradient accuracy.
+
+    - name: "Typography Deviations"
+      description: >
+        | Element | Property | Design Spec | Implementation | Delta | Severity |
+        Properties: font-family, font-size, font-weight, line-height, letter-spacing, text-transform.
+
+    - name: "Layout Deviations"
+      description: >
+        | Screen | Design Layout | Implementation Layout | Issue | Severity |
+        Check: grid structure, flex alignment, z-index stacking, overflow behavior.
+
+    - name: "Missing States"
+      description: >
+        | Component | State | In Design | In Implementation | Issue |
+        States: empty, loading, error, populated, disabled, hover, focus, active.
+
+    - name: "Missing Interactions"
+      description: >
+        | Interaction | Specified in Design | Implemented | Issue | Severity |
+        Check: hover effects, focus rings, transitions, animations, click responses.
+
+    - name: "Missing Responsive Behavior"
+      description: >
+        | Breakpoint | Design Behavior | Implementation Behavior | Issue | Severity |
+        Check each breakpoint for layout, visibility, and content changes.
+
+    - name: "Pixel Comparison Notes"
+      description: >
+        Detailed notes from visual comparison. Reference specific screens
+        and annotate areas of deviation.
+
+    - name: "Issues Table"
+      description: >
+        | # | Category | Element | Design Spec | Implementation | Severity | Fix |
+
+    - name: "Next Steps"
+      description: >
+        Typically: fix deviations and re-check, or file implementation bug tickets.

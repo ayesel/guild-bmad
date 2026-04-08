@@ -1,0 +1,48 @@
+# Site Map Template
+
+template:
+  name: Site Map
+  artifact_type: site-map
+  output_file: "_bmad-output/guild-artifacts/site-map-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "Site Map / Information Architecture"
+    - status: "draft"
+    - version: "1.0"
+
+  sections:
+    - name: "Overview"
+      description: "Purpose of this IA, scope, and primary user tasks it supports."
+
+    - name: "Site Map Diagram"
+      format: |
+        ```mermaid
+        graph TD
+            HOME[🏠 Home] --> SEC1[Section 1]
+            HOME --> SEC2[Section 2]
+            HOME --> SEC3[Section 3]
+            SEC1 --> S1P1[Page 1.1]
+            SEC1 --> S1P2[Page 1.2]
+            SEC2 --> S2P1[Page 2.1]
+            style HOME fill:#2196F3,color:#fff
+        ```
+
+    - name: "Page Inventory"
+      description: >
+        Table of all pages/screens:
+        | Page | URL Pattern | Purpose | Primary Action | Content Type | Auth Required |
+
+    - name: "Navigation Model"
+      description: >
+        Global nav, local nav, breadcrumbs, footer nav, utility nav.
+        Document what appears at each level and why.
+
+    - name: "Content Relationships"
+      description: "Cross-links, related content, and contextual navigation."
+
+    - name: "Search & Findability"
+      description: "How users find things: search, browse, filter, sort, recent, favorites."
+
+    - name: "Next Steps"
+      description: "Typically: user flows for primary tasks, or wireframes for key pages."

@@ -1,0 +1,37 @@
+module:
+  code: guild
+  name: Product Design Experience
+  version: 0.1.0
+  description: >
+    AI-powered product design framework with specialized agents for the full
+    design lifecycle — from user research through prototyping to developer handoff.
+    Built for product designers who want structured, repeatable AI collaboration.
+  author: Ayrehl Davis
+  license: MIT
+  requires:
+    - core
+  config:
+    project_name:
+      prompt: "What is your project name?"
+      default: "My Design Project"
+      result: "{value}"
+    design_system_url:
+      prompt: "Figma design system URL (or 'none'):"
+      default: "none"
+      result: "{value}"
+    output_format:
+      prompt: "Preferred prototype output (react/html/svg):"
+      default: "react"
+      result: "{value}"
+    accessibility_standard:
+      prompt: "Accessibility standard (wcag-aa/wcag-aaa):"
+      default: "wcag-aa"
+      result: "{value}"
+    kb_output_path:
+      prompt: "KB artifact path (e.g., projects/auth-system/):"
+      default: "_bmad-output/guild-artifacts/"
+      result: "{value}"
+    kb_ux_spec_path:
+      prompt: "UX spec output path:"
+      default: "_bmad-output/planning-artifacts/UX_Design.md"
+      result: "{value}"

@@ -1,0 +1,310 @@
+# Diary Study Template
+#
+# Longitudinal self-reporting study plan with onboarding,
+# compliance monitoring, and exit interview design.
+
+template:
+  name: Diary Study
+  artifact_type: diary-study
+  output_file: "_bmad-output/guild-artifacts/diary-study-{topic}.md"
+
+structure:
+  header:
+    - artifact: "Diary Study Plan"
+    - topic: "{topic}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - duration: "{weeks}"
+    - participants: "{number}"
+
+  sections:
+    - name: "Research Objective"
+      required: true
+      description: >
+        **What are we studying over time?**
+
+        **Primary Question:** {the core question this diary study answers}
+        **Secondary Questions:**
+        1. {supporting question}
+        2. {supporting question}
+
+        **Why a diary study (vs. other methods)?**
+        - Need to capture behavior in natural context over time
+        - Interested in patterns, changes, or longitudinal trends
+        - Want to reduce recall bias by capturing in-the-moment data
+        - Need to understand frequency, triggers, and context of behaviors
+
+        **What decisions will results inform?**
+        {how findings will be used}
+
+    - name: "Study Duration"
+      required: true
+      description: >
+        | Parameter | Value | Rationale |
+        |-----------|-------|-----------|
+        | Total duration | {1-4 weeks} | {why this length} |
+        | Entry frequency | {event-triggered, daily, multiple daily} | {what we need to capture} |
+        | Minimum entries per participant | {number} | {threshold for usable data} |
+        | Study start date | {date} | |
+        | Study end date | {date} | |
+
+        **Duration Guidance:**
+        | Duration | Best For |
+        |----------|----------|
+        | 1 week | Frequent behaviors (daily use patterns) |
+        | 2 weeks | Moderate frequency behaviors, habit formation |
+        | 3-4 weeks | Infrequent behaviors, lifestyle patterns, full usage cycles |
+
+        **Risk:** Longer studies have higher dropout. Mitigate with engagement strategies.
+
+    - name: "Participants"
+      required: true
+      description: >
+        | Parameter | Value |
+        |-----------|-------|
+        | Target sample | 10-15 participants |
+        | Over-recruit by | 20-30% (expect dropout) |
+        | Recruit total | {number} |
+        | Incentive | {amount, payment schedule} |
+
+        **Recruitment Criteria:**
+        | Criterion | Requirement | Screener Question |
+        |-----------|-------------|-------------------|
+        | {criterion} | {requirement} | {screening question} |
+
+        **Incentive Structure (to reduce dropout):**
+        | Milestone | Payment | Timing |
+        |-----------|---------|--------|
+        | Onboarding complete | {amount} | Day 1 |
+        | Mid-study check-in | {amount} | Week {n} |
+        | Study completion + exit interview | {amount} | Final day |
+        | Bonus for consistent entries | {amount} | If >80% compliance |
+
+        **Participant Mix:**
+        - Include diversity in usage patterns, demographics, and experience levels
+        - Balance heavy and light users of the product/behavior being studied
+
+    - name: "Entry Template"
+      required: true
+      description: >
+        What participants record in each diary entry:
+
+        **Entry Fields:**
+        | Field | Type | Required | Purpose |
+        |-------|------|----------|---------|
+        | Date and time | Auto-captured | Yes | Temporal patterns |
+        | What happened | Open text | Yes | Core observation |
+        | Where were you | Single select + text | Yes | Context |
+        | Who was involved | Multi-select | No | Social context |
+        | How did you feel | Emoji scale or Likert | Yes | Emotional state |
+        | Screenshot/photo | Image upload | No | Visual evidence |
+        | Anything else | Open text | No | Unexpected insights |
+
+        **Custom Questions (study-specific):**
+        1. {question tailored to research objective}
+        2. {question}
+        3. {question}
+
+        **Entry Design Principles:**
+        - Keep entries under 3 minutes to complete
+        - Mix closed (quick) and open (rich) questions
+        - Use recognition over recall where possible
+        - Make the most important questions required, rest optional
+
+    - name: "Tool Recommendation"
+      required: true
+      description: >
+        | Tool | Best For | Cost | Notes |
+        |------|----------|------|-------|
+        | dscout | Mobile-first, video/photo entries | High | Industry standard for diary studies |
+        | Indeemo | Video diaries, in-context capture | Medium | Strong mobile experience |
+        | Google Forms + Reminders | Budget-friendly, simple entries | Free | Manual reminder management |
+        | Notion / Airtable | Structured entries, team visibility | Low | Good for internal studies |
+        | WhatsApp / Slack | Very informal, high compliance | Free | Good for quick check-ins, hard to analyze |
+        | SurveyMonkey | Recurring surveys, quantitative focus | Medium | Lacks multimedia capture |
+        | Diary study app (custom) | Tailored experience | Variable | Best UX, highest development cost |
+
+        **Selected tool:** {tool}
+        **Rationale:** {why this tool fits the study}
+
+        **Setup Requirements:**
+        - [ ] Tool account created and configured
+        - [ ] Entry template built and tested
+        - [ ] Participant accounts/access created
+        - [ ] Reminder system configured
+        - [ ] Data export verified
+
+    - name: "Onboarding Session"
+      required: true
+      description: >
+        **Format:** {30-45 min, remote video or in-person}
+        **Schedule:** {day before or day of study start}
+
+        **Onboarding Agenda:**
+        | Time | Activity | Description |
+        |------|----------|-------------|
+        | 0:00 | 5 min | Welcome, introductions, study purpose |
+        | 0:05 | 10 min | Study overview: duration, expectations, incentives |
+        | 0:15 | 10 min | Tool walkthrough: how to make entries |
+        | 0:25 | 5 min | Practice entry: participants create a test entry |
+        | 0:30 | 5 min | Q&A, troubleshooting, contact information |
+        | 0:35 | 5 min | Consent confirmation and next steps |
+
+        **Onboarding Materials:**
+        - [ ] Quick-start guide (1-pager with screenshots)
+        - [ ] Example entries (what good looks like)
+        - [ ] FAQ document
+        - [ ] Researcher contact information
+        - [ ] Consent form signed
+        - [ ] Incentive schedule confirmed
+
+        **Key Messages to Emphasize:**
+        - There are no right or wrong entries
+        - Capture entries as close to the moment as possible
+        - Even short entries are valuable
+        - Contact researcher if any issues arise
+
+    - name: "Reminder Strategy"
+      required: true
+      description: >
+        **Reminder Schedule:**
+        | Type | Timing | Channel | Message |
+        |------|--------|---------|---------|
+        | Daily reminder | {time of day} | {push notification, SMS, email} | "Time for your daily check-in" |
+        | Missed entry | 24h after missed | {channel} | "We noticed you missed yesterday — a quick entry today helps" |
+        | Encouragement | {weekly} | {channel} | "Great job this week — your entries are really valuable" |
+        | Milestone | {mid-study} | {channel} | "You're halfway there — keep it up" |
+
+        **Reminder Principles:**
+        - Time reminders for when the behavior is most likely to occur
+        - Vary message content to avoid notification fatigue
+        - Don't over-remind (max 1-2 per day)
+        - Make it easy to dismiss if not applicable
+        - Include a direct link to the entry form
+
+    - name: "Compliance Monitoring"
+      required: true
+      description: >
+        **Monitoring Dashboard:**
+        | Participant | Entries This Week | Total Entries | Compliance Rate | Status |
+        |------------|------------------|--------------|----------------|--------|
+        | P1 | {n} | {n} | {%} | {on track, at risk, dropped} |
+
+        **Compliance Thresholds:**
+        | Status | Criteria | Action |
+        |--------|----------|--------|
+        | On track | >80% of expected entries | Continue monitoring |
+        | At risk | 50-80% of expected entries | Personal outreach, troubleshoot barriers |
+        | Low compliance | <50% of expected entries | 1:1 check-in, consider adjusting expectations |
+        | Dropped | No entries for 3+ days, unresponsive | Mark as dropout, activate replacement if needed |
+
+        **Weekly Compliance Review:**
+        - Review entry quality (not just quantity)
+        - Check for declining entry length or detail
+        - Identify participants who may need support
+        - Adjust reminder timing or frequency if needed
+
+    - name: "Mid-Study Check-In"
+      required: true
+      description: >
+        **Timing:** {midpoint of study, e.g., end of week 1 for a 2-week study}
+        **Format:** {15-20 min, remote video or phone}
+
+        **Check-In Goals:**
+        1. Assess participant engagement and address any issues
+        2. Probe early emerging patterns for deeper understanding
+        3. Adjust study protocol if needed (entry frequency, questions)
+        4. Maintain relationship and motivation
+
+        **Check-In Questions:**
+        1. How is the study going for you? Any difficulties?
+        2. Is the entry frequency manageable?
+        3. Have you noticed any patterns in your own behavior since starting?
+        4. Is there anything you wanted to capture but couldn't?
+        5. Any questions about the remaining study period?
+
+        **Researcher Review (before check-in):**
+        - [ ] Review participant's entries for themes and gaps
+        - [ ] Note any entries that need clarification
+        - [ ] Prepare 2-3 personalized follow-up questions based on their entries
+
+    - name: "Exit Interview Script"
+      required: true
+      description: >
+        **Format:** {30-45 min, remote video}
+        **Timing:** {within 2-3 days of study end}
+
+        **Interview Structure:**
+
+        **Opening (5 min):**
+        "Thank you for completing the study. I'd like to discuss your experience
+        and explore some of the patterns I noticed in your entries."
+
+        **Reflection on the Study Period (10 min):**
+        1. Looking back over the past {duration}, what stands out most to you?
+        2. Did anything surprise you about your own behavior or experience?
+        3. How did tracking this change (or not change) your behavior?
+        4. What was the most memorable moment or entry?
+
+        **Deep Dive on Key Entries (15 min):**
+        (Researcher selects 3-5 specific entries to explore)
+        5. "On {date}, you mentioned {entry detail}. Can you tell me more about that?"
+        6. "I noticed a pattern of {pattern}. Does that resonate? What drives that?"
+        7. "You seemed particularly {emotional state} on {date}. What was happening?"
+
+        **Longitudinal Patterns (10 min):**
+        8. Did your experience change over the study period? How?
+        9. Were there moments where your needs or behaviors shifted?
+        10. What would your ideal experience look like for {the thing being studied}?
+
+        **Closing (5 min):**
+        11. Is there anything important we didn't cover?
+        12. If you could give one piece of advice to someone designing this experience, what would it be?
+
+    - name: "Analysis Plan"
+      required: true
+      description: >
+        **Data Preparation:**
+        - Export all entries into analysis tool
+        - Organize entries by participant and chronological order
+        - Tag entries with metadata (day of week, time of day, context)
+
+        **Analysis Methods:**
+
+        **Within-Participant Analysis:**
+        - Longitudinal patterns per person: what changes over time?
+        - Critical incidents: what triggered notable entries?
+        - Behavioral sequences: what happens before and after key moments?
+
+        **Cross-Participant Analysis:**
+        - Thematic coding across all entries (see affinity diagram template)
+        - Frequency analysis: what behaviors/themes are most common?
+        - Segment comparison: how do different participant types differ?
+
+        **Temporal Analysis:**
+        - Time-of-day patterns: when do behaviors cluster?
+        - Day-of-week patterns: weekday vs weekend differences?
+        - Trajectory: how does experience change from start to end of study?
+
+        **Quantitative Analysis (if applicable):**
+        - Entry frequency and compliance rates
+        - Likert/emoji scale trends over time
+        - Correlation between context factors and outcomes
+
+        **Deliverables:**
+        - Thematic summary with supporting quotes and entry examples
+        - Longitudinal patterns visualization
+        - Persona or journey map updates based on findings
+        - Design recommendations grounded in naturalistic data
+
+    - name: "Next Steps"
+      description: >
+        - Synthesize diary study findings with other research data
+        - Update personas and journey maps with longitudinal insights
+        - Share findings with product and design teams
+        - Use behavioral patterns to inform feature prioritization
+        - Consider follow-up interviews for deep dives on key themes
+        - Establish baseline metrics for future comparison studies

@@ -1,0 +1,61 @@
+name: guild-design-sprint
+description: "Adaptive PDX pipeline — auto-detects greenfield/brownfield/mid-project and routes accordingly"
+module: guild
+trigger: "DS or fuzzy match on design-sprint"
+detection:
+  brownfield: "sprint-status.yaml exists"
+  mid_project: "prd.md exists but no sprint-status.yaml"
+  greenfield: "no BMAD artifacts exist"
+guild_agents_required:
+  - ux-researcher
+  - interaction-designer
+  - content-strategist
+  - design-qa
+  - design-ops
+bmad_agents_required:
+  greenfield: [analyst, pm, architect, sm]
+  mid_project: [pm, architect, sm]
+  brownfield: [pm, sm]
+inputs:
+  - sprint-status.yaml
+  - project-context.md
+  - prd.md
+  - architecture.md
+  - guild-artifacts/
+outputs:
+  - planning-artifacts/ (product-brief, prd, architecture — greenfield/mid-project only)
+  - guild-artifacts/ (research, designs, content, QA, PM review)
+  - implementation-artifacts/stories/ (BMAD-compatible stories)
+  - implementation-artifacts/sprint-status.yaml (updated)
+  - implementation-artifacts/sprint-plan-[sprint-number].md
+pipelines:
+  greenfield:
+    phases: 11
+    sequence: "Analyst → PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM → Dev"
+  brownfield:
+    phases: 7
+    sequence: "Nova → Kai → Echo → Sage → Relay → PM → SM"
+  mid_project:
+    phases: 9
+    sequence: "PM → Nova → Kai → Echo → Architect → Sage → Relay → PM → SM"
+variants:
+  - name: quick-sprint
+    trigger: "QS or fuzzy match on quick-sprint"
+    description: "Skip research — Kai → Echo → Sage → Relay → PM → SM"
+    guild_agents_required:
+      - interaction-designer
+      - content-strategist
+      - design-qa
+      - design-ops
+    bmad_agents_required: [pm, sm]
+  - name: research-only
+    trigger: "RO or fuzzy match on research-only"
+    description: "Research only — run Nova, save findings for later"
+    guild_agents_required:
+      - ux-researcher
+  - name: handoff-only
+    trigger: "HO or fuzzy match on handoff-only"
+    description: "Handoff + PM review + SM sprint planning from existing PDX artifacts"
+    guild_agents_required:
+      - design-ops
+    bmad_agents_required: [pm, sm]

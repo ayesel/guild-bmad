@@ -1,0 +1,85 @@
+# Responsive Check Template
+#
+# Test responsive behavior across breakpoints for layout,
+# typography, touch targets, and content adaptation.
+
+template:
+  name: Responsive Check
+  artifact_type: responsive-check
+  output_file: "_bmad-output/guild-artifacts/qa-responsive-check-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Responsive Check"
+    - target: "{scope-name}"
+    - breakpoints_tested: "375px, 768px, 1024px, 1440px, 1920px"
+    - status: "{pass|fail|conditional-pass}"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Sage (Design QA)"
+
+  sections:
+    - name: "Summary"
+      description: >
+        | Breakpoint | Status | Issues | Blockers |
+        | 375px (Mobile) | | | |
+        | 768px (Tablet) | | | |
+        | 1024px (Tablet Landscape) | | | |
+        | 1440px (Desktop) | | | |
+        | 1920px (Wide) | | | |
+
+    - name: "Layout Behavior"
+      description: >
+        How layout adapts across breakpoints:
+        | Element | 375px | 768px | 1024px | 1440px | 1920px | Issues |
+
+        Check:
+        - Column count changes
+        - Sidebar visibility/collapse
+        - Stack vs horizontal layout
+        - Max-width containers
+        - Content reflow (no horizontal scroll at any breakpoint)
+
+    - name: "Typography Scaling"
+      description: >
+        | Element | 375px Size | 768px Size | 1440px Size | Readable | Issues |
+        Check: heading sizes scale down appropriately, body text remains readable,
+        no text overflow or truncation without ellipsis.
+
+    - name: "Touch Targets"
+      description: >
+        | Element | Size at 375px | Size at 768px | Meets 44x44px | Issues |
+        Check: all interactive elements meet minimum 44x44px on touch devices,
+        adequate spacing between tap targets.
+
+    - name: "Image & Media Scaling"
+      description: >
+        | Asset | 375px Behavior | 768px Behavior | 1440px Behavior | Issues |
+        Check: images scale without distortion, art direction changes (if needed),
+        video/embed responsiveness, lazy loading considerations.
+
+    - name: "Navigation Behavior"
+      description: >
+        | Nav Element | 375px | 768px | 1024px+ | Issues |
+        Check: hamburger menu trigger, nav collapse behavior, breadcrumb truncation,
+        tab bar vs sidebar transition, footer adaptation.
+
+    - name: "Hidden/Shown Elements"
+      description: >
+        | Element | 375px | 768px | 1024px | 1440px | Reason | Accessible Alternative |
+        Check: content hidden on mobile has accessible alternative, no information lost
+        when elements are hidden, show/hide transitions are smooth.
+
+    - name: "Scroll Behavior"
+      description: >
+        | Screen | Horizontal Scroll | Sticky Elements | Infinite Scroll | Issues |
+        Check: no unintended horizontal scroll, sticky headers/CTAs work at all sizes,
+        scroll-to-top available on long pages.
+
+    - name: "Issues Table"
+      description: >
+        | # | Breakpoint | Element | Issue | Severity | Fix | Effort |
+
+    - name: "Next Steps"
+      description: >
+        Fix responsive issues, then proceed to a11y-qa or pre-handoff.

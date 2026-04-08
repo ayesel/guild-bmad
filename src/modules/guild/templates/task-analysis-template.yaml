@@ -1,0 +1,77 @@
+# Task Analysis Template
+#
+# Hierarchical Task Analysis (HTA) breaking down user goals
+# into subtasks, operations, and plans.
+
+template:
+  name: Task Analysis
+  artifact_type: task-analysis
+  output_file: "_bmad-output/guild-artifacts/task-analysis-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "Hierarchical Task Analysis"
+    - feature: "{feature-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Kai (Interaction Designer)"
+
+  sections:
+    - name: "User Goal"
+      description: >
+        The top-level goal the user is trying to accomplish.
+        Format: "As a [persona], I want to [goal] so that [outcome]."
+
+    - name: "Task Hierarchy"
+      description: >
+        Mermaid diagram showing the hierarchical breakdown.
+      format: |
+        ```mermaid
+        graph TD
+            A["0. Top-level Goal"] --> B["1. Subtask"]
+            A --> C["2. Subtask"]
+            A --> D["3. Subtask"]
+            B --> B1["1.1 Operation"]
+            B --> B2["1.2 Operation"]
+            C --> C1["2.1 Operation"]
+            C --> C2["2.2 Operation"]
+            C --> C3["2.3 Operation"]
+            D --> D1["3.1 Operation"]
+        ```
+
+    - name: "Task Breakdown Table"
+      description: >
+        Detailed table for every task in the hierarchy:
+        | ID | Task | Type (Goal/Subtask/Operation) | Plan (sequence/selection/parallel) | Input | Output | Frequency | Criticality |
+
+    - name: "Plans"
+      description: >
+        For each subtask, describe the plan (how its children are executed):
+        - Sequential: "Do 1.1 then 1.2 then 1.3"
+        - Selection: "Do 2.1 OR 2.2 depending on [condition]"
+        - Parallel: "Do 3.1 AND 3.2 at the same time"
+        - Optional: "If [condition], do 4.1"
+
+    - name: "Cognitive Load Assessment"
+      description: >
+        For each operation, rate the cognitive demand:
+        | Operation | Knowledge Required | Decision Complexity | Error Risk | Suggested Simplification |
+
+    - name: "Pain Points"
+      description: >
+        Where do users struggle in this task hierarchy?
+        Reference research findings if available.
+
+    - name: "Design Implications"
+      description: >
+        What does this task analysis tell us about the interface?
+        - Which subtasks need dedicated screens vs inline interactions?
+        - Where should we provide guidance or defaults?
+        - What can be automated?
+        - Where do we need confirmation/undo?
+
+    - name: "Next Steps"
+      description: >
+        Typically: user flows for the most complex subtasks,
+        or wireframes for screens identified in design implications.

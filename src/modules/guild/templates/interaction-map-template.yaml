@@ -1,0 +1,48 @@
+# Interaction Map Template
+
+template:
+  name: Interaction Map
+  artifact_type: interaction-map
+  output_file: "_bmad-output/guild-artifacts/interaction-map-{feature-name}.md"
+
+structure:
+  header:
+    - artifact: "Interaction Map"
+    - status: "draft"
+    - version: "1.0"
+
+  sections:
+    - name: "Overview"
+      description: "Feature/area being mapped and why interaction density warrants a dedicated map."
+
+    - name: "Interaction Matrix"
+      description: >
+        Complete map of every trigger-response pair:
+        | Element | Trigger | Condition | Response | Duration | Feedback | Reversible? |
+
+    - name: "Gesture & Input Map"
+      description: >
+        All input methods supported:
+        | Interaction | Mouse | Keyboard | Touch | Voice | Screen Reader |
+
+    - name: "Micro-interactions"
+      description: >
+        Subtle feedback details:
+        - Hover states
+        - Focus indicators
+        - Loading transitions
+        - Success/error animations
+        - Skeleton screen specs
+
+    - name: "Keyboard Shortcuts"
+      description: >
+        Any keyboard shortcuts or accelerators:
+        | Shortcut | Action | Context | Discoverable Via |
+
+    - name: "State-Dependent Interactions"
+      description: >
+        How interactions change based on state:
+        | Element | Empty State | Loaded State | Error State | Disabled State |
+
+    - name: "Next Steps"
+      description: "Typically: React prototype export, or visual design specs."

@@ -1,0 +1,88 @@
+# System Check Template
+#
+# Design system compliance audit verifying token usage,
+# component usage, and pattern adherence.
+
+template:
+  name: System Check
+  artifact_type: system-check
+  output_file: "_bmad-output/guild-artifacts/qa-system-check-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Design System Compliance Audit"
+    - target: "{scope-name}"
+    - design_system: "{system-name}"
+    - status: "{pass|fail|conditional-pass}"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Sage (Design QA)"
+
+  sections:
+    - name: "Compliance Summary"
+      description: >
+        Overall compliance score and breakdown:
+        | Category | Items Checked | Compliant | Deviations | Score |
+        | Token usage | | | | |
+        | Component usage | | | | |
+        | Pattern compliance | | | | |
+        | Naming conventions | | | | |
+        | **Overall** | | | | |
+
+    - name: "Token Usage Verification"
+      description: >
+        Check that correct design tokens are used for every visual property:
+        | Element | Property | Expected Token | Actual Value | Match | Action |
+
+        Categories to verify:
+        - Color tokens (background, text, border, interactive, feedback)
+        - Spacing tokens (padding, margin, gap)
+        - Typography tokens (font, size, weight, line-height)
+        - Border tokens (radius, width)
+        - Shadow tokens (elevation)
+        - Motion tokens (duration, easing)
+
+    - name: "Component Usage"
+      description: >
+        Check that standard design system components are used:
+        | UI Element | Standard Component | Used | Custom Built | Justification Needed |
+
+        Flag: custom components where a standard exists, incorrect component variants,
+        components used for wrong purpose.
+
+    - name: "Deviation Log"
+      description: >
+        Every deviation from the design system:
+        | # | Element | Expected | Actual | Justified | Justification | Action |
+
+        Justified deviations are acceptable if documented with reasoning.
+        Unjustified deviations must be fixed.
+
+    - name: "Pattern Compliance"
+      description: >
+        Check that layouts follow established patterns:
+        | Pattern | Expected | Actual | Compliant | Notes |
+        - Navigation patterns
+        - Form patterns
+        - Card/list patterns
+        - Modal/dialog patterns
+        - Error handling patterns
+        - Loading patterns
+
+    - name: "Naming Convention Check"
+      description: >
+        Verify naming consistency in design files:
+        | Element Type | Convention | Example | Compliant | Issues |
+        - Layer naming
+        - Component naming
+        - Page/frame naming
+        - Variable naming
+
+    - name: "Recommendations"
+      description: >
+        Prioritized fixes for compliance gaps:
+        | # | Issue | Impact | Fix | Effort |
+
+    - name: "Next Steps"
+      description: >
+        Typically: fix deviations, then run responsive-check and a11y-qa.

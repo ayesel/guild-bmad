@@ -1,0 +1,107 @@
+# Voice and Tone Template
+#
+# Define or audit product voice attributes and tone spectrum
+# across different user contexts and emotional states.
+
+template:
+  name: Voice and Tone
+  artifact_type: voice-tone
+  output_file: "_bmad-output/guild-artifacts/content-voice-tone-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Voice and Tone Guidelines"
+    - target: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Echo (Content Strategist)"
+
+  sections:
+    - name: "Voice Attributes"
+      description: >
+        3-5 core voice attributes that define the product personality.
+        For each attribute:
+        | Attribute | Definition | We Are | We Are Not | Example |
+
+        Example attributes: Confident, Friendly, Clear, Helpful, Honest.
+
+    - name: "Tone Spectrum"
+      description: >
+        How voice adapts across different contexts:
+        | Context | User Emotion | Tone | Formality | Energy | Example Copy |
+        | Celebration | Happy, accomplished | Enthusiastic | Low | High | |
+        | Onboarding | Curious, uncertain | Welcoming | Low | Medium | |
+        | Core task | Focused, determined | Neutral, clear | Medium | Low | |
+        | Settings | Practical | Informative | Medium | Low | |
+        | Empty state | Uncertain | Encouraging | Low | Medium | |
+        | Loading | Waiting | Patient | Low | Low | |
+        | Warning | Cautious | Careful | Medium | Medium | |
+        | Error | Frustrated | Calm, helpful | Medium | Low | |
+        | Crisis/Outage | Anxious | Direct, empathetic | High | Medium | |
+
+    - name: "Word Lists"
+      description: >
+        **Do Use**: [words that match the voice]
+        **Don't Use**: [words that contradict the voice]
+
+        | Category | Do | Don't |
+        | Greetings | Hey, Welcome, Hi | Dear user, Greetings |
+        | Errors | Oops, Sorry | ERROR, FAILURE, Invalid |
+        | Actions | Save, Create, Send | Submit, Execute, Process |
+        | Transitions | Next, Continue | Proceed, Advance |
+
+    - name: "Capitalization Rules"
+      description: >
+        | Element | Rule | Example |
+        | Page titles | Title Case or Sentence case | |
+        | Headings | Sentence case | |
+        | Button labels | Sentence case | |
+        | Navigation | Title Case | |
+        | Tooltips | Sentence case, no period | |
+        | Error messages | Sentence case | |
+
+    - name: "Punctuation Rules"
+      description: >
+        | Rule | Example | Notes |
+        - Periods in body text: [yes/no]
+        - Periods in tooltips: [no]
+        - Exclamation marks: [sparingly — max 1 per screen]
+        - Ellipsis for loading: [yes/no]
+        - Oxford comma: [yes/no]
+        - Ampersand vs "and": [rule]
+
+    - name: "Emoji Policy"
+      description: >
+        Usage policy: [liberal/conservative/none]
+        Where allowed: [celebrations, empty states, marketing]
+        Where prohibited: [error messages, formal settings, accessibility-critical]
+        Accessible alternative required: [yes]
+
+    - name: "Pronoun Usage"
+      description: >
+        | Context | Pronoun | Example |
+        | Referring to product | We | "We saved your changes" |
+        | Referring to user | You | "Your projects" |
+        | Referring to third party | They (singular) | "When a team member joins, they..." |
+        | Instructions | Imperative (implied you) | "Select a file to upload" |
+
+    - name: "Number & Date Formatting"
+      description: >
+        | Type | Format | Example |
+        | Numbers | [with/without commas] | 1,234 or 1234 |
+        | Currency | [symbol + amount] | $12.00 |
+        | Dates | [format] | Mar 11, 2026 |
+        | Times | [12h/24h] | 3:30 PM |
+        | Percentages | [with/without space] | 85% |
+        | Phone numbers | [format] | (555) 123-4567 |
+
+    - name: "Brand Terminology Glossary"
+      description: >
+        | Internal Term | User-Facing Term | Never Call It | Context |
+        Terms specific to this product that must be used consistently.
+
+    - name: "Next Steps"
+      description: >
+        Typically: content audit to check existing copy against these guidelines,
+        or microcopy writing applying the established voice.

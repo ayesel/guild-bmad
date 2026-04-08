@@ -1,0 +1,203 @@
+# Stakeholder Interview Template
+#
+# Structured plan for conducting stakeholder interviews
+# with alignment matrix and conflict resolution guidance.
+
+template:
+  name: Stakeholder Interview
+  artifact_type: stakeholder-interview
+  output_file: "_bmad-output/guild-artifacts/stakeholder-interview-{project}.md"
+
+structure:
+  header:
+    - artifact: "Stakeholder Interview Plan"
+    - project: "{project}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - total_interviews: "{number}"
+
+  sections:
+    - name: "Interview Objective"
+      required: true
+      description: >
+        What do we need to learn from stakeholders and why?
+
+        **Primary Objective:** {e.g., understand business goals, surface constraints, align on vision}
+        **Secondary Objectives:**
+        1. Identify competing priorities across teams
+        2. Uncover organizational constraints not in documentation
+        3. Establish shared success criteria for the project
+
+        **How Results Will Be Used:**
+        - Inform project scope and priorities
+        - Identify risks and blockers early
+        - Build stakeholder buy-in through inclusion
+        - Create alignment matrix for decision-making
+
+    - name: "Stakeholder Map"
+      required: true
+      description: >
+        | # | Name | Role / Title | Department | Why They Matter | Key Questions | Priority | Status |
+        |---|------|-------------|------------|----------------|---------------|----------|--------|
+        | 1 | {name} | {role} | {dept} | {influence, domain knowledge, decision authority} | {specific questions for this person} | {high|medium|low} | {scheduled|completed|pending} |
+
+        **Stakeholder Categories:**
+        - **Decision Makers**: Final authority on scope, budget, timeline
+        - **Domain Experts**: Deep knowledge of business rules, user needs, technical constraints
+        - **Influencers**: Shape team opinion, adoption champions or blockers
+        - **Impacted Parties**: Teams whose workflows will change
+
+        **Power/Interest Grid:**
+        ```
+        High Power  | Keep Satisfied | Manage Closely |
+        Low Power   | Monitor        | Keep Informed  |
+                      Low Interest     High Interest
+        ```
+
+    - name: "Interview Logistics"
+      required: true
+      description: >
+        | Parameter | Value |
+        |-----------|-------|
+        | Duration | 30-45 minutes per interview |
+        | Format | {remote video, in-person, phone} |
+        | Recording | {video, audio, notes only} — get consent |
+        | Note-taker | {name or "interviewer takes notes"} |
+        | Scheduling window | {date range} |
+        | Calendar tool | {Calendly, direct scheduling} |
+
+        **Preparation Checklist (per interview):**
+        - [ ] Review stakeholder's role and recent work
+        - [ ] Customize questions based on their domain
+        - [ ] Send agenda and purpose 2 days in advance
+        - [ ] Confirm recording consent
+        - [ ] Prepare note-taking template
+
+    - name: "Opening Script"
+      required: true
+      description: >
+        Standard opening to establish rapport and set expectations:
+
+        "Thank you for taking the time to speak with me. I'm conducting interviews
+        with key stakeholders to understand perspectives on [project/initiative].
+
+        This conversation will take about [30-45] minutes. I'd like to understand
+        your goals, concerns, and vision for this work.
+
+        There are no right or wrong answers — I'm looking for your honest perspective.
+        [If recording] With your permission, I'd like to record this for my notes.
+        The recording won't be shared beyond the research team.
+
+        Do you have any questions before we begin?"
+
+    - name: "Core Questions"
+      required: true
+      description: >
+        **Business Goals and Success:**
+        1. What does success look like for this project from your perspective?
+        2. What are the top 2-3 business outcomes you're hoping to achieve?
+        3. How will you measure whether this was successful?
+        4. What is the timeline pressure and why?
+
+        **User Pain Points and Needs:**
+        5. Who are the primary users from your perspective?
+        6. What are the biggest pain points you hear about from users/customers?
+        7. What feedback or complaints come up most often?
+        8. What do users do today that this project should improve?
+
+        **Constraints and Realities:**
+        9. What technical, budget, or organizational constraints should we know about?
+        10. What has been tried before and what happened?
+        11. Are there any regulatory, compliance, or legal considerations?
+        12. What resources (people, tools, data) are available for this work?
+
+        **Past Attempts and Lessons:**
+        13. Has this problem been tackled before? What worked and what didn't?
+        14. What would you do differently if starting from scratch?
+        15. Are there examples (internal or external) of good solutions to this problem?
+
+        **Organizational Dynamics:**
+        16. Who else should I speak with about this?
+        17. Are there teams or individuals whose buy-in is critical?
+        18. Are there any political sensitivities I should be aware of?
+        19. What decisions have already been made that we need to respect?
+
+        **Vision and Priorities:**
+        20. If you could change one thing about the current experience, what would it be?
+        21. What would make you most excited about the outcome of this project?
+        22. What keeps you up at night about this initiative?
+
+    - name: "Standard Cross-Reference Questions"
+      required: true
+      description: >
+        Ask every stakeholder these identical questions to enable cross-referencing:
+
+        1. "In one sentence, what is this project about?"
+        2. "Rank these priorities 1-3: speed to market, quality of experience, cost efficiency"
+        3. "What is the single biggest risk to this project?"
+        4. "Who is the most important user segment?"
+        5. "What would make this project a failure?"
+
+        **Cross-Reference Matrix:**
+        | Question | Stakeholder A | Stakeholder B | Stakeholder C | Alignment |
+        |----------|--------------|--------------|--------------|-----------|
+        | Project definition | | | | {aligned|partial|misaligned} |
+        | Priority ranking | | | | {aligned|partial|misaligned} |
+        | Biggest risk | | | | {aligned|partial|misaligned} |
+        | Key user segment | | | | {aligned|partial|misaligned} |
+        | Failure definition | | | | {aligned|partial|misaligned} |
+
+    - name: "Alignment Matrix"
+      required: true
+      description: >
+        Complete after all interviews. Map agreement and disagreement across stakeholders.
+
+        **Goal Alignment:**
+        | Goal | Supporters | Opponents | Neutral | Strength |
+        |------|-----------|-----------|---------|----------|
+        | {goal} | {names} | {names} | {names} | {strong|moderate|weak} |
+
+        **Priority Alignment:**
+        | Topic | Consensus View | Dissenting Views | Risk Level |
+        |-------|---------------|-----------------|------------|
+
+        **Assumption Alignment:**
+        | Assumption | Widely Held | Contested | Evidence Needed |
+        |-----------|------------|-----------|----------------|
+
+        **Overall Alignment Score:**
+        - Strong alignment (>80% agreement on priorities): Proceed with confidence
+        - Moderate alignment (50-80%): Address gaps before design
+        - Weak alignment (<50%): Facilitated alignment workshop recommended
+
+    - name: "Conflict Resolution Recommendations"
+      required: true
+      description: >
+        **Identified Conflicts:**
+        | Conflict | Stakeholders | Root Cause | Impact if Unresolved |
+        |----------|-------------|-----------|---------------------|
+        | {description} | {who disagrees} | {why} | {project risk} |
+
+        **Resolution Strategies:**
+        | Strategy | When to Use | Process |
+        |----------|------------|---------|
+        | Data-driven resolution | Conflict based on assumptions | Gather evidence, present findings |
+        | Facilitated workshop | Multiple perspectives need synthesis | Design studio or prioritization session |
+        | Escalation to sponsor | Authority-based decision needed | Present trade-offs, request decision |
+        | Compromise framework | Both sides have valid concerns | Find solution honoring both perspectives |
+        | Phased approach | Can't do everything at once | Sequence priorities across releases |
+
+        **Recommended Actions:**
+        1. {specific action with responsible party and timeline}
+        2. {specific action}
+
+    - name: "Next Steps"
+      description: >
+        - Distribute summary of themes (not individual attributions) to all stakeholders
+        - Schedule alignment workshop if conflicts require resolution
+        - Feed stakeholder insights into persona development and journey mapping
+        - Use alignment matrix to inform project scope and prioritization
+        - Establish regular stakeholder check-in cadence for the project

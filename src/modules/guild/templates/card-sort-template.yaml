@@ -1,0 +1,197 @@
+# Card Sort / Tree Test Template
+#
+# Study plan for card sorting and tree testing to validate
+# or discover information architecture structures.
+
+template:
+  name: Card Sort / Tree Test
+  artifact_type: card-sort
+  output_file: "_bmad-output/guild-artifacts/card-sort-{scope}.md"
+
+structure:
+  header:
+    - artifact: "Card Sort / Tree Test"
+    - scope: "{scope}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Nova (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - study_type: "{open-sort|closed-sort|hybrid|tree-test}"
+
+  sections:
+    - name: "Study Objective"
+      required: true
+      description: >
+        What IA question are we answering? What decisions will results inform?
+
+        **Research Questions:**
+        1. How do users naturally group these items?
+        2. What labels do users expect for each category?
+        3. Can users find target items in the proposed structure?
+
+        **Context:**
+        - What triggered this study (redesign, new feature, usability issues)?
+        - What existing IA or navigation is being evaluated or replaced?
+        - What hypotheses does the team hold about user mental models?
+
+    - name: "Study Type Selection"
+      required: true
+      description: >
+        | Study Type | When to Use | Output |
+        |------------|-------------|--------|
+        | Open sort | Discovering user mental models from scratch | Category names and groupings |
+        | Closed sort | Validating proposed categories against user expectations | Category fit scores |
+        | Hybrid | Users sort into predefined categories but can create new ones | Validated + emergent categories |
+        | Tree test | Validating findability within a proposed hierarchy | First-click success, directness |
+
+        **Selected type**: {open-sort|closed-sort|hybrid|tree-test}
+        **Rationale**: Why this type is appropriate for the research question.
+
+    - name: "Participant Criteria"
+      required: true
+      description: >
+        | Parameter | Value |
+        |-----------|-------|
+        | Sample size (qualitative insights) | 8-15 participants |
+        | Sample size (statistical confidence) | 30+ participants |
+        | Target sample | {number} |
+        | Recruitment source | {panel, existing users, intercept} |
+
+        **Screener Criteria:**
+        | Criterion | Requirement | Screener Question |
+        |-----------|-------------|-------------------|
+        | Domain familiarity | {level} | {question} |
+        | Demographics | {requirements} | {question} |
+        | Exclusions | {who to exclude} | {question} |
+
+        **Participant Mix:**
+        - {number} novice users
+        - {number} experienced users
+        - Include range of ages, technical proficiency, and domain familiarity
+
+    - name: "Card List"
+      required: true
+      description: >
+        Items participants will sort. Aim for 30-60 cards for best results.
+        Too few (<20) yields weak patterns; too many (>80) causes fatigue.
+
+        | # | Card Label | Description (shown to participant) | Source |
+        |---|-----------|-----------------------------------|--------|
+        | 1 | {label} | {brief description if label is ambiguous} | {where this item came from} |
+        | 2 | {label} | {description} | {source} |
+
+        **Card selection rationale:**
+        - How were these items chosen (content audit, analytics, stakeholder input)?
+        - Any items intentionally excluded and why?
+        - Are descriptions needed or are labels self-explanatory?
+
+    - name: "Category List"
+      required: false
+      description: >
+        For closed sort and hybrid studies only. Skip for open sort.
+
+        | # | Category Name | Description | Expected Items |
+        |---|--------------|-------------|----------------|
+        | 1 | {category} | {what belongs here} | {anticipated cards} |
+
+        **Category design notes:**
+        - Categories should be mutually exclusive where possible
+        - Use language familiar to users, not internal jargon
+        - For hybrid: note which categories are fixed vs. allow user-created
+
+    - name: "Tool and Logistics"
+      required: true
+      description: >
+        **Tool Recommendation:**
+        | Tool | Best For | Notes |
+        |------|----------|-------|
+        | Optimal Workshop | Full-featured card sort and tree test | Industry standard, strong analytics |
+        | UserZoom | Enterprise research suites | Integrates with broader research program |
+        | Maze | Quick unmoderated studies | Good for design team workflows |
+        | Manual (sticky notes) | Moderated in-person sessions | Best for think-aloud qualitative insights |
+
+        **Selected tool**: {tool}
+
+        **Logistics:**
+        | Parameter | Value |
+        |-----------|-------|
+        | Estimated completion time | {minutes} per participant |
+        | Study window | {start date} to {end date} |
+        | Incentive | {amount and type} |
+        | Moderated or unmoderated | {moderated|unmoderated} |
+
+    - name: "Task Scenarios"
+      required: false
+      description: >
+        For tree test studies only.
+
+        | # | Task | Target Item | Correct Path | Success Criteria |
+        |---|------|-------------|--------------|------------------|
+        | 1 | "{Scenario in user language}" | {item name} | {Category > Sub > Item} | First click on correct branch |
+
+        Aim for 8-12 tasks covering:
+        - High-traffic items (based on analytics)
+        - Items that were problematic in previous research
+        - Items that could plausibly live in multiple categories
+
+    - name: "Analysis Plan"
+      required: true
+      description: >
+        **Quantitative Analysis:**
+        - **Similarity matrix**: Percentage of participants who grouped each pair of items together
+        - **Dendrogram**: Hierarchical cluster analysis showing natural groupings
+        - **Category agreement score**: How consistently participants grouped items (>70% = strong agreement)
+        - **Standardization grid**: Items mapped against categories with placement frequency
+
+        **For tree tests additionally:**
+        - **First-click success rate**: % of participants clicking the correct top-level category first
+        - **Directness score**: % who navigated to correct answer without backtracking
+        - **Time to completion**: Average and median per task
+        - **Path analysis**: Common wrong paths revealing structural confusion
+
+        **Qualitative Analysis (moderated sessions):**
+        - Think-aloud observations about grouping rationale
+        - Category naming patterns and language used
+        - Points of hesitation or confusion
+        - Alternative mental models expressed
+
+    - name: "Success Criteria"
+      required: true
+      description: >
+        | Metric | Target | Action if Not Met |
+        |--------|--------|-------------------|
+        | Category agreement | >70% for core groups | Iterate category structure |
+        | First-click success (tree test) | >65% per task | Restructure affected branches |
+        | Directness (tree test) | >50% per task | Simplify navigation paths |
+        | Participant completion rate | >80% | Review card count and clarity |
+
+    - name: "Recommended IA Structure"
+      description: >
+        Output of the analysis: proposed information architecture.
+
+        ```
+        Site / Product
+        +-- Category A
+        |   +-- Subcategory A1
+        |   +-- Subcategory A2
+        +-- Category B
+        |   +-- Subcategory B1
+        +-- Category C
+        ```
+
+        **Confidence levels per category:**
+        | Category | Agreement Score | Confidence | Notes |
+        |----------|----------------|------------|-------|
+
+        **Ambiguous items** (low agreement, could belong in multiple categories):
+        | Item | Top Category (%) | Second Category (%) | Recommendation |
+
+    - name: "Next Steps"
+      required: true
+      description: >
+        - Hand recommended IA structure to Kai for site map creation
+        - Validate with tree test if this was a card sort (or vice versa)
+        - Cross-reference with analytics (top tasks, search logs)
+        - Conduct usability testing on navigation built from this IA
+        - Share findings with content strategy for labeling decisions
