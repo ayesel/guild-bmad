@@ -101,25 +101,36 @@ Real-world test: Guild produced 14 artifacts (6,532 lines) for a React Native sk
 ### Standalone (no BMAD)
 
 ```bash
-# Clone Guild into your project
 git clone https://github.com/ayesel/guild.git
 cd guild
 
-# Copy the commands into your project
+# Copy Guild into your project
+cp -r _bmad/guild/ /path/to/your-project/_bmad/guild/
+cp -r src/modules/guild/ /path/to/your-project/src/modules/guild/
 cp -r .claude/commands/guild-*.md /path/to/your-project/.claude/commands/
 cp guild.config.yaml /path/to/your-project/
 ```
 
 Guild auto-detects that BMAD is not present and runs in standalone mode. Output goes to `guild-output/`.
 
+**Optional:** Want BMAD features (sprint tracking, PM/SM review) without a full BMAD install? Copy the bundle:
+```bash
+cp -r bmad-bundle/_bmad/core /path/to/your-project/_bmad/core
+cp -r bmad-bundle/_bmad/_config /path/to/your-project/_bmad/_config
+cp -r bmad-bundle/.claude/commands/bmad-*.md /path/to/your-project/.claude/commands/
+```
+
 Then open Claude Code and type `/guild-master` to get started.
 
 ### Into an existing BMAD project
 
 ```bash
-# Copy Guild module files (do NOT overwrite your existing _bmad/core/)
-cp -r src/modules/guild/ /path/to/your-project/src/modules/guild/
+git clone https://github.com/ayesel/guild.git
+cd guild
+
+# Copy ONLY Guild files — do NOT copy bmad-bundle/ (you already have BMAD)
 cp -r _bmad/guild/ /path/to/your-project/_bmad/guild/
+cp -r src/modules/guild/ /path/to/your-project/src/modules/guild/
 cp -r .claude/commands/guild-*.md /path/to/your-project/.claude/commands/
 cp guild.config.yaml /path/to/your-project/
 ```
@@ -131,6 +142,8 @@ cat src/modules/guild/install/claude-md-snippet.md >> CLAUDE.md
 ```
 
 Guild auto-detects BMAD and integrates: stories use BMAD format, output goes to `_bmad-output/`, PM and SM agents are included in the pipeline. Sally is replaced.
+
+**Safe to copy** — Guild's repo keeps BMAD core files in `bmad-bundle/`, not at root. Copying `_bmad/guild/` will never overwrite your existing `_bmad/core/`.
 
 ### Requirements
 
