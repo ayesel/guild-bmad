@@ -1,0 +1,24 @@
+# Guild Configuration
+# ------------------
+# Guild auto-detects whether BMAD is present and adapts accordingly.
+# Override with explicit values if needed.
+#
+# bmad_mode:
+#   auto  — detect BMAD presence (check for _bmad/core/config.yaml)
+#   true  — force BMAD integration (use _bmad-output/, BMAD story format, PM/SM handoff)
+#   false — standalone mode (use guild-output/, standard story format, Guild-only pipeline)
+#
+# output_root:
+#   auto  — resolves to "_bmad-output" when bmad_mode is true, "guild-output" when false
+#   any path — use a custom output directory
+#
+# Detection logic (when bmad_mode: auto):
+#   1. Check if {project-root}/_bmad/core/config.yaml exists
+#   2. If YES → bmad_mode = true, output_root = "_bmad-output"
+#   3. If NO  → bmad_mode = false, output_root = "guild-output"
+
+bmad_mode: auto
+output_root: auto
+user_name: ""
+communication_language: English
+document_output_language: English

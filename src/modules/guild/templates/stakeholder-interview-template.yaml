@@ -6,7 +6,7 @@
 template:
   name: Stakeholder Interview
   artifact_type: stakeholder-interview
-  output_file: "_bmad-output/guild-artifacts/stakeholder-interview-{project}.md"
+  output_file: "{output_root}/guild-artifacts/stakeholder-interview-{project}.md"
 
 structure:
   header:

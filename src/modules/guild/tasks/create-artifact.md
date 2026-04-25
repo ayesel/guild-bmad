@@ -9,7 +9,7 @@ artifact generation engine for the Guild Interaction Designer agent.
 Before generating any artifact, perform these checks in order:
 
 ### 0. Load BMAD Project State (BEFORE all other checks)
-- Read `_bmad-output/implementation-artifacts/sprint-status.yaml` if it exists
+- Read `{output_root}/implementation-artifacts/sprint-status.yaml` if it exists
   - Note current sprint number
   - Note existing story count and highest story ID
   - Note which epics are active
@@ -24,19 +24,19 @@ Before generating any artifact, perform these checks in order:
   - Use the same naming conventions the project uses
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
 ### 1. Load Project Context
-- Read `_bmad-output/planning-artifacts/project-context.md` if it exists
-- Read `_bmad-output/planning-artifacts/prd.md` if it exists
-- Read `_bmad-output/guild-artifacts/personas.md` if it exists
-- Read `_bmad-output/guild-artifacts/research-synthesis.md` if it exists
+- Read `{output_root}/planning-artifacts/project-context.md` if it exists
+- Read `{output_root}/planning-artifacts/prd.md` if it exists
+- Read `{output_root}/guild-artifacts/personas.md` if it exists
+- Read `{output_root}/guild-artifacts/research-synthesis.md` if it exists
 
 ### 2. Gather Requirements from User
 Ask the user for the following (skip any already provided):
@@ -98,7 +98,7 @@ references:
 - [ ] Language is specific (no "etc." or "and more")
 
 ## Output Location
-Save to: `_bmad-output/guild-artifacts/[artifact-type]-[feature-name].md`
+Save to: `{output_root}/guild-artifacts/[artifact-type]-[feature-name].md`
 
 ## Post-Generation
 After delivering the artifact:

@@ -6,21 +6,21 @@ into a functional React component that can be used as a prototype or
 handed off to the development pipeline.
 
 ## Input
-- The most recent Guild artifact from `_bmad-output/guild-artifacts/`
+- The most recent Guild artifact from `{output_root}/guild-artifacts/`
 - Or a specific artifact path provided by the user
 
 ## Pre-flight
 1. Read the source artifact
-2. Check for project design tokens in `_bmad-output/guild-artifacts/design-tokens.json`
+2. Check for project design tokens in `{output_root}/guild-artifacts/design-tokens.json`
 3. Check for project config output format preference (react/html/svg)
 4. Ask user: "Interactive prototype or static representation?"
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
@@ -79,7 +79,7 @@ export default function [ComponentName]() {
 - [ ] Code comments reference source artifact sections
 
 ## Output Location
-Save to: `_bmad-output/guild-artifacts/components/[artifact-name].jsx`
+Save to: `{output_root}/guild-artifacts/components/[artifact-name].jsx`
 
 ## Post-Export
 1. Tell the user where the file was saved

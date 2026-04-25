@@ -26,7 +26,7 @@ critique — no manual screenshots required from the designer.
 ## Pre-flight
 
 ### 0. Load BMAD Project State (BEFORE all other checks)
-- Read `_bmad-output/implementation-artifacts/sprint-status.yaml` if it exists
+- Read `{output_root}/implementation-artifacts/sprint-status.yaml` if it exists
   - Note current sprint number
   - Note existing story count and highest story ID
   - Note which epics are active
@@ -36,11 +36,11 @@ critique — no manual screenshots required from the designer.
   - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh but use BMAD-compatible formats.
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
@@ -133,7 +133,7 @@ Apply these fixes? I'll capture a before/after to verify.
 ```
 
 ## Screenshot Storage
-Save all captures to: `_bmad-output/guild-artifacts/captures/`
+Save all captures to: `{output_root}/guild-artifacts/captures/`
 Naming: `[screen-name]-[viewport]-[timestamp].png`
 Keep the last 10 captures. Clean up older ones.
 

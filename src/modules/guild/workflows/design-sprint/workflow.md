@@ -6,46 +6,64 @@ User invokes this workflow with a feature or improvement area:
 - "Design sprint: add social features"
 - "Guild sprint: improve onboarding"
 
+## Step -1: Mode Detection
+
+Determine whether Guild is running standalone or with BMAD:
+
+1. Read `guild.config.yaml` at {project-root} for `bmad_mode` setting
+2. If `bmad_mode: auto` → check if `{project-root}/_bmad/core/config.yaml` exists
+   - If YES → **bmad_mode = true**, `{output_root}` = `_bmad-output`
+   - If NO → **bmad_mode = false**, `{output_root}` = `guild-output`
+3. If `bmad_mode: true` or `bmad_mode: false` → use explicit setting
+4. If `guild.config.yaml` doesn't exist → default to auto-detection
+
 ## Step 0: Project Detection
 
 Check for these files in order:
 
-1. `_bmad-output/implementation-artifacts/sprint-status.yaml` — exists?
-2. `_bmad-output/planning-artifacts/prd.md` — exists?
-3. `_bmad-output/planning-artifacts/architecture.md` — exists?
-4. `_bmad-output/guild-artifacts/` — any files exist?
+1. `{output_root}/implementation-artifacts/sprint-status.yaml` — exists?
+2. `{output_root}/planning-artifacts/prd.md` — exists?
+3. `{output_root}/planning-artifacts/architecture.md` — exists?
+4. `{output_root}/guild-artifacts/` — any files exist?
 
 **If sprint-status.yaml exists → BROWNFIELD**
 This is an active project with existing sprints. Reference existing artifacts, continue numbering.
-Pipeline: Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM (8 phases)
+- With BMAD: Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM (8 phases)
+- Standalone: Ranger → Rogue → Warlock → Sage → Healer (5 phases)
 
 **If prd.md exists but no sprint-status.yaml → MID-PROJECT**
-Planning happened but implementation hasn't started. Skip Analyst, include Architect.
-Pipeline: PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM (10 phases)
+Planning happened but implementation hasn't started.
+- With BMAD: PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM (10 phases)
+- Standalone: Ranger → Rogue → Mage → Warlock → Sage → Healer (6 phases)
 
 **If nothing exists → GREENFIELD**
-Brand new project. Run full pipeline including Analyst, PM, and Architect.
-Pipeline: Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM (12 phases)
+Brand new project.
+- With BMAD: Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM (12 phases)
+- Standalone: Ranger → Rogue → Mage → Warlock → Sage → Healer (6 phases)
 
 Report detection to user:
-"Detected: [GREENFIELD/BROWNFIELD/MID-PROJECT]. Running [X]-phase pipeline."
+"Detected: [GREENFIELD/BROWNFIELD/MID-PROJECT], mode: [BMAD/Standalone]. Running [X]-phase pipeline."
 
 ## Pre-flight (after detection)
-1. Read any existing BMAD artifacts identified during detection
-2. Read `_bmad-output/planning-artifacts/project-context.md` if it exists
-3. Read existing `_bmad-output/guild-artifacts/` — don't repeat prior work
+1. Read any existing artifacts identified during detection
+2. Read `{output_root}/planning-artifacts/project-context.md` if it exists
+3. Read existing `{output_root}/guild-artifacts/` — don't repeat prior work
 4. Ask user ONE clarifying question if scope is ambiguous
 5. Confirm: "I'll run the [GREENFIELD/BROWNFIELD/MID-PROJECT] pipeline on [scope]. Ready?"
 
 ## Core Rule: Artifact Source of Truth
 
-All Guild artifacts are standalone documents in _bmad-output/guild-artifacts/.
-When the pipeline interacts with BMAD documents (PRD, architecture, sprint-status.yaml):
+All Guild artifacts are standalone documents in {output_root}/guild-artifacts/.
+
+**When BMAD is present** and the pipeline interacts with BMAD documents (PRD, architecture, sprint-status.yaml):
 - Guild agents write FULL artifacts to guild-artifacts/
 - BMAD agents receive SUMMARIES with references to Guild artifacts
 - If a PM or Architect asks for journey maps, personas, flows, etc. — generate the full Guild artifact AND provide a summary for their document
 - This prevents duplication and ensures one source of truth
-- When Guild artifacts are updated, BMAD documents don't need to be rewritten — the references still point to the current version
+
+**When running standalone:**
+- Guild artifacts in {output_root}/guild-artifacts/ are the only output
+- No BMAD document integration needed
 
 ---
 
@@ -56,7 +74,7 @@ For brand new projects with no existing BMAD artifacts.
 Brainstorm and create product brief:
 - Interactive discovery session with user
 - Capture product vision, target users, core problem, key features
-- Output: `product-brief.md` → `_bmad-output/planning-artifacts/`
+- Output: `product-brief.md` → `{output_root}/planning-artifacts/`
 - Report: "Phase 0 complete — product brief created"
 
 ### Phase 1: PM (BMAD)
@@ -64,21 +82,21 @@ Create PRD from product brief:
 - Functional requirements, non-functional requirements
 - Epics and high-level story mapping
 - User types and success metrics
-- Output: `prd.md` → `_bmad-output/planning-artifacts/`
+- Output: `prd.md` → `{output_root}/planning-artifacts/`
 - Report: "Phase 1 complete — PRD created with [n] epics"
 
 ### Phase 2: Ranger 🔍 — Research (Smart Skip)
 
 Before running any research, check what already exists:
 
-1. Check _bmad-output/guild-artifacts/ for:
+1. Check {output_root}/guild-artifacts/ for:
    - personas*.md — If personas exist AND were created within this sprint cycle, SKIP persona generation. Reference existing.
    - journey-map*.md — If journey maps exist AND cover the feature scope, SKIP journey mapping. Reference existing.
    - competitive-audit*.md — If competitive audit exists AND is recent, SKIP. Reference existing.
    - heuristic-eval*.md — If heuristic eval exists for this feature, SKIP. Reference existing.
    - jtbd*.md — If JTBD mapping exists AND covers the feature scope, SKIP. Reference existing.
 
-2. Check _bmad-output/planning-artifacts/ for:
+2. Check {output_root}/planning-artifacts/ for:
    - prd*.md — Read for context (always)
 
 3. For each research method, Ranger decides:
@@ -113,7 +131,7 @@ Before running any research, check what already exists:
 
 If the PM already created personas and journey maps during PRD creation, those count as valid Guild artifacts — Ranger skips redundant work and moves straight to what's missing.
 
-- Output: new/updated artifacts → `_bmad-output/guild-artifacts/`
+- Output: new/updated artifacts → `{output_root}/guild-artifacts/`
 - Report: "Phase 2 complete — [n] research artifacts ([m] new, [k] referenced existing) using [methods list]"
 
 ### Phase 3: Rogue (Guild .esign)
@@ -122,7 +140,7 @@ Create full product design from research:
 - User flows for each epic
 - Wireframes for key screens
 - State diagrams for complex components
-- Output: `site-map.md`, `user-flow-*.md`, `wireframe-*.md` → `_bmad-output/guild-artifacts/`
+- Output: `site-map.md`, `user-flow-*.md`, `wireframe-*.md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 3 complete — [n] design artifacts produced"
 
 ### Phase 4: Mage 🎨 — Visual Polish
@@ -148,7 +166,7 @@ The Visual Designer:
    - Visual polish recommendations with code fixes
    - Updated style specs for Warlock to reference when writing copy
    - Spacing/typography/color refinements as design tokens if new
-6. Save to _bmad-output/guild-artifacts/visual-polish-[scope].md
+6. Save to {output_root}/guild-artifacts/visual-polish-[scope].md
 
 The Visual Designer does NOT block the pipeline with subjective opinions.
 It focuses on objective visual quality: hierarchy, spacing, consistency, noise.
@@ -159,7 +177,7 @@ This phase is SKIPPABLE if:
 - The orchestrator receives a --skip-visual flag
 - User explicitly says "skip visual polish"
 
-- Output: `visual-polish-[scope].md` → `_bmad-output/guild-artifacts/`
+- Output: `visual-polish-[scope].md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 4 complete — visual polish [applied/skipped/no issues found]"
 
 ### Phase 5: Warlock (Guild Content)
@@ -169,7 +187,7 @@ Write all product content:
 - Error message system
 - Empty states for all screens
 - Onboarding copy
-- Output: `voice-tone.md`, `microcopy-*.md`, `error-messages.md`, `empty-states.md` → `_bmad-output/guild-artifacts/`
+- Output: `voice-tone.md`, `microcopy-*.md`, `error-messages.md`, `empty-states.md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 5 complete — [n] content artifacts produced"
 
 ### Phase 6: Architect (BMAD)
@@ -177,7 +195,7 @@ Create technical architecture:
 - System architecture based on PRD + Guild design artifacts
 - Tech stack decisions informed by component specs
 - Data model, API design, infrastructure
-- Output: `architecture.md` → `_bmad-output/planning-artifacts/`
+- Output: `architecture.md` → `{output_root}/planning-artifacts/`
 - Report: "Phase 6 complete — architecture document created"
 
 ### Phase 7: Sage (Guild .A)
@@ -188,7 +206,7 @@ Quality gate on all design work:
 - Pre-handoff quality gate
 - IF NO-GO → loop back to relevant phase with issues
 - IF GO/CONDITIONAL → continue
-- Output: `qa-report.md` → `_bmad-output/guild-artifacts/`
+- Output: `qa-report.md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 7 complete — verdict: [GO/CONDITIONAL/NO-GO]"
 
 ### Phase 8: Healer (Guild Handoff)
@@ -196,11 +214,11 @@ Generate all implementation artifacts:
 - Generate epic and story files from design artifacts
 - Component specs for all new components
 - Design tokens in W3C DTCG format
-- Output: stories → `_bmad-output/implementation-artifacts/stories/`
-- Output: `component-specs.md`, `design-tokens.json` → `_bmad-output/guild-artifacts/`
+- Output: stories → `{output_root}/implementation-artifacts/stories/`
+- Output: `component-specs.md`, `design-tokens.json` → `{output_root}/guild-artifacts/`
 
 After generating stories, Healer also compiles all Guild artifacts into
-`_bmad-output/planning-artifacts/UX_Design.md` for BMAD dev agent compatibility.
+`{output_root}/planning-artifacts/UX_Design.md` for BMAD dev agent compatibility.
 This ensures the dev agent has a consolidated UX spec in the format it expects,
 replacing Sally's output with Guild's richer pipeline output. Run task
 `export-ux-design.md` automatically — no separate command needed.
@@ -215,7 +233,7 @@ Validate stories against PRD:
 - Identify missing or out-of-scope stories
 - IF APPROVED → continue
 - IF FLAGGED → pause for user confirmation
-- Output: updated story files, `pm-review-[scope].md` → `_bmad-output/guild-artifacts/`
+- Output: updated story files, `pm-review-[scope].md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 9 complete — PM review: [APPROVED/APPROVED WITH CHANGES/FLAGGED]"
 
 ### Phase 10: SM (BMAD) — Sprint Planning
@@ -224,7 +242,7 @@ Plan and assign sprints:
 - Assign stories to sprints (P0 first)
 - Sequence work within sprints
 - IF total points exceed capacity → split across sprints
-- Output: updated `sprint-status.yaml`, `sprint-plan-[sprint-number].md` → `_bmad-output/implementation-artifacts/`
+- Output: updated `sprint-status.yaml`, `sprint-plan-[sprint-number].md` → `{output_root}/implementation-artifacts/`
 - Report: "Phase 10 complete — stories assigned to Sprint [number], [points] points planned"
 
 ### Phase 11: Dev (BMAD) — Implementation
@@ -240,7 +258,7 @@ For existing projects with sprint-status.yaml.
 
 ### Phase 2: Ranger 🔍 — Research (Smart Skip)
 
-Before running any research, check what already exists in _bmad-output/guild-artifacts/:
+Before running any research, check what already exists in {output_root}/guild-artifacts/:
 
 1. Scan for existing artifacts matching this feature scope:
    - personas*.md, journey-map*.md, competitive-audit*.md, heuristic-eval*.md, jtbd*.md
@@ -275,7 +293,7 @@ Before running any research, check what already exists in _bmad-output/guild-art
 
 If the PM already created Guild-format artifacts during PRD creation, those are valid — Ranger skips redundant work.
 
-- Output: new/updated artifacts → `_bmad-output/guild-artifacts/`
+- Output: new/updated artifacts → `{output_root}/guild-artifacts/`
 - Report: "Phase 2 complete — [n] research artifacts ([m] new, [k] referenced existing) using [methods list]"
 
 ### Phase 3: Rogue (Guild .esign)
@@ -283,14 +301,14 @@ Design solutions for the feature:
 - User flows for the specific feature
 - State diagrams for complex components
 - Wireframes for new/changed screens only
-- Output → `_bmad-output/guild-artifacts/`
+- Output → `{output_root}/guild-artifacts/`
 - Report: "Phase 3 complete — [n] design artifacts produced"
 
 ### Phase 4: Mage 🎨 — Visual Polish
 Same as greenfield Phase 4. Reviews Rogue's brownfield designs for visual quality.
 Skippable with --skip-visual flag.
 
-- Output: `visual-polish-[scope].md` → `_bmad-output/guild-artifacts/`
+- Output: `visual-polish-[scope].md` → `{output_root}/guild-artifacts/`
 - Report: "Phase 4 complete — visual polish [applied/skipped/no issues found]"
 
 ### Phase 5: Warlock (Guild Content)
@@ -298,7 +316,7 @@ Content for new/changed screens:
 - Microcopy for new screens
 - Error messages for new error states
 - Empty states for new screens
-- Output → `_bmad-output/guild-artifacts/`
+- Output → `{output_root}/guild-artifacts/`
 - Report: "Phase 5 complete — [n] content artifacts produced"
 
 ### Phase 6: Sage (Guild .A)
@@ -306,7 +324,7 @@ Focused QA on new designs:
 - Design review on new designs only
 - Accessibility check on new/changed screens
 - IF NO-GO → loop back to Rogue
-- Output → `_bmad-output/guild-artifacts/`
+- Output → `{output_root}/guild-artifacts/`
 - Report: "Phase 6 complete — verdict: [GO/CONDITIONAL/NO-GO]"
 
 ### Phase 7: Healer (Guild Handoff)
@@ -315,10 +333,10 @@ Handoff continuing from existing state:
 - Append to existing epics or create new ones
 - Component specs for new components only
 - Tokens added to existing token file
-- Output: stories → `_bmad-output/implementation-artifacts/stories/`
+- Output: stories → `{output_root}/implementation-artifacts/stories/`
 
 After generating stories, Healer also updates
-`_bmad-output/planning-artifacts/UX_Design.md` with the new/changed sections.
+`{output_root}/planning-artifacts/UX_Design.md` with the new/changed sections.
 If UX_Design.md doesn't exist yet, generate it fresh. If it exists, update
 only the sections affected by this sprint's design work.
 

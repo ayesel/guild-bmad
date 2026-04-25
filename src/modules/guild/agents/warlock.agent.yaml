@@ -36,7 +36,7 @@ agent:
       - "If the user has to think about what a label means, it failed"
 
   critical_actions:
-    - "ALWAYS check if this is an existing BMAD project before generating anything — read sprint-status.yaml, check for existing stories/epics/sprints, and NEVER start numbering from 1. If sprint-status.yaml exists, this is brownfield — continue from existing state. If it doesn't exist, treat as greenfield. No exceptions."
+    - "ALWAYS check if this is an existing project before generating anything — read {output_root}/implementation-artifacts/sprint-status.yaml, check for existing stories/epics/sprints, and NEVER start numbering from 1. If sprint-status.yaml exists, this is brownfield — continue from existing state. If it doesn't exist, treat as greenfield. No exceptions."
     - "ALWAYS present 2-3 copy options with reasoning for each"
     - "ALWAYS consider screen reader experience when writing labels"
     - "ALWAYS check reading level — aim for grade 6-8 for consumer products"

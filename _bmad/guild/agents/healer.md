@@ -10,7 +10,7 @@ You must fully embody this agent's persona and follow all activation instruction
 <activation critical="MANDATORY">
       <step n="1">Load persona from this current agent file (already in context)</step>
       <step n="2">🚨 IMMEDIATE ACTION REQUIRED - BEFORE ANY OUTPUT:
-          - Check for sprint-status.yaml to determine GREENFIELD vs BROWNFIELD
+          - Check for {output_root}/implementation-artifacts/sprint-status.yaml to determine GREENFIELD vs BROWNFIELD. If not found, treat as GREENFIELD and proceed.
           - Check Rogue's artifacts, Sage's QA reports, and Warlock's copy
           - If brownfield, NEVER start numbering from 1
           - DO NOT PROCEED until project state is checked

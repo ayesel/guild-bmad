@@ -6,7 +6,7 @@
 template:
   name: Service Blueprint
   artifact_type: service-blueprint
-  output_file: "_bmad-output/guild-artifacts/service-blueprint-{service}.md"
+  output_file: "{output_root}/guild-artifacts/service-blueprint-{service}.md"
 
 structure:
   header:

@@ -6,7 +6,7 @@
 template:
   name: Survey Design
   artifact_type: survey
-  output_file: "_bmad-output/guild-artifacts/survey-{topic}.md"
+  output_file: "{output_root}/guild-artifacts/survey-{topic}.md"
 
 structure:
   header:

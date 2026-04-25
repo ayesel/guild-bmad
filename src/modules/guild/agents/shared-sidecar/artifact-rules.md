@@ -4,7 +4,7 @@
 Guild artifacts are always the canonical source. Other documents reference them.
 
 ### How it works:
-1. Guild agent generates full artifact → saves to _bmad-output/guild-artifacts/
+1. Guild agent generates full artifact → saves to {output_root}/guild-artifacts/
 2. If a BMAD document needs that content → write a summary + reference link
 3. If the artifact is updated → the reference still works, no need to update the BMAD doc
 4. Developers follow references from stories → Guild artifacts for full design context
@@ -23,7 +23,7 @@ Guild artifacts are always the canonical source. Other documents reference them.
 - Component props table (developers need this directly)
 - Token names and values (developers need this directly)
 - Final copy strings (developers need this directly)
-- Everything else: "See full details: _bmad-output/guild-artifacts/[file].md"
+- Everything else: "See full details: {output_root}/guild-artifacts/[file].md"
 
 ### Why this matters:
 - Single source of truth — update one place, references stay valid

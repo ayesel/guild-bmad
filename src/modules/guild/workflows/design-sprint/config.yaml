@@ -2,17 +2,20 @@ name: guild-design-sprint
 description: "Adaptive Guild pipeline — auto-detects greenfield/brownfield/mid-project and routes accordingly"
 module: guild
 trigger: "DS or fuzzy match on design-sprint"
+mode_detection:
+  bmad_present: "_bmad/core/config.yaml exists at {project-root}"
+  bmad_absent: "No _bmad/core/config.yaml — standalone Guild mode"
 detection:
-  brownfield: "sprint-status.yaml exists"
-  mid_project: "prd.md exists but no sprint-status.yaml"
-  greenfield: "no BMAD artifacts exist"
+  brownfield: "{output_root}/implementation-artifacts/sprint-status.yaml exists"
+  mid_project: "{output_root}/planning-artifacts/prd.md exists but no sprint-status.yaml"
+  greenfield: "no existing artifacts found (default for standalone)"
 guild_agents_required:
   - ux-researcher
   - interaction-designer
   - content-strategist
   - design-qa
   - design-ops
-bmad_agents_required:
+bmad_agents_optional:  # included only when bmad_mode = true; skipped in standalone mode
   greenfield: [analyst, pm, architect, sm]
   mid_project: [pm, architect, sm]
   brownfield: [pm, sm]
@@ -29,15 +32,23 @@ outputs:
   - implementation-artifacts/sprint-status.yaml (updated)
   - implementation-artifacts/sprint-plan-[sprint-number].md
 pipelines:
-  greenfield:
+  # With BMAD (bmad_mode = true)
+  greenfield_bmad:
     phases: 11
     sequence: "Analyst → PM → Ranger → Rogue → Warlock → Architect → Sage → Healer → PM → SM → Dev"
-  brownfield:
+  brownfield_bmad:
     phases: 7
     sequence: "Ranger → Rogue → Warlock → Sage → Healer → PM → SM"
-  mid_project:
+  mid_project_bmad:
     phases: 9
     sequence: "PM → Ranger → Rogue → Warlock → Architect → Sage → Healer → PM → SM"
+  # Standalone (bmad_mode = false)
+  greenfield_standalone:
+    phases: 6
+    sequence: "Ranger → Rogue → Mage → Warlock → Sage → Healer"
+  brownfield_standalone:
+    phases: 5
+    sequence: "Ranger → Rogue → Warlock → Sage → Healer"
 variants:
   - name: quick-sprint
     trigger: "QS or fuzzy match on quick-sprint"
@@ -47,7 +58,7 @@ variants:
       - content-strategist
       - design-qa
       - design-ops
-    bmad_agents_required: [pm, sm]
+    bmad_agents_optional: [pm, sm]
   - name: research-only
     trigger: "RO or fuzzy match on research-only"
     description: "Research only — run Ranger, save findings for later"
@@ -58,4 +69,4 @@ variants:
     description: "Handoff + PM review + SM sprint planning from existing Guild artifacts"
     guild_agents_required:
       - design-ops
-    bmad_agents_required: [pm, sm]
+    bmad_agents_optional: [pm, sm]

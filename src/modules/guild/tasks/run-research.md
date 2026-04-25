@@ -10,7 +10,7 @@ Before executing any research activity, perform these checks in order:
 
 ### 0. Check for Existing Research Artifacts (BEFORE anything else)
 
-Scan _bmad-output/guild-artifacts/ for any files matching the research type being requested:
+Scan {output_root}/guild-artifacts/ for any files matching the research type being requested:
 - personas*.md
 - journey-map*.md
 - competitive-audit*.md
@@ -35,7 +35,7 @@ If the PM created Guild-format artifacts during PRD creation, those count as val
 Guild artifacts. Don't recreate work the PM already did.
 
 ### 0b. Load BMAD Project State
-- Read `_bmad-output/implementation-artifacts/sprint-status.yaml` if it exists
+- Read `{output_root}/implementation-artifacts/sprint-status.yaml` if it exists
   - Note current sprint number
   - Note existing story count and highest story ID
   - Note which epics are active
@@ -50,20 +50,20 @@ Guild artifacts. Don't recreate work the PM already did.
   - Use the same naming conventions the project uses
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
 ### 1. Load Project Context
-- Read `_bmad-output/planning-artifacts/project-context.md` if it exists
-- Read `_bmad-output/planning-artifacts/prd.md` if it exists
-- Read `_bmad-output/guild-artifacts/personas.md` if it exists
-- Read `_bmad-output/guild-artifacts/research-synthesis.md` if it exists
-- Read any prior research artifacts in `_bmad-output/guild-artifacts/` that are relevant
+- Read `{output_root}/planning-artifacts/project-context.md` if it exists
+- Read `{output_root}/planning-artifacts/prd.md` if it exists
+- Read `{output_root}/guild-artifacts/personas.md` if it exists
+- Read `{output_root}/guild-artifacts/research-synthesis.md` if it exists
+- Read any prior research artifacts in `{output_root}/guild-artifacts/` that are relevant
 
 ### 2. Gather Research Parameters from User
 Ask the user for the following (skip any already provided):
@@ -132,7 +132,7 @@ references:
 - [ ] Biases are acknowledged (confirmation, survivorship, anchoring, etc.)
 
 ## Output Location
-Save to: `_bmad-output/guild-artifacts/[research-type]-[topic-name].md`
+Save to: `{output_root}/guild-artifacts/[research-type]-[topic-name].md`
 
 ## Post-Execution
 After delivering the research artifact:

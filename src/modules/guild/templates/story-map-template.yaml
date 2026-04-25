@@ -6,7 +6,7 @@
 template:
   name: User Story Map
   artifact_type: story-map
-  output_file: "_bmad-output/guild-artifacts/story-map-{feature}.md"
+  output_file: "{output_root}/guild-artifacts/story-map-{feature}.md"
 
 structure:
   header:

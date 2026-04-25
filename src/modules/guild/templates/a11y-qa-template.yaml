@@ -6,7 +6,7 @@
 template:
   name: Accessibility QA
   artifact_type: a11y-qa
-  output_file: "_bmad-output/guild-artifacts/qa-a11y-qa-{scope-name}.md"
+  output_file: "{output_root}/guild-artifacts/qa-a11y-qa-{scope-name}.md"
 
 structure:
   header:

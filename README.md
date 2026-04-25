@@ -1,8 +1,10 @@
-# Guild — Guild Design Framework Framework
+# Guild — AI-Powered Design Framework
 
-**AI-powered product design framework with 6 specialized agents for the full design lifecycle.**
+**7 specialized design agents for the full product design lifecycle.**
 
-Guild is a BMAD-compatible module that gives product designers a team of AI agents for research, interaction design, content strategy, design QA, and developer handoff. One command runs the full pipeline — from user research to sprint-ready Jira stories.
+Guild gives product designers a team of AI agents for research, interaction design, visual polish, content strategy, design QA, and developer handoff. One command runs the full pipeline — from user research to sprint-ready stories.
+
+Guild works **standalone** or **with BMAD v6**. It auto-detects your setup and adapts.
 
 Built for designers who want structured, repeatable AI collaboration. The AI handles systematic, data-driven work. You provide the human judgment, empathy, and creative direction.
 
@@ -27,21 +29,33 @@ Built for designers who want structured, repeatable AI collaboration. The AI han
 ## The pipeline
 
 ```
-Ranger (research) → Rogue (design) → Mage (visual polish) → Warlock (content) → Sage (QA) → Healer (handoff) → PM (review) → SM (sprint planning) → Dev (build)
+Ranger (research) → Rogue (design) → Mage (visual polish) → Warlock (content) → Sage (QA) → Healer (handoff)
 ```
+
+When BMAD is present, the pipeline extends: `→ PM (review) → SM (sprint planning) → Dev (build)`
 
 Guild auto-detects your project state and adapts:
 
-**Greenfield** (new project — 12 phases):
+### Standalone mode
+
+**Greenfield** (new project — 6 phases):
+Ranger → Rogue → Mage → Warlock → Sage → Healer
+
+**Brownfield** (existing project — 5 phases):
+Ranger → Rogue → Warlock → Sage → Healer
+
+### With BMAD
+
+**Greenfield** (12 phases):
 Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM → Dev
 
-**Brownfield** (existing project — 8 phases):
+**Brownfield** (8 phases):
 Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM
 
-**Mid-project** (PRD exists, no sprints — 10 phases):
+**Mid-project** (10 phases):
 PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM
 
-Every agent saves structured artifacts to `_bmad-output/guild-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Rogue.
+Every agent saves structured artifacts to `{output_root}/guild-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Rogue.
 
 ---
 
@@ -63,7 +77,7 @@ Every agent saves structured artifacts to `_bmad-output/guild-artifacts/`. Each 
 @design-ops             # Load Healer
 ```
 
-The orchestrator reads `sprint-status.yaml`, continues from your existing story numbering, and outputs stories that BMAD's dev agents can pick up with `/dev-story` immediately.
+The orchestrator detects your project state, continues from existing story numbering if present, and outputs dev-ready stories. With BMAD, stories are immediately consumable by `/dev-story`.
 
 ---
 
@@ -84,19 +98,30 @@ Real-world test: Guild produced 14 artifacts (6,532 lines) for a React Native sk
 
 ## Installation
 
-### Into a new project
+### Standalone (no BMAD)
 
 ```bash
-mkdir my-project && cd my-project
-npx bmad-method install          # Install BMAD core
-cp -r /path/to/guild-bmad/src/modules/guild/ ./src/modules/guild/
-mkdir -p _bmad-output/guild-artifacts/components
+# Clone Guild into your project
+git clone https://github.com/ayesel/guild.git
+cd guild
+
+# Copy the commands into your project
+cp -r .claude/commands/guild-*.md /path/to/your-project/.claude/commands/
+cp guild.config.yaml /path/to/your-project/
 ```
+
+Guild auto-detects that BMAD is not present and runs in standalone mode. Output goes to `guild-output/`.
+
+Then open Claude Code and type `/guild-master` to get started.
 
 ### Into an existing BMAD project
 
 ```bash
-cp -r /path/to/guild-bmad/src/modules/guild/ ./src/modules/guild/
+# Copy Guild module files (do NOT overwrite your existing _bmad/core/)
+cp -r src/modules/guild/ /path/to/your-project/src/modules/guild/
+cp -r _bmad/guild/ /path/to/your-project/_bmad/guild/
+cp -r .claude/commands/guild-*.md /path/to/your-project/.claude/commands/
+cp guild.config.yaml /path/to/your-project/
 ```
 
 Then add the Guild override to your project's CLAUDE.md:
@@ -105,17 +130,14 @@ Then add the Guild override to your project's CLAUDE.md:
 cat src/modules/guild/install/claude-md-snippet.md >> CLAUDE.md
 ```
 
-This tells all BMAD agents that Guild is active and prevents them from
-recommending Sally for UX design work.
-
-Then open Claude Code and type `@guild-master` to get started.
+Guild auto-detects BMAD and integrates: stories use BMAD format, output goes to `_bmad-output/`, PM and SM agents are included in the pipeline. Sally is replaced.
 
 ### Requirements
 
-- [BMAD Method v6](https://github.com/bmad-code-org/BMAD-METHOD) installed
-- Claude Code CLI (or any BMAD-compatible IDE: Cursor, Windsurf, Codex, Gemini CLI)
+- Claude Code CLI (or compatible IDE: Cursor, Windsurf, Codex, Gemini CLI)
+- Optional: [BMAD Method v6](https://github.com/bmad-code-org/BMAD-METHOD) for sprint tracking and PM/SM integration
 - Optional: Figma Pro + [Figma MCP](https://help.figma.com/hc/en-us/articles/32132100833559) for design tool integration
-- Optional: [claude-talk-to-figma-mcp](https://github.com/arinspunk/claude-talk-to-figma-mcp) for native Figma element creation
+- Optional: [Atrium](https://atrium.sh) for multi-model raid skills (3-model comparison)
 
 ---
 
@@ -129,14 +151,16 @@ Guild connects to Figma for reading design context, pushing live UI to Figma, an
 claude plugin install figma@claude-plugins-official
 ```
 
-### BMAD Integration
+### BMAD Integration (optional)
 
-Guild is a standard BMAD expansion module. It:
+When BMAD v6 is detected, Guild automatically:
 - Reads `sprint-status.yaml` and continues existing story numbering
-- Outputs stories to `_bmad-output/implementation-artifacts/stories/`
-- Uses BMAD's PM and SM agents for story review and sprint planning
-- Replaces BMAD's built-in UX Designer agent with 7 specialized design agents
+- Outputs stories in BMAD dev-story format to `_bmad-output/implementation-artifacts/stories/`
+- Includes BMAD's PM and SM agents in the pipeline for story review and sprint planning
+- Replaces BMAD's built-in UX Designer (Sally) with 7 specialized design agents
 - Stories are immediately consumable by BMAD's `/dev-story` workflow
+
+Without BMAD, Guild outputs standard stories to `guild-output/` and runs a Guild-only pipeline.
 
 ### Skyfleet / Gas Town
 

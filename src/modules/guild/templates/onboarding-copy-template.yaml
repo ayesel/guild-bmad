@@ -6,7 +6,7 @@
 template:
   name: Onboarding Copy
   artifact_type: onboarding-copy
-  output_file: "_bmad-output/guild-artifacts/content-onboarding-copy-{scope-name}.md"
+  output_file: "{output_root}/guild-artifacts/content-onboarding-copy-{scope-name}.md"
 
 structure:
   header:

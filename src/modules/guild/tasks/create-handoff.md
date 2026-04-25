@@ -8,39 +8,47 @@ core handoff engine for the Guild Design Ops agent.
 
 Before creating any handoff artifact, perform these checks in order:
 
-### 0. Load BMAD Project State (BEFORE all other checks)
-- Read `_bmad-output/implementation-artifacts/sprint-status.yaml` if it exists
+### 0. Detect Mode and Load Project State (BEFORE all other checks)
+
+**Mode detection:**
+- Read `guild.config.yaml` for `bmad_mode` setting
+- If `bmad_mode: auto` → check if `_bmad/core/config.yaml` exists
+  - If YES → bmad_mode = true, use jira-stories-template.yaml (BMAD dev-story format)
+  - If NO → bmad_mode = false, use stories-template.yaml (standard format)
+
+**Load project state:**
+- Read `{output_root}/implementation-artifacts/sprint-status.yaml` if it exists
   - Note current sprint number
   - Note existing story count and highest story ID (e.g., STORY-47)
   - Note which epics are active and highest epic ID
   - Note what's TODO vs IN PROGRESS vs DONE
-- Read `_bmad-output/planning-artifacts/` for existing PRD, architecture docs, and epic files
+- Read `{output_root}/planning-artifacts/` for existing PRD, architecture docs, and epic files
 - **Brownfield vs Greenfield determination:**
   - IF sprint-status.yaml exists → this is BROWNFIELD. Continue from existing state. NEVER start numbering from 1. Adapt all output to fit the existing structure.
-  - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh but use BMAD-compatible formats.
+  - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start from STORY-1, EPIC-1.
 - This context is CRITICAL for handoff — it determines:
   - Story numbering (new stories start after the highest existing ID)
-  - Sprint assignment (current sprint, or next if current is full)
+  - Sprint assignment (current sprint, or next if current is full — bmad_mode only)
   - Epic assignment (existing epic or new epic continuing the numbering)
   - What's already been built (don't hand off work that's DONE)
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
 ### 1. Load ALL Prior Guild .rtifacts
-- Read `_bmad-output/planning-artifacts/project-context.md` if it exists
-- Read `_bmad-output/planning-artifacts/prd.md` if it exists
-- Read any flows or wireframes from Rogue in `_bmad-output/guild-artifacts/`
-- Read any research or personas from Ranger in `_bmad-output/guild-artifacts/`
-- Read any QA reports from Sage in `_bmad-output/guild-artifacts/`
-- Read any content from Warlock in `_bmad-output/guild-artifacts/`
-- Read `_bmad-output/guild-artifacts/design-tokens.json` if it exists
+- Read `{output_root}/planning-artifacts/project-context.md` if it exists
+- Read `{output_root}/planning-artifacts/prd.md` if it exists
+- Read any flows or wireframes from Rogue in `{output_root}/guild-artifacts/`
+- Read any research or personas from Ranger in `{output_root}/guild-artifacts/`
+- Read any QA reports from Sage in `{output_root}/guild-artifacts/`
+- Read any content from Warlock in `{output_root}/guild-artifacts/`
+- Read `{output_root}/guild-artifacts/design-tokens.json` if it exists
 
 ### 2. Gather Handoff Parameters from User
 Ask the user for the following (skip any already provided):
@@ -65,7 +73,7 @@ Before generating, restate the scope back to the user:
 
 ### When generating stories from Guild artifacts:
 - Each story's design_artifacts field should reference the specific Guild artifact files
-- Example: design_artifacts: ["_bmad-output/guild-artifacts/user-flow-onboarding.md", "_bmad-output/guild-artifacts/wireframe-onboarding.md"]
+- Example: design_artifacts: ["{output_root}/guild-artifacts/user-flow-onboarding.md", "{output_root}/guild-artifacts/wireframe-onboarding.md"]
 - The dev agent follows these references to get full design context
 - Don't inline the entire design spec in the story — reference it
 
@@ -144,7 +152,7 @@ When generating stories (via jira-stories template or as part of handoff), stori
 integrate with existing BMAD sprint state:
 
 ### Story Numbering
-- Read the highest story ID from `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- Read the highest story ID from `{output_root}/implementation-artifacts/sprint-status.yaml`
 - New stories start at the next sequential ID (e.g., if STORY-47 exists, start at STORY-48)
 - Never reuse or conflict with existing story IDs
 
@@ -160,7 +168,7 @@ priority: "P0"  # P0 | P1 | P2
 acceptance_criteria:
   - "Given [context], When [action], Then [result]"
 design_artifacts:
-  - "_bmad-output/guild-artifacts/[referenced-file].md"
+  - "{output_root}/guild-artifacts/[referenced-file].md"
 ```
 
 ### Sprint Assignment
@@ -173,7 +181,7 @@ design_artifacts:
 - Assign to existing epics when the scope matches
 
 ### Output Locations
-- Story files: `_bmad-output/implementation-artifacts/stories/STORY-XX-[slug].yaml`
+- Story files: `{output_root}/implementation-artifacts/stories/STORY-XX-[slug].yaml`
 - Update sprint-status.yaml: APPEND new stories to the existing file (never overwrite)
 - Stories should be immediately consumable by BMAD's `/dev-story` workflow
 
@@ -183,10 +191,10 @@ Output paths are configurable via `kb_output_path` in module.yaml:
 - If `kb_output_path` is set to a KB project path (e.g., `projects/auth-system/`):
   - Guild artifacts: `{kb_output_path}/guild/`
   - UX spec: `{kb_output_path}/ux-spec.md`
-- If `kb_output_path` is default (`_bmad-output/guild-artifacts/`):
-  - Handoff specs: `_bmad-output/guild-artifacts/handoff-[type]-[scope].md`
-  - UX spec: `_bmad-output/planning-artifacts/UX_Design.md`
-- Stories always write to: `_bmad-output/implementation-artifacts/stories/` (BMAD needs these locally)
+- If `kb_output_path` is default (`{output_root}/guild-artifacts/`):
+  - Handoff specs: `{output_root}/guild-artifacts/handoff-[type]-[scope].md`
+  - UX spec: `{output_root}/planning-artifacts/UX_Design.md`
+- Stories always write to: `{output_root}/implementation-artifacts/stories/` (BMAD needs these locally)
 
 ## Post-Execution
 After delivering the handoff artifact:

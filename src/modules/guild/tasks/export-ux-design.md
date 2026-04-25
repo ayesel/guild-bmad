@@ -13,7 +13,7 @@ Sally's output with a richer, Guild-generated version.
 ## Pre-flight
 
 ### 0. Load BMAD Project State (BEFORE all other checks)
-- Read `_bmad-output/implementation-artifacts/sprint-status.yaml` if it exists
+- Read `{output_root}/implementation-artifacts/sprint-status.yaml` if it exists
   - Note current sprint number
   - Note existing story count and highest story ID
   - Note which epics are active
@@ -23,15 +23,15 @@ Sally's output with a richer, Guild-generated version.
   - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh but use BMAD-compatible formats.
 
 ### Artifact Source of Truth Rule
-Guild artifacts in _bmad-output/guild-artifacts/ are ALWAYS the source of truth.
+Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
 When BMAD documents (PRD, architecture, UX_Design.md) need design content:
-- Write the FULL artifact to _bmad-output/guild-artifacts/ using Guild templates
+- Write the FULL artifact to {output_root}/guild-artifacts/ using Guild templates
 - Write a SUMMARY in the BMAD document with key findings inline
-- REFERENCE the full artifact: "See full details: _bmad-output/guild-artifacts/[filename].md"
+- REFERENCE the full artifact: "See full details: {output_root}/guild-artifacts/[filename].md"
 - NEVER duplicate the full Guild artifact content inside a BMAD document
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
-### Read all Guild artifacts from _bmad-output/guild-artifacts/:
+### Read all Guild artifacts from {output_root}/guild-artifacts/:
 - personas.md
 - journey-map-*.md
 - user-flow-*.md
@@ -49,7 +49,7 @@ When BMAD documents (PRD, architecture, UX_Design.md) need design content:
 
 ## Output Structure
 
-Generate `_bmad-output/planning-artifacts/UX_Design.md` with this structure:
+Generate `{output_root}/planning-artifacts/UX_Design.md` with this structure:
 
 ```markdown
 ---
@@ -157,7 +157,7 @@ For each component:
 - Guild artifacts are the source of truth — UX_Design.md is a COMPILED SUMMARY, not a copy
 - For each section, include:
   - Key findings and decisions inline (enough for a developer to work with)
-  - Reference link to full artifact: "Full details: _bmad-output/guild-artifacts/[file].md"
+  - Reference link to full artifact: "Full details: {output_root}/guild-artifacts/[file].md"
 - Personas section: include summary table + key design implications, reference full persona cards
 - Journey maps: include phases + top 3 pain points + moments of truth, reference full journey maps
 - Flows: include Mermaid diagrams inline (these are compact enough), reference full flow docs for edge cases
@@ -170,7 +170,7 @@ For each component:
 ## Output Location
 
 Output path is configurable via `kb_ux_spec_path` in module.yaml:
-- Default: `_bmad-output/planning-artifacts/UX_Design.md`
+- Default: `{output_root}/planning-artifacts/UX_Design.md`
 - Asmar KB integration: `projects/{name}/ux-spec.md`
 
 Check module.yaml config for the correct path. If `kb_ux_spec_path` is set,

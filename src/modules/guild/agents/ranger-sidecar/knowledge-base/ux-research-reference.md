@@ -215,7 +215,7 @@ Longitudinal research over 1-4 weeks. Participants log events or experiences on 
 Recommended organization for research outputs:
 
 ```
-_bmad-output/guild-artifacts/
+{output_root}/guild-artifacts/
 ├── personas.md                    # Consolidated persona document
 ├── research-synthesis.md          # Cross-study synthesis
 ├── journey-map-[feature].md       # Journey maps by feature

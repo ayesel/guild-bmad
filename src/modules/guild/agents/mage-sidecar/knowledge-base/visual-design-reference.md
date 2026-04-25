@@ -109,7 +109,7 @@ for (const width of [375, 768, 1440]) {
 - Always wait 1-2 seconds after navigation for animations to settle
 - Capture full page, not just viewport — scroll content matters
 - For React Native: hot reload takes 1-3 seconds after code changes
-- Save all captures to _bmad-output/guild-artifacts/captures/
+- Save all captures to {output_root}/guild-artifacts/captures/
 - Keep captures timestamped for before/after comparison
 
 ## The #1 Rule

@@ -34,9 +34,9 @@ color contrast, and screen reader support.
 
 ### Phase 6: Generate Report
 Produce the full audit report with grades, critical issues, and file-by-file
-compliance scores. Save to _bmad-output/guild-artifacts/design-system-audit.md
+compliance scores. Save to {output_root}/guild-artifacts/design-system-audit.md
 
 ## Output
-Save report to: _bmad-output/guild-artifacts/design-system-audit.md
+Save report to: {output_root}/guild-artifacts/design-system-audit.md
 Include: compliance score, critical issues, hardcoded values list, duplicates list,
 accessibility issues, and recommended fixes with file paths and line numbers.

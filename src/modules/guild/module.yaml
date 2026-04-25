@@ -8,8 +8,9 @@ module:
     Built for product designers who want structured, repeatable AI collaboration.
   author: Ayrehl Davis
   license: MIT
-  requires:
-    - core
+  requires: []  # Guild works standalone; auto-detects BMAD core when present
+  optional_integrations:
+    - core  # BMAD v6 — enables sprint tracking, PM/SM review, story numbering continuity
   config:
     project_name:
       prompt: "What is your project name?"
@@ -29,9 +30,9 @@ module:
       result: "{value}"
     kb_output_path:
       prompt: "KB artifact path (e.g., projects/auth-system/):"
-      default: "_bmad-output/guild-artifacts/"
+      default: "{output_root}/guild-artifacts/"
       result: "{value}"
     kb_ux_spec_path:
       prompt: "UX spec output path:"
-      default: "_bmad-output/planning-artifacts/UX_Design.md"
+      default: "{output_root}/planning-artifacts/UX_Design.md"
       result: "{value}"

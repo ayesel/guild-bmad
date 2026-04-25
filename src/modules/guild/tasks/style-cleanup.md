@@ -7,7 +7,7 @@ This is the fix phase after the code audit.
 ## Process
 
 ### Step 1: Read the audit report
-Load _bmad-output/guild-artifacts/design-system-audit.md to get the list
+Load {output_root}/guild-artifacts/design-system-audit.md to get the list
 of hardcoded values.
 
 ### Step 2: Replace values file by file

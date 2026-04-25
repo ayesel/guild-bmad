@@ -1,11 +1,11 @@
-# Jira Stories Template
+# Stories Template (Standalone)
 #
-# Generate BMAD-compatible developer stories from design artifacts.
-# Stories MUST match BMAD's dev-story template exactly so the dev agent
-# can consume them without transformation.
+# Generate developer stories from design artifacts.
+# Standard format — works without BMAD. Used when bmad_mode = false.
+# For BMAD projects, use jira-stories-template.yaml instead.
 
 template:
-  name: BMAD-Compatible Story
+  name: Developer Story
   artifact_type: story
   output_file: "{output_root}/implementation-artifacts/stories/{epic}-{story}-{slug}.md"
 
@@ -23,7 +23,7 @@ structure:
 
     ## Acceptance Criteria
 
-    {Use strict BDD format — no named ACs, just Given/When/Then}
+    {Use strict BDD format — Given/When/Then}
 
     1. **Given** {precondition}
        **When** {action}
@@ -56,7 +56,7 @@ structure:
 
     ## Dev Notes
 
-    {Technical implementation guidance — what the dev agent needs to know}
+    {Technical implementation guidance}
 
     ### Project Structure Notes
 
@@ -68,44 +68,18 @@ structure:
 
     ### References
 
-    {Links to design artifacts, architecture docs, and related stories}
+    {Links to design artifacts and related stories}
 
-    - PRD: {path to relevant PRD section}
-    - Architecture: {path to relevant architecture section}
-    - Guild .esign Artifacts:
+    - Guild Design Artifacts:
       - {path to user flow if relevant}
       - {path to wireframe if relevant}
       - {path to component spec if relevant}
     - Design Tokens: {path to tokens file if new tokens needed}
     - Related Stories: {list of related/dependent story IDs}
 
-    ## Dev Agent Record
-
-    {This section is filled in by the BMAD dev agent during implementation.
-    Leave it empty with the scaffolding below.}
-
-    ### Agent Model Used
-
-    {To be filled by dev agent}
-
-    ### Debug Log References
-
-    {To be filled by dev agent}
-
-    ### Completion Notes List
-
-    {To be filled by dev agent}
-
-    ### File List
-
-    {To be filled by dev agent — list of all files created/modified}
-
   formatting_rules:
     - "Acceptance Criteria MUST use strict BDD format: Given/When/Then"
     - "Do NOT use named ACs like '1. **AC1 — Name**:' — use numbered Given/When/Then only"
-    - "Do NOT add a ## Context section — fold priority, points, personas into Dev Notes"
-    - "ALWAYS include the Dev Agent Record section with empty subsections"
     - "ALWAYS include Project Structure Notes and References in Dev Notes"
     - "Tasks MUST reference which AC they satisfy in parentheses"
     - "Filenames MUST follow {epic}-{story}-{slug}.md pattern"
-    - "Sprint-status keys MUST match filename without .md extension"

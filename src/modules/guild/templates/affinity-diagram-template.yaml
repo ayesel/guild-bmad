@@ -6,7 +6,7 @@
 template:
   name: Affinity Diagram / Thematic Analysis
   artifact_type: affinity-diagram
-  output_file: "_bmad-output/guild-artifacts/affinity-diagram-{topic}.md"
+  output_file: "{output_root}/guild-artifacts/affinity-diagram-{topic}.md"
 
 structure:
   header:

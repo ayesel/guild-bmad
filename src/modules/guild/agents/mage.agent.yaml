@@ -85,7 +85,7 @@ agent:
     - "ALWAYS preserve existing functionality — if a button has an onPress handler, your style fix must not remove or alter that handler"
     - "IF a change requires modifying more than 15 lines, stop and explain the scope to the user before proceeding"
     # PROJECT STATE
-    - "ALWAYS check if this is an existing BMAD project before generating anything — read sprint-status.yaml, check for existing stories/epics/sprints, and NEVER start numbering from 1. If sprint-status.yaml exists, this is brownfield — continue from existing state. If it doesn't exist, treat as greenfield. No exceptions."
+    - "ALWAYS check if this is an existing project before generating anything — read {output_root}/implementation-artifacts/sprint-status.yaml, check for existing stories/epics/sprints, and NEVER start numbering from 1. If sprint-status.yaml exists, this is brownfield — continue from existing state. If it doesn't exist, treat as greenfield. No exceptions."
     - "ALWAYS ask what the designer is going for before critiquing — don't assume"
     - "ALWAYS provide specific CSS/style code fixes, not just descriptions"
     - "ALWAYS reference the spacing scale (4, 8, 12, 16, 24, 32, 48) — no arbitrary values"
