@@ -12,16 +12,65 @@ You do NOT implement anything directly — you delegate every step to a subagent
 
 Do NOT skip steps. Do NOT batch steps. Each step must complete before the next begins.
 
+## Quest Variables
+
+Define these at the start. Use them consistently in every step and every subagent brief. Never hardcode values that should be variables.
+
+```yaml
+quest:
+  product_name: ""          # e.g., "Portfolio Energy Dashboard"
+  product_slug: ""          # e.g., "portfolio-dashboard" (used in artifact filenames)
+  target_user: ""           # e.g., "Property managers like Brian at CBRE"
+  target_industry: ""       # e.g., "Commercial energy / property management"
+  output_root: ""           # auto-detect from guild.config.yaml
+  competitors: []           # URLs or product names for visual audit
+  inspiration_terms: []     # Dribbble/Behance search terms
+  research_sources: []      # Interviews, Confluence links, prior artifacts
+  features: []              # Key features the product needs
+  design_system: ""         # e.g., "ADS" or "none" — if exists, components must align
+```
+
 ## Quest Briefing
 
-Before starting, gather from the user:
-- **What are we building?** (feature, product, tool)
-- **Who is it for?** (target users, personas)
-- **Competitors to audit?** (URLs or product names for visual audit)
-- **Existing research?** (interviews, Confluence docs, prior artifacts)
-- **Design inspiration sources?** (Dribbble, Behance search terms)
+Before starting, gather from the user and populate quest variables:
+- **What are we building?** → `product_name`, `product_slug`
+- **Who is it for?** → `target_user`, `target_industry`
+- **Competitors to audit?** → `competitors`
+- **Design inspiration?** → `inspiration_terms`
+- **Existing research?** → `research_sources`
+- **Key features?** → `features`
+- **Design system?** → `design_system`
 
-If the user provides all this upfront, skip the questions and begin.
+If the user provides all this upfront, populate variables and begin. Pass relevant variables to every subagent.
+
+## Component Registry
+
+Throughout the entire quest, maintain a living component documentation file at:
+`{output_root}/guild-artifacts/component-registry-{product_slug}.md`
+
+Every component created during design and build phases must be documented with:
+- Component name and purpose
+- Props / inputs with types
+- States (default, loading, empty, error, active, disabled)
+- Which screens it appears on
+- Design tokens used (colors, spacing, typography, border radius)
+- Accessibility notes (ARIA, keyboard, screen reader)
+- Dependencies (child components, libraries)
+- Storybook-ready: enough detail to generate a Storybook story
+- Figma-ready: enough detail to create a matching Figma component
+
+The Warlock seeds it with content components. Rogue adds interaction components. Mage adds visual specs to each. Healer finalizes it for dev handoff. The dev loop updates it as components are actually built.
+
+**Reuse first, create second.** Before creating any new component:
+1. Check Storybook (`src/stories/` or `stories/`) for existing components that match
+2. Check the design system library for existing primitives
+3. If a match exists → use it, document the usage in the registry
+4. If no match → create it as a NEW component, flag it as `status: proposed` in the registry
+5. Proposed components can be approved into the design system later
+
+Component statuses: `existing` (from Storybook/design system), `proposed` (new, needs approval), `approved` (accepted into design system), `built` (implemented in code).
+
+This registry becomes the design system documentation for the product.
 
 ---
 

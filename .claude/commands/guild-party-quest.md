@@ -11,6 +11,53 @@ You are the Party Quest Master. You orchestrate the COMPLETE Guild + BMAD pipeli
 
 **Requires Atrium.** This command uses `$ATRIUM_CLI_PATH` to launch and coordinate agents across panes.
 
+## Quest Variables
+
+Define these at the start. Use them consistently in every step and every subagent brief across all models. Never hardcode values that should be variables.
+
+```yaml
+quest:
+  product_name: ""          # e.g., "Portfolio Energy Dashboard"
+  product_slug: ""          # e.g., "portfolio-dashboard" (used in artifact filenames)
+  target_user: ""           # e.g., "Property managers like Brian at CBRE"
+  target_industry: ""       # e.g., "Commercial energy / property management"
+  output_root: ""           # auto-detect from guild.config.yaml
+  competitors: []           # URLs or product names for visual audit
+  inspiration_terms: []     # Dribbble/Behance search terms
+  research_sources: []      # Interviews, Confluence links, prior artifacts
+  features: []              # Key features the product needs
+  design_system: ""         # e.g., "ADS" or "none" — if exists, components must align
+```
+
+Pass these variables to every model pane at launch so all 3 models share the same context.
+
+## Component Registry
+
+Throughout the entire quest, maintain a living component documentation file at:
+`{output_root}/guild-artifacts/component-registry-{product_slug}.md`
+
+Every component created during design and build phases must be documented with:
+- Component name and purpose
+- Props / inputs with types
+- States (default, loading, empty, error, active, disabled)
+- Which screens it appears on
+- Design tokens used (colors, spacing, typography, border radius)
+- Accessibility notes (ARIA, keyboard, screen reader)
+- Dependencies (child components, libraries)
+- Storybook-ready: enough detail to generate a Storybook story
+- Figma-ready: enough detail to create a matching Figma component
+
+**Reuse first, create second.** Before creating any new component:
+1. Check Storybook (`src/stories/` or `stories/`) for existing components that match
+2. Check the design system library for existing primitives
+3. If a match exists → use it, document the usage in the registry
+4. If no match → create it as a NEW component, flag it as `status: proposed`
+5. Proposed components can be approved into the design system later
+
+Component statuses: `existing` (from Storybook/design system), `proposed` (new, needs approval), `approved` (accepted into design system), `built` (implemented in code).
+
+This registry becomes the design system documentation for the product.
+
 ## Environment Check
 
 ```bash
