@@ -43,6 +43,27 @@ Before starting, gather from the user and populate quest variables:
 
 If the user provides all this upfront, populate variables and begin. Pass relevant variables to every subagent.
 
+## Automatic Design Inspiration
+
+You do NOT need the user to tell you where to find design inspiration. Based on `product_name`, `features`, and `target_industry`, automatically derive what UI patterns are relevant and search for them.
+
+**How it works:**
+1. Analyze what you're building (e.g., "portfolio energy dashboard")
+2. Extract the UI pattern categories (e.g., dashboard, data tables, portfolio view, timeline, charts, cards)
+3. Search broadly across multiple sources:
+   - **Dribbble** — search each pattern category
+   - **Behance** — search each pattern category
+   - **Medium / design blogs** — search for "[pattern] best practices" or "[pattern] UI design"
+   - **Mobbin / Screenlane** — real product screenshots
+   - **Any relevant SaaS products** — even outside the target industry, if the UI pattern matches
+4. Don't limit to the target industry. An energy dashboard can learn from fintech dashboards, logistics dashboards, healthcare dashboards — any product that solved the same UI problem well.
+
+**Example derivation:**
+- Building: "Portfolio Energy Dashboard"
+- Auto-derived searches: "admin dashboard UI", "property management dashboard", "portfolio overview cards", "contract timeline gantt", "budget vs actual chart", "KPI summary cards", "data table with filters", "scenario modeling sliders", "dark sidebar navigation"
+
+The user may provide `inspiration_terms` to add specific searches. But even without them, the quest should find inspiration automatically based on what's being built.
+
 ## Component Registry
 
 Throughout the entire quest, maintain a living component documentation file at:
