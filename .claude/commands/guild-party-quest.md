@@ -69,7 +69,7 @@ In Party Quest, the **Gemini pane** handles inspiration research during Phase 1 
   # Snapshot — captures accessibility tree and element structure
   "$ATRIUM_CLI_PATH" browser snapshot <pane-id>
   # Scroll to see below-the-fold content
-  "$ATRIUM_CLI_PATH" browser scroll <pane-id> --direction down --amount 500
+  "$ATRIUM_CLI_PATH" browser scroll <pane-id> --direction subtab --amount 500
   ```
 - **Playwright (fallback for non-Atrium users):** Use Playwright MCP tools to navigate, screenshot, and analyze pages.
 - **WebFetch (last resort only):** Content-only, no visual analysis. Flag this limitation in the output.
@@ -138,12 +138,14 @@ Launch 3 panes simultaneously:
 ```bash
 "$ATRIUM_CLI_PATH" pane create --type terminal --split "$ATRIUM_PANE_ID"
 # Launch Claude, brief it to run /guild-visual-audit on competitor products
+# MUST include: use --timeout 30000 on all browser screenshot commands, retry up to 3x, open a separate browser pane per competitor
 ```
 
 **Gemini pane:** Visual audit of design inspiration (Dribbble, Behance, best-in-class dashboards)
 ```bash
 "$ATRIUM_CLI_PATH" pane create --type terminal --split "$ATRIUM_PANE_ID"
 # Launch Gemini, brief it to search Dribbble/Behance for design patterns
+# MUST open browser panes for each search, take real screenshots, not describe from memory
 ```
 
 **Codex pane:** Analyze existing codebase and technical constraints
@@ -152,16 +154,33 @@ Launch 3 panes simultaneously:
 # Launch Codex, brief it to analyze the project's tech stack, existing components, patterns
 ```
 
+**IMPORTANT — Browser instructions for Claude and Gemini panes:**
+Each pane doing visual research MUST:
+1. Create a separate browser pane per URL: `"$ATRIUM_CLI_PATH" pane create --type browser --url "<url>" --split "$ATRIUM_PANE_ID"`
+2. Wait for page load (5s), then screenshot with `--timeout 30000`
+3. Retry screenshots up to 3x on timeout before falling back to snapshot
+4. Scroll down and capture below-the-fold content
+5. Save screenshot evidence — file paths or confirmation that base64 was captured
+6. If zero screenshots succeed after retries, STOP and report failure
+
 Wait for all 3 to complete. Read their outputs.
+
+### Step 1b: Screenshot Verification Gate
+
+Before proceeding to synthesis, verify:
+- Claude's visual audit contains real screenshot references for at least 3 competitors
+- Gemini's inspiration research contains real screenshot references from Dribbble/Behance
+- If either pane fell back to DOM-only with zero screenshots, re-run that pane with explicit browser pane creation and `--timeout 30000`
+- DO NOT proceed to Phase 2 without visual evidence. The entire visual design phase depends on having actually seen the competitors and inspiration sources.
 
 ### Step 2: Research Synthesis — Claude synthesizes all 3 outputs
 Invoke a subagent to run `/guild-research-synthesis`. Feed it:
-- Claude's competitor visual audit
-- Gemini's design inspiration findings
+- Claude's competitor visual audit (with screenshot evidence)
+- Gemini's design inspiration findings (with screenshot evidence)
 - Codex's technical analysis
 - Any existing research artifacts and interview data
 
-**Party Log:** `Phase 1/5 — Scouting Party complete. 3 models contributed.`
+**Party Log:** `Phase 1/5 — Scouting Party complete. 3 models contributed. Screenshots: [N] captured, [N] failed.`
 
 ---
 
@@ -246,7 +265,15 @@ Invoke subagent → `/guild-jira-stories`.
 ### Step 14: Sprint Planning — Claude
 Invoke subagent → `/bmad-sprint-planning`.
 
-### Step 15: Parallel Dev Loop
+### Step 15: Parallel Dev Loop (Autonomous Build)
+
+Core rules:
+- `sprint-status.yaml` is the source of truth. Reload it after every story review, review-fix cycle, retrospective, and course-correction run.
+- Track the active epic number, active story identifier, active story file path, and any prefetched next story file path.
+- Do not ask for or wait for human approval during autonomous build. When a delegated BMAD workflow asks for confirmation, mode selection, approval, or facilitation input, instruct the subagent to choose the conservative autonomous default and document its assumption.
+- Do not create or develop a story from the next epic until the current epic's retrospective and course-correction gate has completed.
+- If a next story was prefetched and course correction changes the relevant epic, story, PRD, architecture, or UX artifacts, discard that prefetched story and create a fresh one from the corrected documents.
+- Commit completed story work separately from epic-transition documentation work.
 
 Split stories across models for parallel development:
 
@@ -254,14 +281,62 @@ Split stories across models for parallel development:
 **Codex:** Handles logic, data, API, state management stories
 **Gemini:** Handles tests, documentation, accessibility stories
 
-For each model's assigned stories:
-1. `/bmad-create-story` (Claude orchestrates)
-2. Model implements its assigned story
-3. A DIFFERENT model reviews (Claude builds → Codex reviews, Codex builds → Claude reviews)
-4. Fix loop if needed (max 3 cycles)
-5. Commit
+Cross-model code review ensures no model reviews its own work (Claude builds → Codex reviews, Codex builds → Claude reviews).
 
-Cross-model code review ensures no model reviews its own work.
+Repeat until all epics and their retrospective entries in `sprint-status.yaml` are `done`:
+
+**15a. Select or Create Story**
+Load `sprint-status.yaml` and select the next non-retrospective story that is not `done`.
+- If a valid prefetched story file path already exists for that story, use it.
+- Otherwise, invoke subagent → `/bmad-create-story`. Read story file path.
+
+**15b. Dev Story**
+Assign story to the appropriate model based on story type. Send to model pane for implementation. Wait for completion.
+
+**15c. Code Review + Prefetch**
+Simultaneously:
+- A DIFFERENT model reviews the implementation (cross-model review).
+- If there is another story remaining in the same epic, create the next story (prefetch).
+- If the active story is the final story in the current epic, do NOT prefetch a next-epic story — the epic-transition gate may change the next epic's source documents.
+
+**15d. Review Fix Loop**
+If the story status is NOT `done` after review:
+1. Send back to the implementing model for fixes (it auto-detects review follow-ups). DO NOT attempt to fix the problem yourself.
+2. Send to reviewing model again. Wait for completion.
+3. Repeat until `done` or 3 review cycles reached.
+
+**15e. Commit**
+Commit all changes for the completed story. Do not include the prefetched next story in this commit.
+
+**15f. Epic Transition Gate**
+After committing a story, reload `sprint-status.yaml`. If all non-retrospective stories in the active epic are `done`, run this gate before starting the next epic. This gate also runs for the final epic before exiting.
+
+**15f-i. Autonomous Retrospective**
+Invoke subagent → `/bmad-retrospective` for the active epic with non-interactive instructions:
+
+> Run the retrospective fully autonomously for Epic [active-epic-number].
+> Do not wait for the user at any prompts. Synthesize from completed story files, dev notes, review notes, implementation artifacts, commit history, test results, and project documents.
+> If evidence is missing, record "not verified" with a concrete action item instead of asking the user.
+> Save the retrospective document and update sprint-status.yaml.
+
+**15f-ii. Autonomous Course Correction**
+Invoke subagent → `/bmad-correct-course` using the retrospective as the change trigger with non-interactive instructions:
+
+> Run correct-course fully autonomously in Batch mode.
+> Change trigger: "Epic [active-epic-number] retrospective findings need to be synthesized into project artifacts before the next epic begins."
+> Auto-approve factual documentation updates supported by retrospective findings and implementation evidence.
+> Update impacted PRD, epic/story, architecture, UX/spec, and project-knowledge documents when the edit is clear.
+> If a finding is not concrete enough to safely edit, capture it in the Sprint Change Proposal instead.
+> Save the Sprint Change Proposal, return its path, list all changed files.
+
+**15f-iii. Transition Decision**
+- Commit retrospective, sprint-status.yaml, Sprint Change Proposal, and any doc changes.
+- If course correction changes the next epic or prefetched story's source docs, discard the prefetched story.
+- If course correction reports a major unresolved ambiguity or fundamental replan, STOP and report to user.
+- Otherwise, continue to the next epic without asking for approval.
+
+**15g. Next Story**
+Return to 15a. Continue through all epics. Do not ask for or wait for human approval.
 
 **Party Log:** `Story [ID] complete (built by [model], reviewed by [model]). [done]/[total].`
 
@@ -269,12 +344,15 @@ Cross-model code review ensures no model reviews its own work.
 
 ## Quest Complete
 
+When all epics and their retrospective entries are done:
 ```
 ⚔️ PARTY QUEST COMPLETE
 Built: [product name]
 Party: Claude + Gemini + Codex
 Phases: 5/5
 Stories: [total] completed, [blocked] blocked
+Epics: [N] completed with retrospectives
+Course corrections: [N] applied
 Multi-model checkpoints: [N] convergence points, [N] divergences resolved
 Confidence: [HIGH — all models agreed on critical decisions]
 Artifacts: [list key output files]
@@ -284,7 +362,9 @@ Artifacts: [list key output files]
 
 - 3-model QA NO-GO at Step 7 — design not ready
 - Pre-handoff gate fails at Step 11 — quality issues
-- Story fails cross-model review 3x — mark blocked, skip
+- Story fails cross-model review 3x consecutively — stop and report to user
+- Autonomous retrospective finds the active epic is incomplete
+- Course correction reports a major unresolved ambiguity, missing required PRD/epic artifacts, or a fundamental replan that cannot be completed autonomously
 - Atrium not available — fall back to `/guild-quest` (solo)
 - Critical error — stop and report
 

@@ -38,8 +38,8 @@ If yes, use atrium browser commands:
 ```bash
 # Find or create a browser pane
 "$ATRIUM_CLI_PATH" pane list --json  # look for type: browser
-# Or create one
-"$ATRIUM_CLI_PATH" pane create --type browser --url "https://example.com" --split "$ATRIUM_PANE_ID"
+# Create one per competitor — open as subtabs so they're organized and easy to switch between
+"$ATRIUM_CLI_PATH" pane create --type browser --url "https://example.com" --split "$ATRIUM_PANE_ID" --direction subtab
 
 # Navigate
 "$ATRIUM_CLI_PATH" browser navigate <pane-id> "<url>"
@@ -47,8 +47,8 @@ If yes, use atrium browser commands:
 # Capture accessibility tree (structured element data)
 "$ATRIUM_CLI_PATH" browser snapshot <pane-id>
 
-# Capture visual screenshot
-"$ATRIUM_CLI_PATH" browser screenshot <pane-id>
+# Capture visual screenshot (use --timeout 30000 to avoid premature timeouts)
+"$ATRIUM_CLI_PATH" browser screenshot <pane-id> --timeout 30000
 
 # Scroll to see below-the-fold content
 "$ATRIUM_CLI_PATH" browser scroll <pane-id> --direction down --amount 500
@@ -56,6 +56,12 @@ If yes, use atrium browser commands:
 # Read element attributes
 "$ATRIUM_CLI_PATH" browser eval <pane-id> "document.title"
 ```
+
+**Screenshot retry protocol:** If a screenshot command times out or fails:
+1. Wait 5 seconds, then retry with `--timeout 30000`
+2. If it fails again, try navigating to the URL again, wait for load, then screenshot
+3. If it fails a third time, use `browser snapshot` (accessibility tree) as fallback for THAT page only — but you MUST get at least 1 real screenshot per product
+4. Log every screenshot failure and every fallback in the audit output
 
 **Priority 2 — Playwright MCP**
 Check if Playwright MCP tools are available (mcp__playwright__*).
@@ -66,7 +72,13 @@ Use WebFetch to fetch pages and analyze HTML structure.
 Note: this cannot capture visual layout, only content and semantic structure.
 Flag in the audit that visual analysis was limited to content-only.
 
-**CRITICAL: You MUST use a real browser (Atrium or Playwright). Do NOT describe websites from memory or training data. Navigate to the actual URL, take actual screenshots, and analyze what you actually see on screen. Screenshots are the evidence. If you cannot take screenshots, you cannot do a visual audit — report this limitation immediately and ask the user to provide an environment with browser access.**
+**CRITICAL — HARD STOP RULES:**
+- You MUST use a real browser (Atrium or Playwright). Do NOT describe websites from memory or training data.
+- Navigate to the actual URL, take actual screenshots, and analyze what you actually see on screen.
+- Screenshots are the evidence. No screenshots = no visual audit.
+- You MUST capture at least 1 real screenshot per competitor product. If you cannot get ANY screenshots from ANY product after retries, STOP THE AUDIT and report the failure. Do NOT silently fall back to DOM-only analysis and continue the pipeline.
+- If screenshots fail for some products but succeed for others, continue with partial results but clearly flag which products have visual evidence and which do not.
+- The quest orchestrator MUST verify that the visual audit artifact contains real screenshot references before proceeding to Phase 2.
 
 ## Execution
 

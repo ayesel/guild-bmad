@@ -130,7 +130,11 @@ Invoke a subagent to run `/guild-visual-audit`. Provide:
 - Competitor URLs and product names from the briefing
 - Instruction to use Atrium browser if available (`$ATRIUM_CLI_PATH`)
 - Instruction to also search Dribbble and Behance for design inspiration
+- Instruction to use `--timeout 30000` on all browser screenshot commands
+- Instruction to retry screenshots up to 3 times before falling back
 Wait for completion. Read the output artifact at `{output_root}/guild-artifacts/visual-audit-*.md`.
+
+**GATE CHECK:** Before proceeding to Step 2, verify that the visual audit artifact contains real screenshot references (file paths or base64 data) for at least 3 competitor products. If the audit fell back to DOM-only analysis with zero screenshots, DO NOT PROCEED. Re-run the visual audit with explicit browser pane creation and longer timeouts. Visual design quality depends entirely on having actually seen the competitors.
 
 ### Step 2: Research Synthesis (Ranger)
 Invoke a subagent to run `/guild-research-synthesis`. Synthesize:
@@ -215,17 +219,79 @@ Wait for completion.
 Invoke a subagent to run `/bmad-sprint-planning`. Set up sprint-status.yaml from generated epics and stories.
 Wait for completion. Read sprint-status.yaml to confirm stories are ready.
 
-### Step 15: Dev Loop
-Repeat until all epics in `sprint-status.yaml` are `done`:
+### Step 15: Dev Loop (Autonomous Build)
 
-**15a.** Invoke subagent → `/bmad-create-story`. Read story file path.
-**15b.** Invoke subagent → `/bmad-dev-story <story-file-path>`. Wait for completion.
-**15c.** Simultaneously:
-  - Invoke subagent → `/bmad-code-review`. Check story status.
-  - Invoke subagent → `/bmad-create-story` for next story.
-**15d.** If NOT done after review: re-run dev-story + code-review (max 3 cycles).
-**15e.** Commit changes for completed story.
-**15f.** Next story. When an epic completes, continue to next. No human approval needed.
+Core rules:
+- `sprint-status.yaml` is the source of truth. Reload it after every story review, review-fix cycle, retrospective, and course-correction run.
+- Track the active epic number, active story identifier, active story file path, and any prefetched next story file path.
+- Do not ask for or wait for human approval during autonomous build. When a delegated BMAD workflow asks for confirmation, mode selection, approval, or facilitation input, instruct the subagent to choose the conservative autonomous default and document its assumption.
+- Do not create or develop a story from the next epic until the current epic's retrospective and course-correction gate has completed.
+- If a next story was prefetched and course correction changes the relevant epic, story, PRD, architecture, or UX artifacts, discard that prefetched story and create a fresh one from the corrected documents.
+- Commit completed story work separately from epic-transition documentation work.
+
+Repeat until all epics and their retrospective entries in `sprint-status.yaml` are `done`:
+
+**15a. Select or Create Story**
+Load `sprint-status.yaml` and select the next non-retrospective story that is not `done`.
+- If a valid prefetched story file path already exists for that story, use it.
+- Otherwise, invoke subagent → `/bmad-create-story`. Read story file path.
+
+**15b. Dev Story**
+Invoke subagent → `/bmad-dev-story <story-file-path>`. Wait for completion.
+
+**15c. Code Review + Prefetch**
+Simultaneously:
+- Invoke subagent → `/bmad-code-review`. Check story status in `sprint-status.yaml`.
+- If there is another story remaining in the same epic, invoke subagent → `/bmad-create-story` for that next story (prefetch).
+- If the active story is the final story in the current epic, do NOT prefetch a next-epic story — the epic-transition gate may change the next epic's source documents.
+
+**15d. Review Fix Loop**
+If the story status is NOT `done` after code review:
+1. Invoke subagent → `/bmad-dev-story <story-file-path>` on the same story (it auto-detects review follow-ups). DO NOT attempt to fix the problem yourself.
+2. Invoke subagent → `/bmad-code-review`. Wait for completion.
+3. Repeat until `done` or 3 review cycles reached.
+
+**15e. Commit**
+Commit all changes for the completed story with a descriptive message. Do not include the prefetched next story in this commit.
+
+**15f. Epic Transition Gate**
+After committing a story, reload `sprint-status.yaml`. If all non-retrospective stories in the active epic are `done`, run this gate before starting the next epic. This gate also runs for the final epic before exiting.
+
+**15f-i. Autonomous Retrospective**
+Invoke subagent → `/bmad-retrospective` for the active epic. Give the subagent these non-interactive instructions:
+
+> Run the retrospective fully autonomously for Epic [active-epic-number].
+> Do not wait for the user at confirmation, facilitation, readiness, approval, or final-reflection prompts.
+> Use sprint-status.yaml to confirm the epic number.
+> Synthesize participant input from completed story files, dev notes, review notes, implementation artifacts, commit history, test results, and the project documents.
+> For readiness questions, inspect available repository state and artifacts. If evidence is missing, record "not verified" with a concrete action item instead of asking the user.
+> Choose conservative defaults, document every assumption, save the retrospective document, and update the epic retrospective status in sprint-status.yaml.
+> Return the retrospective file path, significant findings, action items, and any candidate documentation updates.
+
+Read the retrospective document before proceeding.
+
+**15f-ii. Autonomous Course Correction**
+Invoke subagent → `/bmad-correct-course` using the retrospective as the change trigger. Give the subagent these non-interactive instructions:
+
+> Run correct-course fully autonomously in Batch mode.
+> Change trigger: "Epic [active-epic-number] retrospective findings need to be synthesized into project artifacts before the next epic begins."
+> Use the retrospective document, completed story files, review notes, sprint-status.yaml, PRD, epics/stories, architecture, UX/spec, and project knowledge as evidence.
+> Do not ask the user for the issue description, mode preference, edit approval, proposal approval, or handoff confirmation.
+> Auto-approve factual documentation updates that are directly supported by retrospective findings and completed implementation evidence.
+> Update impacted PRD, epic/story, architecture, UX/spec, and project-knowledge documents when the required edit is clear.
+> If a finding is important but not concrete enough to safely edit source documents, capture it in the Sprint Change Proposal and action items instead of inventing scope.
+> Save the Sprint Change Proposal, return its path, list all changed files, and summarize any remaining risks.
+
+Read the Sprint Change Proposal and changed-files list before proceeding.
+
+**15f-iii. Transition Decision**
+- Commit the retrospective, `sprint-status.yaml`, Sprint Change Proposal, and any documentation/planning changes with a descriptive epic-transition message.
+- If course correction changes the next epic or any prefetched story's source documents, discard the prefetched story and create a fresh story after this gate.
+- If course correction reports a major unresolved ambiguity, missing required PRD/epic artifacts, or a fundamental replan that cannot be completed autonomously, STOP and report the blocker to the user.
+- Otherwise, continue to the next epic without asking for approval.
+
+**15g. Next Story**
+Return to 15a. When you complete an epic, continue to the next epic after the transition gate. Do not ask for or wait for human approval.
 
 **Quest Log:** `Story [ID] complete. [done]/[total] stories. [N] remaining.`
 
@@ -233,12 +299,14 @@ Repeat until all epics in `sprint-status.yaml` are `done`:
 
 ## Quest Complete
 
-When all epics are done:
+When all epics and their retrospective entries are done:
 ```
 ⚔️ QUEST COMPLETE
 Built: [product name]
 Phases: 5/5
 Stories: [total] completed, [blocked] blocked
+Epics: [N] completed with retrospectives
+Course corrections: [N] applied
 Artifacts: [list key output files]
 ```
 
@@ -246,5 +314,7 @@ Artifacts: [list key output files]
 
 - Sage NO-GO at Step 7 — design not ready
 - Pre-handoff gate fails at Step 11 — quality issues
-- Story fails code review 3x — mark blocked, skip, continue
+- Story fails code review 3x consecutively — stop and report to user
+- Autonomous retrospective finds the active epic is incomplete
+- Course correction reports a major unresolved ambiguity, missing required PRD/epic artifacts, or a fundamental replan that cannot be completed autonomously
 - Critical error — stop and report
