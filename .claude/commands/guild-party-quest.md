@@ -27,6 +27,8 @@ quest:
   research_sources: []      # Interviews, Confluence links, prior artifacts
   features: []              # Key features the product needs
   design_system: ""         # e.g., "ADS" or "none" — if exists, components must align
+  design_system_path: ""    # local path to Storybook/design system repo (e.g., "../arise-storybook")
+  design_system_repo: ""    # GitHub repo (e.g., "ProjectAquariusOrg/arise-storybook")
 ```
 
 Pass these variables to every model pane at launch so all 3 models share the same context.
@@ -91,11 +93,17 @@ Every component created during design and build phases must be documented with:
 - Figma-ready: enough detail to create a matching Figma component
 
 **Reuse first, create second.** Before creating any new component:
-1. Check Storybook (`src/stories/` or `stories/`) for existing components that match
-2. Check the design system library for existing primitives
-3. If a match exists → use it, document the usage in the registry
-4. If no match → create it as a NEW component, flag it as `status: proposed`
-5. Proposed components can be approved into the design system later
+1. If `design_system_path` is set, read the Storybook/design system repo:
+   - Scan `src/stories/`, `stories/`, `src/components/` for existing components
+   - Read any component index, manifest, or registry file
+   - Check design tokens (colors, spacing, typography) to ensure new work aligns
+2. If `design_system_path` is not set, check the current project's `src/stories/` or `src/components/`
+3. If a match exists → use it, document the usage in the registry with `status: existing`
+4. If a partial match exists → extend it, document with `status: extended`
+5. If no match → create it as a NEW component, flag as `status: proposed` in the registry
+6. Proposed components can be approved and migrated into the design system repo later
+
+The `design_system_path` and `design_system_repo` variables let any team point to their own Storybook. The quest doesn't assume where the design system lives — it asks or the user provides it.
 
 Component statuses: `existing` (from Storybook/design system), `proposed` (new, needs approval), `approved` (accepted into design system), `built` (implemented in code).
 
