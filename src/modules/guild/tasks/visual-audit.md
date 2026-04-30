@@ -61,10 +61,12 @@ If yes, use atrium browser commands:
 Check if Playwright MCP tools are available (mcp__playwright__*).
 If yes, use Playwright navigation and screenshot tools.
 
-**Priority 3 — WebFetch (fallback)**
+**Priority 3 — WebFetch (last resort ONLY)**
 Use WebFetch to fetch pages and analyze HTML structure.
 Note: this cannot capture visual layout, only content and semantic structure.
 Flag in the audit that visual analysis was limited to content-only.
+
+**CRITICAL: You MUST use a real browser (Atrium or Playwright). Do NOT describe websites from memory or training data. Navigate to the actual URL, take actual screenshots, and analyze what you actually see on screen. Screenshots are the evidence. If you cannot take screenshots, you cannot do a visual audit — report this limitation immediately and ask the user to provide an environment with browser access.**
 
 ## Execution
 

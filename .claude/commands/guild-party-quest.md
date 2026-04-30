@@ -54,6 +54,26 @@ The user may provide `inspiration_terms` to add specific searches. But even with
 
 In Party Quest, the **Gemini pane** handles inspiration research during Phase 1 — it's specifically tasked with design inspiration while Claude handles competitor audit and Codex handles technical analysis.
 
+**YOU MUST USE A REAL BROWSER.** Do not describe what you think a website looks like from memory. Navigate to each URL, take screenshots, and analyze what you actually see. This applies to ALL models in the party.
+
+- **Atrium (preferred):** Use `$ATRIUM_CLI_PATH` browser commands:
+  ```bash
+  # Create browser pane for visual research
+  "$ATRIUM_CLI_PATH" pane create --type browser --url "<url>"
+  # Navigate
+  "$ATRIUM_CLI_PATH" browser navigate <pane-id> "<url>"
+  # Screenshot — captures actual visual layout
+  "$ATRIUM_CLI_PATH" browser screenshot <pane-id>
+  # Snapshot — captures accessibility tree and element structure
+  "$ATRIUM_CLI_PATH" browser snapshot <pane-id>
+  # Scroll to see below-the-fold content
+  "$ATRIUM_CLI_PATH" browser scroll <pane-id> --direction down --amount 500
+  ```
+- **Playwright (fallback for non-Atrium users):** Use Playwright MCP tools to navigate, screenshot, and analyze pages.
+- **WebFetch (last resort only):** Content-only, no visual analysis. Flag this limitation in the output.
+
+Every design inspiration source and every competitor MUST be visited in a real browser with real screenshots captured. Screenshots are the evidence. No screenshots = no visual audit. Brief EACH model pane with these browser instructions explicitly.
+
 ## Component Registry
 
 Throughout the entire quest, maintain a living component documentation file at:
