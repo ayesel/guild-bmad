@@ -1,0 +1,125 @@
+# Visual Audit Template
+#
+# Structured visual UI analysis of competing or comparable products.
+# Captures actual screenshots, layout patterns, interaction paradigms,
+# and synthesizes into design recommendations grounded in visual evidence.
+
+template:
+  name: Visual Audit
+  artifact_type: visual-audit
+  output_file: "{output_root}/guild-artifacts/visual-audit-{scope-name}.md"
+
+structure:
+  header:
+    - artifact: "Visual Audit"
+    - scope: "{scope-name}"
+    - status: "draft"
+    - version: "1.0"
+    - created: "{date}"
+    - author: "Ranger (UX Researcher)"
+    - confidence: "{high|medium|low}"
+    - browser_tool: "{atrium|playwright|webfetch}"
+    - viewport: "{width}x{height}"
+
+  sections:
+    - name: "Executive Summary"
+      description: >
+        3-5 bullet overview: dominant UI patterns found, visual benchmark product,
+        biggest design opportunities, and key patterns to adopt or avoid.
+
+    - name: "Audit Scope & Methodology"
+      description: >
+        What was analyzed, how many products, which screens, what browser tool was used,
+        viewport dimensions, date of capture, and any access limitations (gated products).
+
+    - name: "Products Analyzed"
+      description: >
+        Table of products with access level:
+        | Product | URL | Category | Access Level | Screens Captured | Notes |
+        Access levels: Full (public), Partial (freemium), Gated (login only), Marketing (landing page only)
+
+    - name: "Screen Captures & Analysis"
+      description: >
+        For each product, for each captured screen:
+
+        ### [Product Name] — [Screen Name]
+        **Screenshot:** [path or description]
+        **Accessibility snapshot:** [key findings from element tree]
+
+        **Layout & Structure:**
+        - Grid: [columns, max-width, regions]
+        - Information density: [sparse/moderate/dense]
+        - Content hierarchy: [what the eye sees first → last]
+
+        **Navigation Model:**
+        - Primary: [sidebar/topbar/tabs/breadcrumbs]
+        - Secondary: [filters/search/pagination]
+        - Wayfinding: [active states, location indicators]
+
+        **Data Presentation:**
+        - Display pattern: [table/cards/charts/map/list]
+        - Filtering: [how users narrow data]
+        - Empty/loading states: [observed or not]
+
+        **Interaction Patterns:**
+        - Primary actions: [button placement, hierarchy]
+        - Edit pattern: [inline/modal/drawer/page]
+        - Feedback: [toasts/inline/status badges]
+
+        **Accessibility Observations:**
+        - Heading structure: [logical/broken]
+        - Color contrast: [passing/failing]
+        - Keyboard navigability: [observed signals]
+
+    - name: "Pattern Frequency Matrix"
+      description: >
+        Cross-product comparison of observed UI patterns:
+        | Pattern | Prod A | Prod B | Prod C | Prod D | Consensus |
+        Use: ✅ Present, ❌ Absent, 🔶 Partial variation
+        Group by: Navigation, Layout, Data Display, Actions, Feedback
+
+    - name: "Visual Benchmark"
+      description: >
+        Which product is the visual design benchmark and why?
+        - Product name and specific screens
+        - What makes it the benchmark (polish, clarity, density, delight)
+        - What they got right that others didn't
+        - Caveats (different audience, different complexity level, etc.)
+
+    - name: "Best-in-Class Patterns"
+      description: >
+        For each key UI pattern area, which product does it best:
+        | Pattern Area | Best Product | What They Do | Why It Works | How to Adapt |
+
+    - name: "Anti-Patterns & Pitfalls"
+      description: >
+        Patterns observed that should be avoided:
+        | Anti-Pattern | Where Seen | Why It Fails | What to Do Instead |
+
+    - name: "Design Recommendations"
+      description: >
+        Prioritized recommendations for our product's visual design:
+        | Recommendation | Evidence (from which product/screen) | Impact | Priority |
+        Each recommendation must cite specific visual evidence from the audit.
+
+    - name: "Component Inventory"
+      description: >
+        Common UI components observed across products:
+        | Component | Frequency | Variations | Recommended Approach |
+        Examples: data tables, stat cards, timeline views, map views,
+        filter bars, status badges, action menus, empty states.
+
+    - name: "Design Tokens Observed"
+      description: >
+        Common design token patterns across products:
+        - Typography scales (heading sizes, body, captions)
+        - Spacing patterns (section gaps, card padding, table density)
+        - Color usage (data visualization palettes, status colors, backgrounds)
+        - Border radius patterns (sharp, slightly rounded, pill)
+        - Shadow/elevation patterns
+
+    - name: "Next Steps"
+      description: >
+        Typically: Rogue wireframes informed by these patterns,
+        Mage visual design using the benchmark as reference,
+        or deeper audit of a specific product's flow.
