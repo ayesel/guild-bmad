@@ -123,13 +123,56 @@ This registry becomes the design system documentation for the product.
 
 ---
 
+## Phase 0: Direction — "Set the Compass" (Mage elicitation gate)
+
+**Why this exists:** Without a designer-supplied direction, the pipeline averages competitor research and produces a generic AI-dashboard look. This gate forces the human to declare taste BEFORE any synthesis happens.
+
+### Step 0: Design Direction Brief (Mage)
+
+Run `/guild-design-direction` directly in the main conversation (this is interactive elicitation — do NOT delegate to a subagent, the user must answer the questions in real time).
+
+The brief asks 6 questions: anchor reference, personality adjectives, density, motion energy, color story, what to avoid. Mage synthesizes the answers into `{output_root}/guild-artifacts/design-direction-brief.md`.
+
+**GATE CHECK:** Before proceeding to Phase 1, verify the artifact exists and contains all 6 sections. If the user skipped or rushed any section, push back once: "We need this to be specific or downstream agents will guess."
+
+**Quest Variable:** Once locked, the brief becomes `design_direction_brief` — pass the FULL artifact contents into every Mage/Rogue/Warlock/Ranger subagent prompt in subsequent phases. Visual research weights the anchor reference heavily; visual design executes against the personality + density + motion + color story; copy executes against the personality.
+
+---
+
+## Phase 0.5: Foundation — "Pour the Slab" (Sage system-foundation gate)
+
+**Why this exists:** Even with a great direction brief, agents will inline ad-hoc components (bare `<select>`, hardcoded hex colors, raw `transition-all`) on every page if the token layer and base primitives aren't already present. This gate prevents the system from fragmenting page-by-page.
+
+### Step 0.5: Design System Foundation Audit (Sage)
+
+Invoke a subagent to run `/guild-system-foundation`. Sage audits:
+- **Token layer:** color, spacing, motion, shadow, typography (scale + weights), radius
+- **Primitive layer:** Button, Input, Select, ChipGroup, Field, Card, Badge, IconButton, Tooltip, Skeleton
+- **Usage discipline:** inline `<select>`, hardcoded hex, raw `transition-all`, inline component definitions in pages
+
+Sage produces a verdict: **PASS / CONDITIONAL / FAIL** plus a Remediation Plan.
+
+**GATE CHECK:**
+- **PASS** → proceed to Phase 1
+- **CONDITIONAL** → minor gaps; quest may proceed but Healer's first stories in Phase 4 must be the missing tokens/primitives BEFORE any page-level story
+- **FAIL** → STOP. The next agent task is to add the missing tokens and primitives. Page-level work cannot start.
+
+Show the verdict + plan to the user. If FAIL, ask: "Fix foundation now (recommended), or accept the debt and proceed?" Save the user's decision in the artifact.
+
+**Quest Variable:** The audit becomes `design_system_foundation` — pass the artifact path and PASS/CONDITIONAL/FAIL status to Mage/Rogue/Healer in subsequent phases. Healer's sprint planning prioritizes any unfinished Remediation Plan items as Sprint 1 stories.
+
+**Quest Log:** `Phase 0.5/5 — Foundation: [PASS/CONDITIONAL/FAIL]. Tokens missing: [N]. Primitives missing: [N].`
+
+---
+
 ## Phase 1: Research — "Scouting"
 
 ### Step 1: Visual Audit (Ranger)
 Invoke a subagent to run `/guild-visual-audit`. Provide:
+- **Full contents of `{output_root}/guild-artifacts/design-direction-brief.md`** — Ranger MUST weight the anchor reference heavily and use the personality/density/color signals to evaluate competitor patterns through the designer's lens, not as a neutral averaging exercise
 - Competitor URLs and product names from the briefing
 - Instruction to use Atrium browser if available (`$ATRIUM_CLI_PATH`)
-- Instruction to also search Dribbble and Behance for design inspiration
+- Instruction to also search Dribbble and Behance for design inspiration aligned with the brief's anchor and personality
 - Instruction to use `--timeout 30000` on all browser screenshot commands
 - Instruction to retry screenshots up to 3 times before falling back
 Wait for completion. Read the output artifact at `{output_root}/guild-artifacts/visual-audit-*.md`.
@@ -151,7 +194,10 @@ Wait for completion. Read the output artifact.
 ## Phase 2: Design — "Crafting"
 
 ### Step 3: Content & Microcopy (Warlock)
-Invoke a subagent to run `/guild-agent-warlock`. Provide the research synthesis. Write all page/screen copy, labels, empty states, error messages, and microcopy.
+Invoke a subagent to run `/guild-agent-warlock`. Provide:
+- **Full contents of `{output_root}/guild-artifacts/design-direction-brief.md`** — voice and tone must execute against the personality adjectives in the brief; do not default to generic SaaS voice
+- The research synthesis
+Write all page/screen copy, labels, empty states, error messages, and microcopy.
 Wait for completion.
 
 ### Step 4: Editorial Review (BMAD)
@@ -159,11 +205,17 @@ Invoke a subagent to run `/bmad-editorial-review-prose` on the Warlock's copy ou
 Wait for completion. If significant changes, update the copy artifact.
 
 ### Step 5: Interaction Design (Rogue)
-Invoke a subagent to run `/guild-agent-rogue`. Provide polished copy and research synthesis. Produce wireframes, user flows, state diagrams, and interaction maps.
+Invoke a subagent to run `/guild-agent-rogue`. Provide:
+- **Full contents of `{output_root}/guild-artifacts/design-direction-brief.md`** — density preference governs layout choices (dense/balanced/airy), motion energy governs transition style; deviate from the brief only with explicit reasoning
+- Polished copy and research synthesis
+Produce wireframes, user flows, state diagrams, and interaction maps.
 Wait for completion.
 
 ### Step 6: Visual Design (Mage)
-Invoke a subagent to run `/guild-agent-mage`. Provide wireframes, copy, and visual audit references. Apply visual design.
+Invoke a subagent to run `/guild-agent-mage`. Provide:
+- **Full contents of `{output_root}/guild-artifacts/design-direction-brief.md`** — anchor reference, color story, and personality drive every visual choice; when picking between two valid options, choose the one closer to the anchor
+- Wireframes, copy, and visual audit references
+Apply visual design.
 Wait for completion.
 
 ### Step 7: Design QA (Sage)

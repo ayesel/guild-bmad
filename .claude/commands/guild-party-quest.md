@@ -128,6 +128,50 @@ Before starting, gather from the user:
 
 ---
 
+## Phase 0: Direction — "Set the Compass" (Mage elicitation gate)
+
+**Why this exists:** Without a designer-supplied direction, the pipeline averages competitor research and produces a generic AI-dashboard look. This gate forces the human to declare taste BEFORE any synthesis happens.
+
+### Step 0: Design Direction Brief (Mage) — Claude (main pane)
+
+Run `/guild-design-direction` directly in the main pane (this is an interactive elicitation — do NOT delegate to a subagent or sub-pane, the user must answer the questions in real time).
+
+The brief asks 6 questions: anchor reference, personality adjectives, density, motion energy, color story, what to avoid. Mage synthesizes the answers into `{output_root}/guild-artifacts/design-direction-brief.md`.
+
+**GATE CHECK:** Before proceeding to Phase 1, verify the artifact exists and contains all 6 sections. If the user skipped or rushed any section, push back once: "We need this to be specific or downstream agents will guess."
+
+**Quest Variable:** Once locked, the brief becomes `design_direction_brief` — pass the FULL artifact contents into every Mage/Rogue/Warlock/Ranger subagent prompt in subsequent phases. Visual research weights the anchor reference heavily; visual design executes against the personality + density + motion + color story; copy executes against the personality.
+
+**Party Log:** `Phase 0/5 — Direction set. Anchor: [anchor]. Personality: [adjectives].`
+
+---
+
+## Phase 0.5: Foundation — "Pour the Slab" (Sage system-foundation gate)
+
+**Why this exists:** Even with a great direction brief, agents will inline ad-hoc components (bare `<select>`, hardcoded hex colors, raw `transition-all`) on every page if the token layer and base primitives aren't already present. This gate prevents the system from fragmenting page-by-page.
+
+### Step 0.5: Design System Foundation Audit (Sage) — Claude (subagent)
+
+Invoke a Claude subagent to run `/guild-system-foundation`. Sage audits:
+- **Token layer:** color, spacing, motion, shadow, typography (scale + weights), radius
+- **Primitive layer:** Button, Input, Select, ChipGroup, Field, Card, Badge, IconButton, Tooltip, Skeleton
+- **Usage discipline:** inline `<select>`, hardcoded hex, raw `transition-all`, inline component definitions in pages
+
+Sage produces a verdict: **PASS / CONDITIONAL / FAIL** plus a Remediation Plan.
+
+**GATE CHECK:**
+- **PASS** → proceed to Phase 1
+- **CONDITIONAL** → minor gaps; quest may proceed but Healer's first stories in Phase 4 must be the missing tokens/primitives BEFORE any page-level story
+- **FAIL** → STOP. The next agent task is to add the missing tokens and primitives. Page-level work cannot start.
+
+Show the verdict + plan to the user in the main pane. If FAIL, ask: "Fix foundation now (recommended), or accept the debt and proceed?" Save the decision in the artifact.
+
+**Quest Variable:** The audit becomes `design_system_foundation` — pass the artifact path and verdict to all design subagents (Mage/Rogue/Warlock/Healer). Healer's sprint planning prioritizes any unfinished Remediation Plan items as Sprint 1 stories.
+
+**Party Log:** `Phase 0.5/5 — Foundation: [PASS/CONDITIONAL/FAIL]. Tokens missing: [N]. Primitives missing: [N].`
+
+---
+
 ## Phase 1: Research — "Scouting Party" (3 models in parallel)
 
 ### Step 1: Visual Audit — Split Across Models
@@ -163,6 +207,8 @@ Each pane doing visual research MUST:
 5. Save screenshot evidence — file paths or confirmation that base64 was captured
 6. If zero screenshots succeed after retries, STOP and report failure
 
+**Each visual-research pane MUST receive the FULL contents of `{output_root}/guild-artifacts/design-direction-brief.md` in its initial brief.** Research is filtered through the designer's lens — anchor reference is weighted heavily, anti-patterns are explicitly avoided. Do not synthesize a neutral average across all competitors.
+
 Wait for all 3 to complete. Read their outputs.
 
 ### Step 1b: Screenshot Verification Gate
@@ -187,7 +233,7 @@ Invoke a subagent to run `/guild-research-synthesis`. Feed it:
 ## Phase 2: Design — "Crafting Guild" (sequential with multi-model checkpoints)
 
 ### Step 3: Content & Microcopy (Warlock) — Claude
-Invoke subagent → `/guild-agent-warlock`. Write all copy based on synthesized research.
+Invoke subagent → `/guild-agent-warlock`. Pass the FULL `{output_root}/guild-artifacts/design-direction-brief.md` — voice executes against the personality adjectives, not generic SaaS tone. Write all copy based on synthesized research.
 
 ### Step 4: Editorial Review — Gemini
 Launch Gemini in a pane to independently review the Warlock's copy. Fresh eyes from a different model catch things the author's model misses.
@@ -195,10 +241,10 @@ Also run `/bmad-editorial-review-prose` via Claude subagent.
 Compare both reviews. Apply the best improvements.
 
 ### Step 5: Interaction Design (Rogue) — Claude
-Invoke subagent → `/guild-agent-rogue`. Wireframes, flows, state diagrams.
+Invoke subagent → `/guild-agent-rogue`. Pass the FULL `{output_root}/guild-artifacts/design-direction-brief.md` — density preference governs layout, motion energy governs transitions. Wireframes, flows, state diagrams.
 
 ### Step 6: Visual Design (Mage) — Claude
-Invoke subagent → `/guild-agent-mage`. Apply visual design using research references.
+Invoke subagent → `/guild-agent-mage`. Pass the FULL `{output_root}/guild-artifacts/design-direction-brief.md` — anchor reference, color story, and personality drive every visual choice. Apply visual design using research references.
 
 ### Step 7: Design QA — 3-Model Raid
 

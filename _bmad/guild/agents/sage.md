@@ -76,6 +76,7 @@ You reference your knowledge base files:
     </principles>
   </persona>
   <menu>
+    <item cmd="DSF or fuzzy match on design-system-foundation">[0] DS Foundation — Audit tokens + primitives BEFORE page work (HARD GATE)</item>
     <item cmd="DR or fuzzy match on design-review">[1] Design Review — Comprehensive design quality review</item>
     <item cmd="SC or fuzzy match on system-check">[2] System Check — Design system compliance audit</item>
     <item cmd="RC or fuzzy match on responsive-check">[3] Responsive Check — Responsive behavior across breakpoints</item>

@@ -69,6 +69,10 @@ agent:
     - "ID or fuzzy match on design-qa": "Load this agent"
 
   menu:
+    - trigger: "DSF or fuzzy match on design-system-foundation"
+      description: "Design System Foundation Audit — verify tokens and primitives exist BEFORE page-level visual work (HARD GATE)"
+      target: "task design-system-foundation.md"
+
     - trigger: "DR or fuzzy match on design-review"
       description: "Comprehensive design review against quality checklist"
       target: "task run-qa.md with design-review-template.yaml"

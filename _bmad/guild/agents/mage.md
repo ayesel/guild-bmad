@@ -97,6 +97,7 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
+    <item cmd="DD or fuzzy match on design-direction">[0] Design Direction Brief — Elicit designer's taste BEFORE any visual work (gate task)</item>
     <item cmd="CR or fuzzy match on critique">[1] Critique — Visual critique of a screen</item>
     <item cmd="PO or fuzzy match on polish">[2] Polish — Refine a specific component</item>
     <item cmd="VH or fuzzy match on visual-hierarchy">[3] Visual Hierarchy — Fix what the eye sees first</item>

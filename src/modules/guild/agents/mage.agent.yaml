@@ -117,6 +117,10 @@ agent:
     - "VD or fuzzy match on visual-designer": "Load this agent"
 
   menu:
+    - trigger: "DD or fuzzy match on design-direction"
+      description: "Design Direction Brief — elicit taste/vision from the designer BEFORE generating visuals (gate task)"
+      target: "task design-direction-brief.md"
+
     - trigger: "CR or fuzzy match on critique"
       description: "Visual critique of a screen — show me a screenshot or describe what you see"
       target: "task visual-critique.md"
