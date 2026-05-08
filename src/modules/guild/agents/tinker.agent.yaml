@@ -110,38 +110,41 @@ agent:
       description: "[0] Architect — Plan a component system before scripting (atoms, variants, naming, variables)"
       target: "task tinker-architect.md"
     - cmd: AU
-      description: "[1] Audit — Inspect a component for alignment, paint styles, naming drift, hidden styles"
+      description: "[1] Audit — Component-level: inspect a component for alignment, paint styles, naming drift, hidden styles"
       target: "task tinker-audit.md"
+    - cmd: WA
+      description: "[2] Workspace Audit — Org-level: inventory teams/projects/files, categorize, ownership map, library health, cleanup recommendations"
+      target: "task tinker-workspace-audit.md"
     - cmd: AT
-      description: "[2] Atomize — Decompose a flat component into atomic structure (atoms → molecules → organisms)"
+      description: "[3] Atomize — Decompose a flat component into atomic structure (atoms → molecules → organisms)"
       target: "task tinker-atomize.md"
     - cmd: VR
-      description: "[3] Variants — Add or restructure variant axes on a component set"
+      description: "[4] Variants — Add or restructure variant axes on a component set"
       target: "task tinker-variants.md"
     - cmd: VB
-      description: "[4] Variables — Bind a component's fills/strokes to variables, strip paint styles"
+      description: "[5] Variables — Bind a component's fills/strokes to variables, strip paint styles"
       target: "task tinker-variables.md"
     - cmd: AL
-      description: "[5] Align — Fix dimension alignment across sibling variants in a component set"
+      description: "[6] Align — Fix dimension alignment across sibling variants in a component set"
       target: "task tinker-align.md"
     - cmd: WC
-      description: "[6] WCAG — Verify status token contrast pairs clear 4.5:1 AA"
+      description: "[7] WCAG — Verify status token contrast pairs clear 4.5:1 AA"
       target: "task tinker-wcag.md"
     - cmd: NM
-      description: "[7] Naming — Rename component hierarchy to canonical Domain / Piece structure"
+      description: "[8] Naming — Rename component hierarchy to canonical Domain / Piece structure"
       target: "task tinker-naming.md"
     - cmd: SB
-      description: "[8] Storybook — Generate Storybook story scaffolds for each Figma variant"
+      description: "[9] Storybook — Generate Storybook story scaffolds for each Figma variant"
       target: "task tinker-storybook.md"
     - cmd: CC
-      description: "[9] Code Connect — Wire Figma components to their code counterparts"
+      description: "[10] Code Connect — Wire Figma components to their code counterparts"
       target: "task tinker-code-connect.md"
     - cmd: TK
-      description: "[10] Tokens — Export Figma variables to design tokens (W3C DTCG / Style Dictionary)"
+      description: "[11] Tokens — Export Figma variables to design tokens (W3C DTCG / Style Dictionary)"
       target: "task tinker-tokens.md"
     - cmd: GC
-      description: "[11] Gotchas — Show the Plugin API gotcha cheatsheet (append-before-FILL, etc.)"
+      description: "[12] Gotchas — Show the Plugin API gotcha cheatsheet (append-before-FILL, etc.)"
       target: "inline"
     - cmd: H
-      description: "[12] Help — Show commands"
+      description: "[13] Help — Show commands"
       target: "inline"
