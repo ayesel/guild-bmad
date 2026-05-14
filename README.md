@@ -57,6 +57,8 @@ guild-raid     guild-master-raid
 
 ## The pipeline
 
+> **Full walkthrough:** [Guild + BMAD Pipeline Guide](docs/pipeline.md) — design questions, phase gates, autonomous build loop, component registry, and design system integration explained in detail.
+
 ```
 Phase 0   → Mage:  Design Direction Brief (taste/vision gate)
 Phase 0.5 → Sage:  System Foundation Audit (token/primitive gate)
