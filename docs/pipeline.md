@@ -1,60 +1,74 @@
 # Guild + BMAD Pipeline Guide
 
-How Guild and BMAD work together — from the first design question to shipped code.
+---
+
+## What this is
+
+Guild and BMAD are two separate frameworks that cover different parts of the product development lifecycle. This guide explains how they connect, who does what, and in what order.
+
+**BMAD** handles the business and engineering layers: requirements (Analyst), product strategy (PM), system architecture (Architect), sprint planning (SM), development (Dev), testing strategy (TEA), and documentation (Tech Writer).
+
+**Guild** handles product design: research (Ranger), interaction design (Rogue), visual design (Mage), content strategy (Warlock), design QA (Sage), developer handoff (Healer), and design system engineering (Tinker).
+
+The pipeline is the integration point — it orchestrates both frameworks in the right order so their outputs feed each other. Guild reads BMAD's PRD and architecture to ground design decisions. BMAD's dev loop reads Guild's UX spec and stories to implement them correctly.
 
 ---
 
 ## The rule
 
-**PM scopes the change → Guild runs the design sprint → Dev implements.**
+**BMAD plans → Guild designs → BMAD builds.**
 
-Never go straight from PM to Dev on any UI-facing work. Guild is the required step between planning and building. Stories generated without a Guild design sprint will be missing component specs, interaction states, copy, and accessibility requirements — the dev loop will fill in those gaps with guesses.
+Never go from PM straight to Dev on UI-facing work. Guild is the required layer between planning and building. Stories created without a Guild design sprint will be missing component specs, interaction states, copy, and accessibility requirements — the build loop fills those gaps with guesses, which become bugs.
 
 ---
 
-## Two ways to run the pipeline
+## How to run it
 
-| Command | What it does |
+| Command | When to use |
 |---------|-------------|
-| `/guild-design-sprint` | Runs the design pipeline only (research through handoff). Stops before build. Use when you want to review artifacts before handing off to dev. |
-| `/guild-quest` | Runs the full pipeline end-to-end — design questions through autonomous build. One command, no human in the loop after the opening questions. |
-
-`/guild-quick-sprint` skips research and goes straight to design if you already have research artifacts.
+| `/guild-quest` | Full pipeline from scratch — BMAD planning through Guild design through build and documentation. One command. |
+| `/guild-design-sprint` | Design only — research through handoff. Stops before build. Use when you want to review artifacts before dev starts. |
+| `/guild-quick-sprint` | Skip research — design through sprint planning. Use when research already exists. |
+| `/bmad-autonomous-build` | Build only — picks up from wherever sprint-status.yaml left off. Use when design is done and you just need to build. |
 
 ---
 
-## The full pipeline — 15 steps across 5 phases
+## The full pipeline
 
-### Before anything starts: the opening questions
+### Phase Pre — "The Charter" · BMAD Planning (Greenfield only)
 
-`/guild-quest` begins by gathering context. It asks:
+Skip if PRD, Architecture, and Epics already exist. For brownfield, check what's missing and start from there.
 
-- **What are we building?** — product name and slug
-- **Who is it for?** — target user and industry
-- **Competitors to audit?** — URLs or product names for visual research
-- **Key features?** — what the product needs to do
-- **Design system?** — whether an existing system (e.g., Storybook repo) should be respected
+This phase is **interactive** — BMAD workflows ask clarifying questions and require input. You stay engaged.
 
-Once answered, quest variables are locked and passed to every downstream agent. You won't be asked again.
+| Step | Agent | Output |
+|------|-------|--------|
+| Pre-1 | Analyst | Project brainstorm + context document |
+| Pre-2 | Analyst | Market and domain research document |
+| Pre-3 | PM | Product Requirements Document (PRD) — *required* |
+| Pre-4 | Architect | Architecture Document — *required* |
+| Pre-5 | PM | Epics and User Stories |
+
+Nothing in Guild starts until PRD, Architecture, and Epics exist. These are the foundation every downstream agent reads.
 
 ---
 
 ### Phase 0 — "Set the Compass" · Design Direction Gate
 
-**Command:** `/guild-design-direction` (run interactively, not as a subagent)
+**Command:** `/guild-design-direction` (interactive — run in main conversation, not as subagent)
 
 Mage asks 6 questions before any visual work begins:
 
-1. **Anchor reference** — a product whose visual style you admire (not necessarily a competitor)
-2. **Personality adjectives** — 3–5 words that describe the feel (e.g., "precise, calm, technical")
+1. **Anchor reference** — a product whose visual style you admire
+2. **Personality adjectives** — 3–5 words that describe the feel
 3. **Density preference** — dense / balanced / airy
 4. **Motion energy** — static / subtle / expressive
 5. **Color story** — the emotional role of color in this product
-6. **What to avoid** — patterns, styles, or references that are explicitly off-limits
+6. **What to avoid** — patterns, styles, or references that are off-limits
 
-Mage synthesizes the answers into a **Design Direction Brief** saved to `{output_root}/guild-artifacts/design-direction-brief.md`. Every downstream agent — Ranger, Rogue, Mage, Warlock — receives the full brief and executes against it. This is what prevents the pipeline from averaging competitors into a generic AI-dashboard result.
+Mage synthesizes the answers into a **Design Direction Brief**. Every downstream Guild agent receives the full brief and executes against it. This is what prevents the pipeline from averaging competitors into generic output.
 
-**Gate:** If any of the 6 sections is missing or vague, Mage pushes back once before continuing.
+**Gate:** If any section is missing or vague, Mage pushes back once before continuing.
 
 ---
 
@@ -62,184 +76,156 @@ Mage synthesizes the answers into a **Design Direction Brief** saved to `{output
 
 **Command:** `/guild-system-foundation`
 
-Sage audits the token and primitive layer before any page-level work starts. It checks:
-
-- **Token layer** — color, spacing, motion, shadow, typography (scale + weights), radius
-- **Primitive layer** — Button, Input, Select, ChipGroup, Field, Card, Badge, IconButton, Tooltip, Skeleton
-- **Usage discipline** — inline `<select>`, hardcoded hex colors, raw `transition-all`, inline component definitions in pages
-
-Sage returns one of three verdicts:
+Sage audits the token and primitive layer before page-level work starts.
 
 | Verdict | What happens |
 |---------|-------------|
 | **PASS** | Proceed to Phase 1 |
-| **CONDITIONAL** | Proceed, but Healer's first sprint stories must fix the missing tokens/primitives before any page-level stories |
-| **FAIL** | Stop. Add missing tokens and primitives. Page-level work cannot start. |
-
-If FAIL, the quest asks: "Fix foundation now (recommended), or accept the debt and proceed?" Your answer is recorded in the artifact.
+| **CONDITIONAL** | Proceed, but Healer's first stories must fix missing tokens/primitives before page stories |
+| **FAIL** | Stop. Tinker fixes the foundation. Page-level work cannot start. |
 
 ---
 
 ### Phase 1 — "Scouting" · Research
 
 **Step 1 — Visual Audit (Ranger)**
-Ranger opens a real browser (Atrium preferred, Playwright fallback), visits competitor products, searches Dribbble and Behance, and captures screenshots. The design direction brief filters the audit — Ranger evaluates what it finds through the lens of your anchor and personality, not as a neutral survey.
-
-Gate: at least 3 competitors must have real screenshot evidence. If screenshots fail, the audit re-runs before proceeding. No screenshots = no visual audit.
+Real browser required. Ranger visits competitors and searches Dribbble/Behance, filtered through the design direction brief. Gate: 3+ competitors must have real screenshot evidence before proceeding.
 
 **Step 2 — Research Synthesis (Ranger)**
-Ranger synthesizes the visual audit with any existing research artifacts, interviews, and Confluence documentation into a single research synthesis document.
+Combines visual audit with existing interviews, stakeholder feedback, and Confluence docs into a single synthesis document.
 
 ---
 
 ### Phase 2 — "Crafting" · Design
 
-**Step 3 — Content & Microcopy (Warlock)**
-Warlock writes all screen copy, labels, empty states, error messages, and microcopy — before any flows are designed, so Rogue designs around real words, not lorem ipsum.
+| Step | Agent | Output |
+|------|-------|--------|
+| 3 | Warlock | All screen copy, labels, empty states, error messages — before layout |
+| 4 | BMAD Editorial (Prose) | Polished copy |
+| 5 | Rogue | User flows, wireframes, state diagrams, interaction maps |
+| 6 | Mage | Visual design applied against direction brief |
+| 7 | Sage | Design QA — GO / CONDITIONAL GO / NO-GO |
 
-**Step 4 — Editorial Review (BMAD)**
-`/bmad-editorial-review-prose` polishes the copy before it gets locked into layouts.
-
-**Step 5 — Interaction Design (Rogue)**
-Rogue produces user flows, swim lanes, wireframes, state diagrams, and interaction maps. Density and motion preferences from the design direction brief govern layout and transition choices.
-
-**Step 6 — Visual Design (Mage)**
-Mage applies visual design. The anchor reference, color story, and personality adjectives drive every visual choice. When two options are equally valid, the one closer to the anchor wins.
-
-**Step 7 — Design QA (Sage)**
-Sage reviews for accessibility, design system compliance, and quality.
-
-| Sage verdict | What happens |
-|-------------|-------------|
-| **GO** | Continue |
-| **CONDITIONAL GO** | Continue with noted conditions |
-| **NO-GO** | Quest halts. Report findings to user. Pipeline loops back to Rogue. |
+Sage NO-GO halts the pipeline and loops back to Rogue.
 
 ---
 
 ### Phase 3 — "Trial by Fire" · Review
 
-**Step 8 — Multi-Agent Review**
-`/bmad-party-mode` brings multiple BMAD agents into a review conversation — gaps, contradictions, and missed edge cases surface here.
+Four lenses in sequence — each catches different failure modes:
 
-**Step 9 — Edge Case Sweep**
-`/bmad-review-edge-case-hunter` sweeps every branching path and boundary condition. Critical findings loop back to the relevant design step.
+| Step | Tool | What it catches |
+|------|------|----------------|
+| 8 | `bmad-party-mode` (Tavern) | Gaps, contradictions, missed edge cases across multiple agent perspectives |
+| 9 | `bmad-review-edge-case-hunter` | Boundary conditions and unhandled paths |
+| 9b | `bmad-review-adversarial-general` | Challenges every design decision cynically — assumptions, risks, things that will break |
+| 9c | `bmad-editorial-review-structure` | Structural issues in artifacts — cuts, reorganization, simplification |
+
+Critical findings from any lens loop back to the relevant design step before proceeding.
 
 ---
 
 ### Phase 4 — "Forging the Blueprint" · Handoff
 
-**Step 10 — Dev Handoff (Healer)**
-Healer produces the complete dev handoff spec — component inventory, spacing specs, state coverage, copy, and ARIA notes.
+| Step | Agent/Tool | Output |
+|------|-----------|--------|
+| 10 | Healer | Dev handoff spec — component inventory, spacing, states, copy, ARIA |
+| 11 | Sage `/guild-pre-handoff` | Pre-handoff quality gate — NO-GO loops back |
+| 12 | `/guild-ux-spec` | UX_Design.md — BMAD-compatible, consumed by dev-story |
+| 13 | `/guild-jira-stories` | Dev subtasks with Given/When/Then acceptance criteria |
+| 13b | Architect `/implementation-readiness` | **Gate:** validates PRD + UX + Architecture + Epics are aligned before build starts |
 
-**Step 11 — Pre-Handoff Gate (Sage)**
-Full quality gate. NO-GO loops back to fix issues before stories are created.
-
-**Step 12 — UX Spec**
-`/guild-ux-spec` packages all Guild artifacts into a single `UX_Design.md` compatible with BMAD's dev-story workflow.
-
-**Step 13 — Story Generation**
-`/guild-jira-stories` generates dev subtasks from the design artifacts with Given/When/Then acceptance criteria.
+The implementation readiness check is **interactive**. It uses an adversarial approach to find gaps before they become build-loop bugs. A FAIL here stops the quest.
 
 ---
 
 ### Phase 5 — "The Forge" · Autonomous Build
 
-From here, no human input is required. The quest runs the dev loop autonomously until all stories are done.
+From here, no human input is required. The build loop runs autonomously until all stories are done.
 
-**Step 14 — Sprint Planning (BMAD SM)**
-`/bmad-sprint-planning` creates `sprint-status.yaml` from the generated epics and stories. This file is the source of truth for the entire build loop.
+**Step 14 — Sprint Planning (SM)**
+Creates `sprint-status.yaml` — the source of truth for the entire build loop.
 
 **Step 15 — Dev Loop**
 
-The loop runs until every epic and its retrospective are marked `done` in `sprint-status.yaml`:
-
 ```
 For each story:
-  1. Create story (or use prefetched)
-  2. Dev story — implement
-  3. Code review + prefetch next story
-  4. Review-fix loop (up to 3 cycles)
-  5. Commit completed story
+  15a. Create story (or use prefetched)
+  15b. Dev story — implement
+  15c. Code review + prefetch next story
+  15d. Review-fix loop (up to 3 cycles)
+  15e. Commit completed story
 
 At each epic boundary:
-  6a. Retrospective — synthesize what happened
-  6b. Course correction — update PRD, architecture, UX spec from retrospective findings
-  6c. Transition — commit, then continue to next epic
+  15f-i.  Retrospective — synthesize what happened
+  15f-ii. Course correction — update PRD, architecture, UX spec from findings
+  15f-iii. Transition — commit and continue
 ```
 
-The loop stops and reports to you if:
-- 3 review cycles fail on the same story
-- Course correction finds an unresolvable blocker
-- A required artifact (PRD, architecture, UX spec) is missing
-- Tests fail in a way that suggests a fundamental design flaw
-
-When everything is done:
-```
-⚔️ AUTONOMOUS BUILD COMPLETE
-Stories: [N] completed
-Epics: [N] completed with retrospectives
-Course corrections: [N] applied
-```
+Stop conditions: 3 consecutive review failures, unresolvable course correction blocker, missing required artifact, fundamental design flaw in tests.
 
 ---
 
 ### Phase 6 — "Chronicle & Seal" · Test Architecture + Documentation
 
-Runs after all epics and retrospectives are complete. These are BMAD agents, not Guild agents — the boundary is intentional. Guild owns product design. BMAD owns everything else including quality engineering and technical writing.
+These steps use BMAD agents, not Guild agents. Guild owns product design. BMAD owns quality engineering and technical writing. Keeping them in BMAD means their knowledge bases stay current automatically when BMAD ships updates.
 
 **Step 16 — Test Architecture Review (BMAD TEA)**
 
-TEA reviews what was built against what should be tested. Because this project uses Atrium's built-in browser for UI testing rather than Playwright, TEA is briefed to apply its strategy knowledge in that context and skip Playwright-specific tooling recommendations.
+TEA reviews what was built against what should be tested. This project uses Atrium's built-in browser for UI testing — TEA is briefed accordingly and skips Playwright-specific tooling.
 
 TEA produces:
-- Test level coverage assessment (unit / integration / e2e gaps)
-- Priority gaps by P0–P3 — what must exist before production
+- Test level coverage gaps (unit / integration / e2e)
+- Priority gaps (P0–P3) — what must exist before production
 - Contract testing needs (API boundaries requiring Pact verification)
 - CI pipeline recommendations
 - Risk governance verdict: **GO / CONDITIONAL / NO-GO**
 
-A NO-GO halts the quest. Conditional items become follow-up stories.
+TEA NO-GO halts the quest. Conditional items become follow-up stories.
 
 **Step 17 — Developer Documentation (BMAD Tech Writer / Paige)**
 
 Paige documents the completed product for developers. Inputs: component registry, UX spec, handoff specs, test architecture review, retrospectives.
 
-Paige produces:
-- Developer README (setup, env vars, how to run and test)
-- Component reference (public API of each component from the registry)
-- Architecture notes (key design decisions, data flow, integrations)
-- Test guide (how to run tests, what CI checks, how to add coverage)
+Produces: developer README, component reference, architecture notes, test guide.
 
 ---
 
-**Why BMAD, not Guild, for Phase 6:**
-TEA and Paige live in BMAD's bundle. When BMAD ships updates to TEA's test knowledge base or Paige's documentation standards, those flow in automatically. Merging them into Guild agents would mean owning that maintenance forever. Guild = product design. BMAD = everything else.
+## Running just the build loop
 
----
-
-## Running just the dev loop
-
-If design is already done and stories are ready, you can skip to the build loop directly:
+If design is done and stories are ready:
 
 ```bash
 /bmad-autonomous-build
 ```
 
-This reads `sprint-status.yaml` and runs the dev loop from wherever you are — no design steps, no questions.
+Reads `sprint-status.yaml` and runs the dev loop from wherever it left off. No design steps, no questions.
 
 ---
 
 ## Component registry
 
-Throughout the quest, a living component registry is maintained at `{output_root}/guild-artifacts/component-registry-{product_slug}.md`. Each component is documented with props, states, design tokens, ARIA notes, and Storybook/Figma readiness. Status tracks whether each component is `existing` (from design system), `extended`, `proposed` (new, needs approval), or `built` (implemented).
+Maintained throughout the quest at `{output_root}/guild-artifacts/component-registry-{product_slug}.md`. Every component is documented with props, states, design tokens, ARIA notes, and Storybook/Figma readiness. Status tracks whether each component is `existing`, `extended`, `proposed`, or `built`.
 
-The registry is the design-to-development contract. Healer writes it. Dev updates it as components are built.
+The registry is the design-to-development contract. Warlock seeds it. Rogue adds interaction components. Mage adds visual specs. Healer finalizes for handoff. Dev updates it as components are built.
 
 ---
 
 ## Design system integration
 
-If you provide a `design_system_path` (local Storybook repo) or `design_system_repo` (GitHub repo), every agent that creates components checks it first. Existing components are reused. Extensions are flagged. Only genuinely new components get proposed as additions to the system.
+Provide `design_system_path` (local Storybook repo) or `design_system_repo` (GitHub repo) and every agent checks it before creating components. Existing components are reused. Extensions are flagged. New components are proposed as system additions. Tinker manages the design system layer.
 
-This keeps the quest output aligned with your design system instead of generating a parallel set of one-off components.
+---
+
+## Agent ownership
+
+| Domain | Owner |
+|--------|-------|
+| Requirements, PRD | BMAD Analyst + PM |
+| Architecture | BMAD Architect |
+| Sprint planning | BMAD SM |
+| Product design (all phases) | Guild |
+| Development | BMAD Dev |
+| Test architecture | BMAD TEA |
+| Technical documentation | BMAD Tech Writer |
+| Multi-model raids | Atrium (Raid / Quest / Tavern) |

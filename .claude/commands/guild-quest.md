@@ -1,6 +1,6 @@
 ---
 name: 'guild-quest'
-description: 'Solo quest — one model runs the full Guild+BMAD pipeline from research through build, ship, and document — 17 steps across 6 phases'
+description: 'Solo quest — complete Guild+BMAD pipeline: BMAD planning → Guild design → build → test architecture → documentation. Greenfield includes pre-pipeline.'
 user-invocable: true
 ---
 
@@ -44,6 +44,48 @@ Before starting, gather from the user and populate quest variables:
 - **Design system?** → `design_system`
 
 If the user provides all this upfront, populate variables and begin. Pass relevant variables to every subagent.
+
+Also ask: **Do you have an existing PRD, Architecture document, and Epics?**
+- Yes → skip Phase Pre, begin Phase 0
+- No → run Phase Pre first
+
+---
+
+## Phase Pre: Planning — "The Charter" (BMAD · Greenfield only)
+
+Skip this phase if PRD, Architecture, and Epics already exist. For brownfield projects, check what exists and pick up from the first missing artifact.
+
+**Phase Pre is interactive.** These BMAD workflows ask clarifying questions and require your input at key decision points. Do NOT delegate to subagents with non-interactive instructions — stay in the main conversation for each step.
+
+### Pre-Step 1: Project Brainstorm (BMAD Analyst)
+Invoke a subagent to load `/bmad-agent-analyst` and run the brainstorming workflow.
+Brief: "Run the Guided Project Brainstorming session. Produce a project context document capturing the product vision, target users, key problems, and scope boundaries."
+Wait for completion. Read the output before proceeding.
+
+### Pre-Step 2: Research (BMAD Analyst)
+Invoke a subagent to load `/bmad-agent-analyst` and run the research workflow.
+Brief: "Run market and domain research scoped to [product_name] in [target_industry]. Use web search. Produce a research document covering market context, competitive landscape, and domain constraints."
+Wait for completion. Read the output.
+
+### Pre-Step 3: Product Requirements Document (BMAD PM)
+Invoke a subagent to load `/bmad-agent-pm` and run the PRD workflow.
+Brief: "Create a PRD for [product_name]. Use the brainstorm output and research document as inputs. This is required for the BMAD method."
+**INTERACTIVE** — PM will ask clarifying questions. Stay engaged.
+Wait for completion. Confirm PRD is saved before proceeding.
+
+### Pre-Step 4: Architecture Document (BMAD Architect)
+Invoke a subagent to load `/bmad-agent-architect` and run the create-architecture workflow.
+Brief: "Create an Architecture Document for [product_name] based on the PRD. Cover technical stack, data models, integration points, and key architectural decisions."
+Wait for completion. Confirm architecture doc is saved.
+
+### Pre-Step 5: Epics and Stories (BMAD PM)
+Invoke a subagent to load `/bmad-agent-pm` and run the create-epics-and-stories workflow.
+Brief: "Create Epics and User Stories from the PRD. Architecture document must be complete before running this step."
+Wait for completion. Confirm epics and stories are in sprint-status.yaml or equivalent.
+
+**Quest Log:** `Phase Pre/6 — Planning complete. PRD ✓ Architecture ✓ Epics ✓`
+
+---
 
 ## Automatic Design Inspiration
 
@@ -239,7 +281,17 @@ Wait for completion.
 Invoke a subagent to run `/bmad-review-edge-case-hunter` on the design artifacts. Catch boundary conditions and unhandled scenarios.
 Wait for completion. If critical issues found, loop back to the relevant design step.
 
-**Quest Log:** `Phase 3/5 — Trial complete. Design reviewed and hardened.`
+### Step 9b: Adversarial Review (BMAD)
+Invoke a subagent to run `/bmad-review-adversarial-general` on the complete design artifact set.
+Brief: "Apply a cynical, adversarial lens to the Guild design artifacts in {output_root}/guild-artifacts/. Challenge every design decision. Assume things will go wrong. Produce a findings report with critical issues, assumptions that haven't been validated, and risks that haven't been addressed."
+Wait for completion. If critical findings, loop back to the relevant design or research step.
+
+### Step 9c: Structural Editorial Review (BMAD)
+Invoke a subagent to run `/bmad-editorial-review-structure` on the UX spec and research synthesis.
+Brief: "Review the UX spec and research synthesis for structural issues — cuts, reorganization, simplification — while preserving comprehension. Propose structural changes without rewriting content."
+Wait for completion. Apply accepted structural changes before proceeding to handoff.
+
+**Quest Log:** `Phase 3/6 — Trial complete. 4-lens review: party mode + edge cases + adversarial + structural editorial.`
 
 ---
 
@@ -261,7 +313,16 @@ Wait for completion.
 Invoke a subagent to run `/guild-jira-stories`. Generate dev subtasks from design artifacts.
 Wait for completion.
 
-**Quest Log:** `Phase 4/5 — Blueprint forged. [N] stories ready for development.`
+### Step 13b: Implementation Readiness Check (BMAD Architect + PM)
+Invoke a subagent to load `/bmad-agent-architect` and run the implementation-readiness workflow.
+Brief: "Run the Implementation Readiness check. Validate that the PRD, UX spec (UX_Design.md), Architecture document, and Epics and Stories are complete and aligned before development begins. Use an adversarial approach to find gaps."
+**INTERACTIVE** — this workflow asks questions and requires input at decision points.
+Wait for completion. Read the verdict.
+
+**IF readiness check returns FAIL or major gaps:** STOP. Report the gaps to the user. Do not proceed to Phase 5 until resolved — gaps here become expensive bugs in the build loop.
+**IF readiness check returns PASS or minor gaps:** Minor gaps become the first stories in Phase 5. Proceed.
+
+**Quest Log:** `Phase 4/6 — Blueprint forged. Implementation readiness: [PASS/GAPS]. [N] stories ready for development.`
 
 ---
 
