@@ -21,9 +21,10 @@ Built for designers who want structured, repeatable AI collaboration. The AI han
 | **Healer 📦** | Design Ops | ~10 | Developer handoff specs, Jira stories (Given/When/Then), design tokens (W3C DTCG), component specs, annotations, changelogs, release notes, watch mode, fix loop, UX_Design.md BMAD export |
 | **Mage 🎨** | Visual Designer | ~11 | Design direction brief, visual critique, component polish, visual hierarchy, spacing, color refinement, typography, auto-capture critique, responsive scans, visual diffs, before/after comparison |
 | **Tinker 🔧** | Design System Engineer | ~12 | Figma component architecture, atomic decomposition, variant systems, design tokens (W3C DTCG), variable binding, naming taxonomy, Storybook story coverage, Code Connect mapping, WCAG token audits, workspace reconnaissance |
+| **Cartographer 🗺️** | Information Architect & System Mapper | ~11 | Information architecture, sitemaps, content models, FigJam whiteboard composition, system maps for stakeholders, ADR diagrams, conceptual models, navigation audits, card sort design, tree test design, zone layout |
 | **Guild Master 🎯** | Orchestrator | ~6 | Full pipeline, quick sprint, solo quest, party quest, master raid. Auto-detects greenfield vs brownfield and BMAD presence |
 
-**107+ commands · 47+ templates · 8 sidecar knowledge bases**
+**118+ commands · 47+ templates · 9 sidecar knowledge bases**
 
 ---
 

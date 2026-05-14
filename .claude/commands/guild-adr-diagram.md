@@ -1,0 +1,6 @@
+---
+name: 'guild-adr-diagram'
+description: 'Visualize architecture decision records — card format with status color-coding, domain grouping, and ADR relationships'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "ADR" — ADR Diagram in card format with status color-coding

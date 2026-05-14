@@ -229,7 +229,23 @@ Invoke a subagent to run `/guild-research-synthesis`. Synthesize:
 - Confluence or external documentation
 Wait for completion. Read the output artifact.
 
-**Quest Log:** `Phase 1/5 — Scouting complete. Research synthesized.`
+### Step 2b: Information Architecture (Cartographer)
+Invoke a subagent to load `/guild-agent-cartographer` and run an IA task appropriate to the product scope. Provide:
+- Research synthesis from Step 2
+- PRD product area and feature list
+- Any existing sitemap or nav structure (brownfield only)
+
+Cartographer produces the IA foundation that Rogue's flows must conform to. At minimum, produce:
+- **Sitemap (SM)** — full hierarchy with navigation model and depth/breadth analysis
+- **Navigation Audit (NAV)** — if brownfield, audit existing nav before designing new flows
+
+For complex products, also run:
+- **Content Model (CM)** — if the product manages user-generated or editorial content
+- **Information Architecture (IA)** — full org system + labeling + navigation model for products with significant content depth
+
+Wait for completion. Read the IA output before briefing Rogue in Phase 2. Rogue's flows must respect Cartographer's hierarchy — never invent navigation structure that contradicts the IA.
+
+**Quest Log:** `Phase 1/6 — Scouting complete. Research synthesized. IA structure defined.`
 
 ---
 

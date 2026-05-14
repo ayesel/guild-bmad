@@ -1,0 +1,6 @@
+---
+name: 'guild-system-map'
+description: 'Create a stakeholder-facing system map — how components, services, and user groups connect (not technical architecture)'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "SYS" — System Map for stakeholders showing components and connections
