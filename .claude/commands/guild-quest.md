@@ -1,6 +1,6 @@
 ---
 name: 'guild-quest'
-description: 'Solo quest — one model runs the full Guild+BMAD pipeline from research through build, 15 steps across 5 phases'
+description: 'Solo quest — one model runs the full Guild+BMAD pipeline from research through build, ship, and document — 17 steps across 6 phases'
 user-invocable: true
 ---
 
@@ -349,16 +349,66 @@ Return to 15a. When you complete an epic, continue to the next epic after the tr
 
 ---
 
+---
+
+## Phase 6: Ship — "Chronicle & Seal"
+
+Run after all epics and retrospectives in Phase 5 are `done`.
+
+### Step 16: Test Architecture Review (BMAD TEA)
+
+Invoke a subagent to load and run the BMAD TEA agent (`_bmad/bmm/agents/tea.md`). Brief the subagent:
+
+> You are TEA, the Master Test Architect. Review the test coverage and architecture of the completed build.
+> IMPORTANT: This project uses Atrium's built-in browser for UI and visual testing — NOT Playwright. Apply your test strategy, architecture, and CI knowledge accordingly. Skip any Playwright-specific tooling recommendations.
+> Use the following artifacts as input: component registry, completed story files, build output, sprint-status.yaml, and retrospective documents.
+> Produce a Test Architecture Review covering:
+> 1. Test level coverage assessment (unit / integration / e2e) — what exists, what's missing
+> 2. Priority gaps (P0–P3) — what must be tested before this is production-ready
+> 3. Contract testing needs (API boundaries that need Pact verification)
+> 4. CI pipeline recommendations — staged jobs, shard strategy, burn-in approach
+> 5. Risk governance verdict — GO / CONDITIONAL / NO-GO for production readiness
+> Save the review to `{output_root}/guild-artifacts/test-architecture-review.md`.
+
+Wait for completion. Read the verdict.
+
+**IF TEA says NO-GO:** STOP. Report critical test coverage gaps to user before proceeding.
+**IF TEA says GO or CONDITIONAL:** Continue. Conditional items become follow-up stories.
+
+**Quest Log:** `Phase 6a/6 — Test Architecture: [GO/CONDITIONAL/NO-GO]. Gaps: [N].`
+
+---
+
+### Step 17: Developer Documentation (BMAD Tech Writer)
+
+Invoke a subagent to load and run the BMAD Tech Writer agent (`_bmad/bmm/agents/tech-writer.md`). Brief the subagent:
+
+> You are Paige, the Technical Writer. Produce developer documentation for the completed product.
+> Use the following artifacts as input: component registry, UX_Design.md, handoff specs, test architecture review, sprint retrospectives, and any existing README or docs files.
+> Produce:
+> 1. **Developer README** — setup, environment variables, how to run, how to test
+> 2. **Component reference** — public API of each component (props, states, events) drawn from the component registry
+> 3. **Architecture notes** — key design decisions, data flow, integration points
+> 4. **Test guide** — how to run tests, what the CI pipeline checks, how to add new tests
+> Save to `{output_root}/guild-artifacts/developer-docs/`.
+
+Wait for completion.
+
+**Quest Log:** `Phase 6b/6 — Documentation complete.`
+
+---
+
 ## Quest Complete
 
-When all epics and their retrospective entries are done:
+When Phase 6 is done:
 ```
 ⚔️ QUEST COMPLETE
 Built: [product name]
-Phases: 5/5
+Phases: 6/6
 Stories: [total] completed, [blocked] blocked
 Epics: [N] completed with retrospectives
 Course corrections: [N] applied
+Test architecture: [GO/CONDITIONAL/NO-GO]
 Artifacts: [list key output files]
 ```
 

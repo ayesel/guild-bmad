@@ -184,6 +184,40 @@ Course corrections: [N] applied
 
 ---
 
+### Phase 6 — "Chronicle & Seal" · Test Architecture + Documentation
+
+Runs after all epics and retrospectives are complete. These are BMAD agents, not Guild agents — the boundary is intentional. Guild owns product design. BMAD owns everything else including quality engineering and technical writing.
+
+**Step 16 — Test Architecture Review (BMAD TEA)**
+
+TEA reviews what was built against what should be tested. Because this project uses Atrium's built-in browser for UI testing rather than Playwright, TEA is briefed to apply its strategy knowledge in that context and skip Playwright-specific tooling recommendations.
+
+TEA produces:
+- Test level coverage assessment (unit / integration / e2e gaps)
+- Priority gaps by P0–P3 — what must exist before production
+- Contract testing needs (API boundaries requiring Pact verification)
+- CI pipeline recommendations
+- Risk governance verdict: **GO / CONDITIONAL / NO-GO**
+
+A NO-GO halts the quest. Conditional items become follow-up stories.
+
+**Step 17 — Developer Documentation (BMAD Tech Writer / Paige)**
+
+Paige documents the completed product for developers. Inputs: component registry, UX spec, handoff specs, test architecture review, retrospectives.
+
+Paige produces:
+- Developer README (setup, env vars, how to run and test)
+- Component reference (public API of each component from the registry)
+- Architecture notes (key design decisions, data flow, integrations)
+- Test guide (how to run tests, what CI checks, how to add coverage)
+
+---
+
+**Why BMAD, not Guild, for Phase 6:**
+TEA and Paige live in BMAD's bundle. When BMAD ships updates to TEA's test knowledge base or Paige's documentation standards, those flow in automatically. Merging them into Guild agents would mean owning that maintenance forever. Guild = product design. BMAD = everything else.
+
+---
+
 ## Running just the dev loop
 
 If design is already done and stories are ready, you can skip to the build loop directly:
