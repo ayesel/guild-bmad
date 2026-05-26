@@ -3,4 +3,4 @@ name: 'guild-implementation-check'
 description: 'Compare implemented UI against design spec'
 ---
 
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/design-qa.md, READ its entire contents, activate as the Design QA agent, then immediately execute menu item "IC" — Compare implemented UI against design spec
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/sage.md, READ its entire contents, activate as the Design QA agent, then immediately execute menu item "IC" — Compare implemented UI against design spec

@@ -3,4 +3,4 @@ name: 'guild-typography'
 description: 'Fix typography hierarchy — sizes, weights, line heights'
 ---
 
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/visual-designer.md, READ its entire contents, activate as the Mage Visual Designer agent, then immediately execute menu item "TY" — Fix typography hierarchy — sizes, weights, line heights
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/mage.md, READ its entire contents, activate as the Mage Visual Designer agent, then immediately execute menu item "TY" — Fix typography hierarchy — sizes, weights, line heights

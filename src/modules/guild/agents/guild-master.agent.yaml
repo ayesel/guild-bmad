@@ -62,15 +62,19 @@ agent:
 
     - trigger: "QS or fuzzy match on quick-sprint"
       description: "Skip research — design through sprint planning (Rogue → Mage → Warlock → Sage → Healer → PM → SM)"
-      target: "workflow quick-sprint"
+      target: "workflow design-sprint"
 
     - trigger: "RO or fuzzy match on research-only"
       description: "Research only — run Ranger, save findings for later"
-      target: "workflow research-only"
+      target: "workflow design-sprint"
 
     - trigger: "HO or fuzzy match on handoff-only"
       description: "Generate stories from existing Guild artifacts, run PM review and SM sprint planning"
-      target: "workflow handoff-only"
+      target: "workflow design-sprint"
+
+    - trigger: "AB or fuzzy match on autonomous-build"
+      description: "Autonomous build — loop through sprint stories and implement (requires BMAD dev pipeline)"
+      target: "inline"
 
     - trigger: "ST or fuzzy match on status"
       description: "Show current Guild pipeline status and BMAD sprint state"

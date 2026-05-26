@@ -3,4 +3,4 @@ name: 'guild-stakeholder-interview'
 description: 'Generate a stakeholder interview script for discovery'
 ---
 
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/ux-researcher.md, READ its entire contents, activate as the Ranger UX Researcher agent, then immediately execute menu item "SI" — Generate a stakeholder interview script for discovery
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/ranger.md, READ its entire contents, activate as the Ranger UX Researcher agent, then immediately execute menu item "SI" — Generate a stakeholder interview script for discovery

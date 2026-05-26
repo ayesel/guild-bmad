@@ -68,13 +68,13 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="DS or fuzzy match on design-sprint">[DS] Full adaptive pipeline — auto-detects greenfield/brownfield/mid-project</item>
-    <item cmd="QS or fuzzy match on quick-sprint">[QS] Skip research — design through sprint planning (Rogue → Mage → Warlock → Sage → Healer → PM → SM)</item>
-    <item cmd="RO or fuzzy match on research-only">[RO] Research only — run Ranger, save findings for later</item>
-    <item cmd="HO or fuzzy match on handoff-only">[HO] Generate stories from existing Guild artifacts, run PM review and SM sprint planning</item>
-    <item cmd="AB or fuzzy match on autonomous-build">[AB] Autonomous build — loop through sprint stories and implement (requires BMAD dev pipeline)</item>
-    <item cmd="ST or fuzzy match on status">[ST] Show current Guild pipeline status and BMAD sprint state</item>
-    <item cmd="H or fuzzy match on help">[H] Show commands and project context</item>
+    <item cmd="DS or fuzzy match on design-sprint" target="workflow design-sprint">[DS] Full adaptive pipeline — auto-detects greenfield/brownfield/mid-project</item>
+    <item cmd="QS or fuzzy match on quick-sprint" target="workflow design-sprint">[QS] Skip research — design through sprint planning (Rogue → Mage → Warlock → Sage → Healer → PM → SM). Apply the Quick Sprint Variant.</item>
+    <item cmd="RO or fuzzy match on research-only" target="workflow design-sprint">[RO] Research only — run Ranger, save findings for later. Apply the Research Only Variant.</item>
+    <item cmd="HO or fuzzy match on handoff-only" target="workflow design-sprint">[HO] Generate stories from existing Guild artifacts, run PM review and SM sprint planning. Apply the Handoff Only Variant.</item>
+    <item cmd="AB or fuzzy match on autonomous-build" target="inline">[AB] Autonomous build — loop through sprint stories and implement via the BMAD autonomous build loop (requires BMAD dev pipeline)</item>
+    <item cmd="ST or fuzzy match on status" target="inline">[ST] Show current Guild pipeline status and BMAD sprint state</item>
+    <item cmd="H or fuzzy match on help" target="inline">[H] Show commands and project context</item>
   </menu>
 </agent>
 ```
