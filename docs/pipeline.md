@@ -225,7 +225,11 @@ Provide `design_system_path` (local Storybook repo) or `design_system_repo` (Git
 | Architecture | BMAD Architect |
 | Sprint planning | BMAD SM |
 | Product design (all phases) | Guild |
+| Design system engineering (Figma components, tokens, Storybook/Code Connect parity) | Guild Tinker 🔧 |
+| Information architecture & stakeholder system maps | Guild Cartographer 🗺️ |
 | Development | BMAD Dev |
 | Test architecture | BMAD TEA |
 | Technical documentation | BMAD Tech Writer |
 | Multi-model raids | Atrium (Raid / Quest / Tavern) |
+
+**On-demand specialists.** Tinker and Cartographer aren't fixed steps in the sequential phase list — they're called when the work needs them. Tinker backs the Phase 0.5 foundation gate (and any design-system/component work); Cartographer is invoked whenever a product area needs information architecture (sitemaps, content models, navigation models) or a stakeholder-facing system map. Both can be run directly (`/guild-agent-tinker`, `/guild-agent-cartographer`) or pulled in by the Guild Master mid-pipeline.

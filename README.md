@@ -122,7 +122,7 @@ Every agent saves structured artifacts to `{output_root}/guild-artifacts/`. Each
 /guild-design-sprint       # Then run the full pipeline
 
 # Skip research, go straight to design
-/guild-quick-sprint        # Rogue → Warlock → Sage → Healer → PM → SM
+/guild-quick-sprint        # Rogue → Mage → Warlock → Sage → Healer → PM → SM
 
 # Run a full solo quest (research through build)
 /guild-quest

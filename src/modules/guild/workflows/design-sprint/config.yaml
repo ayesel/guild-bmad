@@ -34,14 +34,14 @@ outputs:
 pipelines:
   # With BMAD (bmad_mode = true)
   greenfield_bmad:
-    phases: 11
-    sequence: "Analyst → PM → Ranger → Rogue → Warlock → Architect → Sage → Healer → PM → SM → Dev"
+    phases: 12
+    sequence: "Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM → Dev"
   brownfield_bmad:
-    phases: 7
-    sequence: "Ranger → Rogue → Warlock → Sage → Healer → PM → SM"
+    phases: 8
+    sequence: "Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM"
   mid_project_bmad:
-    phases: 9
-    sequence: "PM → Ranger → Rogue → Warlock → Architect → Sage → Healer → PM → SM"
+    phases: 10
+    sequence: "PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM"
   # Standalone (bmad_mode = false)
   greenfield_standalone:
     phases: 6
@@ -52,9 +52,10 @@ pipelines:
 variants:
   - name: quick-sprint
     trigger: "QS or fuzzy match on quick-sprint"
-    description: "Skip research — Rogue → Warlock → Sage → Healer → PM → SM"
+    description: "Skip research — Rogue → Mage → Warlock → Sage → Healer → PM → SM"
     guild_agents_required:
       - interaction-designer
+      - visual-designer
       - content-strategist
       - design-qa
       - design-ops

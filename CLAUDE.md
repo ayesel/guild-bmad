@@ -46,6 +46,12 @@ Configure in `guild.config.yaml` at the project root.
 - Individual commands: `/guild-heuristic-eval`, `/guild-critique`, `/guild-user-flow`, etc.
 - Raid skills (3-model comparison via atrium): `/guild-raid`, `/ranger-raid`, `/rogue-raid`, `/mage-raid`, `/warlock-raid`, `/sage-raid`, `/healer-raid`, `/guild-master-raid`
 
+## Maintenance & integrity
+
+- **Run `./scripts/validate.sh` before any release or after regenerating agents.** It checks reference integrity: every command resolves to a real agent + menu code, every compiled menu item carries a `target=`, all task/template/workflow targets resolve, cross-IDE parity holds, and no duplicate command wiring. Exit 0 = clean, 1 = failures.
+- **Compiled agents are generated, source-of-truth is `src/`.** The `_bmad/guild/agents/*.md` files are compiled (by the external BMAD compiler) from `src/modules/guild/agents/*.agent.yaml`. The compiler has historically dropped menu `target=` attributes when regenerating — `validate.sh` check [4] exists specifically to catch that regression. If you recompile and validation fails on missing `target=`, re-inject them from the source `.agent.yaml` menu targets.
+- **Cross-IDE commands must stay in sync.** `.claude/commands/guild-*.md` is canonical; `.cursor/commands/*.md` are identical copies and `.gemini/commands/*.toml` are generated from them. Re-sync all three after adding or editing any Guild command.
+
 ## When BMAD is present
 - Do NOT use Sally (/bmad-agent-bmm-ux-designer) — Guild replaces her
 - After PRD/epic changes, ALWAYS run Guild design sprint before dev implementation
