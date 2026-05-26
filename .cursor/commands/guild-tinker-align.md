@@ -1,0 +1,6 @@
+---
+name: 'guild-tinker-align'
+description: 'Tinker fixes dimension alignment across sibling variants in a component set'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "AL" — Fix dimension alignment across sibling variants in a component set

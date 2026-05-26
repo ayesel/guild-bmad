@@ -1,0 +1,6 @@
+---
+name: 'guild-tinker-tokens'
+description: 'Tinker exports Figma variables to design tokens (W3C DTCG / Style Dictionary)'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "TK" — Export Figma variables to design tokens (W3C DTCG / Style Dictionary)

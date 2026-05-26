@@ -1,8 +1,8 @@
 # Guild — AI-Powered Design Framework
 
-**7 specialized design agents for the full product design lifecycle.**
+**8 specialized design agents (plus an orchestrator) for the full product design lifecycle.**
 
-Guild gives product designers a team of AI agents for research, interaction design, visual polish, content strategy, design QA, and developer handoff. One command runs the full pipeline — from user research to sprint-ready stories.
+Guild gives product designers a team of AI agents for research, interaction design, visual polish, content strategy, design QA, developer handoff, design-system engineering, and information architecture. One command runs the full pipeline — from user research to sprint-ready stories.
 
 Guild works **standalone** or **with BMAD v6**. It auto-detects your setup and adapts.
 
@@ -72,6 +72,11 @@ Phase 6   → Healer: Dev Handoff
 ```
 
 When BMAD is present, the pipeline extends: `→ PM (review) → SM (sprint planning) → Dev (build)`
+
+**On-demand specialists** — two agents sit alongside the sequential pipeline rather than inside it:
+
+- **Tinker 🔧 (Design System Engineer)** backs the Phase 0.5 foundation gate. When Sage's System Foundation Audit returns FAIL, Tinker builds or repairs the token/primitive layer (component architecture, variant systems, variable binding, Storybook/Code Connect parity) before page-level work resumes. Call it any time design-system or Figma component structure work is needed.
+- **Cartographer 🗺️ (Information Architect & System Mapper)** is invoked whenever the work needs information architecture (sitemaps, content models, navigation models) or stakeholder-facing system maps and conceptual diagrams. It defines *what exists and how it's organized*, where Rogue defines *how users move through it*.
 
 ### Phase 0: Design Direction
 
@@ -233,7 +238,7 @@ When BMAD v6 is detected, Guild automatically:
 - Reads `sprint-status.yaml` and continues existing story numbering
 - Outputs stories in BMAD dev-story format to `_bmad-output/implementation-artifacts/stories/`
 - Includes BMAD's PM and SM agents in the pipeline for story review and sprint planning
-- Replaces BMAD's built-in UX Designer (Sally) with 7 specialized design agents
+- Replaces BMAD's built-in UX Designer (Sally) with 8 specialized design agents
 - Stories are immediately consumable by BMAD's `/dev-story` workflow
 
 Without BMAD, Guild outputs standard stories to `guild-output/` and runs a Guild-only pipeline.
@@ -254,27 +259,24 @@ Guild is designed to integrate with multi-agent orchestration systems. Healer ou
 src/modules/guild/
 ├── module.yaml
 ├── agents/
-│   ├── interaction-designer.agent.yaml  # Rogue 🔀
-│   ├── interaction-designer-sidecar/
-│   │   └── knowledge-base/
-│   ├── ux-researcher.agent.yaml         # Ranger 🔍
-│   ├── ux-researcher-sidecar/
-│   │   └── knowledge-base/
-│   ├── content-strategist.agent.yaml    # Warlock ✍️
-│   ├── content-strategist-sidecar/
-│   │   └── knowledge-base/
-│   ├── design-qa.agent.yaml             # Sage 🛡️
-│   ├── design-qa-sidecar/
-│   │   └── knowledge-base/
-│   ├── design-ops.agent.yaml            # Healer 📦
-│   ├── design-ops-sidecar/
-│   │   └── knowledge-base/
-│   ├── visual-designer.agent.yaml       # Mage 🎨
-│   ├── visual-designer-sidecar/
-│   │   └── knowledge-base/
-│   ├── guild-master.agent.yaml          # Guild Master 🎯
-│   └── shared-sidecar/
-│       └── figma-api-reference.md
+│   ├── ranger.agent.yaml                # Ranger 🔍 UX Researcher
+│   ├── ranger-sidecar/knowledge-base/
+│   ├── rogue.agent.yaml                 # Rogue 🔀 Interaction Designer
+│   ├── rogue-sidecar/knowledge-base/
+│   ├── mage.agent.yaml                  # Mage 🎨 Visual Designer
+│   ├── mage-sidecar/knowledge-base/
+│   ├── warlock.agent.yaml               # Warlock ✍️ Content Strategist
+│   ├── warlock-sidecar/knowledge-base/
+│   ├── sage.agent.yaml                  # Sage 🛡️ Design QA
+│   ├── sage-sidecar/knowledge-base/
+│   ├── healer.agent.yaml                # Healer 📦 Design Ops
+│   ├── healer-sidecar/knowledge-base/
+│   ├── tinker.agent.yaml                # Tinker 🔧 Design System Engineer
+│   ├── tinker-sidecar/knowledge-base/
+│   ├── cartographer.agent.yaml          # Cartographer 🗺️ Information Architect
+│   ├── cartographer-sidecar/knowledge-base/
+│   ├── guild-master.agent.yaml          # Guild Master 🎯 Orchestrator
+│   └── shared-sidecar/                  # artifact-rules, bmad-integration, figma-api-reference
 ├── tasks/
 │   ├── create-artifact.md
 │   ├── run-research.md

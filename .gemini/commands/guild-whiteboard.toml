@@ -1,0 +1,4 @@
+description = "Compose a FigJam whiteboard — zone structure, sticky taxonomy, connector conventions, and annotated layout spec"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "WB" — FigJam whiteboard composition spec for a concept, process, or decision
+"""

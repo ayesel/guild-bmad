@@ -78,7 +78,7 @@ if [ "$MODE" = "auto" ]; then
         echo ""
         echo "How would you like to install?"
         echo ""
-        echo "  1) Guild only (design agents — Ranger, Rogue, Mage, Warlock, Sage, Healer)"
+        echo "  1) Guild only (design agents — Ranger, Rogue, Mage, Warlock, Sage, Healer, Tinker, Cartographer)"
         echo "  2) Guild + BMAD (full design-to-dev pipeline)"
         echo ""
         read -p "Choose [1/2]: " choice
@@ -107,7 +107,8 @@ install_guild() {
     # Guild agents
     mkdir -p "$TARGET/_bmad/guild/agents"
     cp -r "$GUILD_ROOT/_bmad/guild/agents/"*.md "$TARGET/_bmad/guild/agents/"
-    echo "  ✓ Guild agents (7)"
+    GUILD_AGENT_COUNT=$(ls "$GUILD_ROOT/_bmad/guild/agents/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    echo "  ✓ Guild agents ($GUILD_AGENT_COUNT)"
 
     # Guild commands
     cp "$GUILD_ROOT/.claude/commands/guild-"*.md "$TARGET/.claude/commands/"
@@ -125,6 +126,20 @@ install_guild() {
     if ls "$GUILD_ROOT/.claude/commands/"*-raid.md 1>/dev/null 2>&1; then
         cp "$GUILD_ROOT/.claude/commands/"*-raid.md "$TARGET/.claude/commands/"
         echo "  ✓ Raid commands"
+    fi
+
+    # Cross-IDE commands — synced when the target project already uses Cursor or Gemini
+    if [ -d "$TARGET/.cursor" ]; then
+        mkdir -p "$TARGET/.cursor/commands"
+        cp "$GUILD_ROOT/.cursor/commands/guild-"*.md "$TARGET/.cursor/commands/" 2>/dev/null || true
+        CURSOR_CMD_COUNT=$(ls "$GUILD_ROOT/.cursor/commands/guild-"*.md 2>/dev/null | wc -l | tr -d ' ')
+        echo "  ✓ Guild commands → Cursor ($CURSOR_CMD_COUNT in .cursor/commands)"
+    fi
+    if [ -d "$TARGET/.gemini" ]; then
+        mkdir -p "$TARGET/.gemini/commands"
+        cp "$GUILD_ROOT/.gemini/commands/guild-"*.toml "$TARGET/.gemini/commands/" 2>/dev/null || true
+        GEMINI_CMD_COUNT=$(ls "$GUILD_ROOT/.gemini/commands/guild-"*.toml 2>/dev/null | wc -l | tr -d ' ')
+        echo "  ✓ Guild commands → Gemini ($GEMINI_CMD_COUNT in .gemini/commands)"
     fi
 
     # Guild config
@@ -220,6 +235,8 @@ if [[ "$MODE" == "guild" || "$MODE" == "full" ]]; then
     echo "  /guild-agent-warlock    Content Strategy"
     echo "  /guild-agent-sage       Design QA"
     echo "  /guild-agent-healer     Dev Handoff"
+    echo "  /guild-agent-tinker     Design System Engineering"
+    echo "  /guild-agent-cartographer  Information Architecture"
     echo ""
 fi
 

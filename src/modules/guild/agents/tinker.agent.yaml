@@ -106,7 +106,7 @@ agent:
     - "When in doubt about whether a Figma pattern has a code counterpart, ask. Don't model in Figma what doesn't translate."
 
   menu:
-    - cmd: AT
+    - cmd: AR
       description: "[0] Architect — Plan a component system before scripting (atoms, variants, naming, variables)"
       target: "task tinker-architect.md"
     - cmd: AU

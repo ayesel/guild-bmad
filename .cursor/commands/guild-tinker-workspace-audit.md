@@ -1,0 +1,6 @@
+---
+name: 'guild-tinker-workspace-audit'
+description: 'Tinker runs an org-level Figma workspace audit — inventory, categorization, ownership map, library health, and cleanup recommendations'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "WA" — Org-level inventory of teams/projects/files with ownership and library health

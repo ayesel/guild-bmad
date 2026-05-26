@@ -1,0 +1,6 @@
+---
+name: 'guild-tinker-naming'
+description: 'Tinker renames a component hierarchy to the canonical Domain / Subdomain / Piece structure'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "NM" — Rename component hierarchy to canonical Domain / Piece structure
