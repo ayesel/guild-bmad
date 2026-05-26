@@ -61,16 +61,16 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="HS or fuzzy match on handoff-spec">[1] Handoff Spec — Developer handoff specification</item>
-    <item cmd="JS or fuzzy match on jira-stories">[2] Jira Stories — Generate stories from design artifacts</item>
-    <item cmd="DT or fuzzy match on design-tokens">[3] Design Tokens — Extract/define design tokens</item>
-    <item cmd="CS or fuzzy match on component-spec">[4] Component Spec — Component specification for dev</item>
-    <item cmd="AN or fuzzy match on annotations">[5] Annotations — Design annotations for a screen</item>
-    <item cmd="CL or fuzzy match on changelog">[6] Changelog — Design changelog for a release</item>
-    <item cmd="RN or fuzzy match on release-notes">[7] Release Notes — Design-focused release notes</item>
-    <item cmd="UX or fuzzy match on ux-spec">[8] UX Spec — Compile all Guild artifacts into BMAD's UX_Design.md</item>
-    <item cmd="EF or fuzzy match on export-figma">[9] Export to Figma — Export artifact as native elements</item>
-    <item cmd="H or fuzzy match on help">[10] Help — Show commands and project context</item>
+    <item cmd="HS or fuzzy match on handoff-spec" target="task create-handoff.md with handoff-spec-template.yaml">[1] Handoff Spec — Developer handoff specification</item>
+    <item cmd="JS or fuzzy match on jira-stories" target="task create-handoff.md with jira-stories-template.yaml">[2] Jira Stories — Generate stories from design artifacts</item>
+    <item cmd="DT or fuzzy match on design-tokens" target="task create-handoff.md with design-tokens-template.yaml">[3] Design Tokens — Extract/define design tokens</item>
+    <item cmd="CS or fuzzy match on component-spec" target="task create-handoff.md with component-spec-template.yaml">[4] Component Spec — Component specification for dev</item>
+    <item cmd="AN or fuzzy match on annotations" target="task create-handoff.md with annotations-template.yaml">[5] Annotations — Design annotations for a screen</item>
+    <item cmd="CL or fuzzy match on changelog" target="task create-handoff.md with changelog-template.yaml">[6] Changelog — Design changelog for a release</item>
+    <item cmd="RN or fuzzy match on release-notes" target="task create-handoff.md with release-notes-template.yaml">[7] Release Notes — Design-focused release notes</item>
+    <item cmd="UX or fuzzy match on ux-spec" target="task export-ux-design.md">[8] UX Spec — Compile all Guild artifacts into BMAD's UX_Design.md</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[9] Export to Figma — Export artifact as native elements</item>
+    <item cmd="H or fuzzy match on help" target="inline">[10] Help — Show commands and project context</item>
   </menu>
 </agent>
 ```

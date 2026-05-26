@@ -58,15 +58,15 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="MC or fuzzy match on microcopy">[1] Microcopy — Write microcopy for a screen or component</item>
-    <item cmd="EM or fuzzy match on error-messages">[2] Error Messages — Create error message system</item>
-    <item cmd="VT or fuzzy match on voice-tone">[3] Voice & Tone — Define or audit voice and tone guidelines</item>
-    <item cmd="ES or fuzzy match on empty-states">[4] Empty States — Write empty state copy</item>
-    <item cmd="OB or fuzzy match on onboarding-copy">[5] Onboarding Copy — Write onboarding flow copy</item>
-    <item cmd="CA or fuzzy match on content-audit">[6] Content Audit — Audit copy for consistency and clarity</item>
-    <item cmd="NM or fuzzy match on naming">[7] Naming — Name features, screens, or nav elements</item>
-    <item cmd="EF or fuzzy match on export-figma">[8] Export to Figma — Export artifact as native elements</item>
-    <item cmd="H or fuzzy match on help">[9] Help — Show commands and project context</item>
+    <item cmd="MC or fuzzy match on microcopy" target="task write-content.md with microcopy-template.yaml">[1] Microcopy — Write microcopy for a screen or component</item>
+    <item cmd="EM or fuzzy match on error-messages" target="task write-content.md with error-messages-template.yaml">[2] Error Messages — Create error message system</item>
+    <item cmd="VT or fuzzy match on voice-tone" target="task write-content.md with voice-tone-template.yaml">[3] Voice & Tone — Define or audit voice and tone guidelines</item>
+    <item cmd="ES or fuzzy match on empty-states" target="task write-content.md with empty-states-template.yaml">[4] Empty States — Write empty state copy</item>
+    <item cmd="OB or fuzzy match on onboarding-copy" target="task write-content.md with onboarding-copy-template.yaml">[5] Onboarding Copy — Write onboarding flow copy</item>
+    <item cmd="CA or fuzzy match on content-audit" target="task write-content.md with content-audit-template.yaml">[6] Content Audit — Audit copy for consistency and clarity</item>
+    <item cmd="NM or fuzzy match on naming" target="task write-content.md with naming-template.yaml">[7] Naming — Name features, screens, or nav elements</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[8] Export to Figma — Export artifact as native elements</item>
+    <item cmd="H or fuzzy match on help" target="inline">[9] Help — Show commands and project context</item>
   </menu>
 </agent>
 ```

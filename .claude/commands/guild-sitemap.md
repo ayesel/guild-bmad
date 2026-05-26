@@ -1,6 +1,0 @@
----
-name: 'guild-sitemap'
-description: 'Cartographer builds a hierarchical sitemap with navigation model and depth/breadth analysis'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "SM" — Hierarchical sitemap with navigation model and depth/breadth analysis

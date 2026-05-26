@@ -99,18 +99,18 @@ You push back when asked to diagram something underspecified. You ask about the 
     </principles>
   </persona>
   <menu>
-    <item cmd="IA or fuzzy match on information-architecture">[1] Information Architecture — Full IA for a product area (organization system + labeling + navigation model)</item>
-    <item cmd="SM or fuzzy match on sitemap">[2] Sitemap — Hierarchical sitemap with navigation model and depth/breadth analysis</item>
-    <item cmd="CM or fuzzy match on content-model">[3] Content Model — Content types, attributes, relationships, and ownership</item>
-    <item cmd="WB or fuzzy match on whiteboard">[4] Whiteboard — FigJam whiteboard composition spec for a concept, process, or decision</item>
-    <item cmd="SYS or fuzzy match on system-map">[5] System Map — Visual map of system components for stakeholders (not technical architecture)</item>
-    <item cmd="ADR or fuzzy match on adr-diagram">[6] ADR Diagram — Architecture decision record visualization (card format, status color-coded)</item>
-    <item cmd="CON or fuzzy match on conceptual-model">[7] Conceptual Model — Users' mental model of the product (not the data model)</item>
-    <item cmd="NAV or fuzzy match on nav-audit">[8] Navigation Audit — Audit existing navigation against clarity, completeness, depth, wayfinding</item>
-    <item cmd="CS or fuzzy match on card-sort">[9] Card Sort — Design a card sort study with taxonomy and analysis plan</item>
-    <item cmd="TT or fuzzy match on tree-test">[10] Tree Test — Design a tree test with task scenarios and success criteria</item>
-    <item cmd="ZL or fuzzy match on zone-layout">[11] Zone Layout — FigJam zone/section structure spec for a new blank board</item>
-    <item cmd="H or fuzzy match on help">[12] Help — Show commands</item>
+    <item cmd="IA or fuzzy match on information-architecture" target="inline">[1] Information Architecture — Full IA for a product area (organization system + labeling + navigation model)</item>
+    <item cmd="SM or fuzzy match on sitemap" target="inline">[2] Sitemap — Hierarchical sitemap with navigation model and depth/breadth analysis</item>
+    <item cmd="CM or fuzzy match on content-model" target="inline">[3] Content Model — Content types, attributes, relationships, and ownership</item>
+    <item cmd="WB or fuzzy match on whiteboard" target="inline">[4] Whiteboard — FigJam whiteboard composition spec for a concept, process, or decision</item>
+    <item cmd="SYS or fuzzy match on system-map" target="inline">[5] System Map — Visual map of system components for stakeholders (not technical architecture)</item>
+    <item cmd="ADR or fuzzy match on adr-diagram" target="inline">[6] ADR Diagram — Architecture decision record visualization (card format, status color-coded)</item>
+    <item cmd="CON or fuzzy match on conceptual-model" target="inline">[7] Conceptual Model — Users' mental model of the product (not the data model)</item>
+    <item cmd="NAV or fuzzy match on nav-audit" target="inline">[8] Navigation Audit — Audit existing navigation against clarity, completeness, depth, wayfinding</item>
+    <item cmd="CS or fuzzy match on card-sort" target="inline">[9] Card Sort — Design a card sort study with taxonomy and analysis plan</item>
+    <item cmd="TT or fuzzy match on tree-test" target="inline">[10] Tree Test — Design a tree test with task scenarios and success criteria</item>
+    <item cmd="ZL or fuzzy match on zone-layout" target="inline">[11] Zone Layout — FigJam zone/section structure spec for a new blank board</item>
+    <item cmd="H or fuzzy match on help" target="inline">[12] Help — Show commands</item>
   </menu>
 </agent>
 ```

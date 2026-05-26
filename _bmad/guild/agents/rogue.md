@@ -57,17 +57,17 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="UF or fuzzy match on user-flow">[1] User Flow — Generate a user flow for a task or feature</item>
-    <item cmd="SL or fuzzy match on swim-lane">[2] Swim Lane — Actor responsibilities across a process</item>
-    <item cmd="SM or fuzzy match on site-map">[3] Site Map — Site map or IA diagram</item>
-    <item cmd="SD or fuzzy match on state-diagram">[4] State Diagram — Component/feature states</item>
-    <item cmd="TA or fuzzy match on task-analysis">[5] Task Analysis — Hierarchical task analysis</item>
-    <item cmd="WF or fuzzy match on wireframe">[6] Wireframe — Low-fi wireframe with component specs</item>
-    <item cmd="IM or fuzzy match on interaction-map">[7] Interaction Map — All interactions for a feature</item>
-    <item cmd="AU or fuzzy match on audit-flow">[8] Audit Flow — Audit existing flow for issues</item>
-    <item cmd="EX or fuzzy match on export-react">[9] Export React — Export artifact as React component</item>
-    <item cmd="EF or fuzzy match on export-figma">[10] Export to Figma — Export artifact as native elements</item>
-    <item cmd="H or fuzzy match on help">[11] Help — Show commands and project context</item>
+    <item cmd="UF or fuzzy match on user-flow" target="task create-artifact.md with user-flow-template.yaml">[1] User Flow — Generate a user flow for a task or feature</item>
+    <item cmd="SL or fuzzy match on swim-lane" target="task create-artifact.md with swim-lane-template.yaml">[2] Swim Lane — Actor responsibilities across a process</item>
+    <item cmd="SM or fuzzy match on site-map" target="task create-artifact.md with site-map-template.yaml">[3] Site Map — Site map or IA diagram</item>
+    <item cmd="SD or fuzzy match on state-diagram" target="task create-artifact.md with state-diagram-template.yaml">[4] State Diagram — Component/feature states</item>
+    <item cmd="TA or fuzzy match on task-analysis" target="task create-artifact.md with task-analysis-template.yaml">[5] Task Analysis — Hierarchical task analysis</item>
+    <item cmd="WF or fuzzy match on wireframe" target="task create-artifact.md with wireframe-template.yaml">[6] Wireframe — Low-fi wireframe with component specs</item>
+    <item cmd="IM or fuzzy match on interaction-map" target="task create-artifact.md with interaction-map-template.yaml">[7] Interaction Map — All interactions for a feature</item>
+    <item cmd="AU or fuzzy match on audit-flow" target="task audit-flow.md">[8] Audit Flow — Audit existing flow for issues</item>
+    <item cmd="EX or fuzzy match on export-react" target="task export-react.md">[9] Export React — Export artifact as React component</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[10] Export to Figma — Export artifact as native elements</item>
+    <item cmd="H or fuzzy match on help" target="inline">[11] Help — Show commands and project context</item>
   </menu>
 </agent>
 ```

@@ -99,20 +99,20 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="AR or fuzzy match on architect">[0] Architect — Plan a component system before scripting (atoms, variants, naming, variables)</item>
-    <item cmd="AU or fuzzy match on audit">[1] Audit — Component-level: inspect a component for alignment, paint styles, naming drift, hidden styles</item>
-    <item cmd="WA or fuzzy match on workspace-audit">[2] Workspace Audit — Org-level: inventory teams/projects/files, categorize, ownership map, library health, cleanup recommendations</item>
-    <item cmd="AT or fuzzy match on atomize">[3] Atomize — Decompose a flat component into atomic structure (atoms → molecules → organisms)</item>
-    <item cmd="VR or fuzzy match on variants">[4] Variants — Add or restructure variant axes on a component set</item>
-    <item cmd="VB or fuzzy match on variables">[5] Variables — Bind a component's fills/strokes to variables, strip paint styles</item>
-    <item cmd="AL or fuzzy match on align">[6] Align — Fix dimension alignment across sibling variants in a component set</item>
-    <item cmd="WC or fuzzy match on wcag">[7] WCAG — Verify status token contrast pairs clear 4.5:1 AA</item>
-    <item cmd="NM or fuzzy match on naming">[8] Naming — Rename component hierarchy to canonical Domain / Piece structure</item>
-    <item cmd="SB or fuzzy match on storybook">[9] Storybook — Generate Storybook story scaffolds for each Figma variant</item>
-    <item cmd="CC or fuzzy match on code-connect">[10] Code Connect — Wire Figma components to their code counterparts</item>
-    <item cmd="TK or fuzzy match on tokens">[11] Tokens — Export Figma variables to design tokens (W3C DTCG / Style Dictionary)</item>
-    <item cmd="GC or fuzzy match on gotchas">[12] Gotchas — Show the Plugin API gotcha cheatsheet</item>
-    <item cmd="H or fuzzy match on help">[13] Help — Show commands</item>
+    <item cmd="AR or fuzzy match on architect" target="task tinker-architect.md">[0] Architect — Plan a component system before scripting (atoms, variants, naming, variables)</item>
+    <item cmd="AU or fuzzy match on audit" target="task tinker-audit.md">[1] Audit — Component-level: inspect a component for alignment, paint styles, naming drift, hidden styles</item>
+    <item cmd="WA or fuzzy match on workspace-audit" target="task tinker-workspace-audit.md">[2] Workspace Audit — Org-level: inventory teams/projects/files, categorize, ownership map, library health, cleanup recommendations</item>
+    <item cmd="AT or fuzzy match on atomize" target="task tinker-atomize.md">[3] Atomize — Decompose a flat component into atomic structure (atoms → molecules → organisms)</item>
+    <item cmd="VR or fuzzy match on variants" target="task tinker-variants.md">[4] Variants — Add or restructure variant axes on a component set</item>
+    <item cmd="VB or fuzzy match on variables" target="task tinker-variables.md">[5] Variables — Bind a component's fills/strokes to variables, strip paint styles</item>
+    <item cmd="AL or fuzzy match on align" target="task tinker-align.md">[6] Align — Fix dimension alignment across sibling variants in a component set</item>
+    <item cmd="WC or fuzzy match on wcag" target="task tinker-wcag.md">[7] WCAG — Verify status token contrast pairs clear 4.5:1 AA</item>
+    <item cmd="NM or fuzzy match on naming" target="task tinker-naming.md">[8] Naming — Rename component hierarchy to canonical Domain / Piece structure</item>
+    <item cmd="SB or fuzzy match on storybook" target="task tinker-storybook.md">[9] Storybook — Generate Storybook story scaffolds for each Figma variant</item>
+    <item cmd="CC or fuzzy match on code-connect" target="task tinker-code-connect.md">[10] Code Connect — Wire Figma components to their code counterparts</item>
+    <item cmd="TK or fuzzy match on tokens" target="task tinker-tokens.md">[11] Tokens — Export Figma variables to design tokens (W3C DTCG / Style Dictionary)</item>
+    <item cmd="GC or fuzzy match on gotchas" target="inline">[12] Gotchas — Show the Plugin API gotcha cheatsheet</item>
+    <item cmd="H or fuzzy match on help" target="inline">[13] Help — Show commands</item>
   </menu>
 </agent>
 ```

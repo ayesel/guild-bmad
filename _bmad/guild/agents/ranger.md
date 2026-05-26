@@ -58,29 +58,29 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="HE or fuzzy match on heuristic-eval">[1] Heuristic Evaluation — Nielsen's 10 usability heuristics</item>
-    <item cmd="CA or fuzzy match on competitive-audit">[2] Competitive Audit — Comparative analysis of products</item>
-    <item cmd="PG or fuzzy match on persona-gen">[3] Persona Generation — Evidence-based user personas</item>
-    <item cmd="JM or fuzzy match on journey-map">[4] Journey Map — Emotional arc and pain point analysis</item>
-    <item cmd="IS or fuzzy match on interview-script">[5] Interview Script — Structured user interview</item>
-    <item cmd="RS or fuzzy match on research-synthesis">[6] Research Synthesis — Themes, insights, recommendations</item>
-    <item cmd="UT or fuzzy match on usability-test">[7] Usability Test — Task scenarios and success metrics</item>
-    <item cmd="AA or fuzzy match on accessibility-audit">[8] Accessibility Audit — WCAG 2.2 compliance</item>
-    <item cmd="JT or fuzzy match on jtbd">[9] JTBD — Jobs-to-be-Done mapping</item>
-    <item cmd="CS or fuzzy match on card-sort">[10] Card Sort — Card sorting / tree testing study</item>
-    <item cmd="AB or fuzzy match on ab-test">[11] A/B Test — Hypothesis, variants, and metrics</item>
-    <item cmd="SV or fuzzy match on survey">[12] Survey — User survey with validated questions</item>
-    <item cmd="SI or fuzzy match on stakeholder-interview">[13] Stakeholder Interview — Discovery interview script</item>
-    <item cmd="WS or fuzzy match on workshop">[14] Workshop — Design workshop facilitation</item>
-    <item cmd="AD or fuzzy match on affinity-diagram">[15] Affinity Diagram — Thematic analysis</item>
-    <item cmd="SB or fuzzy match on service-blueprint">[16] Service Blueprint — Frontstage and backstage</item>
-    <item cmd="EM or fuzzy match on empathy-map">[17] Empathy Map — Empathy maps for user segments</item>
-    <item cmd="SM or fuzzy match on story-map">[18] Story Map — User story map by journey</item>
-    <item cmd="DS or fuzzy match on diary-study">[19] Diary Study — Longitudinal behavior research</item>
-    <item cmd="VA or fuzzy match on visual-audit">[20] Visual Audit — Visual UI audit using browser screenshots</item>
-    <item cmd="RM or fuzzy match on recommend-method">[21] Recommend Method — Help pick the right method</item>
-    <item cmd="EF or fuzzy match on export-figma">[22] Export to Figma — Export artifact as native elements</item>
-    <item cmd="H or fuzzy match on help">[23] Help — Show commands and project context</item>
+    <item cmd="HE or fuzzy match on heuristic-eval" target="task run-research.md with heuristic-eval-template.yaml">[1] Heuristic Evaluation — Nielsen's 10 usability heuristics</item>
+    <item cmd="CA or fuzzy match on competitive-audit" target="task run-research.md with competitive-audit-template.yaml">[2] Competitive Audit — Comparative analysis of products</item>
+    <item cmd="PG or fuzzy match on persona-gen" target="task run-research.md with persona-template.yaml">[3] Persona Generation — Evidence-based user personas</item>
+    <item cmd="JM or fuzzy match on journey-map" target="task run-research.md with journey-map-template.yaml">[4] Journey Map — Emotional arc and pain point analysis</item>
+    <item cmd="IS or fuzzy match on interview-script" target="task run-research.md with interview-script-template.yaml">[5] Interview Script — Structured user interview</item>
+    <item cmd="RS or fuzzy match on research-synthesis" target="task run-research.md with research-synthesis-template.yaml">[6] Research Synthesis — Themes, insights, recommendations</item>
+    <item cmd="UT or fuzzy match on usability-test" target="task run-research.md with usability-test-template.yaml">[7] Usability Test — Task scenarios and success metrics</item>
+    <item cmd="AA or fuzzy match on accessibility-audit" target="task run-research.md with accessibility-audit-template.yaml">[8] Accessibility Audit — WCAG 2.2 compliance</item>
+    <item cmd="JT or fuzzy match on jtbd" target="task run-research.md with jtbd-template.yaml">[9] JTBD — Jobs-to-be-Done mapping</item>
+    <item cmd="CS or fuzzy match on card-sort" target="task run-research.md with card-sort-template.yaml">[10] Card Sort — Card sorting / tree testing study</item>
+    <item cmd="AB or fuzzy match on ab-test" target="task run-research.md with ab-test-template.yaml">[11] A/B Test — Hypothesis, variants, and metrics</item>
+    <item cmd="SV or fuzzy match on survey" target="task run-research.md with survey-template.yaml">[12] Survey — User survey with validated questions</item>
+    <item cmd="SI or fuzzy match on stakeholder-interview" target="task run-research.md with stakeholder-interview-template.yaml">[13] Stakeholder Interview — Discovery interview script</item>
+    <item cmd="WS or fuzzy match on workshop" target="task run-research.md with workshop-template.yaml">[14] Workshop — Design workshop facilitation</item>
+    <item cmd="AD or fuzzy match on affinity-diagram" target="task run-research.md with affinity-diagram-template.yaml">[15] Affinity Diagram — Thematic analysis</item>
+    <item cmd="SB or fuzzy match on service-blueprint" target="task run-research.md with service-blueprint-template.yaml">[16] Service Blueprint — Frontstage and backstage</item>
+    <item cmd="EM or fuzzy match on empathy-map" target="task run-research.md with empathy-map-template.yaml">[17] Empathy Map — Empathy maps for user segments</item>
+    <item cmd="SM or fuzzy match on story-map" target="task run-research.md with story-map-template.yaml">[18] Story Map — User story map by journey</item>
+    <item cmd="DS or fuzzy match on diary-study" target="task run-research.md with diary-study-template.yaml">[19] Diary Study — Longitudinal behavior research</item>
+    <item cmd="VA or fuzzy match on visual-audit" target="task visual-audit.md with visual-audit-template.yaml">[20] Visual Audit — Visual UI audit using browser screenshots</item>
+    <item cmd="RM or fuzzy match on recommend-method" target="inline">[21] Recommend Method — Help pick the right method</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[22] Export to Figma — Export artifact as native elements</item>
+    <item cmd="H or fuzzy match on help" target="inline">[23] Help — Show commands and project context</item>
   </menu>
 </agent>
 ```

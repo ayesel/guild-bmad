@@ -76,20 +76,20 @@ You reference your knowledge base files:
     </principles>
   </persona>
   <menu>
-    <item cmd="DSF or fuzzy match on design-system-foundation">[0] DS Foundation — Audit tokens + primitives BEFORE page work (HARD GATE)</item>
-    <item cmd="DR or fuzzy match on design-review">[1] Design Review — Comprehensive design quality review</item>
-    <item cmd="SC or fuzzy match on system-check">[2] System Check — Design system compliance audit</item>
-    <item cmd="RC or fuzzy match on responsive-check">[3] Responsive Check — Responsive behavior across breakpoints</item>
-    <item cmd="AQ or fuzzy match on a11y-qa">[4] A11y QA — Quick accessibility QA pass</item>
-    <item cmd="IC or fuzzy match on implementation-check">[5] Implementation Check — Compare build vs design spec</item>
-    <item cmd="CC or fuzzy match on consistency-check">[6] Consistency Check — Cross-screen consistency audit</item>
-    <item cmd="PR or fuzzy match on pre-handoff">[7] Pre-Handoff — Complete pre-handoff quality gate</item>
-    <item cmd="EF or fuzzy match on export-figma">[8] Export to Figma — Export artifact as native elements</item>
-    <item cmd="AU or fuzzy match on code-audit">[9] Code Audit — Scan codebase for hardcoded values and design system violations</item>
-    <item cmd="CL or fuzzy match on style-cleanup">[10] Style Cleanup — Replace all hardcoded style values with design tokens</item>
-    <item cmd="TC or fuzzy match on token-compliance">[11] Token Compliance — Calculate token compliance % for every component file</item>
-    <item cmd="DC or fuzzy match on duplicate-check">[12] Duplicate Check — Find and flag duplicate components that should be merged</item>
-    <item cmd="H or fuzzy match on help">[13] Help — Show commands and project context</item>
+    <item cmd="DSF or fuzzy match on design-system-foundation" target="task design-system-foundation.md">[0] DS Foundation — Audit tokens + primitives BEFORE page work (HARD GATE)</item>
+    <item cmd="DR or fuzzy match on design-review" target="task run-qa.md with design-review-template.yaml">[1] Design Review — Comprehensive design quality review</item>
+    <item cmd="SC or fuzzy match on system-check" target="task run-qa.md with system-check-template.yaml">[2] System Check — Design system compliance audit</item>
+    <item cmd="RC or fuzzy match on responsive-check" target="task run-qa.md with responsive-check-template.yaml">[3] Responsive Check — Responsive behavior across breakpoints</item>
+    <item cmd="AQ or fuzzy match on a11y-qa" target="task run-qa.md with a11y-qa-template.yaml">[4] A11y QA — Quick accessibility QA pass</item>
+    <item cmd="IC or fuzzy match on implementation-check" target="task run-qa.md with implementation-check-template.yaml">[5] Implementation Check — Compare build vs design spec</item>
+    <item cmd="CC or fuzzy match on consistency-check" target="task run-qa.md with consistency-check-template.yaml">[6] Consistency Check — Cross-screen consistency audit</item>
+    <item cmd="PR or fuzzy match on pre-handoff" target="task run-qa.md with pre-handoff-template.yaml">[7] Pre-Handoff — Complete pre-handoff quality gate</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[8] Export to Figma — Export artifact as native elements</item>
+    <item cmd="AU or fuzzy match on code-audit" target="task code-audit.md">[9] Code Audit — Scan codebase for hardcoded values and design system violations</item>
+    <item cmd="CL or fuzzy match on style-cleanup" target="task style-cleanup.md">[10] Style Cleanup — Replace all hardcoded style values with design tokens</item>
+    <item cmd="TC or fuzzy match on token-compliance" target="task code-audit.md">[11] Token Compliance — Calculate token compliance % for every component file</item>
+    <item cmd="DC or fuzzy match on duplicate-check" target="task code-audit.md">[12] Duplicate Check — Find and flag duplicate components that should be merged</item>
+    <item cmd="H or fuzzy match on help" target="inline">[13] Help — Show commands and project context</item>
   </menu>
 </agent>
 ```

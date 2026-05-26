@@ -97,24 +97,24 @@ You must fully embody this agent's persona and follow all activation instruction
     </principles>
   </persona>
   <menu>
-    <item cmd="DD or fuzzy match on design-direction">[0] Design Direction Brief — Elicit designer's taste BEFORE any visual work (gate task)</item>
-    <item cmd="CR or fuzzy match on critique">[1] Critique — Visual critique of a screen</item>
-    <item cmd="PO or fuzzy match on polish">[2] Polish — Refine a specific component</item>
-    <item cmd="VH or fuzzy match on visual-hierarchy">[3] Visual Hierarchy — Fix what the eye sees first</item>
-    <item cmd="SP or fuzzy match on spacing">[4] Spacing — Fix spacing and alignment</item>
-    <item cmd="CO or fuzzy match on color-refine">[5] Color Refine — Clean up color usage</item>
-    <item cmd="TY or fuzzy match on typography">[6] Typography — Fix type hierarchy</item>
-    <item cmd="FX or fuzzy match on fix">[7] Fix — Generate and apply a CSS/style fix</item>
-    <item cmd="BA or fuzzy match on before-after">[8] Before/After — Show comparison of a visual fix</item>
-    <item cmd="AC or fuzzy match on auto-critique">[9] Auto-Critique — Capture screen from running app and critique</item>
-    <item cmd="RS or fuzzy match on responsive-scan">[10] Responsive Scan — Capture at multiple viewports</item>
-    <item cmd="VD or fuzzy match on visual-diff">[11] Visual Diff — Compare two states of a screen</item>
-    <item cmd="WA or fuzzy match on watch">[12] Watch — Watch interaction/animation and critique motion</item>
-    <item cmd="EF or fuzzy match on export-figma">[13] Export to Figma — Push fixes to Figma</item>
-    <item cmd="A11Y or fuzzy match on accessibility">[14] Accessibility — WCAG 2.2 AA accessibility audit</item>
-    <item cmd="PA or fuzzy match on pattern-check">[15] Pattern Check — Are UI patterns right for the task?</item>
-    <item cmd="SC or fuzzy match on states">[16] States — Audit state coverage (empty, loading, error, disabled)</item>
-    <item cmd="H or fuzzy match on help">[17] Help — Show commands</item>
+    <item cmd="DD or fuzzy match on design-direction" target="task design-direction-brief.md">[0] Design Direction Brief — Elicit designer's taste BEFORE any visual work (gate task)</item>
+    <item cmd="CR or fuzzy match on critique" target="task visual-critique.md">[1] Critique — Visual critique of a screen</item>
+    <item cmd="PO or fuzzy match on polish" target="task component-polish.md">[2] Polish — Refine a specific component</item>
+    <item cmd="VH or fuzzy match on visual-hierarchy" target="task fix-hierarchy.md">[3] Visual Hierarchy — Fix what the eye sees first</item>
+    <item cmd="SP or fuzzy match on spacing" target="task fix-spacing.md">[4] Spacing — Fix spacing and alignment</item>
+    <item cmd="CO or fuzzy match on color-refine" target="task refine-color.md">[5] Color Refine — Clean up color usage</item>
+    <item cmd="TY or fuzzy match on typography" target="task fix-typography.md">[6] Typography — Fix type hierarchy</item>
+    <item cmd="FX or fuzzy match on fix" target="task generate-fix.md">[7] Fix — Generate and apply a CSS/style fix</item>
+    <item cmd="BA or fuzzy match on before-after" target="task before-after.md">[8] Before/After — Show comparison of a visual fix</item>
+    <item cmd="AC or fuzzy match on auto-critique" target="task auto-capture-critique.md">[9] Auto-Critique — Capture screen from running app and critique</item>
+    <item cmd="RS or fuzzy match on responsive-scan" target="task responsive-scan.md">[10] Responsive Scan — Capture at multiple viewports</item>
+    <item cmd="VD or fuzzy match on visual-diff" target="task visual-diff.md">[11] Visual Diff — Compare two states of a screen</item>
+    <item cmd="WA or fuzzy match on watch" target="task auto-capture-critique.md">[12] Watch — Watch interaction/animation and critique motion</item>
+    <item cmd="EF or fuzzy match on export-figma" target="task export-to-figma.md">[13] Export to Figma — Push fixes to Figma</item>
+    <item cmd="A11Y or fuzzy match on accessibility" target="task visual-critique.md (accessibility section only)">[14] Accessibility — WCAG 2.2 AA accessibility audit</item>
+    <item cmd="PA or fuzzy match on pattern-check" target="task visual-critique.md (pattern check section only)">[15] Pattern Check — Are UI patterns right for the task?</item>
+    <item cmd="SC or fuzzy match on states" target="task visual-critique.md (states section only)">[16] States — Audit state coverage (empty, loading, error, disabled)</item>
+    <item cmd="H or fuzzy match on help" target="inline">[17] Help — Show commands</item>
   </menu>
 </agent>
 ```
