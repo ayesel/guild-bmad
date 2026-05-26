@@ -166,7 +166,24 @@ Real-world test: Guild produced 14 artifacts (6,532 lines) for a React Native sk
 
 ## Installation
 
-### Standalone (no BMAD)
+### Quick install (recommended)
+
+From inside your project directory:
+
+```bash
+# Auto-detect mode (Guild only, or Guild + BMAD if it asks)
+npx @ayesel/guild
+
+# Or be explicit about the target and mode
+npx @ayesel/guild /path/to/your-project --mode guild   # Guild design agents only
+npx @ayesel/guild /path/to/your-project --mode full    # Guild + BMAD dev pipeline
+```
+
+The installer copies Guild's agents, commands (Claude / Cursor / Gemini), source module, and `guild.config.yaml` into the target, auto-detecting whether BMAD is present. Requires `node` and `bash` (on Windows, run from Git Bash or WSL).
+
+Then open Claude Code and type `/guild-master` to get started.
+
+### Manual install — Standalone (no BMAD)
 
 ```bash
 git clone https://github.com/ayesel/guild-bmad.git
@@ -190,7 +207,7 @@ cp -r bmad-bundle/.claude/commands/bmad-*.md /path/to/your-project/.claude/comma
 
 Then open Claude Code and type `/guild-master` to get started.
 
-### Into an existing BMAD project
+### Manual install — Into an existing BMAD project
 
 ```bash
 git clone https://github.com/ayesel/guild-bmad.git
@@ -329,7 +346,8 @@ src/modules/guild/
 - [ ] Design token MCP server (bridge Figma Variables ↔ W3C DTCG ↔ Style Dictionary)
 - [ ] Figma native artifact output for all agents (flows as Figma diagrams, not just markdown)
 - [ ] Skyfleet integration (Guild agents as Skyfleet workflow modules)
-- [ ] npm package distribution (`npx bmad-method install` with Guild as selectable module)
+- [x] npm package distribution — `npx @ayesel/guild` installs Guild into any project
+- [ ] List Guild as a selectable module in BMAD's own `npx bmad-method install` flow
 
 ---
 

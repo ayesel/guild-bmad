@@ -1,0 +1,48 @@
+{
+  "name": "@ayesel/guild",
+  "version": "0.1.0",
+  "description": "AI-powered product design framework — 8 specialized design agents (research, interaction, visual, content, QA, dev handoff, design systems, information architecture) plus an orchestrator. Works standalone or with BMAD v6.",
+  "bin": {
+    "guild": "bin/guild.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/install.sh",
+    "scripts/validate.sh",
+    "guild.config.yaml",
+    "_bmad/",
+    "src/",
+    ".claude/",
+    ".cursor/",
+    ".gemini/",
+    "bmad-bundle/"
+  ],
+  "scripts": {
+    "validate": "bash scripts/validate.sh"
+  },
+  "keywords": [
+    "design",
+    "ux",
+    "ui",
+    "ai-agents",
+    "claude-code",
+    "bmad",
+    "design-system",
+    "figma",
+    "product-design",
+    "design-ops"
+  ],
+  "author": "Ayrehl Davis",
+  "license": "MIT",
+  "homepage": "https://github.com/ayesel/guild-bmad#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayesel/guild-bmad.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ayesel/guild-bmad/issues"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

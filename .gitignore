@@ -1,3 +1,8 @@
 
 claude-talk-to-figma-mcp/
 .playwright-mcp/
+
+# npm
+node_modules/
+*.tgz
+npm-debug.log*
