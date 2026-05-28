@@ -39,7 +39,7 @@ For each category, check whether the project defines named tokens (vars / theme 
 | **Typography** | font-family, scale (xs→4xl), weights, line-heights | All sizes named; 2-3 family roles (display/sans/num) |
 | **Radius** | sm, md, lg, xl | At least 3 sizes named |
 | **Shadow** | elevation tokens (sm, md, lg, glass, focus) | At least 3 elevations |
-| **Motion** | duration (fast/base/slow), easing (in/out/inOut) | Named tokens, not raw `transition-all` |
+| **Motion** | role-based duration scale (`instant/micro/short/medium/long`), easing set incl. a **signature curve** (`--ease-signature`) + out/in/emphasis/linear, `--stagger`, and a defined `prefers-reduced-motion` branch | Tokens present per `shared-sidecar/motion-and-interaction-principles.md`; no raw `transition-all` or hardcoded durations in components. Audited in depth at step 4c. |
 
 ### 3. Audit base primitive layer
 
@@ -77,6 +77,70 @@ Run grep to detect violations of system discipline:
 | Inline `style={{` for visual properties | `style=\{\{[^}]*(color\|background\|padding\|margin\|font)` | <5 occurrences |
 | Inline component definitions in pages | `^function [A-Z]\w* ?\(` inside `app/**/page.tsx` (excluding the page component itself) | 0 — extract them |
 
+### 4b. Audit contrast (WCAG AA) — the correctness check the discipline greps miss
+
+Token *presence* and *consistency* (steps 2–4) say nothing about whether the tokens are **legible**. A
+system can bind every value to a token, pass every grep, and still ship a status color that fails WCAG
+— "the Green trap" (Green/500 on Green/100) and the Amber/Yellow trap are the classic cases. A coherent
+system that is uniformly inaccessible still fails users. So the foundation gate computes contrast, it does
+not eyeball it.
+
+This is the **code-side** twin of Tinker's `tinker-wcag.md` (which audits the same pairs in Figma
+variables). Same WCAG formula; the only difference is the resolver — here we walk **CSS custom-property
+alias chains** (`var(--…)` → … → hex) instead of Figma variable aliases.
+
+```javascript
+// 1. Parse the token layer (tokens.css / globals @theme / tailwind config) into a flat map,
+//    then resolve each semantic var through its alias chain to a final hex.
+function resolveVar(name, vars) {            // vars: { '--color-positive-text': 'var(--color-positive-600)', ... }
+  let v = vars[name];
+  while (v && /^var\(\s*(--[\w-]+)\s*\)$/.test(v)) v = vars[v.match(/^var\(\s*(--[\w-]+)\s*\)$/)[1]];
+  return v; // final hex, e.g. '#0b7c44'
+}
+
+// 2. WCAG relative luminance + contrast (identical to tinker-wcag)
+const lin = c => (c /= 255, c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const L = hex => { const [r,g,b] = hex.replace('#','').match(/../g).map(h => parseInt(h,16));
+                   return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); };
+const contrast = (fg,bg) => { const a=L(fg), b=L(bg), hi=Math.max(a,b), lo=Math.min(a,b);
+                              return (hi + 0.05) / (lo + 0.05); };
+```
+
+**Pairs to audit** — every semantic foreground/background that renders together. At minimum:
+- Each status family's text on its own subtle/solid bg: `*-text`/`on-*` on `*-subtle`/`*` (positive, danger, warn, info, neutral — whatever the project defines).
+- `on-accent` on `accent`; `on-danger` on `danger` (button labels).
+- `fg` and `fg-muted` on `bg` and `bg-subtle` (body + muted text on every surface).
+
+**Grade each pair against the size it actually renders at** (read the binding primitive's CSS):
+- `>= 4.5` → AA ✓ for normal text. `>= 7.0` → AAA.
+- `>= 3.0` → AA Large ⚠️ — **only** valid if the text is genuinely ≥18.66px, or ≥14px **bold**. Badge/tag text (12–14px medium) does NOT qualify; require 4.5.
+- `< required` → **FAIL ✗**. For every failure, propose the fix (walk fg darker to the next primitive step, e.g. positive.500 → positive.600; re-alias the semantic token — never inline an override on a screen).
+
+A failing status or body-text pair is a **hard gate failure** (see step 6), not a warning — it is a shipping
+accessibility defect, and the whole point of the gate is to catch it before any screen is built on top of it.
+
+### 4c. Audit motion + interaction-state coverage — the "crafted vs. generic" check
+
+The discipline greps and contrast check say nothing about whether the product *feels* finished. Motion is the
+layer most responsible for crafted-vs-generic, and the layer most often skipped. Audit it against
+`shared-sidecar/motion-and-interaction-principles.md`:
+
+1. **Motion tokens present.** Role-based duration scale, the easing set including a real `--ease-signature`
+   `cubic-bezier` (NOT a generic symmetric ease-in-out used as the default), `--stagger`, and a defined
+   `prefers-reduced-motion` branch. Missing signature easing or reduced-motion branch = the two most common gaps.
+2. **Motion is tokenized, not inlined.** Components reference motion tokens; no hardcoded durations
+   (`grep` for `transition:.*[0-9]+ms|[0-9.]+s` and `transition-all` in component files) and no per-screen
+   easing. Raw transition values = motion drift, same class of defect as raw hex.
+3. **State coverage on every interactive primitive.** For Button/Input/Toggle/Select/etc., verify all required
+   states exist: `default, hover, focus-visible, active/pressed, disabled, loading` (+ `selected`/`error` where
+   relevant). Missing states are the #1 source of "janky/unfinished." List any element missing states.
+4. **Reduced-motion is a designed branch.** A `@media (prefers-reduced-motion: reduce)` path exists and
+   preserves feedback (doesn't just delete it).
+
+Failures here are **CONDITIONAL → FAIL** depending on severity: a missing signature easing or absent
+reduced-motion branch, or interactive primitives with no pressed/focus/loading states, block the gate — a
+generic-feeling or half-stated foundation propagates to every screen. For each gap, propose the token or state to add.
+
 ### 5. Generate gap report
 
 Produce a clear pass/fail per category with specifics:
@@ -107,15 +171,28 @@ Produce a clear pass/fail per category with specifics:
 ❌ 14 hardcoded hex colors in component files
 ⚠️  6 raw `transition-all` without duration
 ✅ 0 inline page-level component definitions in components/ui/
+
+## Contrast (WCAG AA)
+
+✅ on-accent on accent — 6.29:1 AA
+✅ on-danger on danger — 4.83:1 AA
+❌ positive-text on positive-subtle — 3.30:1 FAIL (Badge text 12px needs 4.5) → re-alias positive-text to positive.600 (#0b7c44 → 4.96:1)
+✅ fg on bg — 18.6:1 AAA
+⚠️  fg-muted on bg-subtle — 4.55:1 AA (thin; restrict to ≥14px)
 ```
 
 ### 6. Verdict + remediation plan
 
 Choose ONE:
 
-- **PASS** — All required tokens present, all required primitives extracted with variants, usage discipline within thresholds. Quest proceeds.
-- **CONDITIONAL** — Minor gaps (1-2 tokens missing, 1-2 primitives missing). Quest may proceed but the gaps become Healer's first stories before any page-level work.
-- **FAIL** — Significant gaps (3+ token categories missing, 3+ required primitives missing, OR usage discipline violations exceed thresholds). Quest **STOPS**. The next agent task is to add the missing tokens and primitives BEFORE the next page touches the screen.
+- **PASS** — All required tokens present, all required primitives extracted with variants, usage discipline within thresholds, **and every status/body-text contrast pair clears its WCAG AA threshold**. Quest proceeds.
+- **CONDITIONAL** — Minor gaps (1-2 tokens missing, 1-2 primitives missing). Quest may proceed but the gaps become Healer's first stories before any page-level work. **Contrast failures are never CONDITIONAL** — a sub-threshold pair is a shipping a11y defect; downgrade to FAIL.
+- **FAIL** — Significant gaps (3+ token categories missing, 3+ required primitives missing, usage discipline violations exceed thresholds, **any status/body-text pair fails WCAG AA contrast**, **OR motion fails step 4c** — no signature easing, no reduced-motion branch, raw transitions in components, or interactive primitives missing pressed/focus/loading states). Quest **STOPS**. The next agent task is to add the missing tokens/primitives, re-alias failing color tokens, and complete the motion + state layer BEFORE the next page touches the screen.
+
+> Scale the primitive checklist to the product. The 10-primitive list is sized for a full app; for a small
+> surface (≤ a handful of screens) treat `Tooltip`/`Skeleton`/`IconButton`/`Select` as *recommended, not
+> blocking* if the product has no use for them. Do not FAIL a 3-screen app for lacking a `Skeleton` while a
+> real contrast defect ships — the contrast gate is the non-negotiable one.
 
 For CONDITIONAL or FAIL, generate a remediation plan: ordered list of (a) tokens to add (with proposed values), (b) primitives to extract (with proposed file paths), (c) usage cleanups (with file:line references).
 
@@ -151,6 +228,12 @@ Save the user's decision in the artifact. Whatever was chosen becomes the bindin
 ## Usage Discipline
 {table — violations found vs thresholds}
 
+## Contrast (WCAG AA)
+{table — each status + body-text Fg/Bg pair: resolved hex, ratio, grade vs the size it renders at; failures first}
+
+## Motion & interaction (step 4c)
+{motion tokens present? signature easing? reduced-motion branch? raw transitions in components? per-primitive state coverage — list any element missing pressed/focus/loading/disabled}
+
 ## Remediation Plan
 {ordered list of tokens to add, primitives to extract, cleanups to apply, with file:line references}
 
@@ -173,6 +256,10 @@ Save the user's decision in the artifact. Whatever was chosen becomes the bindin
 - [ ] All 6 token categories audited
 - [ ] All 10 required primitives checked
 - [ ] Usage discipline grep run on actual codebase
+- [ ] Contrast computed (not eyeballed) via WCAG formula for every status + body-text pair; each failure listed with a concrete token-level fix
+- [ ] Verdict downgraded to FAIL if any status/body-text pair fails AA
+- [ ] Motion audited (step 4c): signature easing + role-based durations + stagger + reduced-motion branch present; no raw transitions in components
+- [ ] Interaction-state coverage checked on every interactive primitive (default/hover/focus/active/disabled/loading)
 - [ ] Remediation plan is specific (file:line, proposed token names, proposed file paths) — not generic ("improve tokens")
 - [ ] User decision captured verbatim
 - [ ] Artifact saved to `{output_root}/guild-artifacts/design-system-foundation.md`

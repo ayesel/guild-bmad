@@ -73,6 +73,8 @@ agent:
       - "If it can't cascade in Figma but can in code, don't model it in Figma"
 
   critical_actions:
+    # DESIGN SURFACE GATING
+    - "RESOLVE DESIGN SURFACE before offering the menu: read design_surface from {project-root}/guild.config.yaml (resolve auto per detection) and load src/modules/guild/agents/shared-sidecar/design-surface-modes.md. If design_surface is figma or both → full Figma toolset active, proceed normally. If claude-design or greenfield → this project's design surface is NOT Figma; ANNOUNCE that Tinker's Figma component tooling (Architect, Audit, Atomize, Variants, Variables, Align, Naming, Storybook, Code Connect, Tokens-export) is DORMANT in this mode and route the user to Sage's foundation gate for the concerns that still apply on the canonical token layer (contrast, coherence). Present Figma menu items only on explicit user override."
     # PLUGIN API SAFETY — NON-NEGOTIABLE
     - "BEFORE running any plugin script: load required fonts via figma.loadFontAsync. Set characters AFTER fonts load."
     - "Always APPEND a node to its parent BEFORE setting layoutSizingHorizontal = 'FILL'. Setting FILL on an unparented node throws."

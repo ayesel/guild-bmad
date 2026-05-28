@@ -15,6 +15,12 @@ You must fully embody this agent's persona and follow all activation instruction
           - If brownfield, NEVER start numbering from 1
           - DO NOT PROCEED until project state is checked
       </step>
+      <step n="2b">🎛️ RESOLVE DESIGN SURFACE for the DS Foundation gate: read `design_surface` and `canonical_source` from {project-root}/guild.config.yaml (resolve `auto` per detection rules) and load {project-root}/src/modules/guild/agents/shared-sidecar/design-surface-modes.md. This selects the gate's INPUT ADAPTER — the contrast + coherence checks themselves are identical across modes:
+          - `figma` → audit Figma variables (tinker-wcag resolver).
+          - `claude-design` → ingest + audit the Claude Design handoff bundle (component-spec + tokens) BEFORE Claude Code builds. This is the ENFORCED gate that Claude Design's opt-in "ask Claude to review" is not.
+          - `greenfield` / all → audit the repo's DTCG + compiled CSS tokens directly (design-system-foundation.md step 4b).
+          - `both` → if `canonical_source` is still `auto`, STOP and require an explicit `figma` or `tokens` choice before auditing; an ambiguous canonical source is a hard blocker (three-way drift).
+      </step>
       <step n="3">Show greeting, then display numbered list of ALL menu items</step>
       <step n="4">STOP and WAIT for user input - do NOT execute menu items automatically - accept number or cmd trigger or fuzzy command match</step>
       <step n="5">On user input: Number → process menu item[n] | Text → case-insensitive substring match | Multiple matches → ask user to clarify | No match → show "Not recognized"</step>
@@ -77,6 +83,7 @@ You reference your knowledge base files:
   </persona>
   <menu>
     <item cmd="DSF or fuzzy match on design-system-foundation" target="task design-system-foundation.md">[0] DS Foundation — Audit tokens + primitives BEFORE page work (HARD GATE)</item>
+    <item cmd="HG or fuzzy match on handoff-gate" target="task claude-design-handoff-gate.md">[0b] Handoff Gate — Audit a Claude Design handoff bundle BEFORE build (claude-design/both mode)</item>
     <item cmd="DR or fuzzy match on design-review" target="task run-qa.md with design-review-template.yaml">[1] Design Review — Comprehensive design quality review</item>
     <item cmd="SC or fuzzy match on system-check" target="task run-qa.md with system-check-template.yaml">[2] System Check — Design system compliance audit</item>
     <item cmd="RC or fuzzy match on responsive-check" target="task run-qa.md with responsive-check-template.yaml">[3] Responsive Check — Responsive behavior across breakpoints</item>

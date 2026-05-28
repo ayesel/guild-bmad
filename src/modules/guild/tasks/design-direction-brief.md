@@ -44,10 +44,12 @@ Capture: 3 adjectives. If the user gives generic words, probe once.
 
 Capture: dense / balanced / airy + 1-line rationale.
 
-#### 4. Motion energy
-> "How alive should this feel? Still and surgical (no motion, instant state changes, Bloomberg-terminal feel) — subtle and refined (transitions, hover states, but nothing showy) — or expressive and animated (loaders that delight, micro-interactions, things that move)?"
+#### 4. Motion language (three parts)
+> "(a) **Energy** — how alive should this feel? Still and surgical (instant state changes, Bloomberg-terminal) — subtle and refined (transitions, hover states, nothing showy) — or expressive and animated (loaders that delight, things that move)?
+> (b) **Signature feel** — is there a motion *fingerprint* you love and want to borrow? e.g. 'Linear's snap,' 'iOS spring/overshoot,' 'Stripe's restraint,' 'macOS genie.' This becomes the `--ease-signature` curve — the single biggest lever against generic feel.
+> (c) **Where delight is earned** — which 1–2 moments deserve personality motion (a reward landing, a streak, the comparison reveal), and what should stay quiet? And do you want a strong reduced-motion posture (some users/contexts prefer near-still)?"
 
-Capture: still / subtle / expressive.
+Capture: energy (still/subtle/expressive); signature reference (→ proposed easing direction); the 1–2 hero/delight moments; reduced-motion posture. These map directly onto `src/modules/guild/agents/shared-sidecar/motion-and-interaction-principles.md` — the brief sets the taste, that doc + the foundation gate enforce the consistency.
 
 #### 5. Color story
 > "Two parts: (a) what's the dominant feeling — warm, cool, neutral, high-contrast, monochrome, color-rich? (b) Are there 1-2 reference palettes I should pull from? Could be 'Arcadia's blues,' 'Stripe's lavenders,' 'Linear's near-black,' a specific Pantone, or a color from a non-software thing you love."
@@ -90,8 +92,11 @@ Capture: 2-4 specific anti-patterns or anti-vibes.
 ## Density
 **{dense | balanced | airy}** — {rationale}
 
-## Motion energy
-**{still | subtle | expressive}**
+## Motion language
+- Energy: **{still | subtle | expressive}**
+- Signature feel: {reference, e.g. "Linear's snap"} → proposed `--ease-signature` direction
+- Hero/delight moments: {the 1–2 moments that earn personality motion}
+- Reduced-motion posture: {strong | standard}
 
 ## Color story
 - Temperature: {warm | cool | neutral | high-contrast | monochrome | color-rich}
@@ -106,7 +111,9 @@ Capture: 2-4 specific anti-patterns or anti-vibes.
 
 **Mage (visual design):** Anchor visual choices in the reference + adjectives. When choosing between two patterns, pick the one closer to the anchor.
 
-**Rogue (interaction):** Density + motion energy directly govern layout decisions and transition style. Default to the user's stated preference; deviate only with explicit reasoning.
+**Rogue (interaction):** Density + motion language govern layout, transition style, and choreography. The signature feel and hero moments map to `shared-sidecar/motion-and-interaction-principles.md`; apply its choreography/continuity principles. Default to the user's stated preference; deviate only with explicit reasoning.
+
+**Mage (motion craft):** Translate the signature feel into the `--ease-signature` curve + duration scale, and the hero moments into rationed personality motion, per `shared-sidecar/motion-and-interaction-principles.md`. Apply the micro-interaction state-coverage standards to every primitive.
 
 **Warlock (content):** Personality adjectives govern voice. Avoid generic SaaS tone unless explicitly asked.
 
@@ -117,7 +124,7 @@ Capture: 2-4 specific anti-patterns or anti-vibes.
 - [ ] All 6 questions answered
 - [ ] Anchor reference is ONE product (not a list)
 - [ ] Personality adjectives are specific (not "modern", "clean")
-- [ ] Density and motion explicitly chosen
+- [ ] Density chosen; motion language captured (energy + signature feel + hero moments + reduced-motion posture)
 - [ ] At least 2 anti-patterns captured
 - [ ] User has explicitly approved the synthesized brief
 - [ ] Artifact saved to `{output_root}/guild-artifacts/design-direction-brief.md`

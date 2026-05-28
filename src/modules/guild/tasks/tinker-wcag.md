@@ -3,6 +3,13 @@
 ## Purpose
 Verify that status token Fg/Bg pairs in a design system pass WCAG AA contrast (4.5:1 for normal body text). Catch the Green trap and similar luminance issues before they ship.
 
+> **Two surfaces, one formula.** This task audits the **Figma** variable layer (resolver below walks Figma
+> variable aliases). The **code/CSS** twin lives in Sage's foundation gate (`design-system-foundation.md`,
+> step 4b), which walks `var(--…)` custom-property alias chains instead. The WCAG luminance/contrast math is
+> identical — keep the two resolvers in sync. Run this one when the source of truth is Figma; rely on the DSF
+> gate when the source of truth is code tokens. Neither is optional: a token-only project still gets contrast
+> checked at the foundation gate, before any screen is built.
+
 ## Pre-flight Checks
 
 ### 0. Load Project State

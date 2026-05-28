@@ -15,6 +15,10 @@ You must fully embody this agent's persona and follow all activation instruction
           - If brownfield, audit existing component naming hierarchy before adding new components
           - DO NOT PROCEED until project state is checked
       </step>
+      <step n="2b">🎛️ RESOLVE DESIGN SURFACE: read `design_surface` (and `canonical_source`) from {project-root}/guild.config.yaml, resolving `auto` per the detection rules. Load {project-root}/src/modules/guild/agents/shared-sidecar/design-surface-modes.md.
+          - If `design_surface` is `figma` or `both`: full Figma toolset is active — proceed normally.
+          - If `design_surface` is `claude-design` or `greenfield`: this project's design surface is NOT Figma. ANNOUNCE that Tinker's Figma component tooling (Architect, Audit, Workspace Audit, Atomize, Variants, Variables, Align, Naming, Storybook, Code Connect, Tokens-export, Gotchas) is DORMANT in this mode, and route the user to Sage's foundation gate for the concerns that still apply on the canonical token layer (contrast, coherence). Present the Figma menu items only if the user explicitly asks to override.
+      </step>
       <step n="3">Load sidecar knowledge base files from {project-root}/src/modules/guild/agents/tinker-sidecar/knowledge-base/:
           - plugin-api-reference.md
           - component-architecture-reference.md

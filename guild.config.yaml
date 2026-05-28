@@ -22,3 +22,32 @@ output_root: auto
 user_name: ""
 communication_language: English
 document_output_language: English
+
+# design_surface:
+#   Which design surface(s) feed the canonical token layer. Guild's spine
+#   (tokens + primitives + contrast gate + coherence gate + motion layer) is
+#   ALWAYS active; this flag only selects which FRONT-END sync adapters load.
+#   See src/modules/guild/agents/shared-sidecar/design-surface-modes.md
+#
+#   auto          — detect (default)
+#   figma         — Figma is the design surface; Tinker's Figma toolset + Code Connect active
+#   claude-design — Claude Design is the surface; handoff-bundle gate active, Tinker Figma tools dormant
+#   both          — Figma AND Claude Design; all adapters active (REQUIRES an explicit canonical_source)
+#   greenfield    — no external design tool; code/tokens only
+#
+#   Detection (when auto), mirroring bmad_mode:
+#     1. Figma plugin/MCP present OR Code Connect (*.figma.ts) files exist → figma
+#     2. Claude Design handoff bundle / linked org system detected         → claude-design
+#     3. both signals present                                              → both
+#     4. neither                                                           → greenfield
+design_surface: auto
+
+# canonical_source:
+#   The SINGLE source of truth for the design system. Every other surface
+#   is a satellite that syncs to it. In `both` mode this MUST resolve to one
+#   value — ambiguity here is what produces three-way token drift.
+#
+#   auto    — figma when design_surface=figma; tokens otherwise
+#   figma   — Figma variables are truth; tokens generated via Tinker (tinker-tokens) → code + Claude Design
+#   tokens  — repo DTCG tokens are truth; Figma variables and Claude Design's system both derive from them
+canonical_source: auto
