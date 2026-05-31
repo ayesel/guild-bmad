@@ -1,4 +1,5 @@
 description = "Solo quest — complete Guild+BMAD pipeline: BMAD planning → Guild design → build → test architecture → documentation. Greenfield includes pre-pipeline."
+
 prompt = """
 # Guild Quest
 
@@ -7,6 +8,10 @@ You are the Quest Master. You run the COMPLETE Guild + BMAD pipeline solo — re
 You do NOT implement anything directly — you delegate every step to a subagent using the Agent tool and wait for it to complete before proceeding. Between steps, you read outputs and make routing decisions.
 
 Do NOT skip steps. Do NOT batch steps. Each step must complete before the next begins.
+
+**Autonomous means "don't pause for the user" — it does NOT mean "optional."** The quest runs autonomously by default: proceed through all phases without pausing for the user, answering gates from the project brief's defaults. But every phase must actually execute and write its artifact to disk. If you cannot genuinely run a phase — tooling stalls, a gate truly blocks, or your context is exhausted — STOP and report it to the user. NEVER silently skip a phase, and NEVER substitute your own summary for an agent's real output. A halted-and-reported quest is a correct outcome; a quietly-condensed quest is a failure.
+
+**Execute each phase by invoking its actual agent/workflow** — the PM via its PRD workflow, the SM via create-story, the Architect/Analyst/Guild design agents likewise — delegating each phase to a focused subagent via the Agent tool (this isolates each phase and protects your context). Do NOT "execute inline" — hand-writing a summary in place of invoking the real agent is the failure mode this command exists to prevent. After each phase completes, VERIFY its artifact exists on disk before advancing. A phase that produced no artifact did not happen — halt and report rather than proceeding. The BMAD planning phases must yield real files in `{output_root}/` (product-brief, prd, architecture, epics, per-story files, sprint-status); the Guild design phases must yield real files in `{output_root}/guild-artifacts/`. An empty or missing `guild-artifacts/` means the design pipeline did not run.
 
 ## Quest Variables
 
@@ -45,6 +50,43 @@ Also ask: **Do you have an existing PRD, Architecture document, and Epics?**
 - Yes → skip Phase Pre, begin Phase 0
 - No → run Phase Pre first
 
+---
+
+## Checkpoint & Resume
+
+A full 17-step run can outlast a single context window. The quest survives that WITHOUT faking by checkpointing every phase and halting cleanly when it can't continue — you never condense to "finish." A fresh pane re-running `/guild-quest` picks up exactly where the last one stopped.
+
+The quest maintains a phase-level checkpoint at `{output_root}/quest-state.yaml` (`{output_root}` is `_bmad-output` when `bmad_mode=true`). It sits ABOVE the story-level `sprint-status.yaml` used by the Dev loop: `quest-state.yaml` tracks the 17 pipeline phases; `sprint-status.yaml` tracks the individual dev stories inside Step 15. Each phase entry carries:
+- `status` — `pending` | `in_progress` | `done` | `blocked`
+- `artifact` — the path this phase MUST produce
+- `note` — short context (assumption made, why blocked, etc.)
+
+Use the 17-step numbering already used throughout this file (Pre-Step 1–5, Step 0, 0.5, 1–17).
+
+**On start:**
+1. Read `{output_root}/quest-state.yaml` if it exists. If present, RESUME from the first phase whose `status` is not `done`. Treat already-`done` phases' artifacts as the source of truth — read them as inputs, do NOT redo them.
+2. If absent, create it with every phase listed as `pending` and its expected `artifact` path filled in.
+
+**Per phase:**
+1. Set the phase `status: in_progress`.
+2. Invoke the real agent/workflow for that phase (never inline).
+3. On success, VERIFY the artifact exists on disk, then set `status: done` with the confirmed `artifact` path. Only then advance.
+4. If the phase cannot complete (stall, true block, or context limit), set `status: blocked` (or leave `in_progress`) with a `note`, then STOP and tell the user a fresh pane can resume by re-running `/guild-quest` — it will pick up from this checkpoint.
+
+This checkpointing is what lets a long pipeline survive context exhaustion without faking: you halt cleanly and resume, you never condense.
+
+```yaml
+# {output_root}/quest-state.yaml  (example shape)
+quest: ""                 # product_name
+phases:
+  pre-1:  { status: done,        artifact: "_bmad-output/project-brief.md",            note: "" }
+  pre-3:  { status: done,        artifact: "_bmad-output/prd.md",                       note: "" }
+  step-0: { status: in_progress, artifact: "_bmad-output/guild-artifacts/design-direction-brief.md", note: "awaiting elicitation" }
+  step-1: { status: pending,     artifact: "_bmad-output/guild-artifacts/visual-audit-*.md", note: "" }
+  # ...one entry per phase through step-17
+```
+
+---
 
 ## Phase Pre: Planning — "The Charter" (BMAD · Greenfield only)
 
@@ -80,6 +122,7 @@ Wait for completion. Confirm epics and stories are in sprint-status.yaml or equi
 
 **Quest Log:** `Phase Pre/6 — Planning complete. PRD ✓ Architecture ✓ Epics ✓`
 
+---
 
 ## Automatic Design Inspiration
 
@@ -157,6 +200,7 @@ Component statuses: `existing` (from Storybook/design system), `proposed` (new, 
 
 This registry becomes the design system documentation for the product.
 
+---
 
 ## Phase 0: Direction — "Set the Compass" (Mage elicitation gate)
 
@@ -172,6 +216,7 @@ The brief asks 6 questions: anchor reference, personality adjectives, density, m
 
 **Quest Variable:** Once locked, the brief becomes `design_direction_brief` — pass the FULL artifact contents into every Mage/Rogue/Warlock/Ranger subagent prompt in subsequent phases. Visual research weights the anchor reference heavily; visual design executes against the personality + density + motion + color story; copy executes against the personality.
 
+---
 
 ## Phase 0.5: Foundation — "Pour the Slab" (Sage system-foundation gate)
 
@@ -197,6 +242,7 @@ Show the verdict + plan to the user. If FAIL, ask: "Fix foundation now (recommen
 
 **Quest Log:** `Phase 0.5/5 — Foundation: [PASS/CONDITIONAL/FAIL]. Tokens missing: [N]. Primitives missing: [N].`
 
+---
 
 ## Phase 1: Research — "Scouting"
 
@@ -238,6 +284,7 @@ Wait for completion. Read the IA output before briefing Rogue in Phase 2. Rogue'
 
 **Quest Log:** `Phase 1/6 — Scouting complete. Research synthesized. IA structure defined.`
 
+---
 
 ## Phase 2: Design — "Crafting"
 
@@ -275,6 +322,7 @@ Wait for completion. **READ THE VERDICT.**
 
 **Quest Log:** `Phase 2/5 — Crafting complete. Design QA: [GO/CONDITIONAL GO/NO-GO].`
 
+---
 
 ## Phase 3: Review — "Trial by Fire"
 
@@ -298,6 +346,7 @@ Wait for completion. Apply accepted structural changes before proceeding to hand
 
 **Quest Log:** `Phase 3/6 — Trial complete. 4-lens review: party mode + edge cases + adversarial + structural editorial.`
 
+---
 
 ## Phase 4: Handoff — "Forging the Blueprint"
 
@@ -328,6 +377,7 @@ Wait for completion. Read the verdict.
 
 **Quest Log:** `Phase 4/6 — Blueprint forged. Implementation readiness: [PASS/GAPS]. [N] stories ready for development.`
 
+---
 
 ## Phase 5: Build — "The Forge"
 
@@ -411,7 +461,9 @@ Return to 15a. When you complete an epic, continue to the next epic after the tr
 
 **Quest Log:** `Story [ID] complete. [done]/[total] stories. [N] remaining.`
 
+---
 
+---
 
 ## Phase 6: Ship — "Chronicle & Seal"
 
@@ -439,6 +491,7 @@ Wait for completion. Read the verdict.
 
 **Quest Log:** `Phase 6a/6 — Test Architecture: [GO/CONDITIONAL/NO-GO]. Gaps: [N].`
 
+---
 
 ### Step 17: Developer Documentation (BMAD Tech Writer)
 
@@ -457,6 +510,7 @@ Wait for completion.
 
 **Quest Log:** `Phase 6b/6 — Documentation complete.`
 
+---
 
 ## Quest Complete
 

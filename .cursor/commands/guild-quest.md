@@ -12,6 +12,10 @@ You do NOT implement anything directly — you delegate every step to a subagent
 
 Do NOT skip steps. Do NOT batch steps. Each step must complete before the next begins.
 
+**Autonomous means "don't pause for the user" — it does NOT mean "optional."** The quest runs autonomously by default: proceed through all phases without pausing for the user, answering gates from the project brief's defaults. But every phase must actually execute and write its artifact to disk. If you cannot genuinely run a phase — tooling stalls, a gate truly blocks, or your context is exhausted — STOP and report it to the user. NEVER silently skip a phase, and NEVER substitute your own summary for an agent's real output. A halted-and-reported quest is a correct outcome; a quietly-condensed quest is a failure.
+
+**Execute each phase by invoking its actual agent/workflow** — the PM via its PRD workflow, the SM via create-story, the Architect/Analyst/Guild design agents likewise — delegating each phase to a focused subagent via the Agent tool (this isolates each phase and protects your context). Do NOT "execute inline" — hand-writing a summary in place of invoking the real agent is the failure mode this command exists to prevent. After each phase completes, VERIFY its artifact exists on disk before advancing. A phase that produced no artifact did not happen — halt and report rather than proceeding. The BMAD planning phases must yield real files in `{output_root}/` (product-brief, prd, architecture, epics, per-story files, sprint-status); the Guild design phases must yield real files in `{output_root}/guild-artifacts/`. An empty or missing `guild-artifacts/` means the design pipeline did not run.
+
 ## Quest Variables
 
 Define these at the start. Use them consistently in every step and every subagent brief. Never hardcode values that should be variables.
@@ -48,6 +52,42 @@ If the user provides all this upfront, populate variables and begin. Pass releva
 Also ask: **Do you have an existing PRD, Architecture document, and Epics?**
 - Yes → skip Phase Pre, begin Phase 0
 - No → run Phase Pre first
+
+---
+
+## Checkpoint & Resume
+
+A full 17-step run can outlast a single context window. The quest survives that WITHOUT faking by checkpointing every phase and halting cleanly when it can't continue — you never condense to "finish." A fresh pane re-running `/guild-quest` picks up exactly where the last one stopped.
+
+The quest maintains a phase-level checkpoint at `{output_root}/quest-state.yaml` (`{output_root}` is `_bmad-output` when `bmad_mode=true`). It sits ABOVE the story-level `sprint-status.yaml` used by the Dev loop: `quest-state.yaml` tracks the 17 pipeline phases; `sprint-status.yaml` tracks the individual dev stories inside Step 15. Each phase entry carries:
+- `status` — `pending` | `in_progress` | `done` | `blocked`
+- `artifact` — the path this phase MUST produce
+- `note` — short context (assumption made, why blocked, etc.)
+
+Use the 17-step numbering already used throughout this file (Pre-Step 1–5, Step 0, 0.5, 1–17).
+
+**On start:**
+1. Read `{output_root}/quest-state.yaml` if it exists. If present, RESUME from the first phase whose `status` is not `done`. Treat already-`done` phases' artifacts as the source of truth — read them as inputs, do NOT redo them.
+2. If absent, create it with every phase listed as `pending` and its expected `artifact` path filled in.
+
+**Per phase:**
+1. Set the phase `status: in_progress`.
+2. Invoke the real agent/workflow for that phase (never inline).
+3. On success, VERIFY the artifact exists on disk, then set `status: done` with the confirmed `artifact` path. Only then advance.
+4. If the phase cannot complete (stall, true block, or context limit), set `status: blocked` (or leave `in_progress`) with a `note`, then STOP and tell the user a fresh pane can resume by re-running `/guild-quest` — it will pick up from this checkpoint.
+
+This checkpointing is what lets a long pipeline survive context exhaustion without faking: you halt cleanly and resume, you never condense.
+
+```yaml
+# {output_root}/quest-state.yaml  (example shape)
+quest: ""                 # product_name
+phases:
+  pre-1:  { status: done,        artifact: "_bmad-output/project-brief.md",            note: "" }
+  pre-3:  { status: done,        artifact: "_bmad-output/prd.md",                       note: "" }
+  step-0: { status: in_progress, artifact: "_bmad-output/guild-artifacts/design-direction-brief.md", note: "awaiting elicitation" }
+  step-1: { status: pending,     artifact: "_bmad-output/guild-artifacts/visual-audit-*.md", note: "" }
+  # ...one entry per phase through step-17
+```
 
 ---
 
