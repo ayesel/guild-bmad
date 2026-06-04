@@ -1,7 +1,7 @@
 # Guild Design Framework
 
 ## Project Overview
-Guild is an AI-powered design framework with 8 specialized design agents (Ranger, Rogue, Warlock, Mage, Sage, Healer, Tinker, Cartographer) plus the Guild Master orchestrator that run adaptive design-to-sprint pipelines. Guild works standalone or integrates with BMAD v6 when present.
+Guild is an AI-powered design framework with 9 specialized design agents (Ranger, Rogue, Warlock, Mage, Sage, Healer, Tinker, Cartographer, Enchanter) plus the Guild Master orchestrator that run adaptive design-to-sprint pipelines. Guild works standalone or integrates with BMAD v6 when present.
 
 The agents:
 - **Ranger 🔍** — UX Researcher
@@ -12,6 +12,7 @@ The agents:
 - **Healer 📦** — Design Ops (dev handoff)
 - **Tinker 🔧** — Design System Engineer (Figma component architecture, tokens, Storybook/Code Connect parity)
 - **Cartographer 🗺️** — Information Architect & System Mapper (IA, sitemaps, content models, FigJam composition)
+- **Enchanter ✨** — Brand Identity Designer (brand strategy, verbal identity, logo/mark/icon/illustration & brand color+type DNA; the brand source-of-truth)
 - **Guild Master 🎯** — Orchestrator
 
 ## Modes
@@ -21,7 +22,7 @@ The agents:
 
 Configure in `guild.config.yaml` at the project root.
 
-**Tinker and Cartographer are on-demand specialists**, not fixed steps in the sequential pipeline. Tinker is invoked for design-system/Figma component work (and backs the Phase 0.5 foundation gate when the token/primitive layer needs building). Cartographer is invoked for information-architecture and stakeholder system-mapping work. Both can be called at any point by the orchestrator or directly.
+**Tinker, Cartographer, and Enchanter are on-demand specialists**, not fixed steps in the sequential pipeline. Tinker is invoked for design-system/Figma component work (and backs the Phase 0.5 foundation gate when the token/primitive layer needs building). Cartographer is invoked for information-architecture and stakeholder system-mapping work. Enchanter is invoked for greenfield brand creation or rebrands — it owns the brand source-of-truth (strategy, verbal identity, logo/mark/icon/illustration, brand color+type DNA) and runs *upstream*, feeding brand intent to Tinker (tokens) and Mage (UI application); it sets the voice that Warlock speaks in. All three can be called at any point by the orchestrator or directly.
 
 ## Key Design Principles
 - Brownfield-first — assume every project has existing state until proven otherwise
@@ -42,7 +43,7 @@ Configure in `guild.config.yaml` at the project root.
 ## Running Guild
 - `/guild-master` — Load the orchestrator for full pipeline control
 - `/guild-design-sprint` — Run adaptive pipeline (auto-detects greenfield/brownfield and BMAD presence)
-- Individual agents: `/guild-agent-ranger`, `/guild-agent-mage`, `/guild-agent-rogue`, `/guild-agent-warlock`, `/guild-agent-sage`, `/guild-agent-healer`, `/guild-agent-tinker`, `/guild-agent-cartographer`
+- Individual agents: `/guild-agent-ranger`, `/guild-agent-mage`, `/guild-agent-rogue`, `/guild-agent-warlock`, `/guild-agent-sage`, `/guild-agent-healer`, `/guild-agent-tinker`, `/guild-agent-cartographer`, `/guild-agent-enchanter`
 - Individual commands: `/guild-heuristic-eval`, `/guild-critique`, `/guild-user-flow`, etc.
 - Raid skills (3-model comparison via atrium): `/guild-raid`, `/ranger-raid`, `/rogue-raid`, `/mage-raid`, `/warlock-raid`, `/sage-raid`, `/healer-raid`, `/guild-master-raid`
 
