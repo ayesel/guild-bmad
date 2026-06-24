@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: var(--space-0);
+  min-width: min-content;
+}
+
+button,
+input {
+  font: inherit;
+}

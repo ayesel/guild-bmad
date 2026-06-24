@@ -1,0 +1,108 @@
+.add-shell {
+  display: grid;
+  gap: var(--space-xl);
+  margin: var(--space-0) auto;
+  max-width: var(--size-content);
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.add-header {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.add-header h1,
+.add-header p,
+.preview-card h2,
+.preview-card p,
+.schedule-field {
+  margin: var(--space-0);
+}
+
+.add-header h1 {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  margin-top: var(--space-md);
+}
+
+.add-header p,
+.preview-card p {
+  color: var(--color-text-muted);
+  line-height: var(--line-height-body);
+}
+
+.add-layout {
+  align-items: start;
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: minmax(var(--space-0), 1fr) var(--size-sidebar);
+}
+
+.habit-form,
+.preview-stack {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.schedule-field {
+  border: var(--size-border) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.schedule-field legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-0) var(--space-xs);
+}
+
+.schedule-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.schedule-option {
+  align-items: center;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.schedule-option input {
+  accent-color: var(--color-primary);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+.preview-card {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.preview-card svg {
+  height: var(--size-icon);
+  width: var(--size-icon);
+}
+
+@media (max-width: 51.25rem) {
+  .add-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+}

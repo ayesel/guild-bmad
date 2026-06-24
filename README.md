@@ -1,215 +1,204 @@
-# Guild — AI-Powered Design Framework
+# Guild — a design framework for AI coding agents
 
-**8 specialized design agents (plus an orchestrator) for the full product design lifecycle.**
+**You provide the taste. Guild does the structured work.** A team of specialized
+AI design agents (research, IA, interaction, visual, content, QA, dev handoff)
+running inside your coding-agent CLI, producing real artifacts you can ship —
+not generic mockups. Built for product designers who want AI to handle the
+mechanical work without taking the wheel.
 
-Guild gives product designers a team of AI agents for research, interaction design, visual polish, content strategy, design QA, developer handoff, design-system engineering, and information architecture. One command runs the full pipeline — from user research to sprint-ready stories.
+> [![status: research preview](https://img.shields.io/badge/status-research%20preview-orange)]() &nbsp;
+> Guild is in active development. The internals are validated (`scripts/validate.sh`
+> passes 8/8) but the public install story is still being smoothed. See
+> [Quickstart](docs/quickstart.md) for what works today.
 
-Guild works **standalone** or **with BMAD v6**. It auto-detects your setup and adapts.
+---
 
-Built for designers who want structured, repeatable AI collaboration. The AI handles systematic, data-driven work. You provide the human judgment, empathy, and creative direction.
+## Why Guild?
+
+Three things every product designer keeps doing manually that Guild absorbs:
+
+- **Audit your design system's foundations before page work** — Guild's *Sage*
+  measures every semantic token pair against WCAG AA, catches the "green-trap"
+  (greens that look fine but fail contrast), and checks that every primitive has
+  hover/focus/active/disabled + a `prefers-reduced-motion` branch. You get a
+  PASS/FAIL with reasons, not a vibe.
+- **Generate dev-ready specs without rewriting them in Jira** — Guild's *Healer*
+  produces handoff bundles in BMAD dev-story format (Given/When/Then, component
+  specs with props/states/ARIA, design tokens in W3C DTCG). Stories are
+  immediately consumable by an autonomous dev loop.
+- **Run heuristic evals against real personas you didn't write yourself** —
+  Guild's *Ranger* generates evidence-grounded personas from your project
+  context, then runs Nielsen's 10 against your actual screens — and Guild's
+  multi-model **Raid** mode runs that same audit through Claude / Codex /
+  Antigravity in parallel so different engines surface different findings
+  ([empirical evidence](docs/multi-model-bakeoff.md)).
+
+---
+
+## Quickstart
+
+The fastest way to *see what Guild produces* without installing anything:
+**[examples/streak-habit-tracker/](examples/streak-habit-tracker/)** — a small
+React habit-tracker app with Guild's foundation-first artifacts in place
+(`guild-output/guild-artifacts/`). Skim it. That's what comes out the other end.
+
+To install it into your own project, follow the
+**[15-minute Quickstart guide](docs/quickstart.md)**. TL;DR:
+
+```bash
+# Published as @ayesel/guild — if npx errors with "package not found",
+# the publish is in flight; use the manual install below.
+cd /path/to/your-project
+npx @ayesel/guild
+```
+
+Then open Claude Code (`claude`) in that directory and try `/guild-design-direction`
+— Guild's *direction-first* gate. It's 6 short questions about taste; 90 seconds
+of your time. The next phase (`/guild-system-foundation`) materializes a real
+token set + 3 primitive components binding only to those tokens, and runs the
+WCAG + motion gate against them.
+
+**Manual install** (guaranteed to work today, no npm dependency):
+
+```bash
+git clone https://github.com/ayesel/guild-bmad.git
+cd guild-bmad
+bash scripts/install.sh /path/to/your-project --mode guild
+```
+
+That's the same installer the npm package wraps — same outcome.
+
+---
+
+## What Guild produces (concretely)
+
+A `/guild-design-sprint` run on a brand-new project generates, in order:
+
+| Phase | Artifact |
+|---|---|
+| **Discover** (Ranger) | Personas · journey maps · competitive audits · heuristic evals · visual audits (with measured contrast, not eyeballed) |
+| **Define** (Cartographer, Mage) | Sitemap · content model · design direction brief (taste locked) · system foundation (DTCG tokens + primitives + gate report) |
+| **Design** (Rogue, Mage, Warlock) | User flows (Mermaid) · wireframes · state diagrams · microcopy · error messages · empty states |
+| **Quality + Handoff** (Sage, Healer) | Pre-handoff gate report · accessibility audit · component registry · design tokens (DTCG) · BMAD-format Jira stories (G/W/T) |
+
+**Real-world example:** Guild produced **14 artifacts (6,532 lines)** for a
+React Native ski-trip app in a single run — 4 personas, 3 redesigned flows, 31
+error messages, 15 empty states, 12 sprint-ready stories across 3 epics. See
+[examples/streak-habit-tracker/](examples/streak-habit-tracker/) for a smaller,
+public reference.
+
+---
+
+## How the pipeline thinks
+
+```
+Discover  →  Define  →  Design  →  Quality  →  Handoff
+ (Ranger)    (Carto +    (Rogue +    (Sage)      (Healer)
+             Mage P0)    Mage +
+              Sage P0.5)  Warlock)
+```
+
+Two gates frame the visual work:
+
+- **Phase 0 — Design Direction (Mage):** elicits anchor reference, personality,
+  density, motion energy, color story, and what to avoid *before* any visuals
+  exist. Without this, AI design averages competitors into a generic dashboard
+  look. With it, every downstream agent filters its work through your direction.
+- **Phase 0.5 — System Foundation (Sage backed by Tinker):** audits the token
+  and primitive layer *before* any page-level work begins. If the foundation
+  fails contrast or motion coverage, the pipeline stops. Agents cannot inline
+  ad-hoc components if the system layer is already solid.
+
+Sage acts as a quality gate throughout: if it returns NO-GO, the pipeline
+loops back to the relevant phase.
+
+When [BMAD v6](https://github.com/bmad-code-org/BMAD-METHOD) is detected, the
+pipeline extends with PM (story review) → SM (sprint planning) → Dev
+(autonomous build), so the design output flows straight into a dev loop.
+
+Full pipeline walkthrough: **[docs/pipeline.md](docs/pipeline.md)**.
 
 ---
 
 ## The agents
 
-| Agent | Role | Commands | What it does |
-|-------|------|----------|-------------|
-| **Ranger 🔍** | UX Researcher | ~21 | Heuristic evaluations, competitive audits, persona generation, journey maps, interview scripts, research synthesis, usability test plans, accessibility audits, JTBD mapping, card sorting, A/B tests, surveys, stakeholder interviews, workshops, affinity diagrams, service blueprints, empathy maps, story maps, diary studies, method recommendations |
-| **Rogue 🔀** | Interaction Designer | ~12 | User flows, swim lanes, site maps, state diagrams, task analyses, wireframes, interaction maps, visual audits, flow audits, states audits, React export, Figma export |
-| **Warlock ✍️** | Content Strategist | ~8 | Microcopy, error message systems, voice/tone guidelines, empty states, onboarding copy, content audits, naming, UX spec |
-| **Sage 🛡️** | Design QA | ~10 | Design review, design system compliance, responsive checks, accessibility QA, implementation fidelity, consistency audits, pattern checks, pre-handoff quality gates, system foundation audit |
-| **Healer 📦** | Design Ops | ~10 | Developer handoff specs, Jira stories (Given/When/Then), design tokens (W3C DTCG), component specs, annotations, changelogs, release notes, watch mode, fix loop, UX_Design.md BMAD export |
-| **Mage 🎨** | Visual Designer | ~11 | Design direction brief, visual critique, component polish, visual hierarchy, spacing, color refinement, typography, auto-capture critique, responsive scans, visual diffs, before/after comparison |
-| **Tinker 🔧** | Design System Engineer | ~12 | Figma component architecture, atomic decomposition, variant systems, design tokens (W3C DTCG), variable binding, naming taxonomy, Storybook story coverage, Code Connect mapping, WCAG token audits, workspace reconnaissance |
-| **Cartographer 🗺️** | Information Architect & System Mapper | ~11 | Information architecture, sitemaps, content models, FigJam whiteboard composition, system maps for stakeholders, ADR diagrams, conceptual models, navigation audits, card sort design, tree test design, zone layout |
-| **Guild Master 🎯** | Orchestrator | ~6 | Full pipeline, quick sprint, solo quest, party quest, master raid. Auto-detects greenfield vs brownfield and BMAD presence |
+8 specialists plus an orchestrator. Each agent has a focused remit and a
+sidecar knowledge base it consults during work.
 
-**118+ commands · 47+ templates · 9 sidecar knowledge bases**
+| Agent | Role | What it does |
+|-------|------|--------------|
+| **Ranger 🔍** | UX Researcher | Heuristic evals, personas, journey maps, usability tests, competitive + accessibility audits |
+| **Cartographer 🗺️** | Information Architect | Sitemaps, content models, navigation models, FigJam composition |
+| **Rogue 🔀** | Interaction Designer | User flows, wireframes, state diagrams, task analyses, swim lanes |
+| **Mage 🎨** | Visual Designer | Visual hierarchy, spacing, typography, color, micro-interactions, before/after |
+| **Warlock ✍️** | Content Strategist | Microcopy, error messages, voice/tone, empty states, onboarding copy |
+| **Sage 🛡️** | Design QA | WCAG audits, design-system compliance, pre-handoff gate, Claude Design handoff gate |
+| **Healer 📦** | Design Ops | Jira stories (G/W/T), component specs, design tokens (DTCG), handoff bundles |
+| **Tinker 🔧** | Design System Engineer | Figma component architecture, variants, variable binding, Storybook/Code Connect parity |
+| **Guild Master 🎯** | Orchestrator | Runs the full pipeline; auto-detects greenfield/brownfield, with or without BMAD |
+
+> Tinker and Cartographer are **on-demand specialists** — invoked when the work
+> needs design-system or IA work specifically, not fixed steps in the
+> sequential pipeline.
+
+Each agent ships with a slash command — `/guild-agent-mage`, `/guild-agent-sage`,
+etc. Individual capabilities (like Mage's `/guild-critique` or Ranger's
+`/guild-persona-gen`) are also exposed as direct commands, so you don't have to
+load an agent just to run one task.
 
 ---
 
-## Multi-model
+## Multi-model — Raid, Quest, Tavern
 
-Guild extends naturally into multi-model workflows. Three modes — Raid, Quest, and Tavern — map to distinct collaboration patterns.
+Guild extends naturally into multi-model workflows. Three patterns:
 
 | Mode | What it is | Command(s) | Requires |
 |------|-----------|------------|---------|
-| **Raid** | Same brief, multiple engines (Claude / Codex / **Antigravity** — the Gemini-powered agentic IDE that ships its own in-CLI browser) do the work in parallel and talk to each other, then synthesize. Collaborative same-task dialogue. | `guild-raid`, `guild-master-raid`, `ranger-raid`, `rogue-raid`, `mage-raid`, `warlock-raid`, `sage-raid`, `healer-raid` | Atrium |
-| **Quest** | Full multi-phase pipeline. Solo: one model runs all 15 steps. Party: three engines divide specialized labor across phases. | `guild-quest` (solo), `guild-party-quest` (party) | Atrium (party only) |
-| **Tavern** | Open conversation around a topic — no fixed deliverable. Brainstorming, critique, exploration. | `bmad-party-mode` | Atrium |
+| **Raid** | Same brief, multiple engines (Claude / Codex / Antigravity) work in parallel and synthesize. Different engines surface different findings (see [the empirical evidence](docs/multi-model-bakeoff.md)). | `guild-raid`, `mage-raid`, `ranger-raid`, ... | [Atrium](https://atrium.sh) |
+| **Quest** | The full multi-phase pipeline. Solo: one model runs all phases. Party: three engines divide labor across phases. | `guild-quest`, `guild-party-quest` | Atrium (party only) |
+| **Tavern** | Open multi-model conversation around a topic — brainstorming, critique, exploration. | `bmad-party-mode` | Atrium |
 
-### Raids in detail
+**When raid pays off (empirically):** the 2026-06 bake-off found that for
+**visual critique** (`mage-raid`) and **research synthesis** (`ranger-raid`),
+different engines surface materially different findings — the union is richer
+than any solo run. For taste/prose/orchestration phases (Warlock, Sage,
+Healer, Cartographer, Guild Master), solo Claude was as good or better.
+**Recommended composition for visual work:** Claude (judgment) + Antigravity
+(in-CLI browser → measured/DOM evidence + responsive probing the others can't
+do) + Codex (IA/structural framing). The biggest lever for visual quality
+isn't model tier — it's whether the agent *measures* values vs eyeballs them.
 
-Each agent has its own raid command for targeted 3-model comparison. Use these when you want three independent takes on the same design problem — then let the engines synthesize:
-
-```
-ranger-raid    rogue-raid    mage-raid
-warlock-raid   sage-raid     healer-raid
-guild-raid     guild-master-raid
-```
-
-**When raid pays off (empirically):** the 2026-06 multi-model bake-off found that for **visual critique** (`mage-raid`) and **research synthesis** (`ranger-raid`), different engines surface materially different findings — the union is richer than any solo run. For taste / prose / orchestration phases (Warlock, Sage, Healer, Cartographer, Guild Master), solo Claude was as good or better; raiding those costs tokens without payoff. **Recommended raid composition for visual work:** Claude (judgment + careful thinking) + **Antigravity** (live DOM-eval + measured evidence + responsive probing — it ships an in-CLI browser the others don't) + Codex (IA / structural framing). The biggest lever for visual critique isn't model tier — it's whether the agent *measures* values vs eyeballs them; see [docs/multi-model-bakeoff.md](docs/multi-model-bakeoff.md) for the empirical evidence + per-phase engine-fit matrix.
-
-### Quests in detail
-
-**`guild-quest`** — Solo quest. One model runs the complete Guild + BMAD pipeline from design direction through build. 15 steps across 5 phases. Every agent, every review gate, no shortcuts.
-
-**`guild-party-quest`** — Party quest. Three engines in Atrium, divided by specialization across phases. Research engine handles Ranger phases. Design engine handles Rogue/Mage/Warlock. QA/handoff engine handles Sage/Healer/BMAD. Engines compare at synthesis points.
+Full evidence + per-phase engine-fit matrix: **[docs/multi-model-bakeoff.md](docs/multi-model-bakeoff.md)**.
 
 ---
 
-## The pipeline
+## Manual install paths
 
-> **Full walkthrough:** [Guild + BMAD Pipeline Guide](docs/pipeline.md) — design questions, phase gates, autonomous build loop, component registry, and design system integration explained in detail.
-
-```
-Phase 0   → Mage:  Design Direction Brief (taste/vision gate)
-Phase 0.5 → Sage:  System Foundation Audit (token/primitive gate)
-Phase 1   → Ranger: Research & Visual Audit
-Phase 2   → Rogue: Interaction Design
-Phase 3   → Mage:  Visual Design
-Phase 4   → Warlock: Content Strategy
-Phase 5   → Sage:  Design QA
-Phase 6   → Healer: Dev Handoff
-```
-
-When BMAD is present, the pipeline extends: `→ PM (review) → SM (sprint planning) → Dev (build)`
-
-**On-demand specialists** — two agents sit alongside the sequential pipeline rather than inside it:
-
-- **Tinker 🔧 (Design System Engineer)** backs the Phase 0.5 foundation gate. When Sage's System Foundation Audit returns FAIL, Tinker builds or repairs the token/primitive layer (component architecture, variant systems, variable binding, Storybook/Code Connect parity) before page-level work resumes. Call it any time design-system or Figma component structure work is needed.
-- **Cartographer 🗺️ (Information Architect & System Mapper)** is invoked whenever the work needs information architecture (sitemaps, content models, navigation models) or stakeholder-facing system maps and conceptual diagrams. It defines *what exists and how it's organized*, where Rogue defines *how users move through it*.
-
-### Phase 0: Design Direction
-
-`/guild-design-direction` — Mage asks 6 questions before any visual work begins: anchor reference, personality adjectives, density preference, motion energy, color story, what to avoid. Synthesizes a locked direction brief. Every downstream agent receives the full brief and executes against it — this prevents the pipeline from averaging competitors into a generic AI-dashboard result.
-
-### Phase 0.5: System Foundation
-
-`/guild-system-foundation` — Sage audits the token and primitive layer before any page-level work begins. Checks color, spacing, motion, shadow, typography, and radius tokens, plus base primitives (Button, Input, Select, Field, Card, Badge, etc.). Returns PASS / CONDITIONAL / FAIL. A FAIL stops the pipeline until the foundation is solid.
-
-### Modes
-
-**Standalone · Greenfield** (6 phases):
-Ranger → Rogue → Mage → Warlock → Sage → Healer
-
-**Standalone · Brownfield** (5 phases):
-Ranger → Rogue → Warlock → Sage → Healer
-
-**With BMAD · Greenfield** (12 phases):
-Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM → Dev
-
-**With BMAD · Brownfield** (8 phases):
-Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM
-
-**With BMAD · Mid-project** (10 phases):
-PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM
-
-Every agent saves structured artifacts to `{output_root}/guild-artifacts/`. Each downstream agent reads what came before — context flows automatically. Sage acts as a quality gate: if it says NO-GO, the pipeline loops back to Rogue.
-
----
-
-## How it works
-
-```bash
-# Load the orchestrator
-@guild-master
-
-# Run the full pipeline
-/guild-design-sprint improve the checkout flow
-
-# Run with pre-pipeline gates
-/guild-design-direction    # Phase 0: lock taste before anything
-/guild-system-foundation   # Phase 0.5: audit tokens before page work
-/guild-design-sprint       # Then run the full pipeline
-
-# Skip research, go straight to design
-/guild-quick-sprint        # Rogue → Mage → Warlock → Sage → Healer → PM → SM
-
-# Run a full solo quest (research through build)
-/guild-quest
-
-# Run a party quest (3 engines, Atrium required)
-/guild-party-quest
-
-# Load individual agents
-@ux-researcher             # Ranger
-@interaction-designer      # Rogue
-@visual-designer           # Mage
-@content-strategist        # Warlock
-@design-qa                 # Sage
-@design-ops                # Healer
-
-# Run multi-model raids
-/ranger-raid               # 3-model UX research comparison
-/guild-raid                # All agents, 3-model comparison
-/guild-master-raid         # Guild Master 3-model orchestration
-```
-
-The orchestrator detects your project state, continues from existing story numbering if present, and outputs dev-ready stories. With BMAD, stories are immediately consumable by `/dev-story`.
-
----
-
-## What Guild produces
-
-A single `/guild-quest` or `/guild-design-sprint` run generates:
-
-- **Direction artifacts** — design direction brief locking taste, personality, density, motion, and color before any visual work
-- **Research artifacts** — personas, journey maps, competitive audits, heuristic evaluations, visual audits with real screenshots
-- **Design artifacts** — user flows with Mermaid diagrams, swim lanes, wireframes, state diagrams
-- **Visual design** — hierarchy, spacing, typography, and color refinements with code fixes
-- **Content artifacts** — all microcopy, error messages, empty states, onboarding copy
-- **QA reports** — design review, accessibility audit, system foundation audit, pre-handoff quality gate verdict
-- **Dev handoff** — Jira stories with acceptance criteria, component specs with props/states/ARIA, design tokens in W3C DTCG format, component registry
-
-Real-world test: Guild produced 14 artifacts (6,532 lines) for a React Native ski trip app in a single run — including 4 personas, 3 redesigned flows, 31 error messages, 15 empty states, and 12 sprint-ready stories across 3 epics.
-
----
-
-## Installation
-
-### Quick install (recommended)
-
-From inside your project directory:
-
-```bash
-# Auto-detect mode (Guild only, or Guild + BMAD if it asks)
-npx @ayesel/guild
-
-# Or be explicit about the target and mode
-npx @ayesel/guild /path/to/your-project --mode guild   # Guild design agents only
-npx @ayesel/guild /path/to/your-project --mode full    # Guild + BMAD dev pipeline
-```
-
-The installer copies Guild's agents, commands (Claude / Cursor / Gemini), source module, and `guild.config.yaml` into the target, auto-detecting whether BMAD is present. Requires `node` and `bash` (on Windows, run from Git Bash or WSL).
-
-Then open Claude Code and type `/guild-master` to get started.
-
-### Manual install — Standalone (no BMAD)
+### Standalone (no BMAD)
 
 ```bash
 git clone https://github.com/ayesel/guild-bmad.git
 cd guild-bmad
-
-# Copy Guild into your project
+bash scripts/install.sh /path/to/your-project --mode guild
+# or, fully manual:
 cp -r _bmad/guild/ /path/to/your-project/_bmad/guild/
 cp -r src/modules/guild/ /path/to/your-project/src/modules/guild/
 cp -r .claude/commands/guild-*.md /path/to/your-project/.claude/commands/
 cp guild.config.yaml /path/to/your-project/
 ```
 
-Guild auto-detects that BMAD is not present and runs in standalone mode. Output goes to `guild-output/`.
+Guild auto-detects that BMAD is not present and runs in standalone mode. Output
+goes to `guild-output/`.
 
-**Optional:** Want BMAD features (sprint tracking, PM/SM review) without a full BMAD install? Copy the bundle:
+**Optional BMAD bundle** (sprint tracking + PM/SM review without a full BMAD install):
+
 ```bash
 cp -r bmad-bundle/_bmad/core /path/to/your-project/_bmad/core
 cp -r bmad-bundle/_bmad/_config /path/to/your-project/_bmad/_config
 cp -r bmad-bundle/.claude/commands/bmad-*.md /path/to/your-project/.claude/commands/
 ```
 
-Then open Claude Code and type `/guild-master` to get started.
-
-### Manual install — Into an existing BMAD project
+### Into an existing BMAD project
 
 ```bash
 git clone https://github.com/ayesel/guild-bmad.git
@@ -228,13 +217,16 @@ Then add the Guild override to your project's CLAUDE.md:
 cat src/modules/guild/install/claude-md-snippet.md >> CLAUDE.md
 ```
 
-Guild auto-detects BMAD and integrates: stories use BMAD format, output goes to `_bmad-output/`, PM and SM agents are included in the pipeline. Sally is replaced.
+Guild auto-detects BMAD and integrates: stories use BMAD format, output goes to
+`_bmad-output/`, PM and SM agents are included in the pipeline. Sally is
+replaced.
 
-**Safe to copy** — Guild's repo keeps BMAD core files in `bmad-bundle/`, not at root. Copying `_bmad/guild/` will never overwrite your existing `_bmad/core/`.
+**Safe to copy** — Guild's repo keeps BMAD core files in `bmad-bundle/`, not at
+root. Copying `_bmad/guild/` will never overwrite your existing `_bmad/core/`.
 
 ### Requirements
 
-- Claude Code CLI (or compatible IDE: Cursor, Windsurf, Codex, Gemini CLI)
+- Claude Code CLI (or compatible IDE: Cursor, Windsurf, Codex, Gemini CLI, Antigravity)
 - Optional: [BMAD Method v6](https://github.com/bmad-code-org/BMAD-METHOD) for sprint tracking and PM/SM integration
 - Optional: Figma Pro + [Figma MCP](https://help.figma.com/hc/en-us/articles/32132100833559) for design tool integration
 - Optional: [Atrium](https://atrium.sh) for Raid, Quest (party), and Tavern multi-model skills
@@ -245,7 +237,8 @@ Guild auto-detects BMAD and integrates: stories use BMAD format, output goes to 
 
 ### Figma MCP
 
-Guild connects to Figma for reading design context, pushing live UI to Figma, and creating native Figma components. All agents have an `/export-figma` command.
+Guild connects to Figma for reading design context, pushing live UI to Figma,
+and creating native Figma components. All agents have an `/export-figma` command.
 
 ```bash
 claude plugin install figma@claude-plugins-official
@@ -260,15 +253,49 @@ When BMAD v6 is detected, Guild automatically:
 - Replaces BMAD's built-in UX Designer (Sally) with 8 specialized design agents
 - Stories are immediately consumable by BMAD's `/dev-story` workflow
 
-Without BMAD, Guild outputs standard stories to `guild-output/` and runs a Guild-only pipeline.
+Without BMAD, Guild outputs standard stories to `guild-output/` and runs a
+Guild-only pipeline.
+
+### Claude Design
+
+When you generate visuals in [Claude Design](https://www.anthropic.com/news/claude-design-anthropic-labs)
+and hand them off to Claude Code as a bundle, Guild's **Sage Handoff Gate**
+parses the bundle, resolves tokens, runs WCAG contrast + design-system
+coherence checks, and FAILs the handoff before code is built if the system
+is inaccessible or incoherent (e.g. the green-trap). Catches it at the seam,
+once, instead of after it's stamped into the codebase.
 
 ### Atrium
 
-[Atrium](https://atrium.sh) is required for multi-model Raid and party Quest skills. With Atrium running, Guild opens parallel engine panes, passes the same brief to each, and orchestrates synthesis across Claude, Codex, and Gemini simultaneously. Tavern (open multi-model conversation via `bmad-party-mode`) also uses Atrium.
+[Atrium](https://atrium.sh) is required for multi-model Raid and party Quest
+skills. With Atrium running, Guild opens parallel engine panes, passes the same
+brief to each, and orchestrates synthesis across Claude, Codex, and Antigravity
+simultaneously. Tavern (open multi-model conversation via `bmad-party-mode`)
+also uses Atrium.
 
 ### Skyfleet / Gas Town
 
-Guild is designed to integrate with multi-agent orchestration systems. Healer outputs structured artifacts with YAML frontmatter (status, version, references) that can be consumed as Beads in Gas Town or workflow units in Skyfleet. The handoff format is configurable.
+Guild is designed to integrate with multi-agent orchestration systems. Healer
+outputs structured artifacts with YAML frontmatter (status, version, references)
+that can be consumed as Beads in Gas Town or workflow units in Skyfleet. The
+handoff format is configurable.
+
+---
+
+## Pipeline modes (the full list)
+
+**Standalone · Greenfield** (6 phases): Ranger → Rogue → Mage → Warlock → Sage → Healer
+
+**Standalone · Brownfield** (5 phases): Ranger → Rogue → Warlock → Sage → Healer
+
+**With BMAD · Greenfield** (12 phases): Analyst → PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM → Dev
+
+**With BMAD · Brownfield** (8 phases): Ranger → Rogue → Mage → Warlock → Sage → Healer → PM → SM
+
+**With BMAD · Mid-project** (10 phases): PM → Ranger → Rogue → Mage → Warlock → Architect → Sage → Healer → PM → SM
+
+Every agent saves structured artifacts to `{output_root}/guild-artifacts/`.
+Each downstream agent reads what came before — context flows automatically.
 
 ---
 
@@ -296,22 +323,8 @@ src/modules/guild/
 │   ├── cartographer-sidecar/knowledge-base/
 │   ├── guild-master.agent.yaml          # Guild Master 🎯 Orchestrator
 │   └── shared-sidecar/                  # artifact-rules, bmad-integration, figma-api-reference
-├── tasks/
-│   ├── create-artifact.md
-│   ├── run-research.md
-│   ├── write-content.md
-│   ├── run-qa.md
-│   ├── create-handoff.md
-│   ├── export-react.md
-│   ├── export-to-figma.md
-│   └── audit-flow.md
-├── templates/                           # 47+ structured templates
-│   ├── user-flow-template.yaml
-│   ├── swim-lane-template.yaml
-│   ├── persona-template.yaml
-│   ├── heuristic-eval-template.yaml
-│   ├── journey-map-template.yaml
-│   └── ... (and 40+ more)
+├── tasks/                                # one .md per task (~50)
+├── templates/                            # 47+ structured output templates
 ├── workflows/
 │   └── design-sprint/
 │       ├── workflow.md
@@ -324,40 +337,68 @@ src/modules/guild/
 
 ## Design philosophy
 
-**Research-driven** — Every design decision traces back to evidence from Ranger. No assumptions, no "I think users want..."
+**Research-driven** — Every design decision traces back to evidence from Ranger.
+No assumptions, no "I think users want..."
 
-**Direction-first** — Phase 0 elicits designer taste before any synthesis happens. The design direction brief is the lens through which every downstream agent filters its work. Without it, pipelines average competitors into generic output.
+**Direction-first** — Phase 0 elicits designer taste before any synthesis happens.
+The design direction brief is the lens through which every downstream agent
+filters its work. Without it, pipelines average competitors into generic output.
 
-**Foundation before pages** — Phase 0.5 audits tokens and primitives before page-level work begins. Agents cannot inline ad-hoc components on every page if the system layer is already solid.
+**Foundation before pages** — Phase 0.5 audits tokens and primitives before
+page-level work begins. Agents cannot inline ad-hoc components if the system
+layer is already solid.
 
-**Artifact state machine** — Every artifact has a status (draft → in-review → approved) tracked in YAML frontmatter. Quality gates enforce transitions.
+**Measure, don't eyeball** — Visual critique requires measured values (computed
+contrast, computed CSS), not perceptual claims. Baked into Mage's
+`critical_actions`; see [docs/multi-model-bakeoff.md](docs/multi-model-bakeoff.md)
+for why.
 
-**Context flows downstream** — Ranger's personas inform Rogue's flows. Rogue's wireframes get polished by Mage. Mage's refined specs give Warlock copy context. Sage checks everything. Healer packages it all. No agent works in isolation.
+**Artifact state machine** — Every artifact has a status (draft → in-review →
+approved) tracked in YAML frontmatter. Quality gates enforce transitions.
 
-**Error-first design** — Rogue designs the error state before the happy path. Every flow includes edge cases, offline behavior, and recovery paths.
+**Context flows downstream** — Ranger's personas inform Rogue's flows. Rogue's
+wireframes get polished by Mage. Mage's refined specs give Warlock copy context.
+Sage checks everything. Healer packages it all. No agent works in isolation.
 
-**Accessibility is not optional** — Ranger includes accessibility needs in personas. Rogue specifies ARIA and keyboard behavior. Sage runs WCAG checks. Warlock writes screen-reader-friendly copy.
+**Error-first design** — Rogue designs the error state before the happy path.
+Every flow includes edge cases, offline behavior, and recovery paths.
 
-**Brownfield-first** — Guild assumes every project has existing context. It reads before it writes. It continues, not restarts.
+**Accessibility is not optional** — Ranger includes accessibility needs in
+personas. Rogue specifies ARIA and keyboard behavior. Sage runs WCAG checks.
+Warlock writes screen-reader-friendly copy.
+
+**Brownfield-first** — Guild assumes every project has existing context. It
+reads before it writes. It continues, not restarts.
 
 ---
 
 ## Roadmap
 
-- [ ] Storybook MCP integration (auto-generate stories for components)
-- [ ] Design token MCP server (bridge Figma Variables ↔ W3C DTCG ↔ Style Dictionary)
-- [ ] Figma native artifact output for all agents (flows as Figma diagrams, not just markdown)
-- [ ] Skyfleet integration (Guild agents as Skyfleet workflow modules)
 - [x] npm package distribution — `npx @ayesel/guild` installs Guild into any project
+- [x] Integrity validator (`scripts/validate.sh`) — catches compiler-drop regressions
+- [x] Design-system coherence linter (`scripts/coherence-check.sh`) — drift gate
+- [x] Claude Design handoff gate — contrast + coherence check on the export bundle
+- [x] Multi-model bake-off evidence + engine-fit guidance
+- [ ] Storybook MCP integration (auto-generate stories for components)
+- [ ] Design-token MCP server (bridge Figma Variables ↔ W3C DTCG ↔ Style Dictionary)
+- [ ] Figma-native artifact output for all agents (flows as Figma diagrams, not just markdown)
+- [ ] Skyfleet integration (Guild agents as Skyfleet workflow modules)
 - [ ] List Guild as a selectable module in BMAD's own `npx bmad-method install` flow
 
 ---
 
 ## Inspiration
 
-Guild draws direct inspiration from the [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) which proved that structured AI agents with phased workflows and quality gates can transform AI-assisted software development. Guild applies that same philosophy to the product design discipline.
+Guild draws direct inspiration from the [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)
+which proved that structured AI agents with phased workflows and quality gates
+can transform AI-assisted software development. Guild applies that same
+philosophy to the product design discipline.
 
-Also inspired by [Whiteport Design Studio (WDS)](https://github.com/bmad-code-org/bmad-method-wds-expansion) for demonstrating that design-specific agents can be built on the BMAD foundation, and Steve Yegge's [Gas Town](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04) for multi-agent orchestration patterns.
+Also inspired by [Whiteport Design Studio (WDS)](https://github.com/bmad-code-org/bmad-method-wds-expansion)
+for demonstrating that design-specific agents can be built on the BMAD
+foundation, and Steve Yegge's
+[Gas Town](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04)
+for multi-agent orchestration patterns.
 
 ---
 
