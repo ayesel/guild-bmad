@@ -184,6 +184,7 @@ When using Atrium browser, screenshots are saved automatically and can be refere
 - [ ] Design recommendations are specific and actionable
 - [ ] Browser tool limitations are documented (e.g., couldn't access gated product)
 - [ ] Accessibility observations included (heading structure, ARIA, contrast)
+- [ ] All contrast / typography / spacing claims are COMPUTED values (from DOM eval or measured screenshot), not eyeballed — cite the exact element + value (see the "Measure, Don't Eyeball" rule in `visual-critique.md`)
 - [ ] Confidence level stated with rationale
 
 ## Post-Execution

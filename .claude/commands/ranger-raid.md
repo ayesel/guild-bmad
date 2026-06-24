@@ -1,6 +1,6 @@
 ---
 name: ranger-raid
-description: "3-model raid for Ranger (UX Researcher). Runs the same research task across Claude, Codex, and Gemini, then compares and synthesizes the best output. Use when you want 3 independent research perspectives on the same question. Requires atrium (ATRIUM=1 env var)."
+description: "3-model raid for Ranger (UX Researcher). Runs the same research task across Claude, Codex, and Antigravity, then compares and synthesizes the best output. Different engines surface materially different findings on synthesis tasks (per the 2026-06 multi-model bake-off; see docs/multi-model-bakeoff.md). Use when you want 3 independent research perspectives on the same question. Requires atrium (ATRIUM=1 env var)."
 user-invocable: true
 allowed-tools: Bash, Read
 ---
@@ -22,7 +22,7 @@ If not in atrium, skip this skill and handle the request normally.
 ```bash
 # Launch agents
 "$ATRIUM_CLI_PATH" pane create --adapter codex --split "$ATRIUM_PANE_ID" --direction horizontal
-"$ATRIUM_CLI_PATH" pane create --adapter gemini --split "$ATRIUM_PANE_ID" --direction horizontal
+"$ATRIUM_CLI_PATH" pane create --adapter antigravity --split "$ATRIUM_PANE_ID" --direction horizontal
 
 # Get agent IDs
 "$ATRIUM_CLI_PATH" agent list --json
@@ -88,7 +88,7 @@ Based on the user's topic, select the most appropriate research method (or combi
 
 ```bash
 "$ATRIUM_CLI_PATH" pane create --adapter codex --split "$ATRIUM_PANE_ID" --direction horizontal
-"$ATRIUM_CLI_PATH" pane create --adapter gemini --split "$ATRIUM_PANE_ID" --direction horizontal
+"$ATRIUM_CLI_PATH" pane create --adapter antigravity --split "$ATRIUM_PANE_ID" --direction horizontal
 "$ATRIUM_CLI_PATH" agent list --json
 ```
 

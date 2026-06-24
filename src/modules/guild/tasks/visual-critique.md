@@ -49,6 +49,28 @@ focus on first?"
 This prevents critiquing against the wrong goals. If the designer says "I want
 the priority labels to be prominent," don't suggest hiding them.
 
+## Measure, Don't Eyeball (NON-NEGOTIABLE)
+
+Before any finding, USE the browser/DOM/screenshot tools your CLI exposes (Antigravity's
+in-CLI browser, Playwright MCP, Chrome DevTools MCP, Figma MCP) to capture COMPUTED
+values. Every claim must cite an exact element + computed value:
+
+- **Contrast:** resolve CSS var alias chains to hex, compute the ratio. Never guess
+  "looks too light" — write `rgb(98,102,109) on rgb(8,9,10) = 3.4:1, fails AA 4.5:1`.
+- **Typography:** quote computed font-size, weight, line-height, letter-spacing.
+- **Spacing:** quote computed padding/margin/gap values (not perceived).
+- **Color:** quote hex values from the resolved token chain, not perceptual labels.
+- **Responsive:** probe at minimum 375 / 768 / 1440 — a single-viewport critique
+  is not a responsive critique.
+
+If the host CLI does NOT expose these tools, say so at the top of the report and tag
+every finding as **"visual estimate, not measured."** Do not silently substitute
+opinion for measurement.
+
+> This discipline was added 2026-06 after a multi-model bake-off: the engine that
+> measured beat the engine that opined, even when the opining engine ran on a higher
+> tier. The lever is **method, not model**. See `docs/multi-model-bakeoff.md`.
+
 ## Critique Framework (evaluate ALL of these)
 
 ### 1. Pattern Check

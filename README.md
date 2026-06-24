@@ -34,7 +34,7 @@ Guild extends naturally into multi-model workflows. Three modes — Raid, Quest,
 
 | Mode | What it is | Command(s) | Requires |
 |------|-----------|------------|---------|
-| **Raid** | Same brief, all three engines (Claude / Codex / Gemini) do the work in parallel and talk to each other, then synthesize. Collaborative same-task dialogue. | `guild-raid`, `guild-master-raid`, `ranger-raid`, `rogue-raid`, `mage-raid`, `warlock-raid`, `sage-raid`, `healer-raid` | Atrium |
+| **Raid** | Same brief, multiple engines (Claude / Codex / **Antigravity** — the Gemini-powered agentic IDE that ships its own in-CLI browser) do the work in parallel and talk to each other, then synthesize. Collaborative same-task dialogue. | `guild-raid`, `guild-master-raid`, `ranger-raid`, `rogue-raid`, `mage-raid`, `warlock-raid`, `sage-raid`, `healer-raid` | Atrium |
 | **Quest** | Full multi-phase pipeline. Solo: one model runs all 15 steps. Party: three engines divide specialized labor across phases. | `guild-quest` (solo), `guild-party-quest` (party) | Atrium (party only) |
 | **Tavern** | Open conversation around a topic — no fixed deliverable. Brainstorming, critique, exploration. | `bmad-party-mode` | Atrium |
 
@@ -47,6 +47,8 @@ ranger-raid    rogue-raid    mage-raid
 warlock-raid   sage-raid     healer-raid
 guild-raid     guild-master-raid
 ```
+
+**When raid pays off (empirically):** the 2026-06 multi-model bake-off found that for **visual critique** (`mage-raid`) and **research synthesis** (`ranger-raid`), different engines surface materially different findings — the union is richer than any solo run. For taste / prose / orchestration phases (Warlock, Sage, Healer, Cartographer, Guild Master), solo Claude was as good or better; raiding those costs tokens without payoff. **Recommended raid composition for visual work:** Claude (judgment + careful thinking) + **Antigravity** (live DOM-eval + measured evidence + responsive probing — it ships an in-CLI browser the others don't) + Codex (IA / structural framing). The biggest lever for visual critique isn't model tier — it's whether the agent *measures* values vs eyeballs them; see [docs/multi-model-bakeoff.md](docs/multi-model-bakeoff.md) for the empirical evidence + per-phase engine-fit matrix.
 
 ### Quests in detail
 

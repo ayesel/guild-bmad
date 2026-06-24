@@ -108,7 +108,10 @@ Agent:
 
 ## Output Format
 
-Same as visual-critique.md — keep it SHORT:
+Same as visual-critique.md — keep it SHORT. The **"Measure, Don't Eyeball" rule from
+visual-critique.md applies here too**: every finding (contrast, typography, spacing)
+must cite the exact element + computed value, not perceptual guesses. Use DOM eval on
+captured pages where possible, not just visual inspection of the screenshot.
 
 ```
 **Screen: [name]** (captured at [viewport])

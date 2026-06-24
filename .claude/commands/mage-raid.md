@@ -1,6 +1,6 @@
 ---
 name: mage-raid
-description: "3-model raid for Mage (Visual Designer). Runs the same visual design task across Claude, Codex, and Gemini, then compares and synthesizes the best output. Use for UI critique, spacing, typography, color, responsive analysis. Requires atrium (ATRIUM=1 env var)."
+description: "3-model raid for Mage (Visual Designer). Runs the same visual design task across Claude, Codex, and Antigravity, then compares and synthesizes the best output. Include Antigravity especially — its in-CLI browser surfaces measured/DOM evidence other engines can't (per the 2026-06 bake-off; see docs/multi-model-bakeoff.md). Use for UI critique, spacing, typography, color, responsive analysis. Requires atrium (ATRIUM=1 env var)."
 user-invocable: true
 allowed-tools: Bash, Read
 ---
@@ -21,7 +21,7 @@ If not in atrium, skip this skill and handle the request normally.
 
 ```bash
 "$ATRIUM_CLI_PATH" pane create --adapter codex --split "$ATRIUM_PANE_ID" --direction horizontal
-"$ATRIUM_CLI_PATH" pane create --adapter gemini --split "$ATRIUM_PANE_ID" --direction horizontal
+"$ATRIUM_CLI_PATH" pane create --adapter antigravity --split "$ATRIUM_PANE_ID" --direction horizontal  # preferred over gemini for visual work (in-CLI browser)
 "$ATRIUM_CLI_PATH" agent list --json
 "$ATRIUM_CLI_PATH" agent message <agent-id> "<message>"
 "$ATRIUM_CLI_PATH" pane read <pane-id>
@@ -86,7 +86,7 @@ Based on the user's topic, determine which Mage deliverable is needed. If review
 
 ```bash
 "$ATRIUM_CLI_PATH" pane create --adapter codex --split "$ATRIUM_PANE_ID" --direction horizontal
-"$ATRIUM_CLI_PATH" pane create --adapter gemini --split "$ATRIUM_PANE_ID" --direction horizontal
+"$ATRIUM_CLI_PATH" pane create --adapter antigravity --split "$ATRIUM_PANE_ID" --direction horizontal  # preferred over gemini for visual work (in-CLI browser)
 "$ATRIUM_CLI_PATH" agent list --json
 ```
 
