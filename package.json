@@ -9,6 +9,7 @@
     "bin/",
     "scripts/install.sh",
     "scripts/validate.sh",
+    "scripts/sync-compiled.py",
     "guild.config.yaml",
     "_bmad/",
     "src/",
@@ -18,7 +19,9 @@
     "bmad-bundle/"
   ],
   "scripts": {
-    "validate": "bash scripts/validate.sh"
+    "validate": "bash scripts/validate.sh",
+    "sync-compiled": "python3 scripts/sync-compiled.py",
+    "postcompile": "python3 scripts/sync-compiled.py && bash scripts/validate.sh"
   },
   "keywords": [
     "design",
