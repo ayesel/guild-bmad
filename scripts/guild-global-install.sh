@@ -75,6 +75,33 @@ else
     echo "  ⊘ guild.config.yaml (kept existing)"
 fi
 
+# ── 1b. Runtime src subtrees (sidecars, tasks, templates) ────────────────────
+# Agents reference shared-sidecar / *-sidecar knowledge bases, tasks/ and
+# templates/ via {project-root}/src/modules/guild/... (and a few bare
+# src/modules/guild/... forms) — paths that DO NOT exist in a consumer
+# workspace. Ship those subtrees into the global payload and rewrite the refs
+# inside the payload AGENT files to the absolute global path, exactly like
+# _bmad. Without this, product-baseline.md / design-surface-modes.md and every
+# task/template are unreachable from any cwd except the source repo.
+SRC_GLOBAL="$GUILD_GLOBAL/src/modules/guild"
+ABS_SRC="$SRC_GLOBAL"
+rm -rf "$GUILD_GLOBAL/src"
+mkdir -p "$SRC_GLOBAL/agents"
+cp -r "$GUILD_ROOT"/src/modules/guild/agents/*-sidecar "$SRC_GLOBAL/agents/" 2>/dev/null || true
+[ -d "$GUILD_ROOT/src/modules/guild/tasks" ]     && cp -r "$GUILD_ROOT/src/modules/guild/tasks" "$SRC_GLOBAL/"
+[ -d "$GUILD_ROOT/src/modules/guild/templates" ] && cp -r "$GUILD_ROOT/src/modules/guild/templates" "$SRC_GLOBAL/"
+echo "  ✓ runtime src subtrees (sidecars, tasks, templates)"
+
+# Rewrite {…}/src/modules/guild/ and bare src/modules/guild/ refs in the payload
+# AGENT files to the absolute global src path (the install never rewrote payload
+# agent files before — only command files).
+for f in "$PAYLOAD/guild/agents/"*.md; do
+    [ -e "$f" ] || continue
+    tmp="$(mktemp)"
+    sed -E "s#\{[a-z_-]+\}/src/modules/guild/#${ABS_SRC}/#g; s#(^|[^/A-Za-z0-9_-])src/modules/guild/#\1${ABS_SRC}/#g" "$f" > "$tmp" && mv "$tmp" "$f"
+done
+echo "  ✓ payload agent refs → absolute src path"
+
 # ── 2. Commands → ~/.claude/commands (with rewritten payload refs) ───────────
 echo -e "${GREEN}Installing commands...${NC}"
 mkdir -p "$CMD_DIR"
@@ -94,7 +121,7 @@ for f in "$GUILD_ROOT/.claude/commands/"guild-*.md \
          "$GUILD_ROOT/.claude/commands/"*-raid.md; do
     [ -e "$f" ] || continue
     base="$(basename "$f")"
-    sed -E "s#\{[a-z_-]+\}/_bmad/#${ABS_BMAD}/#g; s#(^|[^/A-Za-z0-9_-])_bmad/#\1${ABS_BMAD}/#g" "$f" > "$CMD_DIR/$base"
+    sed -E "s#\{[a-z_-]+\}/_bmad/#${ABS_BMAD}/#g; s#(^|[^/A-Za-z0-9_-])_bmad/#\1${ABS_BMAD}/#g; s#\{[a-z_-]+\}/src/modules/guild/#${ABS_SRC}/#g; s#(^|[^/A-Za-z0-9_-])src/modules/guild/#\1${ABS_SRC}/#g" "$f" > "$CMD_DIR/$base"
     count=$((count + 1))
 done
 echo "  ✓ $count commands → $CMD_DIR (payload refs rewritten to $ABS_BMAD)"
