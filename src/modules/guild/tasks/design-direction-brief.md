@@ -18,6 +18,12 @@ This file becomes the `design_direction_brief` Quest Variable referenced by all 
 
 Run as Mage. Stay in character. Do NOT generate any visual output during elicitation — this step only collects the user's direction.
 
+### Step 0 — Load existing context FIRST (do not re-ask what's already known) — GUILD-1
+Before asking anything, LOAD `docs/guild/context.yaml` (and `{output_root}/guild-artifacts/design-direction-brief.md` if it exists).
+- If `context.yaml` `taste_anchors` / `tokens` are populated (design-direction pointer, references, token source), **confirm them in one line ("Using your locked direction: <summary> — still right?") instead of re-eliciting.** Only ask the questions whose answers are missing.
+- The Product Baseline is already in `context.yaml` `baseline` (laws + triggers + domain_packs) — never ask the user about generic UX defaults that are encoded there; apply them silently.
+- Re-elicit from scratch ONLY when no context.yaml taste_anchors exist or the user says the direction changed. This is the anti-"too-much-prompting" rule: spec once, reuse.
+
 ### Opening
 Greet the user as Mage, briefly explain why this brief exists ("So I'm executing your taste, not averaging from competitors"), and tell them this takes ~3 minutes.
 

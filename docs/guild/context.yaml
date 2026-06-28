@@ -1,0 +1,104 @@
+# GENERATED from product-baseline.md by scripts/build-context.py — DO NOT EDIT BY HAND.
+# Regenerate: npm run build-context.  Single source of truth = the baseline markdown.
+# A run loads this so it does NOT re-ask brand / taste / baseline (GUILD-1).
+baseline:
+  source: src/modules/guild/agents/shared-sidecar/product-baseline.md
+  laws:
+  - name: Hick's / Miller
+    rule: cap simultaneous choices; chunk and group. More than ~7 peer items → group or paginate, don't
+      list flat.
+  - name: Recognition over recall
+    rule: label everything. **No icon-only controls** (nav, toolbar, table actions) without a visible
+      text label or, at absolute minimum, a tooltip + aria-label. The user should never have to remember
+      what a glyph means.
+  - name: Jakob's law
+    rule: use the conventional pattern for the job. Don't invent a novel interaction where a standard
+      one exists (tables sort by clicking headers; lists filter from a toolbar; tabs switch peer views).
+      Novelty is a cost you must justify.
+  - name: Progressive disclosure
+    rule: show what's needed now; defer the rest behind expand / detail / "more". Don't dump every field
+      on first paint.
+  - name: Match the data, not the request
+    rule: design for the data's real *shape*, not the literal words of the ask. "Show the budget" with
+      plan+actual data means a comparison view, even if the user only said "show."
+  - name: Every collection earns its management UI
+    rule: the moment data can grow, the controls to find/sort/group within it are part of the feature,
+      not an enhancement.
+  - name: Legible data, always
+    rule: numeric/metric content (KPI & stat figures, table numbers, dense tabular data) must use a clear,
+      unambiguous face and never get clipped. Decorative display serifs where a single digit reads as
+      a letter (Cormorant "1" → "I") are a defect for *data* — reserve display faces for headings, use
+      a legible/tabular face for metrics. Likewise, controls and values inside table cells must be sized
+      to their content, not truncated to fit.
+  - name: Direct manipulation — obvious logic is the default
+    rule: if a value is shown, the expectation is you can act on it where it sits (rename, edit, change
+      status, reorder). Don't make users hunt a separate screen or delete-and-recreate to change something
+      the UI already displays. When a user says "logic things like that should be obvious," it means an
+      expected affordance is missing, not that they want a tutorial.
+  - name: Action hierarchy, not a button row
+    rule: 'chrome must not line up many equal-weight buttons. Per view: at most ONE primary (filled) action;
+      secondary actions stay quiet (ghost/text); rarely-used or destructive utilities (import, reset,
+      download-backup) collapse into an overflow / ▾ menu — never bare in persistent chrome, and a destructive
+      action (Reset / Delete-all) is never always-visible and unguarded. No two visible controls may share
+      an ambiguous label — an "Export" (snapshot) next to "Export CSV" is a defect; name by outcome. Global/admin
+      tools don''t belong in per-screen page chrome. (Learned 2026-06-26, wedding-hub admin header: 6
+      equal outline buttons incl. duplicate Export + a bare Reset.)'
+  - name: Keep contextual action bars reachable
+    rule: a selection / bulk-action bar (or any toolbar that appears in response to state) must stay in
+      view (fixed/sticky, e.g. bottom-center), never anchored where it scrolls out of reach. If the user
+      has to scroll to find the action they just enabled by selecting, it's misplaced. (Learned 2026-06-26,
+      wedding-hub guests bulk-action bar.)
+  - name: Surface content, sink empties
+    rule: default ordering puts populated/actionable items first and pushes empty / placeholder / zero-state
+      items to the bottom; never interleave empty boards, columns, or rows among full ones. The user shouldn't
+      scroll past blanks to reach real content. (Learned 2026-06-26, wedding-hub inspiration boards.)
+  - name: Consistent iconography
+    rule: interactive affordances (nav, row actions, toolbars, empty states) carry icons from ONE icon
+      set per app, used consistently; text-only action cells ("Edit"/"Delete") are weak affordances. Adopt
+      a single modern library (Lucide recommended — MIT, ~1500 tree-shakeable React icons, clean stroke
+      that suits editorial UIs; Phosphor/Tabler are fine alternates) and reuse it — don't hand-roll one-off
+      inline SVGs that drift in weight and style.
+  - name: Restrained elevation
+    rule: 'shadows convey depth, not drama. Keep them soft, low-opacity, and tinted toward the ink/neutral
+      (a warm brown or grey), **not a saturated brand hue**. A burgundy/red-tinted or high-opacity drop
+      shadow reads as heavy ("heady"). One subtle resting shadow, a slightly stronger hover/focal — never
+      stack heavy coloured shadows. (Learned 2026-06-26, wedding-hub: the focal card shadow was burgundy-tinted
+      + heavy → de-tinted to warm-brown and lightened.)'
+  - name: One shape language (consistent radius)
+    rule: 'pick a single corner-radius token and apply it coherently. Don''t pair fully-rounded pills
+      (radius ∞) with near-square cards — cards, buttons, inputs, and chips should share the same moderate
+      rounded-rectangle radius so the UI reads as one system ("square with rounded corners"). A full-pill
+      capsule is a deliberate, sparing exception (avatars, one tag style), never accidental drift. Radius
+      is part of the [[hearth-works-company]] structural kernel, so this is a kernel-level consistency
+      rule. (Learned 2026-06-26, wedding-hub: rounded pills vs square cards.)'
+  triggers:
+  - id: T1
+    title: Comparison data (two related quantities for the same row)
+  - id: T2
+    title: Collection that can exceed ~10 items
+  - id: T3
+    title: Categorizable records
+  - id: T4
+    title: 'Navigation (any nav: sidebar, tabs, bottom bar, menu)'
+  - id: T5
+    title: Quantity over time / dated records
+  - id: T6
+    title: Status-bearing records
+  - id: T7
+    title: Any data container (baseline, always)
+  - id: T8
+    title: Forms & creation
+  domain_packs:
+  - Budget / finance
+  - Scheduling / events
+  - People / CRM / guests
+  - Outreach / contact capture
+taste_anchors:
+  design_direction: docs/design-direction.md
+  references: []
+  note: 'per-project: the owner''s design-direction + north-star refs so runs do not re-ask taste'
+tokens:
+  format: DTCG
+  source: null
+  note: 'per-project: pointer to the design tokens (tokens.json / tailwind.config.js / Figma variables
+    export)'
