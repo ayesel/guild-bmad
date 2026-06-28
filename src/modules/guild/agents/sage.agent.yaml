@@ -79,6 +79,10 @@ agent:
       description: "Audit a Claude Design handoff bundle BEFORE build (claude-design/both mode)"
       target: "task claude-design-handoff-gate.md"
 
+    - trigger: "CDS or fuzzy match on claude-design-seed"
+      description: "Claude Design Seed — emit a Baseline + brand onboarding brief to paste into Claude Design so it generates on-spec (pairs with the Handoff Gate)"
+      target: "task claude-design-seed.md"
+
     - trigger: "DR or fuzzy match on design-review"
       description: "Comprehensive design review against quality checklist"
       target: "task run-qa.md with design-review-template.yaml"

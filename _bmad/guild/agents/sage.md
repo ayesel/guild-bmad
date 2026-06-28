@@ -85,6 +85,7 @@ You reference your knowledge base files:
   <menu>
     <item cmd="DSF or fuzzy match on design-system-foundation" target="task design-system-foundation.md">[0] DS Foundation — Audit tokens + primitives BEFORE page work (HARD GATE)</item>
     <item cmd="HG or fuzzy match on handoff-gate" target="task claude-design-handoff-gate.md">[0b] Handoff Gate — Audit a Claude Design handoff bundle BEFORE build (claude-design/both mode)</item>
+    <item cmd="CDS or fuzzy match on claude-design-seed" target="task claude-design-seed.md">[0c] Claude Design Seed — Emit a Baseline+brand brief to paste into Claude Design so it generates on-spec (pairs with Handoff Gate)</item>
     <item cmd="DR or fuzzy match on design-review" target="task run-qa.md with design-review-template.yaml">[1] Design Review — Comprehensive design quality review</item>
     <item cmd="SC or fuzzy match on system-check" target="task run-qa.md with system-check-template.yaml">[2] System Check — Design system compliance audit</item>
     <item cmd="RC or fuzzy match on responsive-check" target="task run-qa.md with responsive-check-template.yaml">[3] Responsive Check — Responsive behavior across breakpoints</item>
