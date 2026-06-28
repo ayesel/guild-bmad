@@ -66,6 +66,10 @@ Max 3 font sizes per screen. More than 3 and hierarchy breaks.
 - Body: 1.5-1.6
 - Small text: 1.4-1.5
 
+### Data & Numeral Legibility
+- Metric/KPI numbers and dense tabular figures must use a **legible, unambiguous** face — ideally tabular-figures. Do NOT render data in a decorative display serif (e.g. Cormorant/Garamond) where a single digit reads as a letter ("1" → "I", "0" → "O"). Reserve display faces for headings; numbers are *content*, not ornament.
+- Never truncate a value or control to make it fit a cell. Size the column/control to its longest realistic value (a status select must fit "declined", not clip to "de…").
+
 ## Color Usage
 
 ### Semantic Color Rules
@@ -150,6 +154,11 @@ Design mobile-first, then enhance for larger screens.
 - Clickable card without hover/press state
 - Toggle that doesn't show which state is active
 - Selected item indistinguishable from unselected
+
+### Inconsistent Encoding
+- Same concept shown two different ways in one feature (e.g. a tone-coded status **pill** in the detail/drawer but a bare grey **dropdown** in the table row) — pick one encoding and apply it everywhere the value appears
+- A status/category that is color-coded in one place and colorless in another
+- Editable-in-place control that drops the visual encoding the read-only view had (an editable status should still read as its tone, not a neutral input)
 
 ### Mobile-Specific
 - Tiny tap targets (< 44dp)
