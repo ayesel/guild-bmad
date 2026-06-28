@@ -1,0 +1,21 @@
+# Raid Charter — the spec-once contract for a Guild quest/raid (GUILD-11).
+# Owner fills/confirms ONCE at the start. After sign-off, NO agent may ask the
+# owner anything this charter OR docs/guild/context.yaml already answers — they
+# use defaults and PARK non-blocking questions for the end-of-run batched review.
+# Persisted to {output_root}/guild-artifacts/raid-charter.yaml.
+charter:
+  goal: ""                 # what we are designing/building — one sentence
+  audience: ""             # who it is for
+  # Taste + brand live in docs/guild/context.yaml (taste_anchors, tokens, baseline).
+  # Only record DELTAS/overrides here; do not duplicate or re-ask them.
+  taste_overrides: ""      # "" = use context.yaml as-is
+  brand_overrides: ""      # "" = use context.yaml tokens as-is
+  non_goals: []            # explicitly out of scope (prevents scope re-asking)
+  autonomy_level: "medium" # high = auto all reversible work, ask nothing mid-run
+                           # medium = auto reversible; ask ONLY irreversible/high-risk
+                           # low = gate each phase (legacy behavior)
+  acceptance_criteria: []  # the run is DONE when these are met (feeds GUILD-12 DoD)
+  review:
+    mode: batched          # batched (one packet at end) | per-phase (legacy)
+    max_items: 7           # batched packet is decision-oriented + capped
+  signoff: false           # owner sets true once — the spec-once gate

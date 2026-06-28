@@ -1,0 +1,6 @@
+---
+name: 'guild-batched-review'
+description: 'Batched Review — one end-of-run decision packet replacing mid-run prompts (GUILD-11)'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/guild-master.md, READ its entire contents, activate as the Guild Master agent, then immediately execute menu item "BR" — Batched Review — present ONE decision-oriented end-of-run packet

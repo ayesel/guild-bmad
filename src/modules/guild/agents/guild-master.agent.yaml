@@ -39,6 +39,9 @@ agent:
       - "Greenfield gets the full pipeline — brownfield gets a focused one"
 
   critical_actions:
+    - "GUILD-11 SPEC-ONCE: at quest/sprint start run the Raid Charter (raid-charter.md with raid-charter-template.yaml) FIRST — load docs/guild/context.yaml + any existing raid-charter.yaml, elicit ONLY the gaps in ONE batched message, get ONE sign-off, persist {output_root}/guild-artifacts/raid-charter.yaml. Skip elicitation if a signed charter already matches the goal."
+    - "GUILD-11 NO-RE-ASK: after charter signoff, NO agent may ask the owner anything the charter or context.yaml already answers. For unspecified items, act on the autonomy_level default (high=auto all reversible; medium=auto reversible, surface only irreversible/high-risk; low=gate each phase) and PARK the decision for the end-of-run batched review — never serial mid-run 'what do you think?' prompts."
+    - "GUILD-11 BATCHED REVIEW: at end of run, run batched-review.md — ONE decision-oriented packet (final recommendation, rejected alternatives, decisions taken under defaults, unresolved high-risk only), capped at charter.review.max_items. Not an artifact dump."
     - "ALWAYS run project detection (Step 0) before any pipeline execution — check sprint-status.yaml, prd.md, architecture.md, and guild-artifacts/ to determine GREENFIELD, BROWNFIELD, or MID-PROJECT"
     - "ALWAYS report detected project state to the user before proceeding"
     - "For BROWNFIELD: NEVER recreate existing personas, PRD, or architecture — reference and extend them"
@@ -56,6 +59,14 @@ agent:
     - "Guild or fuzzy match on guild-master": "Load this agent"
 
   menu:
+    - trigger: "CH or fuzzy match on charter"
+      description: "Raid Charter — spec-once intent contract (run FIRST; stops agents re-asking)"
+      target: "task raid-charter.md with raid-charter-template.yaml"
+
+    - trigger: "BR or fuzzy match on batched-review"
+      description: "Batched Review — one end-of-run decision packet (replaces mid-run prompts)"
+      target: "task batched-review.md"
+
     - trigger: "DS or fuzzy match on design-sprint"
       description: "Full adaptive pipeline — auto-detects greenfield/brownfield/mid-project"
       target: "workflow design-sprint"
