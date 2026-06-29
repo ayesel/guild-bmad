@@ -26,8 +26,10 @@
     "scripts/guild-canvas.py",
     "scripts/guild-prototype-lane.py",
     "scripts/handoff-adapter.py",
+    "scripts/ia-evidence-guard.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
+    "scripts/living-repo.py",
     "scripts/motion-grammar.py",
     "scripts/pairwise-capture.py",
     "scripts/pareto-select.py",
@@ -88,7 +90,9 @@
     "spine": "python3 scripts/spine.py --selftest",
     "verify-gate": "python3 scripts/verification-gate.py --selftest",
     "confidence-gate": "python3 scripts/confidence-gate.py --selftest",
-    "synthesis-ladder": "python3 scripts/synthesis-ladder.py --selftest"
+    "synthesis-ladder": "python3 scripts/synthesis-ladder.py --selftest",
+    "living-repo": "python3 scripts/living-repo.py --selftest",
+    "ia-guard": "python3 scripts/ia-evidence-guard.py --selftest"
   },
   "keywords": [
     "design",
