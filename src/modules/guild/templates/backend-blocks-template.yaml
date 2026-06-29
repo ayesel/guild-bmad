@@ -1,0 +1,14 @@
+# Implementation-aware spec block (GUILD-10). Make Guild's specs aware of the
+# backend so design + implementation context are one system (Lovable's
+# integrated loop). Added to /guild-handoff-spec + /guild-ux-spec output and
+# flowed into BMAD stories. One block per feature.
+data_objects: []          # entities + key fields the feature reads/writes
+auth_states: []           # signed-out / signed-in / role variants / permission gates
+screen_states:            # per screen — enumerate ALL (ties to the Product Baseline T7)
+  empty: ""
+  loading: ""
+  error: ""
+  partial: ""
+  success: ""
+integration_assumptions: []   # external APIs/services this design assumes exist
+out_of_scope_backend: []      # backend items explicitly NOT in this design's scope
