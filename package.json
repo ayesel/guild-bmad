@@ -44,6 +44,8 @@
     "scripts/perceptual-diff.py",
     "scripts/perceptual-ramps.py",
     "scripts/perf-budget-gate.py",
+    "scripts/persona-elicit.py",
+    "scripts/plain-language.py",
     "scripts/profile-export.py",
     "scripts/reduced-motion-gate.py",
     "scripts/reference-decompose-guard.py",
@@ -56,6 +58,7 @@
     "scripts/render-svg.py",
     "scripts/render_artifact_common.py",
     "scripts/responsive-gate.py",
+    "scripts/reversibility-gate.py",
     "scripts/runtime-footprint.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
@@ -131,7 +134,10 @@
     "render-notion": "python3 scripts/render-notion.py --selftest",
     "operator-profile": "python3 scripts/operator-profile.py --selftest",
     "feedback-capture": "python3 scripts/feedback-capture.py --selftest",
-    "profile-export": "python3 scripts/profile-export.py --selftest"
+    "profile-export": "python3 scripts/profile-export.py --selftest",
+    "persona-elicit": "python3 scripts/persona-elicit.py --selftest",
+    "plain-language": "python3 scripts/plain-language.py --selftest",
+    "reversibility-gate": "python3 scripts/reversibility-gate.py --action \"edit draft\""
   },
   "keywords": [
     "design",

@@ -23,3 +23,6 @@ Each item is **decision-oriented**: a clear ask with Approve / Edit / Reject. Pr
 ## Done when
 - One packet presented; ≤ max_items; every item is approvable/editable/rejectable.
 - TEST: across the whole run the owner saw exactly ONE review (this packet), not per-phase prompts; the packet contains deviations + unresolved risks, not an artifact dump.
+
+## Persona-capped review packet (GUILD-76/77)
+Cap the decision-packet size by operator persona (`scripts/operator-profile.py` -> `scripts/persona-elicit.py`): **regular <=3**, **power <=7**, **designer unlimited**. Gate any irreversible decision through `scripts/reversibility-gate.py` — it pauses for confirmation regardless of autonomy level.

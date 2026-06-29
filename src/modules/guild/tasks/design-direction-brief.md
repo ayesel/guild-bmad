@@ -135,3 +135,10 @@ Capture: 2-4 specific anti-patterns or anti-vibes.
 - [ ] At least 2 anti-patterns captured
 - [ ] User has explicitly approved the synthesized brief
 - [ ] Artifact saved to `{output_root}/guild-artifacts/design-direction-brief.md`
+
+## Persona-adaptive elicitation (GUILD-76/77)
+Resolve the operator persona via `scripts/operator-profile.py` and branch elicitation depth with `scripts/persona-elicit.py` (presets in `docs/guild/personas/*.yaml`):
+- **designer** — full brief.
+- **power** — 2-3 targeted questions.
+- **regular** — ONE plain-intent question ("what are you making + who for") -> starter seed; do NOT run the "push harder when vague" probe.
+Apply vocabulary mode via `scripts/plain-language.py` + `docs/guild/vocabulary.yaml`.

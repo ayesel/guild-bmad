@@ -19,3 +19,11 @@ charter:
     mode: batched          # batched (one packet at end) | per-phase (legacy)
     max_items: 7           # batched packet is decision-oriented + capped
   signoff: false           # owner sets true once — the spec-once gate
+
+# GUILD-76/77 — seeded from the operator persona preset (docs/guild/personas/<persona>.yaml)
+# via scripts/persona-elicit.py + the operator-profile cascade.
+persona_seed:
+  autonomy_level: from-persona      # designer|power|regular preset
+  review_mode: from-persona         # packet cap: regular<=3, power<=7, designer unlimited
+  vocabulary: from-persona          # plain-language.py + vocabulary.yaml
+  elicitation_depth: from-persona   # full | 2-3Qs | one-question+seed
