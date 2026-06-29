@@ -1,34 +1,15 @@
 # GUILD-44 — Judge calibration set (owner pairwise design judgments = golden set).
 # The jury (GUILD-40) is scored AGAINST these: judge-vs-owner agreement should RISE,
-# the offline-online gap should SHRINK. The jury is a SCREEN; the owner is ground
-# truth (even a 95%-consistent surrogate missed 20-35% of true winners — Netflix).
+# the offline-online gap should SHRINK. The jury is a SCREEN; the owner is ground truth.
 meta:
   target_labels: 50            # gather ~50-100 owner pairwise labels over time
-  accuracy_bar: 0.70           # jury-vs-owner agreement below this => jury may NOT gate (advisory only)
-  gather_via: dashboard        # owner labels a pair at a time (Guild dashboard / batched review)
+  accuracy_bar: 0.70           # below this, jury is advisory-only (may not gate)
+  gather_via: dashboard        # owner labels a pair at a time (RENDERED pick notes)
 
-# Each label: owner's pick between two real candidates (optionally per rubric dim).
-labels:
-  # First real owner label — capture loop proven end-to-end (blind A/B note -> send_to_agent
-  # -> de-blinded via .blind-map.jsonl). Owner re-picked A->B; B is final.
-  - id: CAL-1
-    pair: [a-filter-sort-toolbar-...-1, a-filter-sort-toolbar-...-2]
-    owner_pick: a-filter-sort-toolbar-...-2   # blind option B
-    blind_pick: B
-    note: "vendor/filter toolbar — owner found design B (Faceted) cleaner"
-  # CAL-2 — routing fix VERIFIED: pick reached the live pane (GUILD-79). Owner clicked
-  # A/B/A; final = A.
-  - id: CAL-2
-    pair: [a-filter-sort-toolbar-...-1, a-filter-sort-toolbar-...-3]
-    owner_pick: a-filter-sort-toolbar-...-1   # blind option A (Command Bar)
-    blind_pick: A
-    note: "owner picked Command Bar over Token Builder"
-# template:
-#   - { id: L1, pair: [nourish-today-A, nourish-today-B], owner_pick: nourish-today-B, dim: hierarchy }
-#   - { id: L2, pair: [vendor-toolbar-cmd, vendor-toolbar-faceted], owner_pick: vendor-toolbar-faceted }
+# GUILD-79: the prior CAL-1/CAL-2 picks were made on FILENAMES (the owner could not see
+# the actual designs) -> INVALIDATED. Re-collecting from RENDERED pick notes (each design
+# embedded as a live iframe) so labels reflect real VISUAL taste, not filename guesses.
+labels: []
 
-# Real-signal winners (A/B test / HEART proxy) when available — for the offline-online
-# gap meta-metric. On low-traffic greenfield (Nourish) this stays sparse; use owner
-# post-hoc picks as the proxy until real signal exists.
+# Real-signal winners (A/B test / HEART proxy) for the offline-online gap meta-metric.
 online_winners: []
-# template:  - { id: O1, pair: [nourish-today-A, nourish-today-B], winner: nourish-today-A }
