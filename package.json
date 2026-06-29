@@ -1,32 +1,33 @@
 {
   "name": "@ayesel/guild",
   "version": "0.1.0",
-  "description": "AI-powered product design framework — 8 specialized design agents (research, interaction, visual, content, QA, dev handoff, design systems, information architecture) plus an orchestrator. Works standalone or with BMAD v6.",
+  "description": "AI-powered product design framework \u2014 8 specialized design agents (research, interaction, visual, content, QA, dev handoff, design systems, information architecture) plus an orchestrator. Works standalone or with BMAD v6.",
   "bin": {
     "guild": "bin/guild.js"
   },
   "files": [
-    "bin/",
-    "scripts/install.sh",
-    "scripts/validate.sh",
-    "scripts/sync-compiled.py",
-    "scripts/selftest-roundtrip.sh",
-    "scripts/build-context.py",
-    "scripts/guild-canvas.py",
-    "scripts/guild-prototype-lane.py",
-    "scripts/cd-tokens-to-dtcg.py",
-    "scripts/dtcg-export.py",
-    "scripts/cd-handoff-gate.py",
-    "scripts/bradley-terry.py",
-    "mcp/",
-    "docs/",
-    "guild.config.yaml",
-    "_bmad/",
-    "src/",
     ".claude/",
     ".cursor/",
     ".gemini/",
-    "bmad-bundle/"
+    "_bmad/",
+    "bin/",
+    "bmad-bundle/",
+    "docs/",
+    "guild.config.yaml",
+    "mcp/",
+    "scripts/bradley-terry.py",
+    "scripts/build-context.py",
+    "scripts/cd-handoff-gate.py",
+    "scripts/cd-tokens-to-dtcg.py",
+    "scripts/dtcg-export.py",
+    "scripts/guild-canvas.py",
+    "scripts/guild-prototype-lane.py",
+    "scripts/install.sh",
+    "scripts/judge-calibration.py",
+    "scripts/selftest-roundtrip.sh",
+    "scripts/sync-compiled.py",
+    "scripts/validate.sh",
+    "src/"
   ],
   "scripts": {
     "validate": "bash scripts/validate.sh",
@@ -42,7 +43,8 @@
     "interop": "python3 scripts/dtcg-export.py --target all",
     "interop:check": "python3 scripts/dtcg-export.py --check",
     "handoff-gate": "python3 scripts/cd-handoff-gate.py --selftest",
-    "jury": "python3 scripts/bradley-terry.py --selftest"
+    "jury": "python3 scripts/bradley-terry.py --selftest",
+    "judge-cal": "python3 scripts/judge-calibration.py --selftest"
   },
   "keywords": [
     "design",

@@ -1,0 +1,20 @@
+# GUILD-44 — Judge calibration set (owner pairwise design judgments = golden set).
+# The jury (GUILD-40) is scored AGAINST these: judge-vs-owner agreement should RISE,
+# the offline-online gap should SHRINK. The jury is a SCREEN; the owner is ground
+# truth (even a 95%-consistent surrogate missed 20-35% of true winners — Netflix).
+meta:
+  target_labels: 50            # gather ~50-100 owner pairwise labels over time
+  accuracy_bar: 0.70           # jury-vs-owner agreement below this => jury may NOT gate (advisory only)
+  gather_via: dashboard        # owner labels a pair at a time (Guild dashboard / batched review)
+
+# Each label: owner's pick between two real candidates (optionally per rubric dim).
+labels: []
+# template:
+#   - { id: L1, pair: [nourish-today-A, nourish-today-B], owner_pick: nourish-today-B, dim: hierarchy }
+#   - { id: L2, pair: [vendor-toolbar-cmd, vendor-toolbar-faceted], owner_pick: vendor-toolbar-faceted }
+
+# Real-signal winners (A/B test / HEART proxy) when available — for the offline-online
+# gap meta-metric. On low-traffic greenfield (Nourish) this stays sparse; use owner
+# post-hoc picks as the proxy until real signal exists.
+online_winners: []
+# template:  - { id: O1, pair: [nourish-today-A, nourish-today-B], winner: nourish-today-A }
