@@ -1,0 +1,8 @@
+# GUILD-57 (V-E) — Do / Don't gallery. Concrete contrast pairs that teach the taste
+# model + the regression firewall what "good" vs "regressed" looks like. Grows from
+# owner corrections (trace-to-eval, GUILD-15).
+pairs: []
+# template:
+#   - dim: hierarchy
+#     do:   { ref: "exemplars/...do.html",   why: "one clear primary; rest recede" }
+#     dont: { ref: "exemplars/...dont.html", why: "three competing CTAs, no focus" }
