@@ -1,0 +1,26 @@
+# GUILD-35 — Design-system interop hub
+# PRINCIPLE: one canonical source; every tool is an ADAPTER that round-trips to
+# it. No tool is the master. Not every-tool-talks-to-every-tool (that is the
+# three-way-drift nightmare). Honors guild.config.yaml canonical_source.
+canonical: docs/guild/tokens.dtcg.json     # the one token truth (DTCG, 95 tokens / 10 groups)
+
+adapters:
+  claude-design:
+    read:  scripts/cd-tokens-to-dtcg.py    # bundle -> DTCG (GUILD-27/31) — DONE
+    write: PARKED                          # GUILD-30/32 seed-push — owner WRITE=OFF
+  css:
+    read:  "scripts/dtcg-export.py --target css"        # DTCG -> CSS custom props
+    out:   docs/guild/exports/tokens.css
+  figma:
+    read:  "scripts/dtcg-export.py --target figma"      # DTCG -> Tokens Studio import JSON
+    out:   docs/guild/exports/figma-tokens.json
+    write: PARKED                          # pushing variables back into Figma — not yet
+  storybook:
+    read:  "scripts/dtcg-export.py --target storybook"  # DTCG -> a Design Tokens story
+    out:   docs/guild/exports/tokens.stories.js
+
+write_policy: >
+  ALL write/push adapters are PARKED until the owner explicitly authorizes.
+  Zero writes to prod Hearth Works / Arise. Read + export only.
+
+drift_check: "scripts/dtcg-export.py --check"   # exports stale vs canonical => non-zero exit
