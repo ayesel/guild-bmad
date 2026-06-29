@@ -15,3 +15,6 @@ guild-artifacts/prototypes/
 
 # pairwise-capture runtime de-blind map (per-machine)
 docs/guild/evals/.blind-map.jsonl
+
+# GUILD-42 throwaway A/B arms (only the verdict is durable)
+guild-artifacts/ab-42/
