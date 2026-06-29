@@ -26,6 +26,7 @@
     "scripts/install.sh",
     "scripts/judge-calibration.py",
     "scripts/pareto-select.py",
+    "scripts/perceptual-ramps.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/sync-compiled.py",
@@ -52,7 +53,8 @@
     "pareto": "python3 scripts/pareto-select.py --selftest",
     "self-heal-guard": "python3 scripts/self-heal-guard.py --selftest",
     "ab-eval": "python3 scripts/ab-eval.py --selftest",
-    "type-conditional": "python3 scripts/type-conditional.py --selftest"
+    "type-conditional": "python3 scripts/type-conditional.py --selftest",
+    "ramps": "python3 scripts/perceptual-ramps.py --selftest"
   },
   "keywords": [
     "design",
