@@ -38,6 +38,7 @@
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/spacing-hierarchy.py",
+    "scripts/spine.py",
     "scripts/state-motion-req.py",
     "scripts/subtraction-pass.py",
     "scripts/sync-compiled.py",
@@ -80,7 +81,8 @@
     "regression-firewall": "python3 scripts/regression-firewall.py --selftest",
     "refdecomp-guard": "python3 scripts/reference-decompose-guard.py --selftest",
     "pick": "python3 scripts/pairwise-capture.py --selftest",
-    "handoff-adapter": "python3 scripts/handoff-adapter.py --selftest"
+    "handoff-adapter": "python3 scripts/handoff-adapter.py --selftest",
+    "spine": "python3 scripts/spine.py --selftest"
   },
   "keywords": [
     "design",

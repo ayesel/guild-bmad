@@ -1,0 +1,27 @@
+# GUILD-63 — Traceability Spine. The atomic evidence chain the whole BRAIN hangs off.
+# Every research nugget is one typed node; every downstream artifact (IA, story, AC,
+# decision) carries the nugget IDs it derives from, so any conclusion/AC traces back to
+# its evidence. Validator: scripts/spine.py.
+
+chain: [experiment, fact, insight, conclusion, constraint, ac, adr]
+
+nugget:
+  required: [id, type, content]
+  fact_requires: [citation]     # a Fact with no citation is not a fact (feeds GUILD-64 verification)
+  derives_from: "parent nugget IDs (must be an allowed parent type)"
+
+# Allowed parents per type (what a node MUST derive from):
+parents:
+  experiment: []                       # roots
+  fact:       [experiment]             # optional parent (a fact may be a raw observation)
+  insight:    [fact]                   # MUST derive from >=1 fact — a cluster is not an insight
+  conclusion: [insight]                # >=1 insight
+  constraint: [conclusion]
+  ac:         [conclusion, constraint] # acceptance criteria
+  adr:        [conclusion, constraint] # architecture decision records
+
+rules:
+  - every fact carries a citation
+  - every insight/conclusion/constraint/ac/adr derives_from >=1 allowed-parent nugget (no orphans)
+  - no cycles
+  - artifacts reference nugget IDs; trace(any node) -> its full evidence lineage
