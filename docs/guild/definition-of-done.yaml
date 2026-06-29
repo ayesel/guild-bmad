@@ -1,0 +1,28 @@
+# Definition of Done + hard stops (GUILD-12). Every Guild loop reads this.
+# Ship when the agent's DoD passes; HALT on ANY hard stop; on stuck, escalate
+# with the SPECIFIC failing item (never a vague "one more pass?" / "what next?").
+# 2026's dominant failure mode is the loop that never stops — these are the brakes.
+
+hard_stops:           # checked every iteration; first to trip HALTS the loop
+  max_iterations: 5         # per agent per deliverable
+  no_progress_passes: 2     # N consecutive passes with no measurable change -> halt
+  budget:
+    tokens: null            # per-run ceiling; null = inherit the caller's budget
+    usd: null
+
+# Per-agent / per-deliverable acceptance checklist. A deliverable is DONE only
+# when every item is objectively true.
+dod:
+  ranger:       ["evidence matrix complete; every claim cited"]
+  rogue:        ["happy + error + empty + loading states mapped for every screen", "entry + exit points listed"]
+  mage:         ["design-QA score >= threshold", "0 fired-but-missing Product Baseline triggers (T1-T8)"]
+  warlock:      ["every surfaced copy string filled", "voice matches context.yaml taste"]
+  sage:         ["0 blocking violations in deterministic + validated QA tiers (see qa-tiers.yaml)"]
+  healer:       ["handoff spec + stories generated", "artifacts registered in docs/guild/ registry"]
+  cartographer: ["IA / sitemap covers every route", "0 orphan nodes"]
+  tinker:       ["fills/strokes bound to variables", "0 legacy paint styles", "variant axes aligned"]
+  guild-master: ["synthesis has decisions + risks + BMAD-ready stories", "charter acceptance_criteria all met"]
+
+escalation:
+  rule: "If a hard stop trips before DoD passes, STOP and escalate with the specific failing DoD item + the concrete blocker."
+  route: "into the GUILD-11 batched review (one packet), NOT a serial mid-run prompt"
