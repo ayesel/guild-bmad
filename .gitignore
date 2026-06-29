@@ -6,3 +6,6 @@ claude-talk-to-figma-mcp/
 node_modules/
 *.tgz
 npm-debug.log*
+
+# atrium canvas renderer runtime state (per-machine)
+docs/guild/.canvas-note-id

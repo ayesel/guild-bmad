@@ -12,6 +12,7 @@
     "scripts/sync-compiled.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/build-context.py",
+    "scripts/guild-canvas.py",
     "mcp/",
     "docs/",
     "guild.config.yaml",
@@ -28,7 +29,9 @@
     "postcompile": "python3 scripts/sync-compiled.py && bash scripts/validate.sh",
     "selftest": "bash scripts/selftest-roundtrip.sh",
     "build-context": "python3 scripts/build-context.py",
-    "mcp": "node mcp/guild-mcp.mjs"
+    "mcp": "node mcp/guild-mcp.mjs",
+    "canvas": "python3 scripts/guild-canvas.py --render",
+    "canvas:watch": "python3 scripts/guild-canvas.py --watch"
   },
   "keywords": [
     "design",
