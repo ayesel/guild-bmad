@@ -24,6 +24,7 @@
     "scripts/composers.py",
     "scripts/confidence-gate.py",
     "scripts/dtcg-export.py",
+    "scripts/feedback-capture.py",
     "scripts/fidelity-gate.py",
     "scripts/figjam-renderer.py",
     "scripts/fluid-tokens.py",
@@ -127,7 +128,8 @@
     "render-svg": "python3 scripts/render-svg.py --selftest",
     "render-miro": "python3 scripts/render-miro.py --selftest",
     "render-notion": "python3 scripts/render-notion.py --selftest",
-    "operator-profile": "python3 scripts/operator-profile.py --selftest"
+    "operator-profile": "python3 scripts/operator-profile.py --selftest",
+    "feedback-capture": "python3 scripts/feedback-capture.py --selftest"
   },
   "keywords": [
     "design",
