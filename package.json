@@ -29,6 +29,8 @@
     "scripts/perceptual-ramps.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
+    "scripts/spacing-hierarchy.py",
+    "scripts/subtraction-pass.py",
     "scripts/sync-compiled.py",
     "scripts/type-conditional.py",
     "scripts/validate.sh",
@@ -54,7 +56,9 @@
     "self-heal-guard": "python3 scripts/self-heal-guard.py --selftest",
     "ab-eval": "python3 scripts/ab-eval.py --selftest",
     "type-conditional": "python3 scripts/type-conditional.py --selftest",
-    "ramps": "python3 scripts/perceptual-ramps.py --selftest"
+    "ramps": "python3 scripts/perceptual-ramps.py --selftest",
+    "spacing": "python3 scripts/spacing-hierarchy.py --selftest",
+    "subtract": "python3 scripts/subtraction-pass.py --selftest"
   },
   "keywords": [
     "design",
