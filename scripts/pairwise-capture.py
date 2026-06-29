@@ -24,7 +24,7 @@ TARGETS = {
     "ab-eval": "an ab-eval verdicts file [{pair,owner_pick}]",
 }
 
-def note_html(a, b, pair_id, target, prompt):
+def note_html(a, b, pair_id, target, prompt, target_pane=None):
     framing = (f"Owner blind pick for pair {pair_id} (target={target}). Append to "
                f"{TARGETS.get(target, target)} — record the OWNER_PICK letter. {{payload}}")
     def pick_btn(letter):
@@ -48,12 +48,13 @@ button.pick:hover{{filter:brightness(1.08)}}
 <div class="picks">{pick_btn('A')}{pick_btn('B')}</div>
 <script>
 document.addEventListener('click',function(e){{var b=e.target.closest('[data-send]');if(!b)return;
- parent.postMessage({{type:'send',payload:JSON.parse(b.getAttribute('data-send')),
-   framing:{json.dumps(framing)}}},'*');}});
+ var msg={{type:'send',payload:JSON.parse(b.getAttribute('data-send')),framing:{json.dumps(framing)}}};
+ var tp={json.dumps(target_pane)}; if(tp){{msg.target=tp;}}   /* GUILD-79: explicit live target, no stale-pane drop */
+ parent.postMessage(msg,'*');}});
 </script></body></html>"""
 
-def render(a, b, pair_id, target, prompt, mapping):
-    body = note_html(a, b, pair_id, target, prompt)
+def render(a, b, pair_id, target, prompt, mapping, target_pane=None):
+    body = note_html(a, b, pair_id, target, prompt, target_pane)
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
         f.write(body); tmp = f.name
     r = subprocess.run([CLI, "note", "new", "--type", "html", "--title", f"Pick · {pair_id}",
@@ -86,11 +87,12 @@ def main():
     ap.add_argument("--target", choices=list(TARGETS), default="calibration")
     ap.add_argument("--prompt", default="Which design is better?")
     ap.add_argument("--map-out", default=None, help="append the A/B↔arm mapping here (for de-blinding at scoring)")
+    ap.add_argument("--target-pane", default=None, help="GUILD-79: explicit LIVE pane id to route the pick to (avoids stale-pane drop)")
     ap.add_argument("--render", action="store_true"); ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
     if a.selftest: selftest()
     if a.render and a.a and a.b:
-        render(a.a, a.b, a.pair_id, a.target, a.prompt, a.map_out); return
+        render(a.a, a.b, a.pair_id, a.target, a.prompt, a.map_out, a.target_pane); return
     sys.exit("pass --a --b --render [--target ...] or --selftest")
 
 if __name__ == "__main__":
