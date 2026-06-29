@@ -1,0 +1,40 @@
+# GUILD-61 — handoff adapter registry (north-star: GUILD = brain; BMAD = one adapter).
+# The brain (research → IA → judgment → orchestration) is BMAD-independent. Handoff —
+# how a finished design pass is delivered to a build pipeline — is a SWAPPABLE ADAPTER
+# over the canonical artifact model. Resolver + test: scripts/handoff-adapter.py.
+
+default: standalone        # standalone is the DEFAULT; BMAD is opt-in (bmad_mode: true)
+
+# Resolution from guild.config.yaml bmad_mode:
+#   false / standalone -> standalone   (default)
+#   true               -> bmad
+#   auto               -> bmad iff {project}/_bmad/core/config.yaml exists, else standalone
+resolution: { "false": standalone, standalone: standalone, "true": bmad, auto: detect-_bmad }
+
+adapters:
+  standalone:                      # DEFAULT — no BMAD required
+    output_root: guild-output
+    story_format: standard
+    tasks: [standalone-handoff.md]
+    emits: "UX_Design.md + component specs + standard stories to guild-output/"
+  bmad:                            # OPT-IN — the BMAD pipeline adapter
+    output_root: _bmad-output
+    story_format: bmad
+    tasks: [create-handoff.md, export-ux-design.md]
+    requires: [sprint-status.yaml]
+    emits: "BMAD story format + sprint handoff to _bmad-output/ (replaces Sally)"
+
+# Other pipelines (Jira / Linear / plain-repo PR) become additional adapters here over
+# the same canonical model — future work, same seam.
+contract:
+  inputs: [canonical-artifact-model, output_root]
+  outputs: [handoff-bundle]
+  rule: >
+    The orchestrator resolves ONE adapter via bmad_mode and calls its tasks — tasks
+    must NOT branch on BMAD inline; they call the resolved adapter. Existing BMAD
+    projects (Nourish etc.) keep working by setting bmad_mode: true.
+
+toolchain_decoupling: >
+  SEPARATE sub-task: the compiled _bmad/guild/agents path + external BMAD compiler
+  (sync-compiled.py) is build-time coupling, independent of this runtime handoff
+  adapter. Tracked, not done here.

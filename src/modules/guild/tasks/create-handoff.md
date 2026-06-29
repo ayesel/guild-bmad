@@ -1,5 +1,10 @@
 # Create Handoff
 
+> **GUILD-61 — BMAD handoff adapter (opt-in).** This task + `export-ux-design.md` are the
+> **BMAD** handoff adapter impl, resolved only when `bmad_mode: true`
+> (`docs/guild/handoff-adapters.yaml`). The DEFAULT is `standalone-handoff.md`. Callers
+> resolve the adapter via `scripts/handoff-adapter.py` — do NOT branch on BMAD inline.
+
 ## Purpose
 Generate developer-ready handoff artifacts using the specified template. This task is the
 core handoff engine for the Guild Design Ops agent.
