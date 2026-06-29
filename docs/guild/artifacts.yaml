@@ -8,6 +8,16 @@ entity_model:
   run_chain: [Run, Artifact, Version]    # Guild's production chain
   also: [Finding, Decision, QAGate]
 
+# Artifact lifecycle (GUILD-18) — separate-but-MAPPED to story delivery, no parallel board.
+lifecycle:
+  states: [proposed, draft, validated, approved, bound, implementing, shipped, drift, deprecated]
+  derived_from_sprint_status:           # NOT moved by a designer — COMPUTED from linked stories
+    implementing: "any linked story is in-progress in sprint-status.yaml"
+    shipped: "all linked stories are done in sprint-status.yaml"
+  drift:
+    rule: "the GUILD-2 self-healing loop detects drift -> emits a BMAD correct-course item/story (reuse BMAD), NOT a new status board"
+  decision: "RESOLVED — design_status is COMPUTED EXTERNALLY from linked story status; do NOT add a field to sprint-status.yaml (keeps BMAD unforked)"
+
 # Schema every entry in `artifacts` follows.
 artifact_schema:
   artifact_id: "ART-NNNN"
