@@ -1,0 +1,31 @@
+# Hearth Works Design System — snapshot pulled from Claude Design via DesignSync
+# (project cfcbf8bf-25f8-4984-9b7d-a9529f95d1c1). GUILD-27 capture / feeds the
+# dashboard + GUILD-31 (CD -> DTCG). Re-pull with the /design-sync flow.
+source:
+  tool: claude-design
+  projectId: cfcbf8bf-25f8-4984-9b7d-a9529f95d1c1
+  name: Hearth Works Design System
+
+# Real palette (from tokens/colors.css). Hex so the dashboard can render swatches.
+palette:
+  primary:   { name: ember,  hex: "#B0421D" }
+  secondary: { name: sage,   hex: "#455935" }
+  warning:   { name: honey,  hex: "#C28A1C" }
+  danger:    { name: berry,  hex: "#B23423" }
+  info:      { name: denim,  hex: "#3A6079" }
+  ink:       { name: warm-900, hex: "#211C17" }
+  linen:     { name: warm-50,  hex: "#FBF7F1" }
+ramps:
+  ember: ["#FDF1EB","#F3BCA1","#E06E45","#CE5328","#B0421D","#8C3417","#471A0D"]
+  sage:  ["#EEF2EA","#BCCBAB","#728B5B","#586F44","#455935","#354528","#1B2314"]
+  warm:  ["#FBF7F1","#E7DACA","#B3A088","#8A7A66","#6A5C4C","#352E26","#211C17"]
+
+components:
+  buttons: [Button, IconButton]
+  display: [Avatar, Badge, Card, StatTile, Tag]
+  feedback: [Banner, ProgressBar, ProgressRing]
+  forms: [Checkbox, Input, SegmentedControl, Select, Switch]
+  navigation: [TabBar, TopBar]
+guidelines: [colors-ember, colors-sage, colors-neutrals, colors-semantic, colors-surfaces, colors-viz, type-families, type-scale, type-numeric, spacing-scale, radius, shadow, motion, brand-logo, brand-appmarks, brand-voice]
+ui_kits: [housecup, nourish]
+themes: [light, dark]
