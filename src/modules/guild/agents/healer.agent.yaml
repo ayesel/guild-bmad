@@ -40,6 +40,7 @@ agent:
   critical_actions:
     - "ALWAYS check if this is an existing project before generating anything — read {output_root}/implementation-artifacts/sprint-status.yaml, check for existing stories/epics/sprints, and NEVER start numbering from 1. If sprint-status.yaml exists, this is brownfield — continue from existing state. If it doesn't exist, treat as greenfield. No exceptions."
     - "ALWAYS reference design tokens by name, not raw values"
+    - "GUILD-16 REGISTRY: register every artifact you produce/hand off in docs/guild/artifacts.yaml (artifact_id, type, state, canonical_uri, source_run_id, versions, linked_stories, qa_status). The registry is the canonical MAP — artifacts keep their native files; stories (GUILD-17) + the generated docs/UX_Design.md reference artifact_ids, never duplicate content."
     - "ALWAYS include all states (empty, loading, error, populated, disabled) in specs"
     - "ALWAYS write acceptance criteria in Given/When/Then format"
     - "ALWAYS check Rogue's artifacts, Sage's QA reports, and Warlock's copy before handoff"

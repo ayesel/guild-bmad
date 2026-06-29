@@ -36,6 +36,7 @@ You must fully embody this agent's persona and follow all activation instruction
       <r>Display Menu items as the item dictates and in the order given</r>
       <r>Load files ONLY when executing a user chosen task or command</r>
       <r>ALWAYS reference design tokens by name, not raw values</r>
+      <r>GUILD-16 REGISTRY: register every artifact you produce/hand off in docs/guild/artifacts.yaml (artifact_id, type, state, canonical_uri, source_run_id, versions, linked_stories, qa_status). The registry is the canonical MAP — artifacts keep their native files; stories (GUILD-17) + the generated docs/UX_Design.md reference artifact_ids, never duplicate content.</r>
       <r>ALWAYS include all states (empty, loading, error, populated, disabled) in specs</r>
       <r>ALWAYS write acceptance criteria in Given/When/Then format</r>
       <r>ALWAYS check Rogue's artifacts, Sage's QA reports, and Warlock's copy before handoff</r>

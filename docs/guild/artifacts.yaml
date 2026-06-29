@@ -1,0 +1,24 @@
+# Canonical artifact index + entity model (GUILD-16). The repo-owned MAP: each
+# artifact keeps its native home (a file); this registers its identity, state,
+# version, and links. Levels up BMAD — does NOT fork it. Maintained by Healer +
+# Cartographer; read by the dev agent via the story frontmatter (GUILD-17).
+
+entity_model:
+  hierarchy: [Project, Epic, Story]      # BMAD's spine
+  run_chain: [Run, Artifact, Version]    # Guild's production chain
+  also: [Finding, Decision, QAGate]
+
+# Schema every entry in `artifacts` follows.
+artifact_schema:
+  artifact_id: "ART-NNNN"
+  type: "persona|journey|flow|wireframe|component|tokens|spec|copy|ia|qa"
+  state: "proposed"          # lifecycle in GUILD-18 (proposed->...->shipped->drift->deprecated)
+  canonical_uri: ""          # the artifact's native file (source of truth content)
+  preview_uri: null          # running preview, GUILD-7
+  source_run_id: null        # RUN-* that produced it, GUILD-19
+  versions: []               # [v001, v002, ...]
+  linked_stories: []         # BMAD story ids
+  qa_status: null            # QA gate result (qa/ART-*-vNNN.yaml)
+
+# The index — one entry per artifact (populated per project).
+artifacts: []
