@@ -53,3 +53,14 @@ design_surface: auto
 #   figma   — Figma variables are truth; tokens generated via Tinker (tinker-tokens) → code + Claude Design
 #   tokens  — repo DTCG tokens are truth; Figma variables and Claude Design's system both derive from them
 canonical_source: auto
+
+# --- Operator profile cascade (GUILD-75) ---------------------------------------
+# Settings resolve through a precedence cascade (LATER wins):
+#   builtin-defaults < team-preset (docs/guild/team-preset.yaml)
+#     < operator-profile (~/.config/guild/profile.yaml — PRIVATE, never committed)
+#       < THIS project config < session (GUILD_* env). Resolver: scripts/operator-profile.py.
+# The AUTHORITATIVE per-operator values (incl. the taste vector) live in the private
+# profile, NOT here — uncomment below only to force a PROJECT-level override.
+# persona: designer          # designer | power | regular   (GUILD-76)
+# plain_language: false       # GUILD-77
+# autonomy: reversible-only   # reversible-only | full | suggest-only  (GUILD-77)

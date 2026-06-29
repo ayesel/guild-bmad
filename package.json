@@ -37,6 +37,7 @@
     "scripts/layout-engine.py",
     "scripts/living-repo.py",
     "scripts/motion-grammar.py",
+    "scripts/operator-profile.py",
     "scripts/pairwise-capture.py",
     "scripts/pareto-select.py",
     "scripts/perceptual-diff.py",
@@ -125,7 +126,8 @@
     "render-excalidraw": "python3 scripts/render-excalidraw.py --selftest",
     "render-svg": "python3 scripts/render-svg.py --selftest",
     "render-miro": "python3 scripts/render-miro.py --selftest",
-    "render-notion": "python3 scripts/render-notion.py --selftest"
+    "render-notion": "python3 scripts/render-notion.py --selftest",
+    "operator-profile": "python3 scripts/operator-profile.py --selftest"
   },
   "keywords": [
     "design",
