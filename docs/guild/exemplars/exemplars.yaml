@@ -1,0 +1,19 @@
+# GUILD-55 (V-E) — owner exemplar library. Taste captured as prose is the FLOOR;
+# this is the floor++: concrete owner-approved exemplars + abstract attributes, used
+# for taste-ranked retrieval at generation time (anchor on BOLD exemplars, not just
+# "looks professional"). Grows as the owner approves work.
+basis:   # the shared attribute basis taste is scored on (GUILD-56 weights these)
+  - editorial-restraint
+  - warm-residential
+  - confident-hierarchy
+  - generous-whitespace
+  - distinctive-not-safe
+  - calm-motion
+
+exemplars: []
+# template:
+#   - id: EX1
+#     ref: "guild-artifacts/prototypes/vendor-toolbar-faceted.html"
+#     attributes: [editorial-restraint, confident-hierarchy, distinctive-not-safe]
+#     owner_approved: true
+#     note: "the faceted rail — hierarchy reads instantly, not generic"

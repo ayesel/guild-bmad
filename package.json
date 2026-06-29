@@ -31,12 +31,15 @@
     "scripts/perceptual-diff.py",
     "scripts/perceptual-ramps.py",
     "scripts/reduced-motion-gate.py",
+    "scripts/reference-decompose-guard.py",
+    "scripts/regression-firewall.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/spacing-hierarchy.py",
     "scripts/state-motion-req.py",
     "scripts/subtraction-pass.py",
     "scripts/sync-compiled.py",
+    "scripts/taste-model.py",
     "scripts/token-lint.py",
     "scripts/type-conditional.py",
     "scripts/validate.sh",
@@ -70,7 +73,10 @@
     "state-motion": "python3 scripts/state-motion-req.py --selftest",
     "fidelity": "python3 scripts/fidelity-gate.py --selftest",
     "perceptual-diff": "python3 scripts/perceptual-diff.py --selftest",
-    "token-lint": "python3 scripts/token-lint.py --selftest"
+    "token-lint": "python3 scripts/token-lint.py --selftest",
+    "taste": "python3 scripts/taste-model.py --selftest",
+    "regression-firewall": "python3 scripts/regression-firewall.py --selftest",
+    "refdecomp-guard": "python3 scripts/reference-decompose-guard.py --selftest"
   },
   "keywords": [
     "design",
