@@ -1,0 +1,23 @@
+# GUILD-43 — externally-grounded self-heal. Audit of GUILD-2: every repair MUST cite
+# an EXTERNAL, checkable signal — never introspective "looks better" (which loops to
+# the mean / over-polishes). Subjective passes are capped at ONE round.
+
+# A repair is only allowed if it cites one of these objective triggers:
+external_signals:
+  - wcag_fail               # contrast / a11y check
+  - token_lint              # hardcoded value vs DTCG (GUILD-54)
+  - fidelity_diff           # design->prod perceptual/structural diff (GUILD-52/53)
+  - broken_test             # failing test / build / typecheck
+  - state_coverage_gap      # missing empty/loading/error (definition-of-done.yaml)
+  - baseline_trigger_miss   # a fired Product Baseline trigger with its default absent
+  - handoff_gate_fail       # cd-handoff-gate.py NO-GO (GUILD-28)
+  - jury_below_calibration  # GUILD-40 jury verdict under the GUILD-44 calibration bar
+
+rule: >
+  A repair with no recognized external_signal is REJECTED — the loop never self-polishes
+  on introspection. Exploratory / "looks better" critique is ADVISORY only: surfaced
+  once in the batched review, never its own auto-repair round.
+
+loop_caps:
+  objective_rounds: from definition-of-done.yaml hard_stops.max_iterations
+  subjective_rounds: 1      # at most ONE subjective pass, then escalate to the owner

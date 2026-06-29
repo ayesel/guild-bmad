@@ -12,6 +12,16 @@ GUILD-3 (trust tiers), GUILD-12 (hard stops), GUILD-4 (scored QA).
 4. **Fix** — apply per `trust.yaml`: `senior`+deterministic → auto draft-PR; `junior` → write + draft-PR; `intern`/irreversible/foundation-guard → suggest only (Healer/BMAD story). Never touch a foundation guard.
 5. **Learn** — record each accept/reject to `{output_root}/guild-artifacts/qa-calibration.yaml` to sharpen future suggestions (feeds GUILD-4 calibration + GUILD-14 taste model).
 
+## Externally grounded (GUILD-43)
+Every **Fix** MUST cite an **external signal** from `docs/guild/self-heal.yaml`
+(`wcag_fail`, `token_lint`, `fidelity_diff`, `broken_test`, `state_coverage_gap`,
+`baseline_trigger_miss`, `handoff_gate_fail`, `jury_below_calibration`). A repair with
+no recognized external signal is **REJECTED** — the loop never self-polishes on
+introspection (that loops candidates back to the mean). Exploratory / "looks better"
+critique is advisory only: surfaced once in the batched review, never its own
+auto-repair round. **Subjective passes are capped at 1**; objective rounds are bounded
+by `definition-of-done.yaml` `max_iterations`. Guard: `scripts/self-heal-guard.py`.
+
 ## Pre-human self-repair (the headline behavior)
 Within the `trust.yaml` tiers AND the `definition-of-done.yaml` hard stops
 (max_iterations, no_progress, budget), the loop **iterates Detect→Fix internally**

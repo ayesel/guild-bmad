@@ -25,6 +25,7 @@
     "scripts/install.sh",
     "scripts/judge-calibration.py",
     "scripts/pareto-select.py",
+    "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/sync-compiled.py",
     "scripts/validate.sh",
@@ -46,7 +47,8 @@
     "handoff-gate": "python3 scripts/cd-handoff-gate.py --selftest",
     "jury": "python3 scripts/bradley-terry.py --selftest",
     "judge-cal": "python3 scripts/judge-calibration.py --selftest",
-    "pareto": "python3 scripts/pareto-select.py --selftest"
+    "pareto": "python3 scripts/pareto-select.py --selftest",
+    "self-heal-guard": "python3 scripts/self-heal-guard.py --selftest"
   },
   "keywords": [
     "design",
