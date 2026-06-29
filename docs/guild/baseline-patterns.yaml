@@ -1,0 +1,14 @@
+# Baseline (generic) pattern library (GUILD-24). The "statistical mean" UIs that
+# GUILD must measure novelty AGAINST — a candidate too close to one of these eats
+# the -0.25 anti-generic penalty. Also feeds the novelty-memory (penalize
+# structures GUILD keeps approving, so future raids don't re-converge).
+baselines:
+  - id: card_grid           ; desc: "uniform card grid, equal weight, no hierarchy"
+  - id: left_nav_dashboard  ; desc: "fixed left sidebar + top bar + KPI row + table"
+  - id: standard_table      ; desc: "plain bordered table, no grouping/affordances"
+  - id: kpi_cards_row        ; desc: "row of identical stat cards, big number + label"
+  - id: bootstrap_forms     ; desc: "stacked labels + inputs + primary button, default spacing"
+anti_generic_penalty: -0.25   # applied when a candidate is too close to any baseline
+novelty_memory:
+  path: "{output_root}/guild-artifacts/novelty-memory.yaml"
+  rule: "record approved structures; penalize re-converging on them in later raids"

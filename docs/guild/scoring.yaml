@@ -1,0 +1,30 @@
+# Fresh + Valid scoring (GUILD-24). Score novelty ONLY among candidates that
+# already pass quality — otherwise the system rewards weird-but-unusable output.
+# Two stages: a hard validity FLOOR, then a ranked Fresh+Valid score. Selection
+# is multi-judge Pareto (no single judge dominates).
+
+# Stage 1 — validity floor (pass/fail; a fail is DISCARDED, never scored):
+validity_floor:
+  - wcag_aa                 # contrast + a11y semantics
+  - ds_tokens               # tokens only, no hardcoded values
+  - component_api_feasible  # implementable with the DS components
+  - state_coverage          # empty/loading/error/etc per definition-of-done
+  - responsive              # 375/768/1440
+  - convention_fit          # honors locked fields (novelty-zones.yaml)
+
+# Stage 2 — Fresh+Valid rank (survivors only):
+weights: { novelty: 0.35, usefulness: 0.25, brand_fit: 0.20, feasibility: 0.20 }
+penalties:
+  too_generic: -0.25        # too close to a docs/guild/baseline-patterns.yaml baseline
+  novelty_in_locked_zone: -0.50   # from novelty-zones.yaml
+
+# Novelty signal = embedding/structural distance from the baseline library
+# + effective semantic diversity across the surviving candidate pool.
+novelty_signal: "distance from baseline-patterns.yaml + spread across the surviving pool"
+
+# Multi-judge Pareto — winner must be Pareto-good, not best-average:
+judges:
+  mage:   "distinctiveness / memorability"
+  sage:   "standards / usability risk"
+  tinker: "feasibility"
+selection: "Pareto-optimal across the three judges; no candidate selectable on novelty alone"
