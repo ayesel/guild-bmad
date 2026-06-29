@@ -17,6 +17,7 @@
     "mcp/",
     "scripts/ab-eval.py",
     "scripts/artifact-model.py",
+    "scripts/auto-suggest.py",
     "scripts/bradley-terry.py",
     "scripts/build-context.py",
     "scripts/cd-handoff-gate.py",
@@ -137,7 +138,8 @@
     "profile-export": "python3 scripts/profile-export.py --selftest",
     "persona-elicit": "python3 scripts/persona-elicit.py --selftest",
     "plain-language": "python3 scripts/plain-language.py --selftest",
-    "reversibility-gate": "python3 scripts/reversibility-gate.py --action \"edit draft\""
+    "reversibility-gate": "python3 scripts/reversibility-gate.py --action \"edit draft\"",
+    "auto-suggest": "python3 scripts/auto-suggest.py --selftest"
   },
   "keywords": [
     "design",
