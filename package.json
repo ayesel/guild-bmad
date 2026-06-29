@@ -21,6 +21,7 @@
     "scripts/build-context.py",
     "scripts/cd-handoff-gate.py",
     "scripts/cd-tokens-to-dtcg.py",
+    "scripts/composers.py",
     "scripts/confidence-gate.py",
     "scripts/dtcg-export.py",
     "scripts/fidelity-gate.py",
@@ -94,7 +95,8 @@
     "synthesis-ladder": "python3 scripts/synthesis-ladder.py --selftest",
     "living-repo": "python3 scripts/living-repo.py --selftest",
     "ia-guard": "python3 scripts/ia-evidence-guard.py --selftest",
-    "artifact-model": "python3 scripts/artifact-model.py --selftest"
+    "artifact-model": "python3 scripts/artifact-model.py --selftest",
+    "composers": "python3 scripts/composers.py --selftest"
   },
   "keywords": [
     "design",
