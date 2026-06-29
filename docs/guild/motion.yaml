@@ -1,0 +1,23 @@
+# GUILD-49 (V-C) — motion tokens + grammar. Durations/easings mirror the captured
+# motion tokens (tokens.dtcg.json duration/easing). LLMs guess easing badly, so
+# generation is CONSTRAINED to this vocabulary + the interaction->token grammar.
+durations: { instant: 80ms, fast: 140ms, base: 220ms, slow: 360ms, slower: 560ms }
+easings:
+  standard:    cubic-bezier(0.2,0,0,1)        # enter/exit default
+  out:         cubic-bezier(0.16,1,0.3,1)      # decelerate / content reveal
+  in:          cubic-bezier(0.4,0,1,1)         # exit
+  soft-spring: cubic-bezier(0.34,1.32,0.5,1)   # gentle overshoot — celebrations ONLY
+
+# The grammar — every interaction maps to a required (easing, duration). Generators
+# MUST pick from here; a mismatch (e.g. enter using `in`) is off-grammar.
+grammar:
+  enter:     { easing: out,         duration: base }
+  exit:      { easing: in,          duration: fast }
+  hover:     { easing: standard,    duration: fast }
+  press:     { easing: standard,    duration: instant }
+  reveal:    { easing: out,         duration: slow }
+  celebrate: { easing: soft-spring, duration: slower }   # the only place spring is allowed
+
+stagger: { step: 40ms, max_items: 8 }   # list/grid entrance
+springs_as_linear: true                 # express springs as linear() keyframes, not magic numbers
+reduced_motion: hard-gate               # GUILD-50 — must honor prefers-reduced-motion

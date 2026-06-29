@@ -25,11 +25,14 @@
     "scripts/guild-prototype-lane.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
+    "scripts/motion-grammar.py",
     "scripts/pareto-select.py",
     "scripts/perceptual-ramps.py",
+    "scripts/reduced-motion-gate.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/spacing-hierarchy.py",
+    "scripts/state-motion-req.py",
     "scripts/subtraction-pass.py",
     "scripts/sync-compiled.py",
     "scripts/type-conditional.py",
@@ -58,7 +61,10 @@
     "type-conditional": "python3 scripts/type-conditional.py --selftest",
     "ramps": "python3 scripts/perceptual-ramps.py --selftest",
     "spacing": "python3 scripts/spacing-hierarchy.py --selftest",
-    "subtract": "python3 scripts/subtraction-pass.py --selftest"
+    "subtract": "python3 scripts/subtraction-pass.py --selftest",
+    "motion-grammar": "python3 scripts/motion-grammar.py --selftest",
+    "reduced-motion": "python3 scripts/reduced-motion-gate.py --selftest",
+    "state-motion": "python3 scripts/state-motion-req.py --selftest"
   },
   "keywords": [
     "design",
