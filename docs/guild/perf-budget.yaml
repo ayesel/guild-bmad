@@ -1,0 +1,24 @@
+# Standing NFR (owner, 2026-06-29): everything GUILD BUILDS and everything it
+# GENERATES must be DEVICE-LIGHT — low CPU/mem, don't strain the machine, mind how
+# many browser panes / agents run at once. Applies to all craft-v3 + feature work.
+# SEED defaults — the peer's optimization research pass will hand concrete budgets;
+# treat these as the enforced floor until refined.
+
+generated_artifacts:           # prototypes, screens, dashboard notes
+  max_dom_nodes: 1500
+  max_css_kb: 50
+  max_js_kb: 30
+  no_external_deps: true       # no CDN/framework (already enforced by sieve + handoff-gate)
+  reduced_motion: required     # GUILD-50 hard gate
+  images: "lazy + explicitly sized"
+  fonts: "<=2 families, font-display:swap"
+
+runtime:                       # how GUILD's own tooling behaves on the machine
+  dashboard_watch_seconds: 5   # poll less (was 2); prefer poll-on-change
+  poll_only_on_change: true    # hash mtime + task-sig; skip re-render when unchanged
+  max_concurrent_browser_panes: 3
+  max_concurrent_agents: 3     # cap raid/jury fan-out; reuse panes; spin fresh only when needed
+  close_panes_after_use: true  # prototype lane / capture notes clean up after themselves
+
+applies_to: [craft-v3, feature-v2, generated-prototypes, dashboard, raids, juries]
+status: "SEED — peer optimization research will refine budgets/patterns"
