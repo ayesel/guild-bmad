@@ -1,0 +1,32 @@
+# Calibrated QA tiers for Sage (GUILD-4). AI design QA is only credible when
+# scoped + calibrated (Baymard UX-Ray ships only checks above a 95% accuracy bar;
+# NN/g endorses this). Generic Nielsen-10 critique is no longer the bar.
+#
+# RULE: only `deterministic` + `validated` checks may FAIL a gate. `exploratory`
+# critique is advisory — it surfaces as a comment, never blocks. Every finding
+# cites its heuristic + a confidence/score.
+
+tiers:
+  deterministic:
+    gates: true
+    auto_fix: true            # senior-tier agents may auto-fix (see trust.yaml)
+    examples: ["WCAG 2.2 AA contrast ratio", "design-token compliance %", "touch target >= 44px", "missing required state (empty/loading/error)"]
+  validated:
+    gates: true
+    auto_fix: false           # gate yes, fix needs review
+    examples: ["Product Baseline trigger present (T1-T8)", "research-backed heuristic with citation"]
+  exploratory:
+    gates: false
+    advisory: true
+    examples: ["subjective visual critique", "taste-level suggestion", "generic heuristic hunch"]
+
+# Every Sage finding carries this shape so gates are defensible + auditable.
+finding_schema:
+  tier: ""          # deterministic | validated | exploratory
+  heuristic: ""     # the rule/source it tests
+  confidence: 0.0   # 0..1
+  citation: ""      # source (spec section, Baymard/NN-g ref, WCAG SC)
+
+calibration:
+  accuracy_bar: 0.95                                   # a check only GATES if measured accuracy >= bar
+  fp_fn_log: "{output_root}/guild-artifacts/qa-calibration.yaml"  # human-review outcomes tracked here to recalibrate
