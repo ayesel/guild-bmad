@@ -1,0 +1,135 @@
+{
+  "size_classes": [
+    {
+      "name": "compact",
+      "min": 0,
+      "max": 599,
+      "apple": "compact",
+      "material": "compact"
+    },
+    {
+      "name": "medium",
+      "min": 600,
+      "max": 839,
+      "apple": "regular-width transitional",
+      "material": "medium"
+    },
+    {
+      "name": "expanded",
+      "min": 840,
+      "max": null,
+      "apple": "regular",
+      "material": "expanded"
+    }
+  ],
+  "layouts": {
+    "feed": {
+      "compact": {
+        "navigation": "bottom-tab-bar",
+        "regions": [
+          "top-app-bar",
+          "single-column-feed",
+          "bottom-tab-bar"
+        ],
+        "grid": "1 column, minmax(0, 1fr)",
+        "safe_area": "pad block-end and inline edges",
+        "touch_target_min": 48
+      },
+      "medium": {
+        "navigation": "navigation-rail",
+        "regions": [
+          "navigation-rail",
+          "feed-grid"
+        ],
+        "grid": "rail + 2-column feed",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 48
+      },
+      "expanded": {
+        "navigation": "sidebar",
+        "regions": [
+          "sidebar",
+          "feed-grid",
+          "optional-context-panel"
+        ],
+        "grid": "sidebar + 3-column feed + optional panel",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 44
+      }
+    },
+    "list-detail": {
+      "compact": {
+        "navigation": "bottom-tab-bar",
+        "regions": [
+          "list-or-detail-route",
+          "bottom-tab-bar"
+        ],
+        "grid": "1 column; detail replaces list",
+        "safe_area": "pad block-end and inline edges",
+        "touch_target_min": 48
+      },
+      "medium": {
+        "navigation": "navigation-rail",
+        "regions": [
+          "navigation-rail",
+          "list",
+          "detail"
+        ],
+        "grid": "rail + minmax(18rem, 35%) + minmax(0, 1fr)",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 48
+      },
+      "expanded": {
+        "navigation": "sidebar",
+        "regions": [
+          "sidebar",
+          "list",
+          "detail"
+        ],
+        "grid": "16rem sidebar + 22rem list + minmax(0, 1fr)",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 44
+      }
+    },
+    "supporting-pane": {
+      "compact": {
+        "navigation": "bottom-tab-bar",
+        "regions": [
+          "primary-route",
+          "supporting-sheet-on-demand",
+          "bottom-tab-bar"
+        ],
+        "grid": "1 column; supporting pane becomes sheet",
+        "safe_area": "pad block-end and inline edges",
+        "touch_target_min": 48
+      },
+      "medium": {
+        "navigation": "navigation-rail",
+        "regions": [
+          "navigation-rail",
+          "primary",
+          "supporting-pane"
+        ],
+        "grid": "rail + minmax(0, 1fr) + minmax(16rem, 30%)",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 48
+      },
+      "expanded": {
+        "navigation": "sidebar",
+        "regions": [
+          "sidebar",
+          "primary",
+          "supporting-pane"
+        ],
+        "grid": "16rem sidebar + minmax(0, 1fr) + minmax(20rem, 28rem)",
+        "safe_area": "pad inline edges",
+        "touch_target_min": 44
+      }
+    }
+  },
+  "rules": {
+    "compact": "prioritize one task per view; use bottom navigation or sheets",
+    "medium": "introduce rails and two-pane structure when content benefits",
+    "expanded": "use persistent sidebars/supporting panes only when they reduce navigation cost"
+  }
+}
