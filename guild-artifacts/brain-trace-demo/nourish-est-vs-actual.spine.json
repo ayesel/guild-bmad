@@ -1,0 +1,39 @@
+[
+  { "id": "E1", "type": "experiment",
+    "content": "Nourish IA pass: review of macro-tracker progress feedback" },
+
+  { "id": "F1", "type": "fact",
+    "content": "Product Baseline T1 fires: calories logged vs target are two related quantities for the same day, so the screen MUST show variance + totals",
+    "citation": "src/modules/guild/agents/shared-sidecar/product-baseline.md#T1",
+    "verified": true, "derived_from": ["E1"] },
+
+  { "id": "F2", "type": "fact",
+    "content": "Owner mandate: estimated-vs-actual is a required UX default for comparison data",
+    "citation": "memory:guild-product-baseline",
+    "verified": true, "derived_from": ["E1"] },
+
+  { "id": "F3", "type": "fact",
+    "content": "Macro-tracker usability: without a running actual-vs-target, users cannot judge whether they are over or under mid-day (REPRESENTATIVE — slot real usability-study nugget here)",
+    "citation": "ux-heuristic:progress-feedback (representative)",
+    "verified": true, "derived_from": ["E1"] },
+
+  { "id": "I1", "type": "insight",
+    "content": "Today must surface progress-against-target, not just what was logged",
+    "derived_from": ["F1", "F2", "F3"] },
+
+  { "id": "C1", "type": "conclusion",
+    "content": "Show actual / target / remaining per macro with over-under variance on the Today screen",
+    "derived_from": ["I1"] },
+
+  { "id": "CON1", "type": "constraint",
+    "content": "Comparison must show variance + totals (Product Baseline T1); stay within the device-light perf budget",
+    "derived_from": ["C1"] },
+
+  { "id": "AC1", "type": "ac",
+    "content": "Today shows calories + each macro as actual/target/remaining with color-coded over/under",
+    "derived_from": ["C1", "CON1"] },
+
+  { "id": "ADR1", "type": "adr",
+    "content": "Use a macro ring + numeric delta (Hearth Works StatTile) for the comparison; pixel: ui_kits/nourish/TodayScreen.jsx",
+    "derived_from": ["C1", "CON1"] }
+]
