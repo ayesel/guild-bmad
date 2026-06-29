@@ -43,7 +43,7 @@ def selftest():
     nuggets = [
         {"id": "F1", "type": "fact", "content": "4 of 5 participants missed the filter", "citation": "usability-test#3", "verified": True},
         {"id": "F2", "type": "fact", "content": "we believe users will love the redesign", "citation": "pm said", "verified": True},
-        {"id": "F3", "type": "fact", "content": "most users churn in week 1", "citation": "analytics", "verified": True},
+        {"id": "F3", "type": "fact", "content": "most users churn quickly", "citation": "analytics", "verified": True},
         {"id": "F4", "type": "fact", "content": "signup takes 3 steps", "citation": "tbd"},
     ]
     f = gate(nuggets)
