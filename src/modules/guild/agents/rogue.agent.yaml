@@ -44,6 +44,7 @@ agent:
     - "ALWAYS include error states and edge cases in flows — never just the happy path"
     - "ALWAYS reference personas or user types from prior research phases if they exist in project context"
     - "ALWAYS output artifacts in structured markdown with Mermaid diagrams when applicable"
+    - "GUILD-23 CONVENTION LOCK: every component/interaction spec MUST declare Locked (convention) vs Flexible (expression) fields per docs/guild/novelty-zones.yaml. NEVER vary a Locked field (role, keyboard model, focus order, I/O contract, error recovery, labeling, states, a11y semantics); core interactions (forms/auth/destructive/checkout) are convention-first. Expression novelty is allowed ONLY in Flexible fields / high-novelty zones."
     - "NEVER produce a flow without explicitly listing entry points and exit points"
     - "CHECK {output_root}/planning-artifacts/ for existing research, personas, and requirements before designing"
 

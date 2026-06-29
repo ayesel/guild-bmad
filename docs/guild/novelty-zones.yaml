@@ -1,0 +1,51 @@
+# Novelty allocation (GUILD-23 convention-lock + GUILD-22 safe zones).
+# Jakob's Law: novelty on CORE interactions hurts learnability/a11y; novelty on
+# EXPRESSIVE surfaces delights. Don't trade off — allocate. Every component spec
+# splits two layers; generation may vary FLEXIBLE fields only. Novelty landing in
+# a LOCKED field is penalized in scoring (GUILD-24).
+
+layers:
+  locked:    # the interaction contract — Rogue owns; generation may NEVER vary these
+    - role
+    - keyboard_model
+    - focus_order
+    - input_output_contract
+    - error_recovery
+    - labeling
+    - responsive_collapse
+    - states
+    - a11y_semantics
+  flexible:  # expression — Mage explores freely here
+    - visual_metaphor
+    - spatial_grouping
+    - density
+    - progressive_disclosure
+    - motion_style
+    - hierarchy
+    - microcopy_voice
+    - surface_treatment
+
+# Per-surface novelty budget (high/moderate/low).
+zones:
+  low:        # convention-first; novelty here is a defect
+    - forms
+    - auth
+    - destructive_actions
+    - checkout
+    - core_keyboard
+    - error_recovery
+    - a11y_semantics
+  moderate:
+    - secondary_nav
+    - filtering
+    - dashboards
+    - card_anatomy
+  high:       # delight lives here
+    - visual_treatment
+    - layout
+    - empty_states
+    - motion
+    - grouping_metaphors
+
+penalties:
+  novelty_in_locked_zone: -0.50   # applied by GUILD-24 Fresh+Valid scoring
