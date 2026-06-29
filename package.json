@@ -16,6 +16,7 @@
     "guild.config.yaml",
     "mcp/",
     "scripts/ab-eval.py",
+    "scripts/artifact-model.py",
     "scripts/bradley-terry.py",
     "scripts/build-context.py",
     "scripts/cd-handoff-gate.py",
@@ -92,7 +93,8 @@
     "confidence-gate": "python3 scripts/confidence-gate.py --selftest",
     "synthesis-ladder": "python3 scripts/synthesis-ladder.py --selftest",
     "living-repo": "python3 scripts/living-repo.py --selftest",
-    "ia-guard": "python3 scripts/ia-evidence-guard.py --selftest"
+    "ia-guard": "python3 scripts/ia-evidence-guard.py --selftest",
+    "artifact-model": "python3 scripts/artifact-model.py --selftest"
   },
   "keywords": [
     "design",

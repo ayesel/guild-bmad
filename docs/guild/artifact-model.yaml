@@ -1,0 +1,21 @@
+# GUILD-69 (T2) — Canonical Artifact Model + Layout Contract.
+# ONE semantic model for every IA artifact; FigJam / D2 / Mermaid / Excalidraw / SVG
+# are just RENDERERS over it (GUILD-70 composers build it, GUILD-71 layout engines lay
+# it out, GUILD-73/74 render). Renderer-agnostic: NO pixel coordinates here — only
+# structure + a layout CONTRACT. Carries spine nugget IDs so artifacts trace to evidence.
+
+artifact_types: [sitemap, user-flow, journey-map, service-blueprint, affinity-map, tree-test, content-model]
+
+node: { required: [id, label, type], optional: [provenance] }   # provenance = spine nugget IDs (GUILD-63)
+edge: { required: [from, to], optional: [type, label] }
+
+layout_contract:
+  engine: [hierarchical, tree, force, grid, sequence, swimlane]   # GUILD-71 maps each to a deterministic engine
+  direction: [TB, LR, BT, RL]
+  spacing: "DTCG space tokens, never raw px"
+
+rules:
+  - NO pixel coordinates in the model (renderers compute layout from the contract)
+  - every edge references existing node ids
+  - nodes MAY carry provenance (spine nugget IDs) → the artifact traces to evidence
+  - one model, many renderers (FigJam is a renderer, not the source of truth)
