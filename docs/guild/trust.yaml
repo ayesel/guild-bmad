@@ -1,0 +1,40 @@
+# Guild agent trust tiers (GUILD-3) — machine-readable governance.
+# The autonomy loop (GUILD-2), Definition-of-Done (GUILD-12) and QA gating
+# (GUILD-4) read this to decide: suggest vs write/draft-PR vs auto-merge.
+# Human-readable governance + rationale: /AGENTS.md.
+# Per-workspace override: drop a `guild.trust.yaml` at the project root; its
+# values win over these defaults.
+
+tiers:
+  intern: { may: [suggest], never: [write, merge] }
+  junior:
+    may: [suggest, write]
+    never: [merge]
+    scope: "mechanical / deterministic only (token swap, spacing, target= repair)"
+  senior:
+    may: [suggest, write, merge]
+    scope: "deterministic + validated checks only; never foundation guards"
+
+# Default tier per agent per action class. Override per workspace as trust grows.
+agents:
+  guild-master: { orchestration: senior, irreversible: intern }
+  sage:         { qa_deterministic: senior, qa_validated: junior, qa_exploratory: intern }
+  tinker:       { token_fix: junior, component_refactor: intern, code_connect: junior }
+  mage:         { style_fix: junior, structural_change: intern }
+  healer:       { handoff_artifact: senior, story_gen: junior }
+  rogue:        { artifact_gen: junior }
+  warlock:      { copy_fix: junior }
+  cartographer: { ia_artifact: junior }
+  ranger:       { research_artifact: junior }
+
+# Rules that can NEVER be auto-overridden by any tier or workspace override.
+foundation_guards:
+  - "Product Baseline triggers (T1-T8) and contrast / WCAG AA gates are never auto-waived"
+  - "No destructive / irreversible action (delete, force-push, external publish, spend) without explicit human approval"
+  - "No change to docs/guild/context.yaml taste_anchors / tokens without owner sign-off"
+
+# Non-blocking decisions an agent cannot auto-resolve are PARKED here (not asked
+# serially) and surface in the GUILD-11 batched review.
+exception_queue:
+  path: "{output_root}/guild-artifacts/exception-queue.yaml"
+  rule: "park, take the documented default, continue — never block the run on a non-irreversible question"
