@@ -12,3 +12,6 @@ docs/guild/.canvas-note-id
 
 # GUILD-34 throwaway GPT prototypes (only the graduated winner becomes tracked)
 guild-artifacts/prototypes/
+
+# pairwise-capture runtime de-blind map (per-machine)
+docs/guild/evals/.blind-map.jsonl
