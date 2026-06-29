@@ -1,0 +1,28 @@
+# Run manifest schema (GUILD-19). Every autonomous / background run writes
+# docs/guild/runs/RUN-<id>.yaml — portable (survives outside atrium) AND renders
+# as an atrium task (live monitor + steer). Pairs with GUILD-2 (loop) + GUILD-3
+# (autonomy tiers). This file is the schema/example; real runs are siblings.
+
+run_schema:
+  run_id: "RUN-YYYY-MM-DD-NNN"
+  objective: ""
+  charter_ref: "{output_root}/guild-artifacts/raid-charter.yaml"   # GUILD-11
+  agent_roster: []
+  linked:
+    epic_id: null
+    story_ids: []
+    artifact_ids: []
+  trace_uri: null
+  checkpoints: []
+  open_exceptions: []           # parked decisions (trust.yaml exception_queue)
+  output_manifest: []           # artifact_ids produced this run
+  next_action: ""
+  state: queued
+
+states: [queued, context-loading, planning, working, self-reviewing, blocked-needs-human, repairing, ready-for-review, handoff-ready, completed, failed, superseded]
+
+# Steering actions (Codex-app turn_steer pattern) — each gated by trust.yaml tiers.
+steering: [continue-with-default, answer-exception, pause, resume, cancel, fork-candidate, promote-version, bind-to-story, request-repair, send-to-BMAD]
+
+atrium_render: "each run also renders as an atrium task — live monitor + interrupt"
+find_by_artifact: "artifacts.yaml source_run_id -> docs/guild/runs/RUN-*.yaml (find the run that produced any artifact)"
