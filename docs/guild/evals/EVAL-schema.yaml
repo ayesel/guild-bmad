@@ -1,0 +1,26 @@
+# Trace-to-Eval learning loop (GUILD-15). Convert owner corrections into evals +
+# LLM-judge calibration examples + Context-Manifest updates, so the same mistakes
+# stop recurring. Pairs with GUILD-4 (qa-calibration.yaml), GUILD-14 (taste-model),
+# GUILD-1 (context.yaml). Real evals are siblings: docs/guild/evals/EVAL-*.yaml.
+
+trace_schema:
+  trace_id: "TRACE-NNNN"
+  run_id: ""              # the RUN-* that produced the corrected output (GUILD-19)
+  artifact_id: ""
+  correction: ""          # what the owner changed/rejected and WHY
+  category: ""            # failure category (see categories)
+
+eval_schema:
+  eval_id: "EVAL-NNNN"
+  from_trace: "TRACE-NNNN"
+  assertion: ""           # the durable check derived from the correction
+  judge_example: true     # also serves as an LLM-judge calibration example
+
+categories: []            # most-common failure categories — tracked + surfaced
+
+calibration:
+  judge_vs_human: "{output_root}/guild-artifacts/qa-calibration.yaml"   # agreement monitored (GUILD-4)
+
+feedback: >
+  recurring corrections update context.yaml defaults + taste-model.yaml +
+  qa-tiers accuracy; a recurring failure category is penalized next run.
