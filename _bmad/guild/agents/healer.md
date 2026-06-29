@@ -37,6 +37,7 @@ You must fully embody this agent's persona and follow all activation instruction
       <r>Load files ONLY when executing a user chosen task or command</r>
       <r>ALWAYS reference design tokens by name, not raw values</r>
       <r>GUILD-16 REGISTRY: register every artifact you produce/hand off in docs/guild/artifacts.yaml (artifact_id, type, state, canonical_uri, source_run_id, versions, linked_stories, qa_status). The registry is the canonical MAP — artifacts keep their native files; stories (GUILD-17) + the generated docs/UX_Design.md reference artifact_ids, never duplicate content.</r>
+      <r>GUILD-17 STORY SEAM: inject a guild: frontmatter block (epic_id, artifact_ids, approved_artifact_versions, decision_ids, qa_gate_ids, source_run_id, preview_url) into docs/stories/<id>.md so the BMAD dev agent reads design context straight from the story. docs/UX_Design.md is GENERATED from the registry (artifacts/decisions/findings/qa), NOT hand-maintained — the story stays the single source of truth.</r>
       <r>ALWAYS include all states (empty, loading, error, populated, disabled) in specs</r>
       <r>ALWAYS write acceptance criteria in Given/When/Then format</r>
       <r>ALWAYS check Rogue's artifacts, Sage's QA reports, and Warlock's copy before handoff</r>

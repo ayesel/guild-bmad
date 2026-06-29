@@ -1,0 +1,13 @@
+# The `guild:` frontmatter block injected into docs/stories/<id>.md (GUILD-17).
+# The STORY is the single source of truth; the BMAD dev agent reads design
+# context straight from here. artifact_ids resolve via docs/guild/artifacts.yaml;
+# the round-trip is proven by scripts/selftest-roundtrip.sh.
+guild:
+  epic_id: EPIC-1
+  artifact_ids: [ART-0007]
+  approved_artifact_versions:
+    ART-0007: v003
+  decision_ids: [DEC-0012]
+  qa_gate_ids: [QA-0044]
+  source_run_id: RUN-2026-06-28-001
+  preview_url: ""          # running preview (GUILD-7), if any
