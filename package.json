@@ -44,6 +44,7 @@
     "scripts/reference-decompose-guard.py",
     "scripts/regression-firewall.py",
     "scripts/responsive-gate.py",
+    "scripts/runtime-footprint.py",
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/size-class-templates.py",
@@ -106,7 +107,8 @@
     "responsive-gate": "python3 scripts/responsive-gate.py --selftest",
     "fluid-tokens": "python3 scripts/fluid-tokens.py --selftest",
     "size-class": "python3 scripts/size-class-templates.py --selftest",
-    "perf-budget-gate": "python3 scripts/perf-budget-gate.py --selftest"
+    "perf-budget-gate": "python3 scripts/perf-budget-gate.py --selftest",
+    "runtime-footprint": "python3 scripts/runtime-footprint.py --selftest"
   },
   "keywords": [
     "design",
