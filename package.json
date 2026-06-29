@@ -27,6 +27,7 @@
     "scripts/install.sh",
     "scripts/judge-calibration.py",
     "scripts/motion-grammar.py",
+    "scripts/pairwise-capture.py",
     "scripts/pareto-select.py",
     "scripts/perceptual-diff.py",
     "scripts/perceptual-ramps.py",
@@ -76,7 +77,8 @@
     "token-lint": "python3 scripts/token-lint.py --selftest",
     "taste": "python3 scripts/taste-model.py --selftest",
     "regression-firewall": "python3 scripts/regression-firewall.py --selftest",
-    "refdecomp-guard": "python3 scripts/reference-decompose-guard.py --selftest"
+    "refdecomp-guard": "python3 scripts/reference-decompose-guard.py --selftest",
+    "pick": "python3 scripts/pairwise-capture.py --selftest"
   },
   "keywords": [
     "design",
