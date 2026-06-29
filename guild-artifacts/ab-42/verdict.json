@@ -1,0 +1,10 @@
+{
+  "pair_id": "GUILD-42",
+  "verdict": "select",
+  "rationale": "owner-valued-both-distinct-arms\u2192merge-destroys-value",
+  "deblind": {
+    "ArmA": "merge.html",
+    "ArmB": "codex-1.html",
+    "ArmB_role": "select-winner"
+  }
+}
