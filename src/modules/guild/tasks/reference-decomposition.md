@@ -25,3 +25,6 @@ Ranger ingests + extracts; Mage recombines (GUILD-21 lane 4); Sage gates against
 - Sage rejects imitation / contrast fails / unavailable patterns.
 - Extracted attributes stored as metadata, not raw screenshots.
 - TEST: a screenshot becomes attribute cards (not pixels), recombined on-token; an imitation candidate is rejected.
+
+## Hardening (GUILD-58)
+Decomposition extracts **abstract attributes for conditioning, never pixel copies**. Run `scripts/reference-decompose-guard.py --file <decomposition>` — it flags literal hex colours, copied px measurements, and verbatim-copy language. Output must read like "warm low-chroma ember accent, confident display hierarchy, generous whitespace", not "#B0421D, 48px, copy exactly".
