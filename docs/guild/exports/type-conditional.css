@@ -1,0 +1,8 @@
+/* GENERATED — size-conditional type (GUILD-45). leading tightens + tracking
+   goes negative as size grows. Do not apply one global line-height. */
+.type-xs { font-size: 0.75rem; line-height: 1.6; letter-spacing: 0.012em; }
+.type-sm { font-size: 0.875rem; line-height: 1.531; letter-spacing: 0.0076em; }
+.type-base { font-size: 1rem; line-height: 1.463; letter-spacing: 0.0032em; }
+.type-md { font-size: 1.125rem; line-height: 1.394; letter-spacing: -0.0011em; }
+.type-lg { font-size: 1.375rem; line-height: 1.256; letter-spacing: -0.0099em; }
+.type-xl { font-size: 1.75rem; line-height: 1.05; letter-spacing: -0.023em; }

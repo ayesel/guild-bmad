@@ -29,6 +29,7 @@
     "scripts/self-heal-guard.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/sync-compiled.py",
+    "scripts/type-conditional.py",
     "scripts/validate.sh",
     "src/"
   ],
@@ -50,7 +51,8 @@
     "judge-cal": "python3 scripts/judge-calibration.py --selftest",
     "pareto": "python3 scripts/pareto-select.py --selftest",
     "self-heal-guard": "python3 scripts/self-heal-guard.py --selftest",
-    "ab-eval": "python3 scripts/ab-eval.py --selftest"
+    "ab-eval": "python3 scripts/ab-eval.py --selftest",
+    "type-conditional": "python3 scripts/type-conditional.py --selftest"
   },
   "keywords": [
     "design",
