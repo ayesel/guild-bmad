@@ -31,6 +31,7 @@
     "scripts/ia-evidence-guard.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
+    "scripts/layout-engine.py",
     "scripts/living-repo.py",
     "scripts/motion-grammar.py",
     "scripts/pairwise-capture.py",
@@ -96,7 +97,8 @@
     "living-repo": "python3 scripts/living-repo.py --selftest",
     "ia-guard": "python3 scripts/ia-evidence-guard.py --selftest",
     "artifact-model": "python3 scripts/artifact-model.py --selftest",
-    "composers": "python3 scripts/composers.py --selftest"
+    "composers": "python3 scripts/composers.py --selftest",
+    "layout-engine": "python3 scripts/layout-engine.py --selftest"
   },
   "keywords": [
     "design",
