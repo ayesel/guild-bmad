@@ -1,0 +1,25 @@
+# Claude Design capture manifest (GUILD-27)
+# A real Hearth Works DS bundle pulled programmatically via DesignSync —
+# no manual claude.ai login / tar export. Re-pull with the /design-sync flow.
+source:
+  tool: claude-design
+  via: DesignSync
+  projectId: cfcbf8bf-25f8-4984-9b7d-a9529f95d1c1
+  name: Hearth Works Design System
+  pulled: "2026-06-29"
+captured:
+  tokens: [colors, spacing, radius, shadow, typography, fonts, motion]   # tokens.bundle.css
+  components: 17   # see design-system.yaml (full .jsx/.d.ts/.prompt.md/.card.html in CD)
+  guidelines: 16
+  ui_kits: [housecup, nourish]
+outputs:
+  raw_bundle: tokens.bundle.css       # faithful CSS capture
+  canonical: ../tokens.dtcg.json      # GUILD-31 — DTCG, the one token truth (95 tokens / 10 groups)
+consumed_by:
+  - GUILD-28  # handoff gate audits this bundle before a Claude build
+  - GUILD-31  # bundle -> DTCG (done)
+  - GUILD-35  # interop hub: every tool adapter round-trips to tokens.dtcg.json
+notes: >
+  This is the READ side (proven). The seed-PUSH side (GUILD-30/32 — writing the
+  Product Baseline back into Claude Design) needs explicit owner approval before
+  mutating the production project.

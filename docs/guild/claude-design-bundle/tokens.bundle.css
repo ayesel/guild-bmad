@@ -1,0 +1,67 @@
+/* =============================================================================
+   Hearth Works Design System — captured token bundle (GUILD-27)
+   Pulled via DesignSync from Claude Design project
+   cfcbf8bf-25f8-4984-9b7d-a9529f95d1c1 on 2026-06-29. Source of truth lives in
+   Claude Design; re-pull with the /design-sync flow. Machine form: tokens.dtcg.json.
+   ============================================================================= */
+
+/* ---- tokens/colors.css ---------------------------------------------------- */
+:root {
+  --warm-50:#FBF7F1; --warm-100:#F4ECE1; --warm-200:#E7DACA; --warm-300:#D5C3AE;
+  --warm-400:#B3A088; --warm-500:#8A7A66; --warm-600:#6A5C4C; --warm-700:#4E4438;
+  --warm-800:#352E26; --warm-900:#211C17;
+  --ember-50:#FDF1EB; --ember-100:#FADDCF; --ember-200:#F3BCA1; --ember-300:#EB9570;
+  --ember-400:#E06E45; --ember-500:#CE5328; --ember-600:#B0421D; --ember-700:#8C3417;
+  --ember-800:#682713; --ember-900:#471A0D;
+  --sage-50:#EEF2EA; --sage-100:#DBE3D0; --sage-200:#BCCBAB; --sage-300:#97AD80;
+  --sage-400:#728B5B; --sage-500:#586F44; --sage-600:#455935; --sage-700:#354528;
+  --sage-800:#28341E; --sage-900:#1B2314;
+  --honey-400:#C28A1C; --honey-500:#9E6F15; --berry-500:#B23423; --denim-500:#3A6079;
+  --color-bg:var(--warm-50); --color-surface:#FFFDFA; --color-text:var(--warm-900);
+  --color-text-muted:var(--warm-600); --color-primary:var(--ember-600);
+  --color-secondary:var(--sage-600); --color-success:var(--sage-600);
+  --color-warning:var(--honey-400); --color-danger:var(--berry-500); --color-info:var(--denim-500);
+}
+
+/* ---- tokens/spacing.css --------------------------------------------------- */
+:root {
+  --space-1:0.25rem; --space-2:0.5rem; --space-3:0.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem;
+  --space-12:3rem; --space-16:4rem; --space-20:5rem; --space-24:6rem;
+  --touch-target:44px;
+}
+
+/* ---- tokens/radius.css ---------------------------------------------------- */
+:root {
+  --radius-xs:4px; --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+  --radius-xl:24px; --radius-2xl:32px; --radius-pill:999px;
+}
+
+/* ---- tokens/shadow.css (light) -------------------------------------------- */
+:root {
+  --shadow-xs:0 1px 2px rgb(28 20 12 / 0.06);
+  --shadow-sm:0 1px 2px rgb(28 20 12 / 0.05),0 2px 6px rgb(28 20 12 / 0.06);
+  --shadow-md:0 2px 4px rgb(28 20 12 / 0.05),0 6px 16px rgb(28 20 12 / 0.08);
+  --shadow-lg:0 4px 8px rgb(28 20 12 / 0.06),0 12px 32px rgb(28 20 12 / 0.10);
+  --shadow-xl:0 8px 16px rgb(28 20 12 / 0.08),0 24px 56px rgb(28 20 12 / 0.14);
+}
+
+/* ---- tokens/typography.css ------------------------------------------------ */
+:root {
+  --font-sans:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,monospace;
+  --weight-regular:400; --weight-medium:500; --weight-semibold:600; --weight-bold:700; --weight-black:800;
+  --text-xs:0.75rem; --text-sm:0.875rem; --text-base:1rem; --text-md:1.125rem;
+  --text-lg:1.375rem; --text-xl:1.75rem;
+  --leading-tight:1.1; --leading-snug:1.25; --leading-normal:1.5; --leading-relaxed:1.65;
+}
+
+/* ---- tokens/motion.css ---------------------------------------------------- */
+:root {
+  --dur-instant:80ms; --dur-fast:140ms; --dur-base:220ms; --dur-slow:360ms; --dur-slower:560ms;
+  --ease-standard:cubic-bezier(0.2,0,0,1); --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-in:cubic-bezier(0.4,0,1,1); --ease-soft-spring:cubic-bezier(0.34,1.32,0.5,1);
+}
+
+/* ---- tokens/fonts.css ----------------------------------------------------- */
+/* @import Hanken Grotesk + Geist Mono from Google Fonts (see source) */
