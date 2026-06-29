@@ -8,7 +8,14 @@ meta:
   gather_via: dashboard        # owner labels a pair at a time (Guild dashboard / batched review)
 
 # Each label: owner's pick between two real candidates (optionally per rubric dim).
-labels: []
+labels:
+  # First real owner label — capture loop proven end-to-end (blind A/B note -> send_to_agent
+  # -> de-blinded via .blind-map.jsonl). Owner re-picked A->B; B is final.
+  - id: CAL-1
+    pair: [a-filter-sort-toolbar-...-1, a-filter-sort-toolbar-...-2]
+    owner_pick: a-filter-sort-toolbar-...-2   # blind option B
+    blind_pick: B
+    note: "vendor/filter toolbar — owner found design B (Faceted) cleaner"
 # template:
 #   - { id: L1, pair: [nourish-today-A, nourish-today-B], owner_pick: nourish-today-B, dim: hierarchy }
 #   - { id: L2, pair: [vendor-toolbar-cmd, vendor-toolbar-faceted], owner_pick: vendor-toolbar-faceted }
