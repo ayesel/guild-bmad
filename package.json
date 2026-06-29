@@ -13,6 +13,7 @@
     "scripts/selftest-roundtrip.sh",
     "scripts/build-context.py",
     "scripts/guild-canvas.py",
+    "scripts/guild-prototype-lane.py",
     "mcp/",
     "docs/",
     "guild.config.yaml",
@@ -31,7 +32,8 @@
     "build-context": "python3 scripts/build-context.py",
     "mcp": "node mcp/guild-mcp.mjs",
     "canvas": "python3 scripts/guild-canvas.py --render",
-    "canvas:watch": "python3 scripts/guild-canvas.py --watch"
+    "canvas:watch": "python3 scripts/guild-canvas.py --watch",
+    "prototype": "python3 scripts/guild-prototype-lane.py"
   },
   "keywords": [
     "design",

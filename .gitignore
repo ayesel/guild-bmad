@@ -9,3 +9,6 @@ npm-debug.log*
 
 # atrium canvas renderer runtime state (per-machine)
 docs/guild/.canvas-note-id
+
+# GUILD-34 throwaway GPT prototypes (only the graduated winner becomes tracked)
+guild-artifacts/prototypes/
