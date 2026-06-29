@@ -1,0 +1,108 @@
+schema_version: 1
+name: GUILD Team Kernel
+description: Shareable team preset for GUILD projects. Team policy is committed; personal taste stays in the operator profile.
+
+governance:
+  values: [enforced, default-override, personal-only]
+  merge_rules:
+    objects: deep-merge
+    scalars: later-layer-wins-unless-enforced
+    lists:
+      gates: union
+      standards: union
+    invariant: project and personal layers can add gates or standards, never drop an enforced team gate.
+
+design_system_kernel:
+  governance: enforced
+  tier_1_primitives:
+    color:
+      governance: enforced
+      contract: semantic tokens must resolve to documented primitive ramps.
+    type:
+      governance: enforced
+      contract: fluid, zoom-safe type tokens; no bare vw font sizes.
+    space:
+      governance: enforced
+      contract: spacing uses token steps, not ad hoc pixels.
+    radius:
+      governance: default-override
+      contract: component radius may vary by brand theme inside the team scale.
+    motion:
+      governance: enforced
+      contract: reduced-motion support is required; transform and opacity are preferred.
+  component_api:
+    governance: enforced
+    contract:
+      - Components expose semantic props, not one-off visual overrides.
+      - Component states cover default, hover, focus, active, disabled, loading, empty, and error where applicable.
+      - Touch targets meet 44pt Apple and 48dp Material minimums.
+  brand_contract:
+    governance: default-override
+    contract:
+      - Apps may theme surface, accent, imagery, and voice.
+      - Apps may not bypass accessibility, responsive, or performance gates.
+      - Kernel structure stays stable across themed verticals.
+  accessibility_contract:
+    governance: enforced
+    target: AA
+    standards:
+      - WCAG-AA
+      - reduced-motion
+      - keyboard-access
+      - visible-focus
+      - touch-targets
+  performance_contract:
+    governance: enforced
+    standards:
+      - device-light
+      - perf-budget
+      - responsive-gate
+
+gates:
+  governance: enforced
+  enforced:
+    - fidelity-gate
+    - reduced-motion-gate
+    - responsive-gate
+    - perf-budget-gate
+  default:
+    - token-lint
+    - runtime-footprint
+
+standards:
+  governance: enforced
+  enforced:
+    - no-secret-export
+    - no-machine-local-paths
+    - taste-vector-private-by-default
+    - provenance-required-for-research-claims
+  default:
+    - plain-language-available
+    - reversible-autonomy
+
+operator_preferences:
+  governance: personal-only
+  fields:
+    - operator
+    - persona
+    - plain_language
+    - autonomy
+    - taste_weights
+
+export_policy:
+  governance: enforced
+  strip_machine_local_paths: true
+  include_taste_by_default: false
+  blocked_key_patterns:
+    - secret
+    - token
+    - api_key
+    - password
+    - private_key
+  blocked_path_prefixes:
+    - <user-home>/
+    - <home>/
+    - <system-temp>/
+    - <project-temp>/
+    - <ssh-config>/
+    - <guild-config>/
