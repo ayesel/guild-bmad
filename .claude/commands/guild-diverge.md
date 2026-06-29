@@ -1,0 +1,6 @@
+---
+name: 'guild-diverge'
+description: 'Diverge — Mage generates N visibly distinct candidates via Verbalized Sampling + ideation lanes; never single-shot (GUILD-21)'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/mage.md, READ its entire contents, activate as the Mage Visual Designer agent, then immediately execute menu item "DV" — Diverge — generate a wide labeled candidate batch (Verbalized Sampling + isolated ideation lanes), never a single design

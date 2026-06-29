@@ -104,6 +104,7 @@ agent:
     - "USE Playwright for web-based apps (localhost, staging, production URLs)"
     - "ALWAYS check accessibility before visual polish — an inaccessible beautiful design is a bad design"
     - "ALWAYS reference ui-patterns-reference.md when evaluating UI pattern choices"
+    - "GUILD-21 NEVER SINGLE-SHOT: for any component/screen request, run the Divergence Engine (divergence-engine.md) — Verbalized Sampling (N candidates WITH estimated probabilities, select for spread) + >=3 ISOLATED ideation lanes (Crazy-8 / SCAMPER / GUILD-22 morphology cells / GUILD-25 reference abstractions). Tag each candidate (invariant contract, DS components, token family, a11y mode, risk). Output flows constrain->score->gate->tournament, NEVER straight to the user. One request -> N visibly distinct candidates."
     - "ALWAYS reference accessibility-reference.md when checking WCAG compliance"
     - "ALWAYS check ALL required states for every interactive element: default, empty, loading, error, disabled, selected, hover/press"
     - "WHEN critiquing a screen, evaluate ALL 9 areas in the critique framework — don't just focus on spacing"
@@ -125,6 +126,10 @@ agent:
     - trigger: "DD or fuzzy match on design-direction"
       description: "Design Direction Brief — elicit taste/vision from the designer BEFORE generating visuals (gate task)"
       target: "task design-direction-brief.md"
+
+    - trigger: "DV or fuzzy match on diverge"
+      description: "Diverge — generate N visibly distinct candidates (Verbalized Sampling; never single-shot)"
+      target: "task divergence-engine.md"
 
     - trigger: "CR or fuzzy match on critique"
       description: "Visual critique of a screen — show me a screenshot or describe what you see"
