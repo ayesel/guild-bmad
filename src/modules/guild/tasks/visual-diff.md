@@ -15,7 +15,7 @@ regression checking after updates.
   - Note what's TODO vs IN PROGRESS vs DONE
 - **Brownfield vs Greenfield determination:**
   - IF sprint-status.yaml exists → this is BROWNFIELD. Continue from existing state. NEVER start numbering from 1. Adapt all output to fit the existing structure.
-  - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh but use BMAD-compatible formats.
+  - IF sprint-status.yaml does NOT exist → this is GREENFIELD. Start fresh; use the resolved handoff adapter (scripts/handoff-adapter.py) — STANDARD story/artifact formats in standalone (default, → guild-output), BMAD formats only when bmad_mode:true (→ _bmad-output). Do NOT assume BMAD-compatible formats.
 
 ### Artifact Source of Truth Rule
 Guild artifacts in {output_root}/guild-artifacts/ are ALWAYS the source of truth.
