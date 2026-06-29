@@ -17,6 +17,7 @@
     "scripts/cd-tokens-to-dtcg.py",
     "scripts/dtcg-export.py",
     "scripts/cd-handoff-gate.py",
+    "scripts/bradley-terry.py",
     "mcp/",
     "docs/",
     "guild.config.yaml",
@@ -40,7 +41,8 @@
     "tokens-dtcg": "python3 scripts/cd-tokens-to-dtcg.py",
     "interop": "python3 scripts/dtcg-export.py --target all",
     "interop:check": "python3 scripts/dtcg-export.py --check",
-    "handoff-gate": "python3 scripts/cd-handoff-gate.py --selftest"
+    "handoff-gate": "python3 scripts/cd-handoff-gate.py --selftest",
+    "jury": "python3 scripts/bradley-terry.py --selftest"
   },
   "keywords": [
     "design",

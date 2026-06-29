@@ -1,0 +1,44 @@
+# GUILD-40 — Pairwise diverse-jury tournament config (the judgment keystone).
+# Replaces the median-biased VLM self-score. Scorer math + guards:
+# scripts/bradley-terry.py. Grounded in deepdive-3 (R1) + SYNTHESIS-v3.
+
+method: pairwise            # NEVER one holistic scalar (Goodhart)
+aggregation: bradley-terry  # strengths from pairwise wins
+order_swap: true            # judge every pair in BOTH orders + average (position bias flips ~66/80)
+
+# >=3 DISJOINT-VENDOR judges (PoLL: a jury of disjoint smaller models beats one
+# big judge — less bias, >7x cheaper). Run as Atrium raids.
+judges:
+  - { id: judge-anthropic, vendor: anthropic }
+  - { id: judge-openai,    vendor: openai }
+  - { id: judge-google,    vendor: google }
+generator_vendor: null      # SET to the candidate-generator's vendor at run time —
+                            # it is EXCLUDED from its own jury (self-preference). Guarded.
+
+# Decomposed rubric — judge each dimension pairwise, never one number (UICrit: +55%
+# from decomposition + expert grounding). Anchor on BOLD exemplars, not just "professional".
+rubric:
+  dimensions: [hierarchy, spacing, contrast, consistency, affordance, clarity]
+  anchored_on: bold-exemplars        # GUILD-55 exemplar library (taste floor++), not "looks professional"
+  reference: charter + taste-model
+
+anti_gaming:
+  pointwise_pass: 1         # keep ONE pointwise pass — pairwise is more human-aligned but more GAMEABLE
+                            # (35% flip under distractors vs 9% pointwise). Flag disagreement vs BT ranking.
+
+report:
+  inter_judge_agreement: always   # single raters are 5-65% reliable — always surface agreement
+  percentile_norm: GUILD-6        # handoff report (GUILD-58/R6)
+
+# The jury produces the QUALITY axis only. Novelty axis comes from the novelty engine;
+# the two are surfaced as a Pareto front (rec + bold alternatives) — see GUILD-41.
+two_axis: see docs/guild/scoring.yaml + GUILD-41 (never collapse to one scalar)
+
+calibration:
+  golden_set: docs/guild/evals/        # GUILD-44 — ~50-100 owner pairwise labels
+  meta_metric: offline-online-gap      # judge-vs-owner agreement should rise; gap should shrink
+
+scope: >
+  The jury is a SCREEN / triage to narrow options — NOT the ship decision. Even a
+  95%-consistent surrogate missed 20-35% of true winners (Netflix). Owner pick + real
+  signal remain authoritative.

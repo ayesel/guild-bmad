@@ -1,14 +1,21 @@
 # Raid Tournament Mode
 
 **GUILD-13 · P2/autonomy.** Guild's raids already generate parallel candidates —
-but they end by making the owner pick. That's a human pass. **Self-score instead.**
+but they end by making the owner pick. **Score with a diverse-vendor jury instead**
+(GUILD-40) — the old single-model self-score was the bottleneck: it underrated the
+distinctive candidates the novelty engine produces (median bias).
 
 ## Flow (default for raids)
 1. **Generate variants in parallel** — Ranger/Rogue/Mage approaches + Mage's
    divergence batch (GUILD-21), each constrained by the DS grammar (GUILD-22).
-2. **Sieve + self-score** — run the Novelty Sieve (GUILD-24): validity floor →
-   Fresh+Valid → multi-judge Pareto (Mage/Sage/Tinker), scored against the Raid
-   Charter (GUILD-11) acceptance criteria + calibrated QA tiers (GUILD-4).
+2. **Sieve, then diverse-jury score** — run the Novelty Sieve (GUILD-24) validity
+   floor first, then score survivors with the **pairwise diverse-vendor jury**
+   (GUILD-40 / `jury-tournament.md` / `scripts/bradley-terry.py`): ≥3 disjoint-vendor
+   judges, **generator excluded**, both orders (order-swap), **Bradley-Terry**
+   aggregated, against the decomposed rubric + Raid Charter (GUILD-11) + calibrated QA
+   tiers (GUILD-4). The Mage/Sage/Tinker personas remain DIVERSITY/routing lenses, NOT
+   the correctness judges (persona ≠ correctness). Surface quality × novelty as a
+   Pareto front (GUILD-41), never one scalar.
 3. **Synthesize ONE recommendation** — Guild Master returns the winner + the
    rejected alternatives each with a one-line reason.
 4. **Owner sees the final slate ONCE** — in the GUILD-11 batched review, not each
