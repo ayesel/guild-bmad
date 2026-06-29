@@ -1,0 +1,446 @@
+{
+  "$description": "Hearth Works tokens (DTCG) \u2014 generated from the Claude Design capture by scripts/cd-tokens-to-dtcg.py. Do not hand-edit; re-pull + re-run.",
+  "color": {
+    "warm": {
+      "50": {
+        "$type": "color",
+        "$value": "#FBF7F1"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#F4ECE1"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#E7DACA"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#D5C3AE"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#B3A088"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#8A7A66"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#6A5C4C"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#4E4438"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#352E26"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#211C17"
+      }
+    },
+    "ember": {
+      "50": {
+        "$type": "color",
+        "$value": "#FDF1EB"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#FADDCF"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#F3BCA1"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#EB9570"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#E06E45"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#CE5328"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#B0421D"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#8C3417"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#682713"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#471A0D"
+      }
+    },
+    "sage": {
+      "50": {
+        "$type": "color",
+        "$value": "#EEF2EA"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#DBE3D0"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#BCCBAB"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#97AD80"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#728B5B"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#586F44"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#455935"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#354528"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#28341E"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#1B2314"
+      }
+    },
+    "honey": {
+      "400": {
+        "$type": "color",
+        "$value": "#C28A1C"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#9E6F15"
+      }
+    },
+    "berry": {
+      "500": {
+        "$type": "color",
+        "$value": "#B23423"
+      }
+    },
+    "denim": {
+      "500": {
+        "$type": "color",
+        "$value": "#3A6079"
+      }
+    },
+    "semantic": {
+      "bg": {
+        "$type": "color",
+        "$value": "{color.warm.50}"
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "#FFFDFA"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{color.warm.900}"
+      },
+      "text-muted": {
+        "$type": "color",
+        "$value": "{color.warm.600}"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{color.ember.600}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.sage.600}"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{color.sage.600}"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{color.honey.400}"
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{color.berry.500}"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "{color.denim.500}"
+      }
+    }
+  },
+  "space": {
+    "1": {
+      "$type": "dimension",
+      "$value": "0.25rem"
+    },
+    "2": {
+      "$type": "dimension",
+      "$value": "0.5rem"
+    },
+    "3": {
+      "$type": "dimension",
+      "$value": "0.75rem"
+    },
+    "4": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "5": {
+      "$type": "dimension",
+      "$value": "1.25rem"
+    },
+    "6": {
+      "$type": "dimension",
+      "$value": "1.5rem"
+    },
+    "8": {
+      "$type": "dimension",
+      "$value": "2rem"
+    },
+    "10": {
+      "$type": "dimension",
+      "$value": "2.5rem"
+    },
+    "12": {
+      "$type": "dimension",
+      "$value": "3rem"
+    },
+    "16": {
+      "$type": "dimension",
+      "$value": "4rem"
+    },
+    "20": {
+      "$type": "dimension",
+      "$value": "5rem"
+    },
+    "24": {
+      "$type": "dimension",
+      "$value": "6rem"
+    },
+    "touch-target": {
+      "$type": "dimension",
+      "$value": "44px"
+    }
+  },
+  "radius": {
+    "xs": {
+      "$type": "dimension",
+      "$value": "4px"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "8px"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "16px"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "24px"
+    },
+    "2xl": {
+      "$type": "dimension",
+      "$value": "32px"
+    },
+    "pill": {
+      "$type": "dimension",
+      "$value": "999px"
+    }
+  },
+  "shadow": {
+    "xs": {
+      "$type": "shadow",
+      "$value": "0 1px 2px rgb(28 20 12 / 0.06)"
+    },
+    "sm": {
+      "$type": "shadow",
+      "$value": "0 1px 2px rgb(28 20 12 / 0.05),0 2px 6px rgb(28 20 12 / 0.06)"
+    },
+    "md": {
+      "$type": "shadow",
+      "$value": "0 2px 4px rgb(28 20 12 / 0.05),0 6px 16px rgb(28 20 12 / 0.08)"
+    },
+    "lg": {
+      "$type": "shadow",
+      "$value": "0 4px 8px rgb(28 20 12 / 0.06),0 12px 32px rgb(28 20 12 / 0.10)"
+    },
+    "xl": {
+      "$type": "shadow",
+      "$value": "0 8px 16px rgb(28 20 12 / 0.08),0 24px 56px rgb(28 20 12 / 0.14)"
+    }
+  },
+  "font": {
+    "sans": {
+      "$type": "fontFamily",
+      "$value": [
+        "Hanken Grotesk",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": [
+        "Geist Mono",
+        "ui-monospace",
+        "monospace"
+      ]
+    }
+  },
+  "weight": {
+    "regular": {
+      "$type": "fontWeight",
+      "$value": 400
+    },
+    "medium": {
+      "$type": "fontWeight",
+      "$value": 500
+    },
+    "semibold": {
+      "$type": "fontWeight",
+      "$value": 600
+    },
+    "bold": {
+      "$type": "fontWeight",
+      "$value": 700
+    },
+    "black": {
+      "$type": "fontWeight",
+      "$value": 800
+    }
+  },
+  "fontSize": {
+    "xs": {
+      "$type": "dimension",
+      "$value": "0.75rem"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "0.875rem"
+    },
+    "base": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "1.125rem"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "1.375rem"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "1.75rem"
+    }
+  },
+  "lineHeight": {
+    "tight": {
+      "$type": "number",
+      "$value": 1.1
+    },
+    "snug": {
+      "$type": "number",
+      "$value": 1.25
+    },
+    "normal": {
+      "$type": "number",
+      "$value": 1.5
+    },
+    "relaxed": {
+      "$type": "number",
+      "$value": 1.65
+    }
+  },
+  "duration": {
+    "instant": {
+      "$type": "duration",
+      "$value": "80ms"
+    },
+    "fast": {
+      "$type": "duration",
+      "$value": "140ms"
+    },
+    "base": {
+      "$type": "duration",
+      "$value": "220ms"
+    },
+    "slow": {
+      "$type": "duration",
+      "$value": "360ms"
+    },
+    "slower": {
+      "$type": "duration",
+      "$value": "560ms"
+    }
+  },
+  "easing": {
+    "standard": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.2,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "out": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.16,
+        1.0,
+        0.3,
+        1.0
+      ]
+    },
+    "in": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.4,
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    "soft-spring": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.34,
+        1.32,
+        0.5,
+        1.0
+      ]
+    }
+  }
+}

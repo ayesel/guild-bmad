@@ -14,6 +14,7 @@
     "scripts/build-context.py",
     "scripts/guild-canvas.py",
     "scripts/guild-prototype-lane.py",
+    "scripts/cd-tokens-to-dtcg.py",
     "mcp/",
     "docs/",
     "guild.config.yaml",
@@ -33,7 +34,8 @@
     "mcp": "node mcp/guild-mcp.mjs",
     "canvas": "python3 scripts/guild-canvas.py --render",
     "canvas:watch": "python3 scripts/guild-canvas.py --watch",
-    "prototype": "python3 scripts/guild-prototype-lane.py"
+    "prototype": "python3 scripts/guild-prototype-lane.py",
+    "tokens-dtcg": "python3 scripts/cd-tokens-to-dtcg.py"
   },
   "keywords": [
     "design",
