@@ -12,6 +12,7 @@
     "scripts/sync-compiled.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/build-context.py",
+    "mcp/",
     "docs/",
     "guild.config.yaml",
     "_bmad/",
@@ -26,7 +27,8 @@
     "sync-compiled": "python3 scripts/sync-compiled.py",
     "postcompile": "python3 scripts/sync-compiled.py && bash scripts/validate.sh",
     "selftest": "bash scripts/selftest-roundtrip.sh",
-    "build-context": "python3 scripts/build-context.py"
+    "build-context": "python3 scripts/build-context.py",
+    "mcp": "node mcp/guild-mcp.mjs"
   },
   "keywords": [
     "design",
