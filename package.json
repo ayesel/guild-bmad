@@ -24,6 +24,7 @@
     "scripts/guild-prototype-lane.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
+    "scripts/pareto-select.py",
     "scripts/selftest-roundtrip.sh",
     "scripts/sync-compiled.py",
     "scripts/validate.sh",
@@ -44,7 +45,8 @@
     "interop:check": "python3 scripts/dtcg-export.py --check",
     "handoff-gate": "python3 scripts/cd-handoff-gate.py --selftest",
     "jury": "python3 scripts/bradley-terry.py --selftest",
-    "judge-cal": "python3 scripts/judge-calibration.py --selftest"
+    "judge-cal": "python3 scripts/judge-calibration.py --selftest",
+    "pareto": "python3 scripts/pareto-select.py --selftest"
   },
   "keywords": [
     "design",

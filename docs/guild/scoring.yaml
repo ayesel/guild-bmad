@@ -12,19 +12,20 @@ validity_floor:
   - responsive              # 375/768/1440
   - convention_fit          # honors locked fields (novelty-zones.yaml)
 
-# Stage 2 — Fresh+Valid rank (survivors only):
-weights: { novelty: 0.35, usefulness: 0.25, brand_fit: 0.20, feasibility: 0.20 }
+# Stage 2 — TWO INDEPENDENT AXES (GUILD-41). NEVER collapse to one scalar (Goodhart).
+# The old single-number blend (novelty .35/useful .25/brand .20/feasible .20) is
+# SUPERSEDED: it let the median-safe candidate win and averaged the bold one away.
+axes:
+  quality: "diverse-vendor jury Bradley-Terry strength (GUILD-40 / jury.yaml)"  # cross-vendor, generator-excluded
+  novelty: "distance from baseline-patterns.yaml + spread across the surviving pool"
+selection: >
+  Pareto front on quality × novelty (scripts/pareto-select.py): a balanced rec + the
+  bold high-novelty alternatives, distinctive weighted UP. Validity floor first; no
+  candidate selectable on novelty alone; nothing collapsed to one scalar.
 penalties:
-  too_generic: -0.25        # too close to a docs/guild/baseline-patterns.yaml baseline
+  too_generic: -0.25              # NOVELTY axis — too close to baseline-patterns.yaml
   novelty_in_locked_zone: -0.50   # from novelty-zones.yaml
 
-# Novelty signal = embedding/structural distance from the baseline library
-# + effective semantic diversity across the surviving candidate pool.
-novelty_signal: "distance from baseline-patterns.yaml + spread across the surviving pool"
-
-# Multi-judge Pareto — winner must be Pareto-good, not best-average:
-judges:
-  mage:   "distinctiveness / memorability"
-  sage:   "standards / usability risk"
-  tinker: "feasibility"
-selection: "Pareto-optimal across the three judges; no candidate selectable on novelty alone"
+# Personas are DIVERSITY/routing lenses, NOT the correctness judges (persona ≠
+# correctness). The cross-vendor jury (GUILD-40) is the actual quality scorer.
+personas_as_lenses: { mage: distinctiveness, sage: usability-risk, tinker: feasibility }
