@@ -65,15 +65,19 @@ def render(a, b, pair_id, target, prompt, mapping):
     print(f"blind pick note created for {pair_id} (target={target}); A↔arm map -> {mapping or '(not saved)'}")
 
 def selftest():
-    h = note_html("arm-merge screen", "arm-select screen", "P1", "ab-eval", "Nourish Today screen")
-    blind = ("Option A" in h and "Option B" in h
-             and "arm-merge" not in h.split('<script>')[0]  # arm identity NOT shown in the visible body
-             and h.count('class="pick"') == 2)
+    # caller passes NEUTRAL content; the script labels only A/B and never injects the
+    # source/arm. The A<->arm mapping lives in --map-out, never in the note.
+    h = note_html("screen-x.html", "screen-y.html", "P1", "ab-eval", "Nourish Today screen")
+    body = h.split('<script>')[0]
+    two_opts = body.count('class="opt"') == 2 and h.count('class="pick"') == 2
+    no_arm_words = not any(w in h.lower() for w in ("merge", "select", "arm-", "source:"))  # script adds none
+    posts = ('type:\'send\'' in h) and ('owner_pick' in h)
     print("GUILD-42/44 pairwise-capture — self-test")
-    print(f"   2 blind options + 2 pick buttons: {h.count(chr(34)+'opt'+chr(34))==2 and h.count('pick')>=2}")
-    print(f"   arm identity hidden from the visible note: {'arm-merge' not in h.split('<script>')[0]}")
-    ok = blind
-    print(f"\n{'✅ PASS' if ok else '❌ FAIL'} — renders a blind A/B pick; arm/source labels never shown; pick posts via send_to_agent.")
+    print(f"   2 options + 2 pick buttons: {two_opts}")
+    print(f"   script injects no arm/source label: {no_arm_words}")
+    print(f"   pick posts owner_pick via send_to_agent: {posts}")
+    ok = two_opts and no_arm_words and posts
+    print(f"\n{'✅ PASS' if ok else '❌ FAIL'} — blind A/B (A↔arm map kept in --map-out, not the note); pick posts via send_to_agent.")
     sys.exit(0 if ok else 1)
 
 def main():
