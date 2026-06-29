@@ -21,12 +21,14 @@
     "scripts/cd-handoff-gate.py",
     "scripts/cd-tokens-to-dtcg.py",
     "scripts/dtcg-export.py",
+    "scripts/fidelity-gate.py",
     "scripts/guild-canvas.py",
     "scripts/guild-prototype-lane.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
     "scripts/motion-grammar.py",
     "scripts/pareto-select.py",
+    "scripts/perceptual-diff.py",
     "scripts/perceptual-ramps.py",
     "scripts/reduced-motion-gate.py",
     "scripts/self-heal-guard.py",
@@ -35,6 +37,7 @@
     "scripts/state-motion-req.py",
     "scripts/subtraction-pass.py",
     "scripts/sync-compiled.py",
+    "scripts/token-lint.py",
     "scripts/type-conditional.py",
     "scripts/validate.sh",
     "src/"
@@ -64,7 +67,10 @@
     "subtract": "python3 scripts/subtraction-pass.py --selftest",
     "motion-grammar": "python3 scripts/motion-grammar.py --selftest",
     "reduced-motion": "python3 scripts/reduced-motion-gate.py --selftest",
-    "state-motion": "python3 scripts/state-motion-req.py --selftest"
+    "state-motion": "python3 scripts/state-motion-req.py --selftest",
+    "fidelity": "python3 scripts/fidelity-gate.py --selftest",
+    "perceptual-diff": "python3 scripts/perceptual-diff.py --selftest",
+    "token-lint": "python3 scripts/token-lint.py --selftest"
   },
   "keywords": [
     "design",
