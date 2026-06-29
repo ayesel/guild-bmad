@@ -1,0 +1,15 @@
+# Component Provenance Map (GUILD-5). Every generated screen lists, PER element,
+# the full design-to-dev contract — stronger than generic prompt output, and it
+# catches drift before engineering. Embedded in /guild-handoff-spec output AND in
+# BMAD stories (the guild: frontmatter links the screen's provenance).
+row_schema:
+  element: ""             # what it is on the screen
+  ds_component: ""        # design-system component used
+  prop: ""                # the prop(s) set
+  variant: ""             # the variant chosen
+  token: ""               # design token(s) applied, by NAME (no raw values)
+  source: ""              # origin: artifact_id / DS / decomposed reference
+  override: null          # deviation from the DS, if any
+  override_reason: null   # WHY — REQUIRED whenever override is set
+  unresolved_gap: null    # anything not yet resolved — flagged explicitly
+rows: []
