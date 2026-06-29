@@ -9,7 +9,17 @@ meta:
 # GUILD-79: the prior CAL-1/CAL-2 picks were made on FILENAMES (the owner could not see
 # the actual designs) -> INVALIDATED. Re-collecting from RENDERED pick notes (each design
 # embedded as a live iframe) so labels reflect real VISUAL taste, not filename guesses.
-labels: []
+labels:
+  # First REAL VISUAL pick (rendered notes — GUILD-79 fix). Mapped from the owner's own
+  # design description: A = "cleaner but basic, the checkbox one" = Faceted (proto-2 is the
+  # ONLY prototype with a checkbox); B = "richer / more potential to be user-friendly" =
+  # Token Builder (proto-3). That pairing = CAL-3. ONE label (deduped).
+  - id: CAL-3
+    pair: [faceted-toolbar, token-builder-toolbar]
+    owner_pick: token-builder-toolbar   # blind option B
+    blind_pick: B
+    why: "richer, more potential to be user-friendly; A cleaner but more basic (the checkbox one)"
+    source: rendered-visual
 
 # Real-signal winners (A/B test / HEART proxy) for the offline-online gap meta-metric.
 online_winners: []
