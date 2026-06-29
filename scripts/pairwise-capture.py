@@ -24,12 +24,17 @@ TARGETS = {
     "ab-eval": "an ab-eval verdicts file [{pair,owner_pick}]",
 }
 
-def note_html(a, b, pair_id, target, prompt, target_pane=None):
+def note_html(a, b, pair_id, target, prompt, target_pane=None, a_html=None, b_html=None):
     framing = (f"Owner blind pick for pair {pair_id} (target={target}). Append to "
                f"{TARGETS.get(target, target)} — record the OWNER_PICK letter. {{payload}}")
     def pick_btn(letter):
         payload = json.dumps({"pair": pair_id, "owner_pick": letter, "target": target})
         return (f'<button class="pick" data-send=\'{E(payload)}\'>Pick {letter}</button>')
+    def opt(label, ref, html):  # GUILD-79: RENDER the design (live iframe), not just a filename
+        inner = (f'<iframe sandbox="allow-scripts" srcdoc="{E(html)}" '
+                 f'style="width:100%;height:62vh;border:0;border-radius:8px;background:#fff"></iframe>'
+                 ) if html else f'<p>{E(ref)}</p>'
+        return f'<div class="opt"><h3>{label}</h3>{inner}</div>'
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 :root{{--bg:#1A1611;--surface:#221D17;--border:#3A332A;--text:#F4ECE1;--muted:#B8A88F;--ember:#E06E45}}
 body{{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 ui-sans-serif,system-ui;padding:16px}}
@@ -41,10 +46,7 @@ button.pick{{flex:1;background:var(--ember);border:0;color:#1A1611;font-weight:6
 button.pick:hover{{filter:brightness(1.08)}}
 </style></head><body>
 <h2>Which is better?</h2><div class="q">{E(prompt)} — blind (you don't see which is which).</div>
-<div class="row">
-  <div class="opt"><h3>Option A</h3><p>{E(a)}</p></div>
-  <div class="opt"><h3>Option B</h3><p>{E(b)}</p></div>
-</div>
+<div class="row">{opt("Option A", a, a_html)}{opt("Option B", b, b_html)}</div>
 <div class="picks">{pick_btn('A')}{pick_btn('B')}</div>
 <script>
 document.addEventListener('click',function(e){{var b=e.target.closest('[data-send]');if(!b)return;
@@ -53,8 +55,10 @@ document.addEventListener('click',function(e){{var b=e.target.closest('[data-sen
  parent.postMessage(msg,'*');}});
 </script></body></html>"""
 
-def render(a, b, pair_id, target, prompt, mapping, target_pane=None):
-    body = note_html(a, b, pair_id, target, prompt, target_pane)
+def render(a, b, pair_id, target, prompt, mapping, target_pane=None, a_file=None, b_file=None):
+    a_html = open(a_file).read() if a_file and os.path.exists(a_file) else None
+    b_html = open(b_file).read() if b_file and os.path.exists(b_file) else None
+    body = note_html(a, b, pair_id, target, prompt, target_pane, a_html, b_html)
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
         f.write(body); tmp = f.name
     r = subprocess.run([CLI, "note", "new", "--type", "html", "--title", f"Pick · {pair_id}",
@@ -88,11 +92,13 @@ def main():
     ap.add_argument("--prompt", default="Which design is better?")
     ap.add_argument("--map-out", default=None, help="append the A/B↔arm mapping here (for de-blinding at scoring)")
     ap.add_argument("--target-pane", default=None, help="GUILD-79: explicit LIVE pane id to route the pick to (avoids stale-pane drop)")
+    ap.add_argument("--a-file", default=None, help="GUILD-79: HTML design to RENDER as Option A (live iframe, not a filename)")
+    ap.add_argument("--b-file", default=None, help="HTML design to RENDER as Option B")
     ap.add_argument("--render", action="store_true"); ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
     if a.selftest: selftest()
     if a.render and a.a and a.b:
-        render(a.a, a.b, a.pair_id, a.target, a.prompt, a.map_out, a.target_pane); return
+        render(a.a, a.b, a.pair_id, a.target, a.prompt, a.map_out, a.target_pane, a.a_file, a.b_file); return
     sys.exit("pass --a --b --render [--target ...] or --selftest")
 
 if __name__ == "__main__":
