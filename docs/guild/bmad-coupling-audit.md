@@ -42,3 +42,21 @@ coupling into ONE optional handoff adapter — not a rewrite.
 
 Effort: MEDIUM. The hard part (a working standalone pipeline) already exists; this is
 promotion + extraction, not new architecture.
+
+## GUILD-62 resolution (2026-06-29)
+Post-GUILD-61 reality: most "coupling" is already gone.
+- **Output paths:** 185 `{output_root}` refs across tasks already resolve via
+  `scripts/handoff-adapter.py` (standalone→guild-output, bmad→_bmad-output). No churn.
+- **Handoff:** adapter-ized in GUILD-61 (standalone-handoff default + bmad adapter).
+- **Genuine remainder (the sweep):** a DUPLICATED brownfield/greenfield block in ~18 task
+  files that says "use BMAD-compatible formats" even in GREENFIELD — contradicts the
+  standalone default. Fix = route through the resolved handoff adapter (standalone uses
+  STANDARD formats; bmad uses BMAD). Mechanical + uniform → offloaded to Codex (GF specs,
+  reconciles, validates). 8 inline `bmad_mode` conditionals + `guild-master.agent.yaml`
+  (compiler-coupled) stay GF.
+- **Toolchain decouple = IRREDUCIBLE at build time, not needed at runtime:** the compiled
+  `_bmad/guild/agents/` path is produced by the EXTERNAL BMAD compiler (not vendorable).
+  But standalone **runtime** does NOT need it — agents run from the compiled `.md` already
+  in-repo/global; you only need the BMAD compiler to *rebuild* agents from source. So
+  standalone users ship + run with zero BMAD; only contributors regenerating agents touch
+  the BMAD compiler. Documented as a known, bounded build-time dependency.
