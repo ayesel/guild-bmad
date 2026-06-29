@@ -84,7 +84,7 @@ def uri(verb, **params):
 
 CSS = """
 :root{--bg:#1A1611;--surface:#221D17;--raised:#2B251E;--border:#3A332A;--text:#F4ECE1;
---muted:#B8A88F;--subtle:#8E7E69;--ember:#E06E45;--sage:#97AD80;--r:9px}
+--muted:#B8A88F;--subtle:#9C8B73;--ember:#E06E45;--sage:#97AD80;--r:9px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);
 font:13px/1.5 ui-sans-serif,Inter,system-ui;padding:14px}
 h1{font:600 17px/1.2 ui-serif,Georgia;margin:0;display:flex;gap:8px;align-items:center}
@@ -105,7 +105,11 @@ border-left:3px solid var(--ember);border-radius:var(--r);padding:8px 11px;margi
 .search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
 color:var(--text);padding:9px 12px;font-size:13px;margin:10px 0 4px}
 .search:focus{outline:none;border-color:var(--ember)}
-.cnt{color:var(--subtle);font-size:11px;margin-bottom:8px}
+.cnt{color:var(--subtle);font-size:11px;margin:0 0 8px}
+.sortbtn{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--muted);cursor:pointer;margin-bottom:8px}
+.sortbtn:hover,.sortbtn.on{border-color:var(--ember);color:var(--text)}
+.hint{color:var(--subtle);font-size:10px;margin-left:8px}
+[tabindex]:focus-visible,.tab:focus-visible{outline:2px solid var(--ember);outline-offset:2px;border-radius:4px}
 details.ag{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px}
 details.ag>summary{cursor:pointer;padding:8px 11px;font-weight:600;list-style:none;display:flex;gap:8px;align-items:center}
 details.ag>summary::-webkit-details-marker{display:none}
@@ -151,7 +155,9 @@ def build_html():
                  f'<button data-i="Guild Master: pause RUN {E(rid)}.">Pause</button></div>')
 
     # ---- tabs ----
-    P.append('<div class="tabs"><div class="tab on" data-tab="do">Do</div><div class="tab" data-tab="see">See</div></div>')
+    P.append('<div class="tabs" role="tablist">'
+             '<div class="tab on" role="tab" tabindex="0" aria-selected="true" data-tab="do">Do</div>'
+             '<div class="tab" role="tab" tabindex="0" aria-selected="false" data-tab="see">See</div></div>')
 
     # ===== DO panel (command cockpit) =====
     do = ['<div class="panel on" id="do">']
@@ -161,8 +167,12 @@ def build_html():
             ("Self-heal","","run the self-healing loop (self-healing-loop.md).")]
     do.append('<div class="acts">' + "".join(
         f'<button class="act {c}" data-i="Guild dashboard action: {E(i)}">{E(l)}</button>' for l,c,i in acts) + '</div>')
-    do.append('<input class="search" id="q" placeholder="Search 118 commands…" autocomplete="off">')
-    do.append(f'<div class="cnt" id="cnt">{sum(len(c) for _,_,c in ags)} commands · {len(ags)} agents</div>')
+    ncmd = sum(len(c) for _, _, c in ags)
+    do.append(f'<input class="search" id="q" placeholder="Search {ncmd} commands…" autocomplete="off" aria-label="Search commands">')
+    do.append(f'<div class="cnt" id="cnt">{ncmd} commands · {len(ags)} agents</div>')
+    do.append('<span class="sortbtn" id="sortz" role="button" tabindex="0" aria-pressed="false">⇅ A–Z</span>'
+              '<span class="hint">↳ actions run in your active Guild agent pane</span>')
+    oi = 0
     for icon, name, caps in ags:
         chips = []
         for label, taskfile in caps:
@@ -170,9 +180,11 @@ def build_html():
             open_btn = ""
             if taskfile:
                 u = E(uri("file.open", path=os.path.join(TASKS, taskfile)))
-                open_btn = f'<span class="open" data-uri="{u}" title="Open task definition">↗</span>'
-            chips.append(f'<span class="cap" data-cap="{E((name+" "+label).lower())}">'
-                         f'<span class="go" data-i="{launch}">{E(label)}</span>{open_btn}</span>')
+                open_btn = (f'<span class="open" role="button" tabindex="0" data-uri="{u}" '
+                            f'aria-label="Open task definition for {E(label)}">↗</span>')
+            chips.append(f'<span class="cap" data-cap="{E((name+" "+label).lower())}" data-o="{oi}">'
+                         f'<span class="go" role="button" tabindex="0" data-i="{launch}">{E(label)}</span>{open_btn}</span>')
+            oi += 1
         do.append(f'<details class="ag"><summary>{E(icon)} {E(name)}<span class="c">{len(caps)}</span></summary>'
                   f'<div class="caps">{"".join(chips)}</div></details>')
     do.append('</div>')
@@ -219,12 +231,25 @@ def build_html():
     script = """<script>
 function g(t){parent.postMessage({type:'send',payload:{instruction:t},framing:t},'*')}
 function a(u){parent.postMessage({type:'atrium',uri:u},'*')}
-document.addEventListener('click',function(e){
- var t=e.target.closest('.tab'); if(t){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===t.dataset.tab));return;}
+function act(e){
+ var s=e.target.closest('#sortz'); if(s){toggleSort(s);return;}
+ var t=e.target.closest('.tab'); if(t){document.querySelectorAll('.tab').forEach(function(x){var on=x===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id===t.dataset.tab);});return;}
  var o=e.target.closest('[data-uri]'); if(o){a(o.getAttribute('data-uri'));return;}
  var b=e.target.closest('[data-i]'); if(b){g(b.getAttribute('data-i'));}
+}
+document.addEventListener('click',act);
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Enter'&&e.key!==' ')return;
+ if(e.target.closest('.tab,#sortz,[data-i],[data-uri]')){e.preventDefault();act(e);}
 });
+function toggleSort(btn){var az=btn.classList.toggle('on');btn.setAttribute('aria-pressed',az);
+ document.querySelectorAll('.caps').forEach(function(box){
+  var caps=[].slice.call(box.querySelectorAll('.cap'));
+  caps.sort(function(x,y){return az
+    ? x.dataset.cap.localeCompare(y.dataset.cap)
+    : (+x.dataset.o)-(+y.dataset.o);});
+  caps.forEach(function(c){box.appendChild(c);});});}
 var q=document.getElementById('q');
 if(q)q.addEventListener('input',function(){var v=this.value.toLowerCase().trim();var n=0;
  document.querySelectorAll('.cap').forEach(function(c){var m=!v||c.dataset.cap.indexOf(v)>=0;c.style.display=m?'':'none';if(m)n++;});
