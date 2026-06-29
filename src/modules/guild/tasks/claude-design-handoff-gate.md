@@ -22,10 +22,31 @@ A handoff bundle. Per public docs it arrives as a **tar archive** containing a R
 component spec, the design tokens used on the canvas, the layout hierarchy, and referenced assets. The user
 provides the path (or it is dropped in a known location).
 
-> ⚠️ **Format not yet verified against a real bundle.** The locators in Step 2 are best-effort against the
-> documented shape. The FIRST time a real bundle is gated, confirm the actual file layout and token
-> serialization and correct the locators below — everything downstream (resolver, contrast, coherence) is
-> format-independent and will not need to change.
+> ✅ **Verified against a REAL bundle (GUILD-28).** A real Hearth Works DS bundle was pulled programmatically
+> via **DesignSync** (no tar export, no manual claude.ai login) and lives in-repo:
+> `docs/guild/claude-design-bundle/tokens.bundle.css` (raw capture) + the canonical
+> `docs/guild/tokens.dtcg.json` (95 tokens / 10 groups). The gate runs against THAT. Re-pull with `/design-sync`.
+> The tar steps below remain valid for an externally-exported bundle, but the in-repo DesignSync pull is the
+> canonical input now.
+
+## Executable gate (GUILD-28)
+
+`scripts/cd-handoff-gate.py` makes the rubric runnable and deterministic — two HARD checks against the real
+bundle (`docs/guild/tokens.dtcg.json`):
+
+1. **0-drift token-trace** — every colour the screen/component uses must trace to a bundle primitive. An
+   untraceable colour = drift = **NO-GO** (pure white/black are the only allowed neutrals).
+2. **WCAG contrast (hard gate)** — every text/background pair must meet **AA ≥ 4.5:1**. A failing pair =
+   **NO-GO**. This is the *enforced* check Claude Design's opt-in "ask me to review" is not.
+
+```bash
+python3 scripts/cd-handoff-gate.py --screen path/to/screen.html   # GO / NO-GO (exit 0/1)
+python3 scripts/cd-handoff-gate.py --selftest                      # proves clean->GO, defect->NO-GO
+```
+
+Verified TEST: a clean screen (only bundle tokens, AA pairs) -> **GO**; seed an off-system colour or a
+sub-AA pair -> **NO-GO** with the exact offending colour/ratio. Wire `--screen` into the build acceptance
+step; NO-GO blocks the handoff. Read-only — the gate never writes to Claude Design.
 
 ## Process
 
