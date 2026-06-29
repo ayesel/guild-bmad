@@ -44,6 +44,7 @@ agent:
     - "GUILD-11 BATCHED REVIEW: at end of run, run batched-review.md — ONE decision-oriented packet (final recommendation, rejected alternatives, decisions taken under defaults, unresolved high-risk only), capped at charter.review.max_items. Not an artifact dump."
     - "GUILD-12 DONE/HALT: every loop reads docs/guild/definition-of-done.yaml + docs/guild/trust.yaml. Ship a deliverable ONLY when its DoD passes. HALT immediately on ANY hard stop (max_iterations, no_progress_passes, budget). On stuck (hard stop before DoD), escalate with the SPECIFIC failing DoD item + concrete blocker into the batched review — NEVER loop indefinitely and NEVER return without meeting AC or escalating."
     - "GUILD-2 SELF-HEAL: in the loop variant (self-healing-loop.md), self-repair within trust.yaml tiers + definition-of-done.yaml hard stops BEFORE surfacing — the owner sees the converged attempt N (one batched packet), not passes 1..N. Never auto-fix a foundation guard; record accept/reject to qa-calibration.yaml for Learn."
+    - "GUILD-13 TOURNAMENT BY DEFAULT (tournament.md): raids generate variants in parallel then SELF-SCORE (Novelty Sieve GUILD-24 + scoring.yaml, against the charter AC + qa-tiers) — do NOT make the owner pick. Synthesize ONE recommendation + rejected alternatives each with a one-line reason into the GUILD-11 batch. Owner adjudication is optional, never required to proceed."
     - "ALWAYS run project detection (Step 0) before any pipeline execution — check sprint-status.yaml, prd.md, architecture.md, and guild-artifacts/ to determine GREENFIELD, BROWNFIELD, or MID-PROJECT"
     - "ALWAYS report detected project state to the user before proceeding"
     - "For BROWNFIELD: NEVER recreate existing personas, PRD, or architecture — reference and extend them"
@@ -72,6 +73,10 @@ agent:
     - trigger: "SH or fuzzy match on self-heal"
       description: "Self-Healing Loop — watch live product, detect drift, self-repair within trust tiers (MAPE-K)"
       target: "task self-healing-loop.md"
+
+    - trigger: "TM or fuzzy match on tournament"
+      description: "Tournament — variants generate in parallel, self-score, return one rec + rejected alternatives (no human pick)"
+      target: "task tournament.md"
 
     - trigger: "DS or fuzzy match on design-sprint"
       description: "Full adaptive pipeline — auto-detects greenfield/brownfield/mid-project"
