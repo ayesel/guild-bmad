@@ -1,0 +1,6 @@
+persona: power-user
+vocabulary: mixed
+elicitation_depth: guided
+autonomy: medium
+review_style: batched-7
+choices: curated

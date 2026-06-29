@@ -1,0 +1,6 @@
+persona: regular
+vocabulary: plain
+elicitation_depth: intent-only
+autonomy: reversible-only
+review_style: batched-3
+choices: guided

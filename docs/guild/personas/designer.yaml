@@ -1,0 +1,6 @@
+persona: designer
+vocabulary: expert
+elicitation_depth: full_brief
+autonomy: reversible-only
+review_style: per-phase
+choices: raw
