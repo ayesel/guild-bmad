@@ -45,6 +45,13 @@
     "scripts/reduced-motion-gate.py",
     "scripts/reference-decompose-guard.py",
     "scripts/regression-firewall.py",
+    "scripts/render-d2.py",
+    "scripts/render-excalidraw.py",
+    "scripts/render-mermaid.py",
+    "scripts/render-miro.py",
+    "scripts/render-notion.py",
+    "scripts/render-svg.py",
+    "scripts/render_artifact_common.py",
     "scripts/responsive-gate.py",
     "scripts/runtime-footprint.py",
     "scripts/self-heal-guard.py",
@@ -112,7 +119,13 @@
     "perf-budget-gate": "python3 scripts/perf-budget-gate.py --selftest",
     "runtime-footprint": "python3 scripts/runtime-footprint.py --selftest",
     "ia-style": "python3 scripts/ia-style.py --selftest",
-    "figjam-render": "python3 scripts/figjam-renderer.py --selftest"
+    "figjam-render": "python3 scripts/figjam-renderer.py --selftest",
+    "render-d2": "python3 scripts/render-d2.py --selftest",
+    "render-mermaid": "python3 scripts/render-mermaid.py --selftest",
+    "render-excalidraw": "python3 scripts/render-excalidraw.py --selftest",
+    "render-svg": "python3 scripts/render-svg.py --selftest",
+    "render-miro": "python3 scripts/render-miro.py --selftest",
+    "render-notion": "python3 scripts/render-notion.py --selftest"
   },
   "keywords": [
     "design",
