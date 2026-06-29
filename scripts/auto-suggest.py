@@ -47,10 +47,10 @@ def suggest(spine, artifacts=None):
 def selftest():
     spine = [
         {"id": "E1", "type": "experiment", "content": "interviews"},
-        {"id": "F1", "type": "fact", "content": "uncited claim"},                                   # -> verification high
+        {"id": "F1", "type": "fact", "content": "uncited claim", "derived_from": ["E1"]},            # -> verification high (uncited+unverified)
         {"id": "F2", "type": "fact", "content": "synthetic persona says tabs", "citation": "ai-persona", "verified": True},  # -> ia high
-        {"id": "I1", "type": "insight", "content": "thin", "derived_from": ["F2"]},                  # -> synthesis (1 source)
-        {"id": "C1", "type": "conclusion", "content": "ship tabs", "derived_from": ["I1"]},          # -> confidence ASSUMPTION
+        {"id": "I1", "type": "insight", "content": "thin", "derived_from": ["F1"]},                  # -> synthesis (1 fact/1 source)
+        {"id": "C1", "type": "conclusion", "content": "ship it", "derived_from": ["I1"]},            # -> confidence ASSUMPTION (lineage = uncited F1)
     ]
     sg = suggest(spine)
     print("GUILD-59 auto-suggest — self-test")
