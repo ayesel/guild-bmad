@@ -44,6 +44,7 @@
     "scripts/perceptual-diff.py",
     "scripts/perceptual-ramps.py",
     "scripts/perf-budget-gate.py",
+    "scripts/profile-export.py",
     "scripts/reduced-motion-gate.py",
     "scripts/reference-decompose-guard.py",
     "scripts/regression-firewall.py",
@@ -129,7 +130,8 @@
     "render-miro": "python3 scripts/render-miro.py --selftest",
     "render-notion": "python3 scripts/render-notion.py --selftest",
     "operator-profile": "python3 scripts/operator-profile.py --selftest",
-    "feedback-capture": "python3 scripts/feedback-capture.py --selftest"
+    "feedback-capture": "python3 scripts/feedback-capture.py --selftest",
+    "profile-export": "python3 scripts/profile-export.py --selftest"
   },
   "keywords": [
     "design",
