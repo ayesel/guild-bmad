@@ -1,0 +1,23 @@
+# Owner Taste Model (GUILD-14). Capture accepted/rejected decisions so the owner
+# stops re-teaching taste. Retrieved as context at raid start (referenced by
+# docs/guild/context.yaml taste_anchors -> GUILD-1). Owner may view/edit/purge
+# this file directly.
+#
+# DRIFT GUARD: any newly INFERRED preference must appear in the GUILD-11 batch
+# review and be confirmed BEFORE it moves from `pending_inferred` into
+# `preferences` (durable). No silent taste drift.
+
+preferences:                # durable, confirmed
+  visual_density: ""        # e.g. "operational, not glance"
+  tone_of_voice: ""
+  motion_tolerance: ""      # e.g. "slow/warm only; no bounce"
+  brand_vocabulary: []
+  layout_dislikes: []       # e.g. ["icon-only nav", "heavy colored shadows"]
+  reference_anchors: []     # north-star refs (abstracted per GUILD-25, not copied)
+  a11y_priorities: []
+
+decisions:                  # accept/reject history that shaped the prefs above
+  accepted: []
+  rejected: []
+
+pending_inferred: []        # NEW inferred prefs awaiting GUILD-11 batch confirmation (NOT yet durable)

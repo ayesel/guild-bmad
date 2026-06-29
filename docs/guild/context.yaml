@@ -95,8 +95,10 @@ baseline:
   - Outreach / contact capture
 taste_anchors:
   design_direction: docs/design-direction.md
+  taste_model: docs/guild/taste-model.yaml
   references: []
-  note: 'per-project: the owner''s design-direction + north-star refs so runs do not re-ask taste'
+  note: 'per-project: the owner''s design-direction + taste model + north-star refs so runs do not re-ask
+    taste'
 tokens:
   format: DTCG
   source: null

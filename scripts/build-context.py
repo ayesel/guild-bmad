@@ -65,8 +65,9 @@ def build():
         # /guild-design-direction (taste) and the token surface (DTCG pointer).
         "taste_anchors": {
             "design_direction": "docs/design-direction.md",
+            "taste_model": "docs/guild/taste-model.yaml",   # GUILD-14 owner taste model (retrieved at raid start)
             "references": [],
-            "note": "per-project: the owner's design-direction + north-star refs so runs do not re-ask taste",
+            "note": "per-project: the owner's design-direction + taste model + north-star refs so runs do not re-ask taste",
         },
         "tokens": {
             "format": "DTCG",

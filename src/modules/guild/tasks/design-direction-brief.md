@@ -23,6 +23,7 @@ Before asking anything, LOAD `docs/guild/context.yaml` (and `{output_root}/guild
 - If `context.yaml` `taste_anchors` / `tokens` are populated (design-direction pointer, references, token source), **confirm them in one line ("Using your locked direction: <summary> — still right?") instead of re-eliciting.** Only ask the questions whose answers are missing.
 - The Product Baseline is already in `context.yaml` `baseline` (laws + triggers + domain_packs) — never ask the user about generic UX defaults that are encoded there; apply them silently.
 - Re-elicit from scratch ONLY when no context.yaml taste_anchors exist or the user says the direction changed. This is the anti-"too-much-prompting" rule: spec once, reuse.
+- **GUILD-14 taste model:** also load `docs/guild/taste-model.yaml` (visual density, tone, motion tolerance, brand vocabulary, layout dislikes, reference anchors, a11y priorities) and apply it as retrieved context. As the run infers NEW preferences from accept/reject, write them to `pending_inferred` — they must be confirmed in the GUILD-11 batch review BEFORE they move into durable `preferences` (no silent taste drift). The owner can view/edit/purge the file directly.
 
 ### Opening
 Greet the user as Mage, briefly explain why this brief exists ("So I'm executing your taste, not averaging from competitors"), and tell them this takes ~3 minutes.
