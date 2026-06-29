@@ -30,6 +30,7 @@
     "scripts/guild-prototype-lane.py",
     "scripts/handoff-adapter.py",
     "scripts/ia-evidence-guard.py",
+    "scripts/ia-style.py",
     "scripts/install.sh",
     "scripts/judge-calibration.py",
     "scripts/layout-engine.py",
@@ -108,7 +109,8 @@
     "fluid-tokens": "python3 scripts/fluid-tokens.py --selftest",
     "size-class": "python3 scripts/size-class-templates.py --selftest",
     "perf-budget-gate": "python3 scripts/perf-budget-gate.py --selftest",
-    "runtime-footprint": "python3 scripts/runtime-footprint.py --selftest"
+    "runtime-footprint": "python3 scripts/runtime-footprint.py --selftest",
+    "ia-style": "python3 scripts/ia-style.py --selftest"
   },
   "keywords": [
     "design",
