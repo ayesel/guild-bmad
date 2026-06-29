@@ -25,6 +25,7 @@
     "scripts/confidence-gate.py",
     "scripts/dtcg-export.py",
     "scripts/fidelity-gate.py",
+    "scripts/figjam-renderer.py",
     "scripts/fluid-tokens.py",
     "scripts/guild-canvas.py",
     "scripts/guild-prototype-lane.py",
@@ -110,7 +111,8 @@
     "size-class": "python3 scripts/size-class-templates.py --selftest",
     "perf-budget-gate": "python3 scripts/perf-budget-gate.py --selftest",
     "runtime-footprint": "python3 scripts/runtime-footprint.py --selftest",
-    "ia-style": "python3 scripts/ia-style.py --selftest"
+    "ia-style": "python3 scripts/ia-style.py --selftest",
+    "figjam-render": "python3 scripts/figjam-renderer.py --selftest"
   },
   "keywords": [
     "design",
