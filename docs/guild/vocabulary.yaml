@@ -1,0 +1,23 @@
+plain:
+  rules:
+    - "Use GOV.UK reading-age 9 standard."
+    - "No jargon unless glossed on first use."
+    - "Short sentences, active voice."
+  jargon_gloss:
+    "Information Architecture": "How information is organized and structured."
+    "Visual Hierarchy": "Making important things stand out."
+    "Tokens": "Design variables like colors and spacing."
+
+mixed:
+  rules:
+    - "Mix of professional terminology and clear explanations."
+    - "Gloss complex or domain-specific jargon."
+  jargon_gloss:
+    "DTCG": "Design Token Community Group standard for design tokens."
+
+expert:
+  rules:
+    - "Full jargon."
+    - "Assume deep domain knowledge."
+    - "Be concise and technical."
+  jargon_gloss: {}
