@@ -34,6 +34,38 @@ def load(path):
     except FileNotFoundError:
         return {}
 
+ICONS = {"ranger": "🔍", "rogue": "🔀", "mage": "🎨", "warlock": "✍️", "sage": "🛡️",
+         "healer": "📦", "tinker": "🔧", "cartographer": "🗺️", "guild-master": "🎯"}
+
+def agent_dirs():
+    return [os.path.join(ROOT, "_bmad/guild/agents"),
+            os.path.expanduser("~/.claude/guild/_bmad/guild/agents")]
+
+def parse_agents():
+    """Live capability catalog: each agent + its menu items, from the compiled .md."""
+    import re
+    base = next((d for d in agent_dirs() if os.path.isdir(d)), None)
+    if not base:
+        return []
+    out = []
+    for p in sorted(glob.glob(os.path.join(base, "*.md"))):
+        stem = os.path.basename(p)[:-3]
+        try:
+            t = open(p).read()
+        except OSError:
+            continue
+        m = re.search(r'<agent\b[^>]*\bname="([^"]+)"', t)
+        name = m.group(1) if m else stem.replace("-", " ").title()
+        caps = []
+        for it in re.finditer(r'<item\s+cmd="([^"]+)"[^>]*>(.*?)</item>', t, re.S):
+            label = re.sub(r'^\[[^\]]*\]\s*', '', it.group(2)).strip()
+            label = re.split(r'\s+—\s+', label)[0]  # short label, drop the description
+            if label.lower().startswith("help"):
+                continue
+            caps.append(label)
+        out.append((ICONS.get(stem, "•"), name, stem, caps))
+    return out
+
 def runs():
     out = []
     for rp in sorted(glob.glob(os.path.join(GUILD, "runs", "RUN-*.yaml"))):
@@ -72,6 +104,13 @@ button.act{border-radius:8px;border:1px solid var(--border);background:var(--rai
 color:var(--text);padding:8px 14px;font-size:12px;cursor:pointer}
 button.act.pri{background:var(--ember);border-color:var(--ember);color:#1A1611;font-weight:600}
 button.act:hover{border-color:var(--ember)}
+details.ag{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+details.ag>summary{cursor:pointer;padding:9px 12px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details.ag>summary::-webkit-details-marker{display:none}
+details.ag .cnt{color:var(--subtle);font-weight:400;font-size:11px;margin-left:auto}
+.caps{display:flex;gap:5px;flex-wrap:wrap;padding:0 12px 12px}
+.cap{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer}
+.cap:hover{border-color:var(--ember);color:var(--text)}
 """
 
 def section(lbl, inner):
@@ -106,6 +145,20 @@ def build_html():
                  f'<div style="margin-top:10px;color:var(--muted);font-size:11px">{ncomp} components · '
                  f'{len(ds.get("guidelines") or [])} guidelines · kits: {E(", ".join(kits))}</div></div>')
         P.append(section(f'Design System — {E(ds.get("source",{}).get("name","") )}', inner))
+
+    # ---- Agents & Capabilities (what Guild can DO) ----
+    ags = parse_agents()
+    if ags:
+        blocks = []
+        for icon, name, stem, caps in ags:
+            cbtns = "".join(
+                '<span class="cap" data-i="%s">%s</span>'
+                % (E("Activate Guild's %s agent and run: %s" % (name, c)), E(c))
+                for c in caps)
+            blocks.append('<details class="ag"><summary>%s %s<span class="cnt">%d</span></summary>'
+                          '<div class="caps">%s</div></details>' % (E(icon), E(name), len(caps), cbtns))
+        total = sum(len(c) for _, _, _, c in ags)
+        P.append(section("Agents & Capabilities — %d agents · %d commands" % (len(ags), total), "".join(blocks)))
 
     # ---- Product Baseline (browsable triggers) ----
     trg = base.get("triggers") or []
@@ -147,10 +200,11 @@ def build_html():
             ("Run QA", "", "run Sage calibrated QA on this project."),
             ("Self-heal", "", "run the self-healing loop (self-healing-loop.md)."),
             ("Seed Claude Design", "", "run the Claude Design seed (claude-design-seed.md).")]
-    btns = "".join(f'<button class="act {c}" onclick="g({json.dumps("Guild dashboard action: "+i)})">{E(l)}</button>' for l, c, i in acts)
+    btns = "".join(f'<button class="act {c}" data-i="{E("Guild dashboard action: "+i)}">{E(l)}</button>' for l, c, i in acts)
     P.append(section("Do", f'<div class="acts">{btns}</div>'))
 
-    script = "<script>function g(t){parent.postMessage({type:'send',payload:{instruction:t},framing:t},'*')}</script>"
+    script = ("<script>function g(t){parent.postMessage({type:'send',payload:{instruction:t},framing:t},'*')}"
+              "document.addEventListener('click',function(e){var b=e.target.closest('[data-i]');if(b)g(b.getAttribute('data-i'))});</script>")
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{"".join(P)}{script}</body></html>'
 
 def render(body):
