@@ -1,0 +1,30 @@
+# Design-System Grammar (GUILD-22) — Tinker-owned, machine-readable.
+# Standards encoded as a GENERATIVE GRAMMAR (vary allowed axes) rather than prose
+# applied after generation. Mage generates ONLY from legal values here; Sage +
+# Tinker check every candidate against this grammar. Tokens live in
+# design/tokens/ (DTCG) + docs/guild/context.yaml; novelty budget in
+# docs/guild/novelty-zones.yaml; axes in docs/guild/morphology-matrix.yaml.
+# Per-project: populate the empty maps below.
+
+allowed_components: []            # e.g. [Button, Input, Card, Table, Modal, Tabs, Drawer]
+component_anatomy: {}             # component -> required parts (e.g. Card: [container, media?, title, body, actions?])
+required_roles_states:           # every interactive component must cover these
+  - default
+  - hover
+  - focus
+  - active
+  - disabled
+  - empty
+  - loading
+  - error
+variant_axes: {}                  # component -> the morphology axes legal for it (see morphology-matrix.yaml)
+token_constraints:
+  source: "docs/guild/context.yaml tokens + design/tokens/ (DTCG)"
+  rule: "design tokens only — no hardcoded hex / px (Sage gates per qa-tiers.yaml)"
+responsive_rules: [mobile_375, tablet_768, desktop_1440]
+motion_limits: "per context.yaml motion language; respect prefers-reduced-motion"
+a11y_invariants: "WCAG 2.2 AA; labels not placeholders; keyboard-operable; visible focus; no icon-only controls"
+novelty_zones: "docs/guild/novelty-zones.yaml"
+examples:
+  do: []
+  dont: []

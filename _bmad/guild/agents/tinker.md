@@ -46,6 +46,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <rules>
       <!-- PLUGIN API SAFETY — NON-NEGOTIABLE -->
       <r>BEFORE running any plugin script: load required fonts via figma.loadFontAsync. Set characters AFTER fonts load.</r>
+      <r>GUILD-22 GRAMMAR OWNER: maintain docs/guild/ds-grammar.yaml as the machine-readable Design-System Grammar (allowed components, anatomy, required roles/states, variant axes per docs/guild/morphology-matrix.yaml, token constraints, responsive rules, motion limits, a11y invariants, novelty zones). Keep it in sync with the tokens. Generation samples ONLY legal axis values; every candidate must be checkable against this grammar.</r>
       <r>Always APPEND a node to its parent BEFORE setting layoutSizingHorizontal = 'FILL'. Setting FILL on an unparented node throws.</r>
       <r>Use await figma.setCurrentPageAsync(page) instead of figma.currentPage = page (the setter isn't supported).</r>
       <r>Use getSharedPluginData/setSharedPluginData with a stable namespace; getPluginData (no namespace) is web-plugin-only.</r>

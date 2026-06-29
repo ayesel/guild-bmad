@@ -1,0 +1,24 @@
+# Component Morphology Matrix (GUILD-22). Enumerate a component's design space as
+# invariant function + variant axes, then SAMPLE FAR-APART cells (GUILD-21 lane 3)
+# instead of "be creative". Mage generates from LEGAL axis values only; every
+# candidate is checkable against the same axes. Invariant = the LOCKED contract
+# (novelty-zones.yaml); axes are the FLEXIBLE expression space.
+
+schema:
+  invariant: "the component's job — never varies (the locked interaction contract)"
+  axes:                # each axis = a dimension with discrete legal values
+    information_shape: [list, radial, timeline, map, stack, clusters]
+    interaction:       [scrub, filter, hover_reveal, drilldown, command_menu, split]
+    density:           [glance, operational, forensic]
+    feedback:          [motion, color, microcopy, icon, position]
+    metaphor:          [cockpit, trading_desk, mission_board, lab]
+    a11y_mode:         [text_first, reduced_motion, high_contrast, keyboard_first]
+
+sampling:
+  rule: "pick cells FAR APART across axes (maximize spread), not adjacent variants"
+
+example:               # a status-monitor widget — three far-apart cells
+  invariant: "show system health + let the operator act on anomalies"
+  candidate_a: { information_shape: radial,   interaction: drilldown,    density: glance,      metaphor: cockpit }
+  candidate_b: { information_shape: timeline, interaction: scrub,        density: forensic,    metaphor: lab }
+  candidate_c: { information_shape: clusters, interaction: command_menu, density: operational, metaphor: mission_board }
