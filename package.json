@@ -22,6 +22,7 @@
     "scripts/build-context.py",
     "scripts/cd-handoff-gate.py",
     "scripts/cd-onboarding-gate.py",
+    "scripts/cd-quest-seed.py",
     "scripts/cd-tokens-to-dtcg.py",
     "scripts/composers.py",
     "scripts/confidence-gate.py",
@@ -48,6 +49,7 @@
     "scripts/perf-budget-gate.py",
     "scripts/persona-elicit.py",
     "scripts/plain-language.py",
+    "scripts/plan-gate.py",
     "scripts/profile-export.py",
     "scripts/reduced-motion-gate.py",
     "scripts/reference-decompose-guard.py",
@@ -141,7 +143,9 @@
     "plain-language": "python3 scripts/plain-language.py --selftest",
     "reversibility-gate": "python3 scripts/reversibility-gate.py --action \"edit draft\"",
     "auto-suggest": "python3 scripts/auto-suggest.py --selftest",
-    "cd-onboarding-gate": "python3 scripts/cd-onboarding-gate.py --selftest"
+    "cd-onboarding-gate": "python3 scripts/cd-onboarding-gate.py --selftest",
+    "cd-quest-seed": "python3 scripts/cd-quest-seed.py --selftest",
+    "plan-gate": "python3 scripts/plan-gate.py --selftest"
   },
   "keywords": [
     "design",
