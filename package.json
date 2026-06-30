@@ -42,6 +42,7 @@
     "scripts/living-repo.py",
     "scripts/motion-grammar.py",
     "scripts/operator-profile.py",
+    "scripts/option-gallery.py",
     "scripts/pairwise-capture.py",
     "scripts/pareto-select.py",
     "scripts/perceptual-diff.py",
@@ -145,7 +146,8 @@
     "auto-suggest": "python3 scripts/auto-suggest.py --selftest",
     "cd-onboarding-gate": "python3 scripts/cd-onboarding-gate.py --selftest",
     "cd-quest-seed": "python3 scripts/cd-quest-seed.py --selftest",
-    "plan-gate": "python3 scripts/plan-gate.py --selftest"
+    "plan-gate": "python3 scripts/plan-gate.py --selftest",
+    "option-gallery": "python3 scripts/option-gallery.py --selftest"
   },
   "keywords": [
     "design",

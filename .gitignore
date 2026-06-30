@@ -18,3 +18,6 @@ docs/guild/evals/.blind-map.jsonl
 
 # GUILD-42 throwaway A/B arms (only the verdict is durable)
 guild-artifacts/ab-42/
+
+# GUILD-9 gallery replay trace (runtime)
+docs/guild/runs/gallery-trace.jsonl
