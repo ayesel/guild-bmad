@@ -21,3 +21,6 @@ guild-artifacts/ab-42/
 
 # GUILD-9 gallery replay trace (runtime)
 docs/guild/runs/gallery-trace.jsonl
+
+# GUILD-32 seed localDir (throwaway; canonical is docs/guild)
+guild-artifacts/cd-seed/
