@@ -30,6 +30,14 @@ baseline:
       a letter (Cormorant "1" → "I") are a defect for *data* — reserve display faces for headings, use
       a legible/tabular face for metrics. Likewise, controls and values inside table cells must be sized
       to their content, not truncated to fit.
+  - name: No clipped type
+    rule: 'large/display text must be given a line-height tall enough for its glyphs. NEVER combine `leading-none`
+      (line-height:1) with `truncate` / `overflow:hidden` on a display or serif face: line-height 1 makes
+      the line-box shorter than the font''s ascenders/descenders and the overflow clip then shaves the
+      top and bottom of the text. `truncate` is for *horizontal* overflow and only when the line-box already
+      fits the glyph height (use `leading-tight`+ or add vertical padding). (Learned 2026-06-30, wedding-hub:
+      the "Planning Hub" top-bar title was vertically smashed — `leading-none` + `truncate` on the display
+      serif clipped it.)'
   - name: Direct manipulation — obvious logic is the default
     rule: if a value is shown, the expectation is you can act on it where it sits (rename, edit, change
       status, reorder). Don't make users hunt a separate screen or delete-and-recreate to change something
@@ -41,8 +49,13 @@ baseline:
       download-backup) collapse into an overflow / ▾ menu — never bare in persistent chrome, and a destructive
       action (Reset / Delete-all) is never always-visible and unguarded. No two visible controls may share
       an ambiguous label — an "Export" (snapshot) next to "Export CSV" is a defect; name by outcome. Global/admin
-      tools don''t belong in per-screen page chrome. (Learned 2026-06-26, wedding-hub admin header: 6
-      equal outline buttons incl. duplicate Export + a bare Reset.)'
+      tools don''t belong in per-screen page chrome. **Controls in one group share ONE height and shape**
+      — express hierarchy through fill/variant (primary filled vs secondary ghost), NEVER by shrinking
+      a secondary (no `sm` button beside an `md` primary); a search field and the menu button next to
+      it in the same utility bar must also match height. (Learned 2026-06-26, wedding-hub admin header:
+      6 equal outline buttons incl. duplicate Export + a bare Reset. Learned 2026-06-30, wedding-hub:
+      Search 36px vs Data 44px in the top bar; Manage-categories `sm` vs Add-contact `md` in the page
+      header — different heights side-by-side read as broken.)'
   - name: Keep contextual action bars reachable
     rule: a selection / bulk-action bar (or any toolbar that appears in response to state) must stay in
       view (fixed/sticky, e.g. bottom-center), never anchored where it scrolls out of reach. If the user

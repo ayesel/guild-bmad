@@ -33,6 +33,7 @@ When BMAD documents (PRD, architecture, UX_Design.md) need design content:
 - The summary should be enough for a PM to understand; the full artifact is for designers and developers
 
 ### 1. Load Project Context
+- **Read the Product Baseline FIRST** — `docs/guild/context.yaml` (or the source `shared-sidecar/product-baseline.md`). It is the non-negotiable rulebook; Sage gates against it (see the mandatory sweep below). Every law and every fired trigger's defaults are pass/fail criteria, not suggestions.
 - Read `{output_root}/planning-artifacts/project-context.md` if it exists
 - Read `{output_root}/planning-artifacts/prd.md` if it exists
 - Read `{output_root}/guild-artifacts/design-tokens.json` if it exists
@@ -94,6 +95,16 @@ references:
 ---
 ```
 
+### Product Baseline Compliance (MANDATORY mechanical sweep)
+Run this list against every screen in scope. Each item maps to a Product Baseline law/trigger; a failure is a **blocker or major**, never a suggestion. Cite the law name in the finding.
+
+- [ ] **Consistent control height** — within any one toolbar / header / button group, every control shares ONE height and shape. No `sm` button beside an `md` primary; a search field and its neighbouring menu button must match. Hierarchy is expressed by fill/variant, not size. *(Law: Action hierarchy)*
+- [ ] **No clipped type** — no large/display/serif text combines `leading-none` with `truncate`/`overflow:hidden`; titles are not vertically shaved. Inspect headers, hero titles, and any truncated label at the tightest breakpoint. *(Law: No clipped type)*
+- [ ] **Bulk expand/collapse** — wherever ≥2 groups are collapsible, an Expand all / Collapse all control exists. *(Law: Every collection earns its management UI; T3)*
+- [ ] **Group-header indication** — grouped/categorized lists show count AND, when records carry a status, the actionable count (e.g. "3 to contact") in each group header — not a bare number. *(T3)*
+- [ ] **Action hierarchy** — ≤1 primary (filled) action per view; utilities/destructive actions collapse into an overflow ▾; no two visible controls share an ambiguous label. *(Law: Action hierarchy)*
+- [ ] **Every fired trigger's defaults present** — for each of T1–T8 that the data shape fires, confirm its mandatory defaults (search/filter/sort/count for T2, group+subtotal for T3, comparison view for T1, etc.) are designed in, or an explicit "Omitted T_x because…" line exists.
+
 ### Severity Definitions
 - **Blocker**: Prevents handoff — missing states, broken layout, accessibility violation
 - **Major**: Must fix before ship — visual inconsistency, token violation, poor responsive behavior
@@ -104,6 +115,7 @@ references:
 - [ ] All states tested (empty, loading, error, populated, disabled)
 - [ ] All specified breakpoints checked
 - [ ] Accessibility baseline verified (contrast, keyboard, labels)
+- [ ] **Product Baseline compliance sweep run** (control height, no clipped type, bulk expand/collapse, group-header indication, action hierarchy, fired-trigger defaults)
 - [ ] Design system compliance scored
 - [ ] Every finding has a recommended fix
 - [ ] Every finding has a severity rating
