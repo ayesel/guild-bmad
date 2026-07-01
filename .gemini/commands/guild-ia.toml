@@ -1,4 +1,29 @@
 description = "Build a full Information Architecture for a product area — organization system, labeling system, navigation model"
 prompt = """
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "IA" — Full Information Architecture for a product area
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN ORDER.
+
+## STEP 1 — EVIDENCE CHECK (before any structure)
+
+Look for the traceability spine at `{output_root}/guild-artifacts/spine.json` (schema: `docs/guild/spine-schema.yaml`).
+- **Spine exists:** the IA you build MUST trace to it — every IA conclusion lists the nugget IDs it `derived_from`.
+- **No spine:** say so LOUDLY before starting. The IA may proceed but is ASSUMPTION-DRIVEN: label it as such in the artifact header, and recommend the empirical loop (`/guild-card-sort`, `/guild-tree-test`) to validate it. NEVER present an unresearched IA as evidence-based.
+
+## STEP 2 — BUILD THE IA (Cartographer)
+
+LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "IA" — Full Information Architecture for a product area.
+
+## STEP 3 — IA EVIDENCE GATES (scripted, BLOCKING when a spine exists)
+
+Run both on the spine (use the global install path; fall back to `scripts/` if absent):
+
+```
+python3 ~/.claude/guild/scripts/ia-evidence-guard.py --spine {output_root}/guild-artifacts/spine.json
+python3 ~/.claude/guild/scripts/confidence-gate.py --spine {output_root}/guild-artifacts/spine.json
+```
+
+ENFORCE THE EXIT CODES — this is NOT a judgment call:
+- **ia-evidence-guard non-zero:** an IA conclusion traces to NO admissible empirical fact, or leans on a synthetic/AI-persona source (INADMISSIBLE as evidence). Re-ground the conclusion in an empirical fact, mark it ASSUMPTION, or cut it — then re-run until 0.
+- **confidence-gate non-zero:** low-confidence IA conclusions may NOT silently drive navigation or the build queue — mark them ASSUMPTION in the IA artifact.
+
+Report the gate results + the assumption list to the user with the IA.
 """
