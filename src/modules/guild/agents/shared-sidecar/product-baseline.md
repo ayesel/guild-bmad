@@ -88,6 +88,9 @@ Every container that renders data has all states: **initial/skeleton, populated,
 ### T8 — Forms & creation
 One column; group related fields; progressive disclosure; inline validation on blur; labels above inputs (never placeholder-as-label); disabled submit until valid; loading state on submit; explicit success/error. (Full spec: `ui-patterns-reference.md`.)
 
+### T9 — Installable app surface (PWA / desktop / store build)
+Fires whenever the artifact is installable (web manifest, service worker, PWA scope, Electron/Tauri, store submission). MANDATORY: a complete icon set — favicon (SVG or .ico), app icon(s) at the platform's required sizes, and a maskable icon for the manifest; a themed `theme-color`; and an install-surface identity check (name/short_name match the product). An installable app with a 404 favicon or a default placeholder icon fails this trigger. (Origin: Nourish v1 shipped an installable PWA with NO favicon — caught live 2026-07-01; the gap survived 859 green tests because no trigger owned it.)
+
 ---
 
 ## Layer 2 — Domain pattern packs (grow this library over time)

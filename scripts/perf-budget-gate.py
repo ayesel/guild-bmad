@@ -78,14 +78,40 @@ def read_metrics(path):
         return json.load(f)
 
 
+def _next_artifact_files(next_dir):
+    """Framework-aware discovery for Next.js (.next) builds — 2026-07-01 speedrun
+    friction fix #5. Counts ONLY what production ships: .next/static CSS+JS chunks
+    (never .next/dev, never source maps) plus ONE representative prerendered page
+    (largest .next/server/app/*.html, excluding error pages) for DOM/img checks."""
+    files = []
+    static = os.path.join(next_dir, "static")
+    for root, dirs, names in os.walk(static):
+        for name in names:
+            if name.endswith((".css", ".js")) and not name.endswith(".map"):
+                files.append(os.path.join(root, name))
+    pages_dir = os.path.join(next_dir, "server", "app")
+    if os.path.isdir(pages_dir):
+        pages = [os.path.join(pages_dir, n) for n in os.listdir(pages_dir)
+                 if n.endswith(".html") and not n.startswith("_")]
+        if pages:
+            files.append(max(pages, key=os.path.getsize))
+    return files
+
+
 def artifact_files(path):
     if not path:
         return []
     if os.path.isfile(path):
         return [path]
+    # framework-aware: a .next dir itself, or a project root containing one
+    if os.path.basename(os.path.normpath(path)) == ".next":
+        return _next_artifact_files(path)
+    nested_next = os.path.join(path, ".next")
+    if os.path.isdir(nested_next) and not os.path.exists(os.path.join(path, "index.html")):
+        return _next_artifact_files(nested_next)
     files = []
     for root, dirs, names in os.walk(path):
-        dirs[:] = [d for d in dirs if d not in {".git", "node_modules", ".venv", "dist/.cache"}]
+        dirs[:] = [d for d in dirs if d not in {".git", "node_modules", ".venv", "dist/.cache", ".next"}]
         for name in names:
             if name.endswith((".html", ".css", ".js", ".svg")):
                 files.append(os.path.join(root, name))

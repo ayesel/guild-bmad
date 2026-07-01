@@ -8,7 +8,14 @@ LOAD the FULL {project-root}/_bmad/guild/agents/mage.md, READ its entire content
 
 ## STEP 2 — EMIT THE METRICS (measured from the live DOM, not eyeballed)
 
-At EACH captured breakpoint × state, measure via browser JS eval and write `{output_root}/guild-artifacts/responsive-metrics.json` in the responsive-gate format:
+Preferred — ONE command (playwright required in the project or globally):
+
+```
+node ~/.claude/guild/scripts/responsive-capture.mjs --url <live-url> \
+     --out {output_root}/guild-artifacts/responsive-metrics.json [--state "populated"]
+```
+
+No playwright? Evaluate `~/.claude/guild/scripts/responsive-metrics.browser.js` (`captureResponsiveMetrics()`) in ANY browser driver at each breakpoint × state and write `{output_root}/guild-artifacts/responsive-metrics.json` in the responsive-gate format:
 
 ```json
 {"breakpoints": [{
