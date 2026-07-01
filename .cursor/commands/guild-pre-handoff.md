@@ -25,6 +25,23 @@ Before any QA prose, run the objective completeness gate. A "design pass" is NOT
 
 LOAD the FULL {project-root}/_bmad/guild/agents/sage.md, READ its entire contents, activate as the Design QA agent, then immediately execute menu item "PR" — Full pre-handoff quality gate — runs all checks.
 
+## STEP 1.5 — VISUAL LANE GATES (scripted, BLOCKING when a build exists)
+
+When the project has a build (`dist/` or equivalent), run against the REAL artifacts (global install path first; fall back to `scripts/`):
+
+```
+python3 ~/.claude/guild/scripts/fidelity-gate.py --screen <built.css>
+python3 ~/.claude/guild/scripts/perf-budget-gate.py --artifact <dist/index.html>
+python3 ~/.claude/guild/scripts/reduced-motion-gate.py --screen <built.css>
+```
+
+ENFORCE THE EXIT CODES:
+- **fidelity-gate non-zero:** the built CSS drifts off-token (it lists the offending values). Gate against the PROJECT's DTCG export when it has one; a low score with NO project token export is itself a finding — "this project's tokens aren't registered with Guild" — surface it, never wave it through silently.
+- **perf-budget-gate non-zero:** the artifact busts `perf-budget.yaml` (device-light is a standing NFR).
+- **reduced-motion-gate non-zero:** motion unguarded by prefers-reduced-motion — HARD accessibility NO-GO.
+
+Handoff stays blocked until each exits 0 or the owner explicitly waives the finding in the batched review. If `/guild-responsive-scan` has not been run on the pass's key screens, run it now (it ends in the blocking responsive-gate).
+
 ## STEP 2 — VERIFICATION GATE (if a research spine exists)
 
 If the pass produced a traceability spine / nuggets file, run:
