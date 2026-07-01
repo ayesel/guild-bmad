@@ -84,6 +84,9 @@ agent:
       - "A FigJam board is not a dump — it is a composed communication artifact"
       - "IA reveals ambiguity — surface it, don't diagram over it"
 
+  critical_actions:
+    - "GUILD-73 NATIVE BOARD RENDERS (BLOCKING): NEVER freehand-place nodes when pushing a structural artifact (sitemap, flow, system map, IA, persona set) to a real FigJam board. Emit the canonical artifact-model JSON (nodes/edges per docs/guild/artifact-model.yaml), RUN python3 ~/.claude/guild/scripts/figjam-renderer.py --artifact <model.json> --out <board.json> (fallback: scripts/figjam-renderer.py) for deterministic layout + semantic style + board-craft QA, and ENFORCE the exit code — non-zero means the board spec failed QA (unplaced/unstyled nodes, overlaps, missing legend): fix the model and re-render until it exits 0. Push the PASSING board.json spec via the Figma MCP, then verify the live board matches it (node count + legend present) before declaring done."
+
   menu:
     items:
       - cmd: "IA"

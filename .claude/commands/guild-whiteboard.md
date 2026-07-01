@@ -3,4 +3,24 @@ name: 'guild-whiteboard'
 description: 'Compose a FigJam whiteboard — zone structure, sticky taxonomy, connector conventions, and annotated layout spec'
 ---
 
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "WB" — FigJam whiteboard composition spec for a concept, process, or decision
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN ORDER.
+
+## STEP 1 — COMPOSE (Cartographer)
+
+LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "WB" — FigJam whiteboard composition spec for a concept, process, or decision.
+
+## STEP 2 — RENDER THROUGH THE ENGINE (scripted — NEVER freehand a native board)
+
+If the composition will be pushed to a real FigJam board (Figma MCP), do NOT hand-place nodes. Emit the canonical artifact-model JSON (nodes/edges/types per `docs/guild/artifact-model.yaml`), then render it (use the global install path; fall back to `scripts/figjam-renderer.py` if absent):
+
+```
+python3 ~/.claude/guild/scripts/figjam-renderer.py --artifact <model.json> --out <board.json>
+```
+
+The renderer composes deterministic layout (GUILD-71) + semantic style/legend (GUILD-72) and runs board-craft QA (GUILD-73): every node placed + labeled + styled, no overlaps, legend present, framed margins, token spacing.
+
+## STEP 3 — BOARD-CRAFT QA GATE (BLOCKING)
+
+ENFORCE THE RENDERER'S EXIT CODE — this is NOT a judgment call:
+- **Exit non-zero (board spec FAILED QA):** do NOT push. Report the QA findings verbatim, fix the artifact model, re-render until it exits 0.
+- **Exit 0:** push the passing `board.json` spec to FigJam via the Figma MCP, then VERIFY the live board matches the spec (node count + legend present) before declaring done. If the push target is an existing board, place the render in a clearly-labeled new section — never overwrite the owner's existing content.
