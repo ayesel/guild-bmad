@@ -24,3 +24,10 @@ docs/guild/runs/gallery-trace.jsonl
 
 # GUILD-32 seed localDir (throwaway; canonical is docs/guild)
 guild-artifacts/cd-seed/
+
+# Client-project artifacts (Arise etc.) — NEVER tracked in the engine repo.
+# Engine/client separation: spines, runs, personas live in the consuming
+# workspace ({output_root}/guild-artifacts/); the repo keeps schemas only.
+guild-artifacts/arise-portal/
+guild-artifacts/arise-personas/
+guild-artifacts/widget-mocks/

@@ -1,7 +1,13 @@
 # Run manifest schema (GUILD-19). Every autonomous / background run writes
-# docs/guild/runs/RUN-<id>.yaml — portable (survives outside atrium) AND renders
-# as an atrium task (live monitor + steer). Pairs with GUILD-2 (loop) + GUILD-3
-# (autonomy tiers). This file is the schema/example; real runs are siblings.
+# {output_root}/guild-artifacts/runs/RUN-<id>.yaml IN THE CONSUMING PROJECT —
+# portable (survives outside atrium) AND renders as an atrium task (live
+# monitor + steer). Pairs with GUILD-2 (loop) + GUILD-3 (autonomy tiers).
+#
+# ENGINE/CLIENT SEPARATION (non-negotiable — GUILD is a product): run records
+# contain client project content, so they live CLIENT-SIDE in the consuming
+# workspace with the project's other artifacts. This engine repo keeps ONLY
+# this schema. NEVER commit a real RUN-*.yaml, client spine, or client
+# persona/artifact into the engine repo.
 
 run_schema:
   run_id: "RUN-YYYY-MM-DD-NNN"
