@@ -1,0 +1,33 @@
+# First instrumented quest (evidence-emitting) — Arise Customer Portal IA-lane test.
+# Emitted per the "Instrument the 3 live dogfood tracks" card; gates wired in 77774c0.
+
+run_id: "RUN-2026-07-01-001"
+objective: >
+  Build the Arise Customer Portal traceability spine from the REAL research corpus
+  (June 17 Buzby call, Day-1/2 sweep, ground-truth gaps, RFP tier matrix, AQUA
+  desk-research / Confluence) and prove the newly-wired IA lane end-to-end:
+  spine -> verification -> confidence -> ia-evidence, all exit-code enforced.
+charter_ref: null   # pre-charter run; corpus + owner memory served as intent source
+agent_roster: [ranger (spine synthesis subagent), controller (independent gate verify)]
+linked:
+  epic_id: null
+  story_ids: []
+  artifact_ids: ["arise-portal/spine.json"]
+trace_uri: "guild-artifacts/arise-portal/spine.json"
+checkpoints:
+  - "spine built: 46 nuggets (5 experiment / 25 fact / 8 insight / 6 conclusion / 2 constraint), 25/25 facts verified:true (each directly stated in its source note)"
+  - "gate spine.py: exit 0 (well-formed lineage, no orphans/cycles, facts cited)"
+  - "gate verification-gate.py: exit 0 (no placeholder citations, no opinion-as-fact, no laundered stats)"
+  - "gate confidence-gate.py: exit 0 (all 8 conclusions/constraints 1.0 evidence-backed, gates_build=true; >=3 distinct sources each)"
+  - "gate ia-evidence-guard.py: exit 0 (no synthetic-user sources; every conclusion traces to empirical interview/observation facts)"
+  - "controller re-ran all four gates independently (fresh commands): identical exits"
+open_exceptions:
+  - "JLL broker-partner #2: REAL per owner (2026-06-30 correction) but documentation-pending — excluded from the spine rather than faking a citation; add nuggets when the Confluence doc lands. Persona card correctly carries it as [DOCS-PENDING]."
+  - "Persona cards cite a FigJam-IA source ('data fragmentation = #1 pain') not present in the 5 atrium notes — the spine reframed C-SYSTEM-OF-RECORD on what IS grounded (advisor-led system-of-record thesis, entity model, invoice-first). If the FigJam board is to count as evidence, capture it as a note/experiment."
+  - "Grounded-but-unused facts available for spine expansion: supplier-pricing automation gap (Shell/Matrix 500,000 kWh floor), two decision gates 2-4 week latency, term-set mapping, request-lifecycle tracker, hedge-positions screen, D2 field renames, UDC disambiguation, zero-baseline response metrics."
+output_manifest: ["arise-portal/spine.json"]
+next_action: >
+  Run /guild-ia for the Customer Portal traced to this spine (STEP 1 will find the
+  spine and bind IA conclusions to nugget IDs); expand spine when JLL documentation
+  lands; consider capturing the FigJam-IA board as a first-class experiment source.
+state: completed
