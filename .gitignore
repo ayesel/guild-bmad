@@ -31,3 +31,6 @@ guild-artifacts/cd-seed/
 guild-artifacts/arise-portal/
 guild-artifacts/arise-personas/
 guild-artifacts/widget-mocks/
+
+# GUILD widget note-id (per-machine runtime state)
+docs/guild/.widget-note-id
