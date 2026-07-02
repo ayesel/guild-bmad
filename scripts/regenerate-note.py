@@ -28,7 +28,14 @@ h1{font-size:16px;margin-bottom:4px}
 padding:12px 14px;margin:12px 0;font-size:12.5px;color:#f3dca3;line-height:1.5}
 .comment b{display:block;font-size:10px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;
 color:var(--ink-faint);margin-bottom:5px}
+.vsw{position:absolute;opacity:0;pointer-events:none}
+.vtoggle{display:flex;gap:2px;margin:0 0 12px;border:1px solid var(--line-soft);border-radius:9px;padding:3px;background:var(--inset);width:max-content}
+.vtoggle label{font-size:11px;font-weight:650;color:var(--ink-faint);padding:5px 14px;border-radius:7px;cursor:pointer}
+.vtoggle label:hover{color:var(--ink-dim)}
+#vw-grid:checked~.vtoggle label[for=vw-grid],#vw-line:checked~.vtoggle label[for=vw-line]{background:var(--panel);color:var(--ember-tx);border:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+#vw-line:checked~.grid{grid-template-columns:1fr;max-width:760px;margin:0 auto}
+#vw-line:checked~.grid .shots{grid-template-columns:1fr 1fr}
 .v{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}
 .vh{display:flex;align-items:center;gap:8px;padding:11px 13px;border-bottom:1px solid var(--line-soft)}
 .vh .k{width:24px;height:24px;border-radius:7px;background:var(--inset);border:1px solid var(--line);
@@ -75,6 +82,9 @@ def build_html(set_dir, manifest, embed=True):
     return (f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>'
             f'<h1>Pick a treatment · {E(manifest["set"])}</h1>'
             f'<div class="comment"><b>Your comment</b>{E(manifest["comment"].strip())}</div>'
+            f'<input type="radio" name="vw" id="vw-grid" class="vsw" checked>'
+            f'<input type="radio" name="vw" id="vw-line" class="vsw">'
+            f'<div class="vtoggle"><label for="vw-grid">◫ Side by side</label><label for="vw-line">☰ One per row</label></div>'
             f'<div class="grid">{"".join(cards)}</div>'
             f'<button class="pick" style="background:transparent;border:1px solid var(--line);color:var(--ink-dim);width:100%;margin-top:12px" '
             f'onclick=\'g({json.dumps(iterate_instr(manifest))})\'>None of these — keep iterating (tell Guild what is off)</button>'
@@ -124,7 +134,8 @@ def selftest():
                 "variants": {"a": {"name": "A", "lane": "l", "rationale": "r", "images": [], "gates": {"build": 0}},
                              "b": {"name": "B", "lane": "l", "rationale": "r", "images": [], "gates": {"build": 0}}}}
     h = build_html("/tmp", manifest, embed=False)
-    ok = all(x in h for x in ("Pick A", "Pick B", "Your comment", "regenerate-pick.py", "postMessage"))
+    ok = all(x in h for x in ("Pick A", "Pick B", "Your comment", "regenerate-pick.py", "postMessage",
+                              "vw-grid", "vw-line", "Side by side", "One per row"))
     print("regenerate-note self-test:", "✅ PASS" if ok else "❌ FAIL")
     sys.exit(0 if ok else 1)
 
