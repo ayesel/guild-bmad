@@ -1,35 +1,54 @@
 set: hall-feel
 project: /Users/bigdavis/Developer/frameworks/guild-bmad
-element: "scripts/guild-hall.py (the GUILD Hall shell — every screen)"
-comment: >
-  Owner (2026-07-02, live use): "I still feel like the UI for this is clunky."
-  Comprehension passed the blind gate; this is the CRAFT layer — navigation feels
-  like page loads, cards are utilitarian, nothing responds to the hand.
+element: scripts/guild-hall.py (the GUILD Hall shell — every screen)
+comment: 'Owner (2026-07-02, live use): "I still feel like the UI for this is clunky." Comprehension passed the
+  blind gate; this is the CRAFT layer — navigation feels like page loads, cards are utilitarian, nothing responds
+  to the hand. NOTE: A and C are motion treatments — stills cannot show them; the LIVE TRIAL on your running Hall
+  is the real evidence for this set.'
 context_read:
-  - "guild-hall.py CSS shell; blind-test round-2 PASS (structure is right, feel is not)"
-  - "taste model: owner rejected sparse/amateur (Nourish v2 brief); validated decision-surface direction"
-  - "pattern store: dashboard-hero-density, undo-toast — polish belongs at surface level"
+- guild-hall.py CSS shell; blind-test round-2 PASS (structure is right, feel is not)
+- 'taste model: owner rejected sparse/amateur (Nourish v2 brief); validated decision-surface direction'
+- 'pattern store: dashboard-hero-density, undo-toast — polish belongs at surface level'
 variants:
   a:
-    name: "Fluid"
-    lane: "feel lane — motion between states"
-    rationale: "Cross-page view transitions (navigations crossfade instead of flashing), buttons compress on press and brighten on hover, cards slide subtly toward the cursor. Same pixels at rest — everything about the in-between."
+    name: Fluid
+    lane: feel lane — motion between states
+    rationale: Cross-page view transitions (navigations crossfade instead of flashing), buttons compress on press
+      and brighten on hover, cards slide subtly toward the cursor. Same pixels at rest — everything about the in-between.
     patch: variant-a.patch
-    images: [variant-a-home.png]
-    gates: { selftest: 0 }
+    images:
+    - file: variant-a-home.png
+      caption: 'the Hall''s Home inbox at rest — DELIBERATELY identical to today: everything Fluid changes is motion
+        (try it live instead)'
+    gates:
+      selftest: 0
   b:
-    name: "Composed"
-    lane: "craft lane — visual composition at rest"
-    rationale: "The at-rest pixels get designed: state-colored accent rails on every card (amber=needs you, ember=working, sage=done), gradient depth on cards and page, stronger title hierarchy, ember section labels. No new motion."
+    name: Composed
+    lane: craft lane — visual composition at rest
+    rationale: 'The at-rest pixels get designed: state-colored accent rails on every card (amber=needs you, ember=working,
+      sage=done), gradient depth on cards and page, stronger title hierarchy, ember section labels. No new motion.'
     patch: variant-b.patch
-    images: [variant-b-home.png]
-    gates: { selftest: 0 }
+    images:
+    - file: variant-b-home.png
+      caption: 'Home inbox at rest — look for: accent rails on card left edges, deeper card surfaces, larger title,
+        ember section labels'
+    gates:
+      selftest: 0
   c:
-    name: "Alive"
-    lane: "maximal feel — Fluid plus presence"
-    rationale: "Everything in Fluid PLUS: cards cascade in with a stagger on every view, sticky frosted-glass header stays with you while scrolling. (Composed's rails can be grafted onto any winner — B and C are combinable after your pick.)"
+    name: Alive
+    lane: maximal feel — Fluid plus presence
+    rationale: 'Everything in Fluid PLUS: cards cascade in with a stagger on every view, sticky frosted-glass header
+      stays with you while scrolling. (Composed''s rails can be grafted onto any winner — B and C are combinable
+      after your pick.)'
     patch: variant-c.patch
-    images: [variant-c-home.png]
-    gates: { selftest: 0 }
-suites: { a: "hall selftest exit 0", b: "hall selftest exit 0", c: "hall selftest exit 0" }
+    images:
+    - file: variant-c-home.png
+      caption: Home inbox at rest — same as Fluid at rest; the cascade + sticky header only exist in motion (try
+        it live)
+    gates:
+      selftest: 0
+suites:
+  a: hall selftest exit 0
+  b: hall selftest exit 0
+  c: hall selftest exit 0
 pick: null

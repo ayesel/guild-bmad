@@ -51,6 +51,11 @@ display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-siz
 border:none;cursor:pointer;background:var(--ember);color:#1d0f06}
 .pick:hover{filter:brightness(1.1)}
 .foot{margin-top:14px;font-size:11px;color:var(--ink-faint);line-height:1.5}
+.shots img{cursor:zoom-in}
+.zoom{position:fixed;inset:0;background:rgba(10,9,8,.94);display:none;place-items:center;z-index:99;cursor:zoom-out;padding:20px}
+.zoom.on{display:grid}
+.zoom img{max-width:96vw;max-height:88vh;width:auto;border-radius:9px;border:1px solid var(--line)}
+.zoom .zcap{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-size:12.5px;color:var(--ink)}
 .shotwrap{position:relative}
 .pin{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ember);color:#1d0f06;
 font-family:var(--mono);font-weight:800;font-size:11px;display:grid;place-items:center;
@@ -104,13 +109,18 @@ def build_html(set_dir, manifest, embed=True):
                       f'{imgs}</span><span class="cap">animated: {E(seq.get("label",""))} — frames below</span>'
                       f'<span class="strip" style="grid-template-columns:repeat({n},1fr)">{cells}</span>')
         for img in m.get("images", []):
-            p = os.path.join(set_dir, img)
+            if isinstance(img, dict):
+                fname, label = img.get("file", ""), img.get("caption", "")
+            else:
+                fname = img
+                label = "motion frozen mid-flight" if ("entrance" in img or "signature" in img) else "at rest"
+            p = os.path.join(set_dir, fname)
             src = b64img(p) if (embed and os.path.exists(p)) else E(p)
-            label = "motion frozen mid-flight" if ("entrance" in img or "signature" in img) else "at rest"
             pins = "".join(f'<span class="pin" style="left:{c["x"]}%;top:{c["y"]}%">{c["n"]}</span>'
-                           for c in callouts if c.get("image") == img)
-            shots += (f'<span class="shotwrap"><img src="{src}" alt="{E(m["name"])} — {label}">{pins}</span>'
-                      f'<span class="cap">{E(label)}</span>')
+                           for c in callouts if c.get("image") == fname)
+            shots += (f'<span class="shotwrap"><img src="{src}" alt="{E(m["name"])} — {label}" '
+                      f'onclick=\'zoom(this.src,{json.dumps(m["name"] + " — " + label)})\'>{pins}</span>'
+                      f'<span class="cap">{E(label)} · click to enlarge</span>')
         pinned_ns = {c["n"] for c in callouts}
         legend = "".join(
             f'<span class="{"" if i+1 in pinned_ns else "np"}"><b>{i+1}</b> {E(item)}</span>'
@@ -140,7 +150,10 @@ def build_html(set_dir, manifest, embed=True):
             f'<div class="foot">Every candidate is a real implementation (patch + live-app render + gates). '
             f'Your pick applies instantly and teaches Guild your taste — rejected treatments become '
             f'calibration labels. Rejecting all three is also a pick: Guild records it and diverges again from your feedback.</div>'
-            f'<script>function g(t){{parent.postMessage({{type:"send",payload:{{instruction:t}},framing:t}},"*")}}</script>'
+            f'<div class="zoom" id="zx" onclick="this.classList.remove(\'on\')"><img id="zi"><span class="zcap" id="zc"></span></div>'
+            f'<script>function g(t){{parent.postMessage({{type:"send",payload:{{instruction:t}},framing:t}},"*")}}'
+            f'function zoom(src,cap){{document.getElementById("zi").src=src;document.getElementById("zc").textContent=cap;'
+            f'document.getElementById("zx").classList.add("on");event.stopPropagation()}}</script>'
             f'</body></html>')
 
 
