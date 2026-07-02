@@ -60,6 +60,15 @@ border:2px solid #fff3;box-shadow:0 1px 6px rgba(0,0,0,.5);transform:translate(-
 .legend b{flex:0 0 auto;width:16px;height:16px;border-radius:50%;background:var(--ember);color:#1d0f06;
 font-family:var(--mono);font-weight:800;font-size:9.5px;display:grid;place-items:center;margin-top:1px}
 .legend .np b{background:var(--panel2);color:var(--ink-dim)}
+.seq{position:relative;border-radius:7px;border:1px solid var(--line-soft);overflow:hidden}
+.seq img{width:100%;display:block}
+.seq img+img{position:absolute;inset:0;opacity:0}
+.seq .live{position:absolute;top:8px;left:8px;font-family:var(--mono);font-size:9px;font-weight:700;
+letter-spacing:.08em;background:rgba(206,83,40,.9);color:#1d0f06;border-radius:5px;padding:2px 7px;z-index:9}
+.strip{display:grid;grid-auto-flow:column;gap:4px;padding:6px 0 0}
+.strip img{width:100%;border-radius:5px;border:1px solid var(--line-soft);display:block}
+.strip .fn{font-family:var(--mono);font-size:8.5px;color:var(--ink-faint);text-align:center;padding-top:2px}
+@media(prefers-reduced-motion:reduce){.seq img{animation:none !important;opacity:0}.seq img:first-child{opacity:1}}
 """
 
 
@@ -74,6 +83,26 @@ def build_html(set_dir, manifest, embed=True):
         m = v[key]
         shots = ""
         callouts = m.get("callouts") or []
+        seq = m.get("sequence") or {}
+        frames = seq.get("frames") or []
+        if frames:
+            n, T = len(frames), 0.8
+            total = n * T
+            kf_name = f"seqfade{key}"
+            hold = round(100.0 / n, 2)
+            kf = (f'@keyframes {kf_name}{{0%{{opacity:1}}{hold}%{{opacity:1}}'
+                  f'{min(hold+4,99)}%{{opacity:0}}100%{{opacity:0}}}}')
+            imgs = ""
+            cells = ""
+            for i, fr in enumerate(frames):
+                fp = os.path.join(set_dir, fr)
+                src = b64img(fp) if (embed and os.path.exists(fp)) else E(fp)
+                imgs += (f'<img src="{src}" alt="frame {i+1}" '
+                         f'style="animation:{kf_name} {total}s linear infinite;animation-delay:{i*T}s">')
+                cells += f'<span><img src="{src}"><span class="fn">{i+1}</span></span>'
+            shots += (f'<style>{kf}</style><span class="seq"><span class="live">▶ {E(seq.get("label","live preview"))}</span>'
+                      f'{imgs}</span><span class="cap">animated: {E(seq.get("label",""))} — frames below</span>'
+                      f'<span class="strip" style="grid-template-columns:repeat({n},1fr)">{cells}</span>')
         for img in m.get("images", []):
             p = os.path.join(set_dir, img)
             src = b64img(p) if (embed and os.path.exists(p)) else E(p)
@@ -134,7 +163,10 @@ def render(set_dir, manifest, body):
     nf = os.path.join(set_dir, ".pick-note-id")
     nid = open(nf).read().strip() if os.path.exists(nf) else None
     if nid:
-        r = subprocess.run([CLI, "note", "write", nid, "--content", body], text=True, capture_output=True)
+        with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
+            f.write(body); tmp = f.name
+        r = subprocess.run([CLI, "note", "write", nid, "--from-file", tmp], text=True, capture_output=True)
+        os.unlink(tmp)
         if r.returncode == 0: print(f"updated pick note {nid}"); return
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
         f.write(body); tmp = f.name
