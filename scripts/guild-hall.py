@@ -122,7 +122,8 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.done{background:rgba(143,174,125,.14);color:var(--sage-tx)}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
 .chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
-.swbar{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}
+.swbar{display:flex;gap:10px;align-items:center;margin:2px 0 6px}
+.swlab{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 .sw{font-size:11.5px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
 .sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
@@ -231,15 +232,16 @@ ROSTER = [
 def switcher(current=None):
     regs = projects()
     wf = _feed_mod()
-    out = []
+    opts = [f'<option value="/"{" selected" if current is None else ""}>⌂ All projects</option>']
     for i, pr in enumerate(regs):
         try: n = sum(1 for x in wf.build(pr["path"])["needs_you"] if x.get("id") != "note")
         except Exception: n = 0
-        on = ' style="color:var(--ember-tx);border-color:rgba(206,83,40,.4)"' if current == i else ""
-        badge = f'<b style="color:var(--gold-tx);margin-left:5px">{n}</b>' if n else ""
-        out.append(f'<a href="/p/{i}"{on} class="sw">{E(pr["name"])}{badge}</a>')
+        opts.append(f'<option value="/p/{i}"{" selected" if current == i else ""}>'
+                    f'{E(pr["name"])}{f" · {n} waiting" if n else ""}</option>')
     pb = f'<a href="/playbook{"?p=%d" % current if current is not None else ""}" class="sw" style="margin-left:auto">&#128214; Playbook</a>'
-    return f'<div class="swbar">{"".join(out)}{pb}</div>'
+    return (f'<div class="swbar"><label class="swlab" for="projsel">Project</label>'
+            f'<select id="projsel" class="fsel" onchange="location.href=this.value" aria-label="switch project">'
+            f'{"".join(opts)}</select>{pb}</div>')
 
 
 BMAD_ROSTER = [
@@ -415,20 +417,40 @@ def project_view(wf, pidx, view, sv="cards"):
     its = items_for(feed, p["name"])
     ndec = sum(1 for i in its if i["kind"] == "decision")
     nruns = sum(1 for i in its if i["kind"] == "run")
-    nsugg = 0
+    ss = []
     for base in ("_bmad-output", "guild-output"):
         sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
         if os.path.exists(sf):
             import yaml as _y
-            nsugg = len((_y.safe_load(open(sf)) or {}).get("suggestions", []))
+            ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
             break
+    nsugg = len(ss)
+    sfirm = sum(1 for s in ss if s["confidence"] == "firm")
+    scats, sicon = {}, {}
+    for s in ss:
+        c = s.get("category", "polish")
+        scats[c] = scats.get(c, 0) + 1
+        sicon.setdefault(c, s.get("icon", "💡"))
+    sscreens = sorted({s["evidence"] for s in ss})
+    sfil = ""
+    if view == "needs" and ss:
+        sfil = ('<div class="grp">Filter improvements</div>'
+                f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({nsugg})</button>'
+                f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({sfirm})</button>'
+                f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({nsugg - sfirm})</button>'
+                + "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{sicon[c]} {E(c)} ({n})</button>'
+                          for c, n in sorted(scats.items(), key=lambda kv: -kv[1]))
+                + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen" style="margin-top:4px;width:100%">'
+                + f'<option value="all">every screen ({len(sscreens)})</option>'
+                + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
+                + '</select>')
     def nv(href, label, cnt=None, on=False):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
         return f'<a href="{href}" class="{"on" if on else ""}">{label}{c}</a>'
     side = ('<aside class="snav" aria-label="project sections">'
             '<div class="grp">Decide</div>'
             + nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs")
-            + nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg)
+            + nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg) + sfil
             + nv(f"/p/{pidx}?view=needs#recs", "What to run next")
             + '<div class="grp">Watch</div>'
             + nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")
@@ -464,37 +486,13 @@ def project_view(wf, pidx, view, sv="cards"):
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
         sugg_rows = ""
-        for base in ("_bmad-output", "guild-output"):
-            sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
-            if not os.path.exists(sf):
-                continue
-            import yaml as _y
-            ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
-            if not ss:
-                break
-            firm = sum(1 for s in ss if s["confidence"] == "firm")
-            cats, icon_of = {}, {}
-            for s in ss:
-                c = s.get("category", "polish")
-                cats[c] = cats.get(c, 0) + 1
-                icon_of.setdefault(c, s.get("icon", "💡"))
-            screens = sorted({s["evidence"] for s in ss})
+        if ss:
             toggle = (f'<span style="margin-left:auto;font-family:var(--sans);font-size:11.5px;letter-spacing:0;text-transform:none">'
                       f'<a href="/p/{pidx}?view=needs&sv=cards" style="color:{"var(--ember-tx)" if sv == "cards" else "var(--ink-faint)"};margin-right:10px">Cards</a>'
                       f'<a href="/p/{pidx}?view=needs&sv=list" style="color:{"var(--ember-tx)" if sv == "list" else "var(--ink-faint)"}">List</a></span>')
-            pager = ('<span class="spage"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
+            pager = ('<div class="sfilter"><span class="spage" style="margin-left:0"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
                      '<b id="spglab" style="font-size:11px;min-width:86px;text-align:center"></b>'
-                     '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span>') if sv == "cards" else ""
-            fbar = (f'<div class="sfilter">'
-                    f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({len(ss)})</button>'
-                    f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({firm})</button>'
-                    f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({len(ss) - firm})</button>'
-                    f'<span class="fsep"></span>'
-                    + "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{icon_of[c]} {E(c)} ({n})</button>'
-                              for c, n in sorted(cats.items(), key=lambda kv: -kv[1]))
-                    + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen"><option value="all">every screen ({len(screens)})</option>'
-                    + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in screens)
-                    + f'</select>{pager}</div>')
+                     '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span></div>') if sv == "cards" else ""
 
             def _srow(s):
                 icon, cat = s.get("icon", "💡"), s.get("category", "polish")
@@ -524,9 +522,8 @@ def project_view(wf, pidx, view, sv="cards"):
                 sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
             else:
                 sugg_rows = "".join(_srow(s) for s in ss)
-            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{fbar}'
+            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{pager}'
                          f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
-            break
         body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
               + f'<h2 class="sect" id="roster">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
         bmad_rows = "".join(
