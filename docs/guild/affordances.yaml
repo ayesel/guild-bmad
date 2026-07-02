@@ -1,0 +1,62 @@
+# GUILD affordance canon (cards cfff66c9/605313e1 companion, 2026-07-02).
+# The lead-product-designer checklist the brain holds so the OWNER never has to
+# prompt affordances one-by-one (the wedding-hub guest-table failure class).
+# Consumed by scripts/affordance-check.py (detection heuristics live there) and
+# by Rogue/Mage generation rules: a first draft includes the fired set COMPLETE,
+# or names what it omitted and why. Extends product-baseline T1–T9 (triggers say
+# WHEN something is mandatory; this canon says WHAT the complete set contains).
+
+sets:
+  collection:            # any growable list/table of records (fires with product-baseline T2/T3)
+    required:
+      - search            # find by text
+      - filter            # narrow by facet/status
+      - sort              # reorder by column/field
+      - count             # visible result count
+      - empty-state       # never-had-data state with a CTA
+      - zero-results      # searched/filtered-to-nothing state (distinct from empty)
+      - row-actions       # act on a single record (edit/remove/open)
+      - complete-rollup   # any status rollup counts EVERY enum value incl. terminal
+    recommended:
+      - group-by          # categorizable records group with subtotals
+      - sticky-header     # header stays while scrolling
+      - bulk-actions      # act on many at once
+      - pagination-or-virtualization  # >~100 rows stays fast (device-light NFR)
+
+  form:
+    required:
+      - labels-above      # visible labels, never placeholder-as-label
+      - inline-validation # errors at the field, on blur
+      - submit-disabled-until-valid
+      - loading-on-submit
+      - success-confirmation
+      - error-recovery    # failed submit says why and keeps input
+    recommended:
+      - field-help        # helper text for non-obvious fields
+      - keyboard-submit   # Enter submits where unambiguous
+
+  navigation:
+    required:
+      - text-labels       # never icon-only
+      - active-state      # you can see where you are
+      - grouped           # related destinations cluster
+    recommended:
+      - max-seven         # ≤7 top-level destinations (Hick)
+
+  search-surface:         # a screen whose job is finding things
+    required: [input-prominent, results-list, zero-results, loading-state, result-count]
+    recommended: [recent-or-suggested, keyboard-nav]
+
+  wizard-flow:            # multi-step creation/onboarding
+    required: [step-indicator, back, finish, per-step-validation]
+    recommended: [skip-optional-steps, resume-where-left]
+
+  dashboard-summary:      # totals/progress surfaces
+    required:
+      - value-vs-target   # never a bare number when a target exists (T1)
+      - totals
+      - empty-state
+    recommended: [trend-over-time, drill-in]
+
+  interactive-universal:  # every interactive element, always (overlaps state-motion gate)
+    required: [hover-state, focus-visible, disabled-state, touch-target-44, transition]

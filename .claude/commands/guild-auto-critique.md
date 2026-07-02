@@ -20,6 +20,7 @@ python3 ~/.claude/guild/scripts/type-conditional.py  --lint <component-src>
 python3 ~/.claude/guild/scripts/token-lint.py        --file <component-src>
 python3 ~/.claude/guild/scripts/state-motion-req.py  --screen <component-src>
 python3 ~/.claude/guild/scripts/reduced-motion-gate.py --screen <built-css>   # when a build exists
+python3 ~/.claude/guild/scripts/affordance-check.py --screen <component-src>   # completeness vs docs/guild/affordances.yaml
 ```
 
 ENFORCE THE EXIT CODES — a non-zero gate is a FINDING, not an opinion: report each finding verbatim in the critique (file, value, suggested token/fix) and mark the critique NO-GO until fixed or explicitly waived by the owner in the batched review. Scripted findings OUTRANK eyeballed impressions; never soften a gate finding into prose.

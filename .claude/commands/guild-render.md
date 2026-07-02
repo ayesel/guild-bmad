@@ -1,0 +1,25 @@
+---
+name: 'guild-render'
+description: 'Spec-once, render-anywhere — fan one canonical artifact model out to FigJam (native board) + HTML prototype (+ more targets) in one command'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN ORDER. The brain decides once; platforms are output formats.
+
+## STEP 1 — THE FAN-OUT (scripted, gated)
+
+Given a canonical artifact model (`*.model.json` per `docs/guild/artifact-model.yaml` — or produce one from the spec at hand):
+
+```
+python3 ~/.claude/guild/scripts/guild-render.py --artifact <model.json> --targets figjam,html --out <artifacts-dir>/renders
+```
+
+(fallback: `scripts/guild-render.py`). ENFORCE THE EXIT CODE: non-zero means a target failed its gate (board-craft QA findings, or the HTML busted the device-light guard) — fix the model, re-run.
+
+## STEP 2 — DELIVER EACH RENDER
+
+- **html** → open `renders/prototype.html` as an atrium browser pane (`pane create --type browser --url file://...`) — a living, clickable wireframe, self-contained and reduced-motion safe.
+- **figjam** → push `renders/board.json` natively via the Figma MCP: load the `figma-use-figjam` skill FIRST, create a NEW FigJam file (or use a file the owner names) and place everything inside ONE clearly-labeled section — `GUILD render · <artifact> (<date>)`. One shape per node at the renderer's coordinates, connectors per edge, legend stickies. NEVER modify existing owner content on any board.
+
+## STEP 3 — RECORD
+
+Note both render URIs in the project's artifacts (and `docs/guild/artifacts.yaml` where applicable) so the Library/provenance chain knows where the artifact lives on every platform. Both renders share ONE model — if the design changes, change the MODEL and re-run the fan-out; never hand-edit a render into divergence.
