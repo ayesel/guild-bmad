@@ -33,9 +33,10 @@ color:var(--ink-faint);margin-bottom:5px}
 .vtoggle label{font-size:11px;font-weight:650;color:var(--ink-faint);padding:5px 14px;border-radius:7px;cursor:pointer}
 .vtoggle label:hover{color:var(--ink-dim)}
 #vw-grid:checked~.vtoggle label[for=vw-grid],#vw-line:checked~.vtoggle label[for=vw-line]{background:var(--panel);color:var(--ember-tx);border:1px solid var(--line)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(var(--ncols,3),minmax(0,1fr));gap:12px}
 #vw-line:checked~.grid{grid-template-columns:1fr;max-width:760px;margin:0 auto}
 #vw-line:checked~.grid .shots{grid-template-columns:1fr 1fr}
+#vw-line:checked~.grid .v{max-width:none}
 .v{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}
 .vh{display:flex;align-items:center;gap:8px;padding:11px 13px;border-bottom:1px solid var(--line-soft)}
 .vh .k{width:24px;height:24px;border-radius:7px;background:var(--inset);border:1px solid var(--line);
@@ -85,7 +86,7 @@ def build_html(set_dir, manifest, embed=True):
             f'<input type="radio" name="vw" id="vw-grid" class="vsw" checked>'
             f'<input type="radio" name="vw" id="vw-line" class="vsw">'
             f'<div class="vtoggle"><label for="vw-grid">◫ Side by side</label><label for="vw-line">☰ One per row</label></div>'
-            f'<div class="grid">{"".join(cards)}</div>'
+            f'<div class="grid" style="--ncols:{len(v)}">{"".join(cards)}</div>'
             f'<button class="pick" style="background:transparent;border:1px solid var(--line);color:var(--ink-dim);width:100%;margin-top:12px" '
             f'onclick=\'g({json.dumps(iterate_instr(manifest))})\'>None of these — keep iterating (tell Guild what is off)</button>'
             f'<div class="foot">Every candidate is a real implementation (patch + live-app render + gates). '
