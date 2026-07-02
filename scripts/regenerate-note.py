@@ -35,7 +35,8 @@ color:var(--ink-faint);margin-bottom:5px}
 #vw-grid:checked~.vtoggle label[for=vw-grid],#vw-line:checked~.vtoggle label[for=vw-line]{background:var(--panel);color:var(--ember-tx);border:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(var(--ncols,3),minmax(0,1fr));gap:12px}
 #vw-line:checked~.grid{grid-template-columns:1fr;max-width:760px;margin:0 auto}
-#vw-line:checked~.grid .shots{grid-template-columns:1fr 1fr}
+#vw-line:checked~.grid .shots{grid-template-columns:1fr;max-width:none}
+#vw-line:checked~.grid .shots img{width:100%}
 #vw-line:checked~.grid .v{max-width:none}
 .v{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}
 .vh{display:flex;align-items:center;gap:8px;padding:11px 13px;border-bottom:1px solid var(--line-soft)}
