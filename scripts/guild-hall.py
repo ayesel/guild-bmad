@@ -59,6 +59,38 @@ def items_for(feed, proj):
     return out
 
 
+
+def _calibration_count():
+    cal = os.path.join(os.path.dirname(HERE), "docs", "guild", "evals", "calibration-set.yaml")
+    if not os.path.exists(cal): return 0
+    return sum(1 for l in open(cal) if l.strip().startswith("- {") or l.strip().startswith("- pair"))
+
+
+def activity_events(wf, regs):
+    """Cross-project feed of what agents DID — every row is a door, never just a number."""
+    ev = []
+    for i, p in enumerate(regs):
+        try: feed = wf.build(p["path"])
+        except Exception: continue
+        for r in feed["runs"]:
+            ts = os.path.getmtime(r["path"]) if os.path.exists(r["path"]) else 0
+            d = wf._yaml(r["path"])
+            last = str((d.get("checkpoints") or ["run recorded"])[-1])[:120]
+            ev.append({"ts": ts, "project": p["name"], "pidx": i,
+                       "text": f'{r["id"]}: {last}', "href": f"/p/{i}?view=runs",
+                       "state": "finished" if r["state"] in ("completed", "done") else "executing"})
+        for n in feed["needs_you"]:
+            link = n.get("link", "")
+            ts = os.path.getmtime(link) if link and os.path.exists(link) else 0
+            kind = "waiting for you" if n["id"] != "note" else "for your awareness"
+            ev.append({"ts": ts, "project": p["name"], "pidx": i,
+                       "text": n["title"], "href": f"/p/{i}?view=needs", "state": kind})
+        for it in feed["library"][:4]:
+            ev.append({"ts": it["mtime"], "project": p["name"], "pidx": i,
+                       "text": f'produced: {it["name"]}', "href": f"/p/{i}?view=library", "state": "finished"})
+    ev.sort(key=lambda e: -e["ts"])
+    return ev[:22]
+
 CSS = """
 :root{--bg:#100f0d;--panel:#1f1b16;--panel2:#282119;--inset:#171512;--line:#2c2820;--line-soft:#221e18;
 --ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
@@ -169,8 +201,36 @@ def decision_card(item, pidx, project_name=""):
             f'<div class="who">an agent prepared this — the decision is yours · {when}</div>{acts}</div>')
 
 
-def home(wf):
+def home(wf, view="inbox"):
     regs = projects()
+    hometabs = "".join(f'<a href="/?view={v}" class="{"on" if view == v else ""}" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent">{label}</a>'
+                       for v, label in (("inbox", "Inbox"), ("activity", "Activity")))
+    hometabs = f'<div class="tabs" style="margin-top:0">{hometabs}</div>'.replace(
+        'class="on" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ink-faint)',
+        'class="on" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ember-tx);border-bottom-color:var(--ember-tx)')
+    if view == "activity":
+        ev = activity_events(wf, regs)
+        waiting = sum(1 for e in ev if e["state"] == "waiting for you")
+        execing = sum(1 for e in ev if e["state"] == "executing")
+        cal = _calibration_count()
+        pstore = os.path.expanduser("~/.config/guild/patterns/patterns.yaml")
+        pats = 0
+        if os.path.exists(pstore):
+            import yaml as _y
+            pats = len((_y.safe_load(open(pstore)) or {}).get("patterns", []))
+        meters = (f'<div class="card"><div class="row" style="gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px">'
+                  f'<span><b style="color:#f3dca3">{waiting}</b> waiting on you</span>'
+                  f'<span><b style="color:var(--ember-tx)">{execing}</b> agents executing</span>'
+                  f'<span><b style="color:var(--sage-tx)">{pats}</b> patterns Guild remembers</span>'
+                  f'<span><b style="color:var(--sage-tx)">{cal}</b>/50 taste picks toward calibrated judgment</span></div>'
+                  f'<div class="who">every number below is a door — click any row</div></div>')
+        rows = "".join(f'<a class="card" href="{e["href"]}" style="padding:10px 15px"><div class="row">'
+                       f'<span class="chip think">{E(e["project"])}</span><b style="font-size:13px;font-weight:600">{E(e["text"][:110])}</b>'
+                       f'{chip(e["state"])}</div></a>' for e in ev)             or '<div class="quiet-empty"><span class="pulse"></span>No activity yet — delegate something.</div>'
+        body = (f'{hometabs}<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 10px">'
+                f'What agents did across every project, newest first — is the fleet healthy, what happened while you were away.</div>'
+                f'{meters}<div class="sect">Recent activity</div>{rows}')
+        return page("GUILD Hall", "everything you delegated, one inbox", body)
     all_needs, grid = [], []
     for i, p in enumerate(regs):
         try: feed = wf.build(p["path"])
@@ -192,7 +252,7 @@ def home(wf):
     inbox = "".join(decision_card({"kind": "decision", "state": "waiting for you", **n[1]}, n[0], project_name=regs[n[0]]["name"]) for n in all_needs) \
         or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you right now. '
             'Agents keep working and decisions will land here when they are yours to make.</div>')
-    body = (f'<div class="sect">Needs you — across every project ({len(all_needs)})</div>{inbox}'
+    body = (f'{hometabs}<div class="sect">Needs you — across every project ({len(all_needs)})</div>{inbox}'
             f'<div class="sect">Your projects</div><div class="pgrid">{"".join(grid)}</div>{JS}')
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
@@ -307,7 +367,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         u = urlparse(self.path); q = parse_qs(u.query)
         if u.path == "/":
-            return self._send(home(self.wf))
+            return self._send(home(self.wf, q.get("view", ["inbox"])[0]))
         if u.path.startswith("/p/"):
             return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0]))
         if u.path.startswith("/pick/"):
