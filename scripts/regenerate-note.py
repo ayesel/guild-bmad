@@ -57,7 +57,7 @@ border:none;cursor:pointer;background:var(--ember);color:#1d0f06}
 .zoom.on{display:grid}
 .zoom img{max-width:96vw;max-height:88vh;width:auto;border-radius:9px;border:1px solid var(--line)}
 .zoom .zcap{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-size:12.5px;color:var(--ink)}
-.shotwrap{position:relative}
+.shotwrap{position:relative;display:block}
 .pin{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ember);color:#1d0f06;
 font-family:var(--mono);font-weight:800;font-size:11px;display:grid;place-items:center;
 border:2px solid #fff3;box-shadow:0 1px 6px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
@@ -120,7 +120,7 @@ def build_html(set_dir, manifest, embed=True):
             pins = "".join(f'<span class="pin" style="left:{c["x"]}%;top:{c["y"]}%">{c["n"]}</span>'
                            for c in callouts if c.get("image") == fname)
             shots += (f'<span class="shotwrap"><img src="{src}" alt="{E(m["name"])} — {label}" '
-                      f'onclick=\'zoom(this.src,{json.dumps(m["name"] + " — " + label)})\'>{pins}</span>'
+                      f'data-cap="{E(m["name"] + " — " + label)}" onclick="zoom(this)">{pins}</span>'
                       f'<span class="cap">{E(label)} · click to enlarge</span>')
         pinned_ns = {c["n"] for c in callouts}
         legend = "".join(
@@ -153,7 +153,7 @@ def build_html(set_dir, manifest, embed=True):
             f'calibration labels. Rejecting all three is also a pick: Guild records it and diverges again from your feedback.</div>'
             f'<div class="zoom" id="zx" onclick="this.classList.remove(\'on\')"><img id="zi"><span class="zcap" id="zc"></span></div>'
             f'<script>function g(t){{parent.postMessage({{type:"send",payload:{{instruction:t}},framing:t}},"*")}}'
-            f'function zoom(src,cap){{document.getElementById("zi").src=src;document.getElementById("zc").textContent=cap;'
+            f'function zoom(el){{document.getElementById("zi").src=el.src;document.getElementById("zc").textContent=el.dataset.cap;'
             f'document.getElementById("zx").classList.add("on");event.stopPropagation()}}</script>'
             f'</body></html>')
 
