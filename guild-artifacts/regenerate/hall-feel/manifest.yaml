@@ -29,11 +29,30 @@ variants:
       sage=done), gradient depth on cards and page, stronger title hierarchy, ember section labels. No new motion.'
     patch: variant-b.patch
     images:
-    - file: variant-b-home.png
-      caption: 'Home inbox at rest — look for: accent rails on card left edges, deeper card surfaces, larger title,
-        ember section labels'
+    - file: card-before-zoom.png
+      caption: ZOOMED — your inbox cards as they are TODAY (flat borders, plain panels)
+    - file: card-composed-zoom.png
+      caption: 'ZOOMED — the SAME cards under Composed: follow the pins'
     gates:
       selftest: 0
+    callouts:
+    - image: card-composed-zoom.png
+      x: 8
+      y: 30
+      n: 1
+    - image: card-composed-zoom.png
+      x: 50
+      y: 22
+      n: 2
+    - image: card-composed-zoom.png
+      x: 22
+      y: 12
+      n: 3
+    legend:
+    - Amber accent rail on the card's left edge — the card's state as color (amber = needs you, sage = done, ember
+      = working)
+    - Cards gain gradient depth and a soft shadow — surfaces instead of outlines
+    - Section labels turn ember and spaced; titles get bigger and tighter
   c:
     name: Alive
     lane: maximal feel — Fluid plus presence
