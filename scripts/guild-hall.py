@@ -18,11 +18,13 @@ regenerate-pick.py (incl. taste capture).
 
 Projects registry: ~/.config/guild/hall-projects.yaml (operator-owned).
 """
-import os, sys, json, html, time, argparse, importlib.util, subprocess, datetime
+import os, sys, json, html, time, argparse, importlib.util, subprocess, datetime, threading, uuid
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+UNDO_WINDOW = 8.0   # seconds — deferred commit, same pattern as Nourish's undo toast
+PENDING = {}        # token -> threading.Timer
 REG = os.path.expanduser("~/.config/guild/hall-projects.yaml")
 E = html.escape
 
@@ -110,6 +112,7 @@ font-size:13px;margin:10px 0;line-height:1.6}
 .tl{list-style:none;margin:8px 0}
 .tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim);line-height:1.5}
 .tl li:before{content:"✓";color:var(--sage-tx);font-weight:700;flex:0 0 auto}
+.confirm .undo{margin-left:10px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:32px}
 .confirm{background:rgba(143,174,125,.12);border:1px solid rgba(143,174,125,.3);border-radius:9px;
 padding:10px 14px;color:var(--sage-tx);font-size:13px;margin:10px 0}
 .lib{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;
@@ -148,15 +151,15 @@ def decision_card(item, pidx, project_name=""):
                 f'<span class="chip think">for your awareness</span>{proj}</div>'
                 f'<div class="why">{E(why)}</div>'
                 f'<div class="who">a note from the last run — nothing to decide yet · {when}</div>'
-                f'<div class="acts"><a class="quiet" href="/open?path={E(item["link"])}">Open the run record</a></div></div>')
+                f'<div class="acts"><a class="quiet" href="/p/{pidx}?view=runs">See what the agents did</a></div></div>')
     if item["id"] == "PICK":
         slug = item["title"].split("·")[-1].strip()
         opts = "".join(f'<button class="quiet" onclick="act(this,{pidx},\'pick\',\'{E(slug)}\',\'{c}\')">Pick {c.upper()}</button>'
                        for c in ("a", "b", "c"))
-        acts = (f'<div class="acts"><a href="/open?path={E(item["link"])}">See the options first</a>{opts}'
+        acts = (f'<div class="acts"><a href="/pick/{pidx}/{E(slug)}">See the options first</a>{opts}'
                 f'<button class="quiet" onclick="act(this,{pidx},\'pick\',\'{E(slug)}\',\'none\')">None fit — try again</button></div>')
     elif item["id"].startswith("D"):
-        acts = (f'<div class="acts"><a href="/open?path={E(item["link"])}">Read the evidence first</a>'
+        acts = (f'<div class="acts"><a href="/doc/{pidx}?path={E(item["link"])}">Read the evidence first</a>'
                 f'<button class="quiet" onclick="act(this,{pidx},\'approve\',\'{E(item["id"])}\',\'\')">Approve</button>'
                 f'<button class="quiet" onclick="act(this,{pidx},\'waive\',\'{E(item["id"])}\',\'\')">Not now</button></div>')
     else:
@@ -232,15 +235,33 @@ def project_view(wf, pidx, view):
 
 JS = """<script>
 async function act(btn, pidx, action, target, choice){
-  btn.disabled = true; btn.textContent = "…";
+  btn.disabled = true; const label = btn.textContent; btn.textContent = "…";
   const r = await fetch('/act', {method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({pidx, action, target, choice})});
   const d = await r.json();
   const card = btn.closest('.card');
   const note = document.createElement('div'); note.className = 'confirm';
-  note.textContent = d.ok ? '✓ ' + d.message : '✗ ' + d.message;
+  if (d.ok && d.token) {
+    let secs = Math.round(d.window);
+    note.innerHTML = '✓ ' + d.message + ' <button class="undo">Undo (' + secs + 's)</button>';
+    card.querySelectorAll('.acts button').forEach(b => b.disabled = true);
+    const ub = note.querySelector('.undo');
+    const tick = setInterval(() => { secs--; if (secs > 0) ub.textContent = 'Undo (' + secs + 's)';
+      else { ub.remove(); clearInterval(tick); note.insertAdjacentText('beforeend', ' — done'); } }, 1000);
+    ub.onclick = async () => {
+      clearInterval(tick);
+      const u = await fetch('/undo', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({token: d.token})});
+      const ud = await u.json();
+      note.textContent = ud.ok ? '↩ undone — nothing was recorded' : '✗ ' + ud.message;
+      card.querySelectorAll('.acts button').forEach(b => { b.disabled = false; });
+      btn.textContent = label;
+    };
+  } else {
+    note.textContent = (d.ok ? '✓ ' : '✗ ') + d.message;
+    if (d.ok) card.querySelectorAll('.acts button').forEach(b => b.disabled = true);
+  }
   card.appendChild(note);
-  card.querySelectorAll('button').forEach(b => b.disabled = true);
 }
 </script>"""
 
@@ -289,6 +310,33 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(home(self.wf))
         if u.path.startswith("/p/"):
             return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0]))
+        if u.path.startswith("/pick/"):
+            _, _, pidx, slug = u.path.split("/", 3)
+            proj = projects()[int(pidx)]["path"]
+            spec = importlib.util.spec_from_file_location("rn", os.path.join(HERE, "regenerate-note.py"))
+            rn = importlib.util.module_from_spec(spec); spec.loader.exec_module(rn)
+            import yaml as _y
+            set_dir = rn.find_set(proj, slug)
+            manifest = _y.safe_load(open(os.path.join(set_dir, "manifest.yaml")))
+            body = rn.build_html(set_dir, manifest)
+            back = ('<div style="position:sticky;top:0;background:#100f0dee;padding:10px 16px;font-family:-apple-system,sans-serif">'
+                    f'<a href="/p/{pidx}?view=needs" style="color:#f3bca1;font-size:13px;font-weight:700;text-decoration:none">← Back to your inbox</a></div>')
+            return self._send(body.replace("<body>", "<body>" + back, 1))
+        if u.path.startswith("/doc/"):
+            pidx = u.path.split("/")[2]
+            path = q.get("path", [""])[0]
+            text = open(path, encoding="utf-8").read() if os.path.exists(path) else "not found"
+            md = E(text)
+            import re as _re
+            md = _re.sub(r"^### (.*)$", r"<h3>\1</h3>", md, flags=_re.M)
+            md = _re.sub(r"^## (.*)$", r"<h2 style='margin-top:18px'>\1</h2>", md, flags=_re.M)
+            md = _re.sub(r"^# (.*)$", r"<h1>\1</h1>", md, flags=_re.M)
+            md = _re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", md)
+            md = _re.sub(r"^- (.*)$", r"<div style='padding-left:14px'>• \1</div>", md, flags=_re.M)
+            md = md.replace("\n\n", "<br><br>")
+            body = (f'<div class="card" style="font-size:13px;line-height:1.65">{md}</div>')
+            return self._send(page("Evidence", "read it, then decide from your inbox",
+                                   f'<div style="margin-bottom:8px"><a href="/p/{pidx}?view=needs" style="color:var(--ember-tx);font-weight:700">← Back to your inbox</a></div>' + body))
         if u.path == "/open":
             p = q.get("path", [""])[0]
             cli = os.environ.get("ATRIUM_CLI_PATH")
@@ -305,23 +353,35 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(404); self.end_headers()
 
     def do_POST(self):
-        if self.path != "/act":
-            self.send_response(404); self.end_headers(); return
         n = int(self.headers.get("Content-Length", 0))
         req = json.loads(self.rfile.read(n))
+        if self.path == "/undo":
+            timer = PENDING.pop(req.get("token", ""), None)
+            if timer: timer.cancel(); return self._send(json.dumps({"ok": True, "message": "undone"}), "application/json")
+            return self._send(json.dumps({"ok": False, "message": "too late — already applied"}), "application/json")
+        if self.path != "/act":
+            self.send_response(404); self.end_headers(); return
         p = projects()[req["pidx"]]["path"]
         dry = os.environ.get("HALL_DRY_RUN") == "1"
-        try:
-            if req["action"] == "pick":
-                ok, msg = do_pick(p, req["target"], req["choice"], dry=dry)
-            else:
-                if dry:
-                    ok, msg = True, f'[dry-run] {req["target"]} {req["action"]} would be recorded'
-                else:
-                    ok, msg = True, record_verdict(p, req["target"], req["action"])
-        except Exception as ex:
-            ok, msg = False, str(ex)[:160]
-        self._send(json.dumps({"ok": ok, "message": msg}), "application/json")
+
+        def execute():
+            PENDING.pop(token, None)
+            try:
+                if req["action"] == "pick":
+                    do_pick(p, req["target"], req["choice"], dry=dry)
+                elif not dry:
+                    record_verdict(p, req["target"], req["action"])
+            except Exception:
+                pass
+
+        token = uuid.uuid4().hex[:12]
+        what = (f'picking {req["choice"].upper()} for {req["target"]}' if req["action"] == "pick"
+                else f'{req["target"]}: {req["action"]}')
+        timer = threading.Timer(UNDO_WINDOW, execute)
+        PENDING[token] = timer; timer.start()
+        self._send(json.dumps({"ok": True, "token": token, "window": UNDO_WINDOW,
+                               "message": f"{what}{' [dry-run]' if dry else ''} — applying in {int(UNDO_WINDOW)}s"}),
+                   "application/json")
 
 
 def selftest():
