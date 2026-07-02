@@ -76,12 +76,22 @@ def build_html(set_dir, manifest, embed=True):
             f'<h1>Pick a treatment · {E(manifest["set"])}</h1>'
             f'<div class="comment"><b>Your comment</b>{E(manifest["comment"].strip())}</div>'
             f'<div class="grid">{"".join(cards)}</div>'
+            f'<button class="pick" style="background:transparent;border:1px solid var(--line);color:var(--ink-dim);width:100%;margin-top:12px" '
+            f'onclick=\'g({json.dumps(iterate_instr(manifest))})\'>None of these — keep iterating (tell Guild what is off)</button>'
             f'<div class="foot">Every candidate is a real implementation (patch + live-app render + gates). '
-            f'Your pick applies instantly and teaches Guild your taste — the two rejected treatments become '
-            f'calibration labels.</div>'
+            f'Your pick applies instantly and teaches Guild your taste — rejected treatments become '
+            f'calibration labels. Rejecting all three is also a pick: Guild records it and diverges again from your feedback.</div>'
             f'<script>function g(t){{parent.postMessage({{type:"send",payload:{{instruction:t}},framing:t}},"*")}}</script>'
             f'</body></html>')
 
+
+
+def iterate_instr(manifest):
+    return (f"Owner rejected ALL variants in regenerate set {manifest['set']} — record it "
+            f"(python3 ~/.claude/guild/scripts/regenerate-pick.py --project {manifest['project']} "
+            f"--set {manifest['set']} --pick none), ask the owner what was off about A/B/C in one "
+            f"question, then re-run the diverge (STEP 2 of /guild-comment) with that critique added "
+            f"to the comment — new lanes, never repeats of rejected directions.")
 
 def find_set(project, slug):
     for out in ("_bmad-output", "guild-output", "."):

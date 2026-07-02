@@ -36,3 +36,5 @@ python3 ~/.claude/guild/scripts/regenerate-pick.py --project <root> --set <slug>
 ```
 
 This applies the picked patch and captures the pick as taste data (one pairwise calibration label per rejected variant — the rejects teach as much as the pick). Then run the project's suite + build green and commit the applied change. The reflex is complete only when the pick is applied, tested, committed, and captured.
+
+**If the owner rejects ALL variants** (`--pick none`, or the pick note's "None of these — keep iterating" button): record it (all three become rejected-labels — a full rejection teaches too), ask the owner ONE question — what was off about A/B/C — then return to STEP 2 with that critique appended to the comment. New lanes only: NEVER re-propose a rejected direction. Iterate until a pick or the owner stops.

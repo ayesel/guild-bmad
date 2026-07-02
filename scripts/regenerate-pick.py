@@ -102,7 +102,7 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--project"); ap.add_argument("--set", dest="slug")
-    ap.add_argument("--pick", choices=["a", "b", "c"])
+    ap.add_argument("--pick", choices=["a", "b", "c", "none"])
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
@@ -112,6 +112,17 @@ def main():
     project = os.path.abspath(os.path.expanduser(a.project))
     set_dir = find_set(project, a.slug)
     manifest = read_manifest(set_dir)
+    if a.pick == "none":
+        when = datetime.date.today().isoformat()
+        with open(CAL, "a") as f:
+            for v, meta in manifest["variants"].items():
+                f.write(f'  - {{ pair: "regen-{manifest["set"]}-none-v-{v}", picked: "none", '
+                        f'rejected: "{v}:{meta["name"]}", source: "comment-regenerate-rejected-all", '
+                        f'date: "{when}" }}\n')
+        record_pick(set_dir, "none")
+        print(f"recorded: owner rejected all {len(manifest['variants'])} variants (taste labels written).")
+        print("next: ask what was off, then re-diverge with that critique — never repeat rejected directions.")
+        return
     if a.dry_run:
         sys.exit(0 if dry_run(project, set_dir, manifest, a.pick) else 1)
     patch = os.path.join(set_dir, manifest["variants"][a.pick]["patch"])
