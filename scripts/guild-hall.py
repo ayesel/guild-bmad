@@ -106,7 +106,7 @@ body{background:linear-gradient(180deg,#12100e 0%,#100f0d 240px);color:var(--ink
 @media(min-width:1100px){body{max-width:1200px}}
 @media(min-width:1500px){body{max-width:1400px}}
 a{color:inherit;text-decoration:none}
-.top{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.top{display:flex;align-items:center;gap:11px;margin-bottom:10px;position:sticky;top:0;z-index:40;background:linear-gradient(180deg,var(--bg) 82%,transparent);padding:10px 0 14px}
 .gm{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--ember),var(--ember-deep));
 display:grid;place-items:center;color:#1a0f08;font-weight:800;font-size:14px}
 .top h1{font-size:19px;letter-spacing:-.01em}.top .crumb{color:var(--ink-faint);font-size:13px}
@@ -135,6 +135,14 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
+.snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:10px}
+.snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
+.snav a.on{background:rgba(206,83,40,.1);color:var(--ember-tx)}
+.snav a:hover{background:var(--panel2);color:var(--ink)}
+.snav .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
+.snav .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+@media (max-width:1100px){.shell{grid-template-columns:1fr}.snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:center}.snav .grp{margin:0 2px}}
 .sfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
 .fbtn{font-size:11px;font-weight:700;padding:6px 13px;border-radius:18px;border:1px solid var(--line-soft);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px}
 .fbtn.on{color:var(--ember-tx);border-color:rgba(206,83,40,.4);background:rgba(206,83,40,.08)}
@@ -405,15 +413,36 @@ def project_view(wf, pidx, view, sv="cards"):
     p = regs[pidx]
     feed = wf.build(p["path"])
     its = items_for(feed, p["name"])
-    tabs = "".join(f'<a href="/p/{pidx}?view={v}" class="{"on" if view == v else ""}">{label}</a>'
-                   for v, label in (("needs", f'Needs you ({sum(1 for i in its if i["kind"]=="decision")})'),
-                                    ("runs", f'Runs ({sum(1 for i in its if i["kind"]=="run")})'),
-                                    ("library", f'Library · {len(feed["library"])} outputs')))
+    ndec = sum(1 for i in its if i["kind"] == "decision")
+    nruns = sum(1 for i in its if i["kind"] == "run")
+    nsugg = 0
+    for base in ("_bmad-output", "guild-output"):
+        sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
+        if os.path.exists(sf):
+            import yaml as _y
+            nsugg = len((_y.safe_load(open(sf)) or {}).get("suggestions", []))
+            break
+    def nv(href, label, cnt=None, on=False):
+        c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
+        return f'<a href="{href}" class="{"on" if on else ""}">{label}{c}</a>'
+    side = ('<aside class="snav" aria-label="project sections">'
+            '<div class="grp">Decide</div>'
+            + nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs")
+            + nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg)
+            + nv(f"/p/{pidx}?view=needs#recs", "What to run next")
+            + '<div class="grp">Watch</div>'
+            + nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")
+            + '<div class="grp">Browse</div>'
+            + nv(f"/p/{pidx}?view=library", "Library", len(feed["library"]), view == "library")
+            + nv(f"/playbook?p={pidx}", "Playbook")
+            + '<div class="grp">People</div>'
+            + nv(f"/p/{pidx}?view=needs#roster", "Your guild")
+            + nv(f"/p/{pidx}?view=needs#bmad", "Build council")
+            + '</aside>')
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
-    body = (f'<div class="tabs">{tabs}</div>'
-            f'<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 2px">{explain[view]}</div>')
+    body = f'<div style="font-size:11.5px;color:var(--ink-faint);margin:2px 2px 2px">{explain[view]}</div>' 
     if view == "needs":
         rec_rows = "".join(
             f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
@@ -495,17 +524,17 @@ def project_view(wf, pidx, view, sv="cards"):
                 sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
             else:
                 sugg_rows = "".join(_srow(s) for s in ss)
-            sugg_rows = (f'<h2 class="sect">UX improvements Guild noticed{toggle}</h2>{fbar}'
+            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{fbar}'
                          f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
             break
-        body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
-              + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
+        body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
+              + f'<h2 class="sect" id="roster">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
         bmad_rows = "".join(
             f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
             f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in BMAD_ROSTER)
-        body += f'<h2 class="sect">The build council (BMAD) — plans and builds inside every full quest</h2><div class="libgrid">{bmad_rows}</div>'
+        body += f'<h2 class="sect" id="bmad">The build council (BMAD) — plans and builds inside every full quest</h2><div class="libgrid">{bmad_rows}</div>'
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -536,7 +565,7 @@ def project_view(wf, pidx, view, sv="cards"):
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
-    return page(p["name"], "a project in your hall", body + JS, current=pidx)
+    return page(p["name"], "a project in your hall", f'<div class="shell">{side}<div>{body}</div></div>' + JS, current=pidx)
 
 
 JS = """<script>
