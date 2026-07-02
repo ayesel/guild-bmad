@@ -96,6 +96,9 @@ CSS = """
 --ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
 --sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;
 --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+@view-transition{navigation:auto}
+::view-transition-old(root){animation-duration:.14s}
+::view-transition-new(root){animation-duration:.18s}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
 -webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
@@ -112,23 +115,30 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.exec{background:rgba(206,83,40,.16);color:var(--ember-tx)}
 .chip.done{background:rgba(143,174,125,.14);color:var(--sage-tx)}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
+.swbar{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}
+.sw{font-size:11.5px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:16px;padding:5px 13px;display:inline-flex;align-items:center;min-height:32px}
+.sw:hover{color:var(--ink);border-color:var(--line)}
 .sect{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
 color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
 .card{border:1px solid var(--line-soft);border-radius:11px;background:var(--panel);padding:13px 15px;margin:9px 0;display:block}
-a.card:hover{border-color:var(--line)}
+a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
+a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
 .card b{font-size:14px;font-weight:660}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-.acts button,.acts a{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+.acts button,.acts a{transition:transform .12s cubic-bezier(.22,1,.36,1),filter .12s ease;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
 background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
 .acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .acts .quiet:hover{color:var(--ink)}
+.acts button:hover,.acts a:hover{filter:brightness(1.12)}
+.acts button:active,.acts a:active{transform:scale(.96)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
-.pcard:hover{border-color:var(--line)}
+.pcard{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
+.pcard:hover{border-color:var(--line);transform:translateY(-2px)}
 .pcard b{font-size:14.5px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
 .pcard .meta{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
 .badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
@@ -156,7 +166,42 @@ display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:va
 """
 
 
-def page(title, crumb, body):
+def switcher(current=None):
+    regs = projects()
+    wf = _feed_mod()
+    out = []
+    for i, pr in enumerate(regs):
+        try: n = len(wf.build(pr["path"])["needs_you"])
+        except Exception: n = 0
+        on = ' style="color:var(--ember-tx);border-color:rgba(206,83,40,.4)"' if current == i else ""
+        badge = f'<b style="color:#f3dca3;margin-left:5px">{n}</b>' if n else ""
+        out.append(f'<a href="/p/{i}"{on} class="sw">{E(pr["name"])}{badge}</a>')
+    return f'<div class="swbar">{"".join(out)}</div>'
+
+
+def recommends(feed, project_path):
+    """Guild proposes the next UX process from the project's actual state."""
+    recs = []
+    art = os.path.join(project_path, "_bmad-output", "guild-artifacts")
+    if not os.path.isdir(art): art = os.path.join(project_path, "guild-output", "guild-artifacts")
+    has = (lambda name: any(name in f for f in os.listdir(art))) if os.path.isdir(art) else (lambda name: False)
+    if feed["needs_you"]:
+        recs.append(("Answer what's waiting first", f'{len(feed["needs_you"])} decisions above — everything downstream moves faster once they land', "top"))
+    if feed["spine_nuggets"] == 0:
+        recs.append(("Give the brain evidence", "no research spine here yet — run /guild-spine-backfill (existing research) or /guild-research-synthesis (fresh)", "/guild-spine-backfill"))
+    if not has("design-direction") and not has("charter"):
+        recs.append(("Capture your taste once", "no design direction on file — /guild-design-direction + /guild-charter stop every agent re-asking what you want", "/guild-design-direction"))
+    if os.path.isdir(os.path.join(project_path, "src")) and not feed["runs"]:
+        recs.append(("Audit what's built", "real code, never judged by Guild — /guild-auto-critique per key screen + affordance-check + equivalence-check find the gaps in one pass", "/guild-auto-critique"))
+    if feed["runs"] and not has("batched-review"):
+        recs.append(("Get a decision packet", "runs exist but no batched review — /guild-pre-handoff turns findings into approve/waive decisions", "/guild-pre-handoff"))
+    if not recs:
+        recs.append(("Ship or extend", "state looks healthy — /guild-quest for the next feature, or /guild-comment on anything that feels off", "/guild-quest"))
+    return recs[:4]
+
+
+def page(title, crumb, body, current=None):
+    body = switcher(current) + body
     return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
@@ -272,10 +317,16 @@ def project_view(wf, pidx, view):
     body = (f'<div class="tabs">{tabs}</div>'
             f'<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 2px">{explain[view]}</div>')
     if view == "needs":
+        rec_rows = "".join(
+            f'<div class="card" style="border-left:3px solid var(--denim)"><div class="row"><b>{E(title)}</b>'
+            f'<span class="chip think">Guild recommends</span></div><div class="why">{E(why)}</div>'
+            + (f'<div class="who">start it: type {E(cmd)} in any agent pane</div>' if cmd != "top" else "")
+            + '</div>'
+            for title, why, cmd in recommends(feed, p["path"]))
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
-        body += cards
+        body += cards + f'<div class="sect">What Guild would run next</div>{rec_rows}'
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
             d = wf._yaml(i["link"])
@@ -290,7 +341,7 @@ def project_view(wf, pidx, view):
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
-    return page(p["name"], "a project in your hall", body + JS)
+    return page(p["name"], "a project in your hall", body + JS, current=pidx)
 
 
 JS = """<script>
