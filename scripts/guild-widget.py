@@ -236,6 +236,27 @@ def build_html(feed):
 {JS}</body></html>"""
 
 
+
+def build_pointer(feed):
+    """The atrium note is now a THIN POINTER to the HALL (one surface, not two)."""
+    n = len(feed["needs_you"])
+    line = f'{n} decision{"s" if n != 1 else ""} waiting for you' if n else "nothing needs you — agents keep working"
+    return f"""<!doctype html><html><head><meta charset="utf-8"><style>
+body{{background:#100f0d;color:#f4ece2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+display:grid;place-items:center;height:100vh;margin:0;text-align:center}}
+.g{{width:34px;height:34px;border-radius:9px;background:linear-gradient(150deg,#ce5328,#9e3f1e);display:grid;
+place-items:center;color:#1a0f08;font-weight:800;margin:0 auto 10px}}
+h1{{font-size:15px;margin-bottom:4px}} p{{font-size:12.5px;color:#aa9c8d;line-height:1.6}}
+.n{{display:inline-block;margin:12px 0 4px;font-size:13px;font-weight:700;color:#f3dca3;background:#251e12;
+border:1px solid #3d311d;border-radius:9px;padding:8px 16px}}
+code{{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#b7c9a6}}</style></head><body><div>
+<div class="g">G</div><h1>GUILD lives in the Hall now</h1>
+<p>Your delegated-work inbox — every project, one surface.</p>
+<div class="n">{line}</div>
+<p>Open <code>http://localhost:4400</code><br>(start it: <code>python3 scripts/guild-hall.py --serve</code>)</p>
+</div></body></html>"""
+
+
 def note_id_file(feed):
     base = os.path.join(feed["root"], "_bmad-output", "guild-artifacts")
     if not os.path.isdir(base): base = os.path.join(feed["root"], "docs", "guild")
@@ -297,12 +318,11 @@ def main():
         while True:
             feed = wf.build(a.project)
             sig = json.dumps(feed, sort_keys=True, default=str)
-            if sig != last: render(feed, build_html(feed)); last = sig
+            if sig != last: render(feed, build_pointer(feed)); last = sig
             time.sleep(3)
     feed = wf.build(a.project)
-    body = build_html(feed)
-    if a.render: render(feed, body)
-    else: sys.stdout.write(body)
+    if a.render: render(feed, build_pointer(feed))
+    else: sys.stdout.write(build_html(feed))
 
 
 if __name__ == "__main__":

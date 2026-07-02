@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""
+guild-hall.py — GUILD HALL v1: the delegated-work inbox (mission control).
+
+The owner surface, rebuilt on the researched mental model
+(docs/guild/decisions/ui-mental-model-research.md): you are a manager; agents
+are teammates you DELEGATE work to; decisions come back as provenance-bearing
+cards in an inbox. ONE primitive (the quest/run item); every view is a
+non-mutating lens; inbox vocabulary only (Needs you / Runs / Library).
+
+Local-first, zero dependencies (stdlib http.server), device-light. The write
+channel is REAL: Approve/Waive records verdicts, Pick executes
+regenerate-pick.py (incl. taste capture).
+
+  python3 scripts/guild-hall.py --serve [--port 4400]
+  python3 scripts/guild-hall.py --projects           # show the registry
+  python3 scripts/guild-hall.py --selftest
+
+Projects registry: ~/.config/guild/hall-projects.yaml (operator-owned).
+"""
+import os, sys, json, html, time, argparse, importlib.util, subprocess, datetime
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import urlparse, parse_qs
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REG = os.path.expanduser("~/.config/guild/hall-projects.yaml")
+E = html.escape
+
+
+def _feed_mod():
+    spec = importlib.util.spec_from_file_location("wf", os.path.join(HERE, "widget-feed.py"))
+    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+
+
+def projects():
+    import yaml
+    if not os.path.exists(REG): return []
+    return (yaml.safe_load(open(REG)) or {}).get("projects", [])
+
+
+# ── the ONE primitive: a work item ───────────────────────────────────────────
+# Everything the HALL shows is a quest/run item: delegated to agents, assigned
+# to the owner. Feeds are folded into items with an explicit agent state.
+
+def items_for(feed, proj):
+    """Fold a project feed into work items with explicit states."""
+    out = []
+    for n in feed["needs_you"]:
+        out.append({"kind": "decision", "state": "waiting for you", "project": proj,
+                    "title": n["title"], "why": n["detail"], "id": n["id"], "link": n.get("link", "")})
+    for r in feed["runs"]:
+        st = "finished" if r["state"] in ("completed", "done") else \
+             "waiting for you" if r["state"] == "ready-for-review" else "executing"
+        out.append({"kind": "run", "state": st, "project": proj, "title": r["id"],
+                    "why": r["objective"], "id": r["id"], "link": r["path"],
+                    "checkpoints": r["checkpoints"]})
+    return out
+
+
+CSS = """
+:root{--bg:#100f0d;--panel:#1f1b16;--panel2:#282119;--inset:#171512;--line:#2c2820;--line-soft:#221e18;
+--ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
+--sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;
+--mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
+-webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
+a{color:inherit;text-decoration:none}
+.top{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.gm{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--ember),var(--ember-deep));
+display:grid;place-items:center;color:#1a0f08;font-weight:800;font-size:14px}
+.top h1{font-size:16px}.top .crumb{color:var(--ink-faint);font-size:13px}
+.top .home{margin-left:auto;font-size:12px;color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;padding:5px 13px;display:inline-flex;align-items:center;min-height:44px}
+.top .home:hover{color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:700;
+border-radius:6px;padding:2px 8px;white-space:nowrap}
+.chip.wait{background:rgba(201,151,31,.16);color:#f3dca3}
+.chip.exec{background:rgba(206,83,40,.16);color:var(--ember-tx)}
+.chip.done{background:rgba(143,174,125,.14);color:var(--sage-tx)}
+.chip.think{background:var(--panel2);color:var(--ink-dim)}
+.sect{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
+.sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.card{border:1px solid var(--line-soft);border-radius:11px;background:var(--panel);padding:13px 15px;margin:9px 0;display:block}
+a.card:hover{border-color:var(--line)}
+.card .row{display:flex;align-items:center;gap:10px}
+.card b{font-size:14px;font-weight:660}
+.card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
+.card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
+.acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.acts button,.acts a{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
+.acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
+.acts .quiet:hover{color:var(--ink)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
+.pcard:hover{border-color:var(--line)}
+.pcard b{font-size:14.5px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
+.pcard .meta{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
+.badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
+border-radius:12px;padding:1px 8px;margin-left:auto}
+.badge.zero{background:var(--panel2);color:var(--ink-faint)}
+.tabs{display:flex;gap:4px;margin:16px 0 4px;border-bottom:1px solid var(--line-soft);padding-bottom:0}
+.tabs a{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent;display:inline-flex;align-items:center;min-height:44px}
+.tabs a.on{color:var(--ember-tx);border-bottom-color:var(--ember-tx)}
+.tabs a:hover{color:var(--ink-dim)}
+.quiet-empty{border:1px dashed var(--line);border-radius:11px;padding:22px;text-align:center;color:var(--ink-dim);
+font-size:13px;margin:10px 0;line-height:1.6}
+.quiet-empty .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);margin-right:7px}
+.tl{list-style:none;margin:8px 0}
+.tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+.tl li:before{content:"✓";color:var(--sage-tx);font-weight:700;flex:0 0 auto}
+.confirm{background:rgba(143,174,125,.12);border:1px solid rgba(143,174,125,.3);border-radius:9px;
+padding:10px 14px;color:var(--sage-tx);font-size:13px;margin:10px 0}
+.lib{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;
+border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);margin:7px 0}
+.lib .th{width:36px;height:32px;border-radius:6px;background:var(--inset);border:1px solid var(--line);
+display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:var(--ink-faint)}
+.lib b{font-size:13px}.lib .m{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono)}
+.foot{margin-top:26px;font-size:11px;color:var(--ink-faint);line-height:1.6}
+"""
+
+
+def page(title, crumb, body):
+    return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{E(title)}</title><style>{CSS}</style></head><body>'
+            f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
+            f'{"" if crumb.startswith("everything") else chr(60)+chr(97)+chr(32)+chr(99)+chr(108)+chr(97)+chr(115)+chr(115)+chr(61)+chr(34)+chr(104)+chr(111)+chr(109)+chr(101)+chr(34)+chr(32)+chr(104)+chr(114)+chr(101)+chr(102)+chr(61)+chr(34)+chr(47)+chr(34)+chr(62)+chr(66)+chr(97)+chr(99)+chr(107)+chr(32)+chr(116)+chr(111)+chr(32)+chr(97)+chr(108)+chr(108)+chr(32)+chr(112)+chr(114)+chr(111)+chr(106)+chr(101)+chr(99)+chr(116)+chr(115)+chr(60)+chr(47)+chr(97)+chr(62)}</div>{body}'
+            f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
+            f'Quiet inbox = agents working, nothing needs you.</div></body></html>')
+
+
+def chip(state):
+    cls = {"waiting for you": "wait", "executing": "exec", "finished": "done", "thinking": "think"}.get(state, "think")
+    return f'<span class="chip {cls}">{E(state)}</span>'
+
+
+def decision_card(item, pidx, project_name=""):
+    why = item.get("why") or item.get("detail") or ""
+    when = ""
+    try:
+        when = time.strftime("prepared %b %d", time.localtime(os.path.getmtime(item.get("link", ""))))
+    except OSError:
+        pass
+    proj = f'<span class="chip think">{E(project_name)}</span>' if project_name else ""
+    if item["id"] == "note":
+        return (f'<div class="card" style="opacity:.75"><div class="row"><b>{E(item["title"])}</b>'
+                f'<span class="chip think">for your awareness</span>{proj}</div>'
+                f'<div class="why">{E(why)}</div>'
+                f'<div class="who">a note from the last run — nothing to decide yet · {when}</div>'
+                f'<div class="acts"><a class="quiet" href="/open?path={E(item["link"])}">Open the run record</a></div></div>')
+    if item["id"] == "PICK":
+        slug = item["title"].split("·")[-1].strip()
+        opts = "".join(f'<button class="quiet" onclick="act(this,{pidx},\'pick\',\'{E(slug)}\',\'{c}\')">Pick {c.upper()}</button>'
+                       for c in ("a", "b", "c"))
+        acts = (f'<div class="acts"><a href="/open?path={E(item["link"])}">See the options first</a>{opts}'
+                f'<button class="quiet" onclick="act(this,{pidx},\'pick\',\'{E(slug)}\',\'none\')">None fit — try again</button></div>')
+    elif item["id"].startswith("D"):
+        acts = (f'<div class="acts"><a href="/open?path={E(item["link"])}">Read the evidence first</a>'
+                f'<button class="quiet" onclick="act(this,{pidx},\'approve\',\'{E(item["id"])}\',\'\')">Approve</button>'
+                f'<button class="quiet" onclick="act(this,{pidx},\'waive\',\'{E(item["id"])}\',\'\')">Not now</button></div>')
+    else:
+        acts = f'<div class="acts"><a class="quiet" href="/open?path={E(item["link"])}">Open</a></div>'
+    return (f'<div class="card"><div class="row"><b>{E(item["title"])}</b>{chip(item["state"])}{proj}</div>'
+            f'<div class="why">{E(why)}</div>'
+            f'<div class="who">an agent prepared this — the decision is yours · {when}</div>{acts}</div>')
+
+
+def home(wf):
+    regs = projects()
+    all_needs, grid = [], []
+    for i, p in enumerate(regs):
+        try: feed = wf.build(p["path"])
+        except Exception: continue
+        needs = feed["needs_you"]
+        all_needs += [(i, n, feed) for n in needs[:8]]
+        j = feed.get("journey") or {}
+        phase = "no work started yet"
+        if j.get("phases"):
+            done = sum(1 for x in j["phases"] if x["status"] == "done")
+            cur = next((x["name"] for x in j["phases"] if x["status"] != "done"), "all steps finished")
+            phase = f"{done} of {len(j['phases'])} steps done · now: {cur[:34]}"
+        last = max((it["mtime"] for it in feed["library"]), default=0)
+        ago = f'{int((time.time()-last)/3600)}h ago' if last else "—"
+        badge = f'<span class="badge{"" if needs else " zero"}">{len(needs) or "0"}</span>'
+        grid.append(f'<a class="pcard" href="/p/{i}"><div style="display:flex;align-items:center"><b>{E(p["name"])}</b>{badge}</div>'
+                    f'<div class="ph">{E(phase)}</div><div class="meta"><span>{len(feed["runs"])} runs</span>'
+                    f'<span>last activity {ago}</span></div></a>')
+    inbox = "".join(decision_card({"kind": "decision", "state": "waiting for you", **n[1]}, n[0], project_name=regs[n[0]]["name"]) for n in all_needs) \
+        or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you right now. '
+            'Agents keep working and decisions will land here when they are yours to make.</div>')
+    body = (f'<div class="sect">Needs you — across every project ({len(all_needs)})</div>{inbox}'
+            f'<div class="sect">Your projects</div><div class="pgrid">{"".join(grid)}</div>{JS}')
+    return page("GUILD Hall", "everything you delegated, one inbox", body)
+
+
+def project_view(wf, pidx, view):
+    regs = projects()
+    p = regs[pidx]
+    feed = wf.build(p["path"])
+    its = items_for(feed, p["name"])
+    tabs = "".join(f'<a href="/p/{pidx}?view={v}" class="{"on" if view == v else ""}">{label}</a>'
+                   for v, label in (("needs", f'Needs you ({sum(1 for i in its if i["kind"]=="decision")})'),
+                                    ("runs", f'Runs ({sum(1 for i in its if i["kind"]=="run")})'),
+                                    ("library", f'Library · {len(feed["library"])} outputs')))
+    explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
+               "runs": "What agents did, step by step — each run is a checklist of completed work.",
+               "library": "Everything this project produced, newest first."}
+    body = (f'<div class="tabs">{tabs}</div>'
+            f'<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 2px">{explain[view]}</div>')
+    if view == "needs":
+        cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
+            or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
+                'Agents keep working; decisions land here.</div>')
+        body += cards
+    elif view == "runs":
+        for i in [x for x in its if x["kind"] == "run"]:
+            d = wf._yaml(i["link"])
+            tl = "".join(f"<li>{E(str(c)[:180])}</li>" for c in (d.get("checkpoints") or [])[:14])
+            body += (f'<div class="card"><div class="row"><b>{E(i["title"])}</b>{chip(i["state"])}</div>'
+                     f'<div class="why">{E(i["why"])}</div>'
+                     f'<div class="who">{i["checkpoints"]} steps completed</div><ul class="tl">{tl}</ul></div>')
+        if not any(x["kind"] == "run" for x in its):
+            body += '<div class="quiet-empty">No runs yet — delegate work with /guild-quest or /guild-comment.</div>'
+    else:
+        for it in feed["library"]:
+            when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
+            body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
+                     f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
+    return page(p["name"], "a project in your hall", body + JS)
+
+
+JS = """<script>
+async function act(btn, pidx, action, target, choice){
+  btn.disabled = true; btn.textContent = "…";
+  const r = await fetch('/act', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({pidx, action, target, choice})});
+  const d = await r.json();
+  const card = btn.closest('.card');
+  const note = document.createElement('div'); note.className = 'confirm';
+  note.textContent = d.ok ? '✓ ' + d.message : '✗ ' + d.message;
+  card.appendChild(note);
+  card.querySelectorAll('button').forEach(b => b.disabled = true);
+}
+</script>"""
+
+
+# ── the write channel ────────────────────────────────────────────────────────
+
+def record_verdict(project_path, target, decision):
+    """Approve/Waive a packet decision -> {art_root}/decisions.yaml, append-only."""
+    wf = _feed_mod()
+    out_root = wf._out_root(project_path)
+    art = os.path.join(out_root, "guild-artifacts") if out_root else os.path.join(project_path, "guild-artifacts")
+    path = os.path.join(art, "decisions.yaml")
+    if not os.path.exists(path):
+        open(path, "w").write("# Owner verdicts recorded by GUILD HALL (append-only)\ndecisions:\n")
+    when = datetime.datetime.now().isoformat(timespec="seconds")
+    with open(path, "a") as f:
+        f.write(f'  - {{ id: "{target}", verdict: "{decision}", via: "guild-hall", at: "{when}" }}\n')
+    return f"{target} {decision} recorded — agents will act on it"
+
+
+def do_pick(project_path, slug, choice, dry=False):
+    cmd = [sys.executable, os.path.join(HERE, "regenerate-pick.py"),
+           "--project", project_path, "--set", slug, "--pick", choice] + (["--dry-run"] if dry else [])
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    ok = r.returncode == 0
+    msg = (r.stdout or r.stderr).strip().splitlines()
+    return ok, (msg[-1] if msg else "done")
+
+
+class Handler(BaseHTTPRequestHandler):
+    wf = None
+
+    def log_message(self, *a): pass
+
+    def _send(self, body, ctype="text/html"):
+        data = body.encode()
+        self.send_response(200)
+        self.send_header("Content-Type", f"{ctype}; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        u = urlparse(self.path); q = parse_qs(u.query)
+        if u.path == "/":
+            return self._send(home(self.wf))
+        if u.path.startswith("/p/"):
+            return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0]))
+        if u.path == "/open":
+            p = q.get("path", [""])[0]
+            cli = os.environ.get("ATRIUM_CLI_PATH")
+            if cli and os.path.exists(p):
+                subprocess.run([cli, "pane", "create", "--type", "browser", "--url", "file://" + p],
+                               capture_output=True) if p.endswith(".html") else \
+                    subprocess.run(["open", p], capture_output=True)
+            elif os.path.exists(p):
+                subprocess.run(["open", p], capture_output=True)
+            return self._send('<script>history.back()</script>')
+        if u.path == "/api/feed":
+            pidx = int(q.get("pidx", ["0"])[0])
+            return self._send(json.dumps(self.wf.build(projects()[pidx]["path"])), "application/json")
+        self.send_response(404); self.end_headers()
+
+    def do_POST(self):
+        if self.path != "/act":
+            self.send_response(404); self.end_headers(); return
+        n = int(self.headers.get("Content-Length", 0))
+        req = json.loads(self.rfile.read(n))
+        p = projects()[req["pidx"]]["path"]
+        dry = os.environ.get("HALL_DRY_RUN") == "1"
+        try:
+            if req["action"] == "pick":
+                ok, msg = do_pick(p, req["target"], req["choice"], dry=dry)
+            else:
+                if dry:
+                    ok, msg = True, f'[dry-run] {req["target"]} {req["action"]} would be recorded'
+                else:
+                    ok, msg = True, record_verdict(p, req["target"], req["action"])
+        except Exception as ex:
+            ok, msg = False, str(ex)[:160]
+        self._send(json.dumps({"ok": ok, "message": msg}), "application/json")
+
+
+def selftest():
+    import tempfile, yaml
+    wf = _feed_mod()
+    with tempfile.TemporaryDirectory() as td:
+        art = os.path.join(td, "_bmad-output", "guild-artifacts"); os.makedirs(os.path.join(art, "runs"))
+        open(os.path.join(td, "_bmad-output", "quest-state.yaml"), "w").write('quest: "T"\nphases:\n  a: { status: done }\n')
+        open(os.path.join(art, "runs", "RUN-1.yaml"), "w").write('run_id: "RUN-1"\nstate: ready-for-review\nobjective: "x"\ncheckpoints: ["step one EXIT 0"]\n')
+        open(os.path.join(art, "batched-review-t.md"), "w").write("**D1 — Approve the thing** evidence\n")
+        global REG
+        old = REG; REG = os.path.join(td, "reg.yaml")
+        yaml.safe_dump({"projects": [{"name": "t", "path": td}]}, open(REG, "w"))
+        try:
+            h = home(wf)
+            pv = project_view(wf, 0, "needs")
+            rv = project_view(wf, 0, "runs")
+            msg = record_verdict(td, "D1", "approve")
+            recorded = "D1" in open(os.path.join(art, "decisions.yaml")).read()
+            ok = ("Needs you" in h and "Approve the thing" in h and "waiting for you" in pv
+                  and "steps completed" in rv and "decision is yours" in pv
+                  and recorded and "recorded" in msg
+                  and "Nothing needs you" not in pv)
+            # empty-inbox reads alive, not dead
+            open(os.path.join(art, "batched-review-t.md"), "w").write("no decisions here\n")
+            os.remove(os.path.join(art, "runs", "RUN-1.yaml"))
+            pv2 = project_view(wf, 0, "needs")
+            ok = ok and "Agents keep working" in pv2
+        finally:
+            REG = old
+    print("guild-hall self-test:", "✅ PASS" if ok else "❌ FAIL")
+    sys.exit(0 if ok else 1)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--serve", action="store_true"); ap.add_argument("--port", type=int, default=4400)
+    ap.add_argument("--projects", action="store_true"); ap.add_argument("--selftest", action="store_true")
+    a = ap.parse_args()
+    if a.selftest: selftest()
+    if a.projects:
+        for p in projects(): print(f'{p["name"]:<22} {p["path"]}')
+        return
+    if a.serve:
+        Handler.wf = _feed_mod()
+        print(f"GUILD HALL serving http://localhost:{a.port}  (registry: {REG})")
+        HTTPServer(("127.0.0.1", a.port), Handler).serve_forever()
+    ap.print_help()
+
+
+if __name__ == "__main__":
+    main()

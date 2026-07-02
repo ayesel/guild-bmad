@@ -27,6 +27,13 @@ def _yaml(path):
     return {}
 
 
+
+def _trunc(s, n):
+    s = re.sub(r"\s+", " ", str(s)).strip()
+    if len(s) <= n: return s
+    cut = s[:n].rsplit(" ", 1)[0]
+    return cut + " …"
+
 def _out_root(root):
     for cand in ("_bmad-output", "guild-output"):
         p = os.path.join(root, cand)
@@ -107,7 +114,7 @@ def _pending_picks(art_root):
         d = _yaml(m)
         if d and d.get("pick") in (None, "null"):
             picks.append({"id": "PICK", "title": f"Pick a treatment · {d.get('set','?')}",
-                          "detail": str(d.get("comment", ""))[:140],
+                          "detail": _trunc(d.get("comment", ""), 140),
                           "link": m, "variants": len(d.get("variants") or {})})
     return picks
 
@@ -118,14 +125,17 @@ def _needs_you(art_root, runs):
     packet = packets[0] if packets else None
     if packet:
         text = open(packet, encoding="utf-8").read()
-        for m in re.finditer(r"\*\*(D\d+)\s*—\s*([^*]{5,90})", text):
+        for m in re.finditer(r"\*\*(D\d+)\s*—\s*([^*]{5,90})\*\*\s*([^\n]{0,220})", text):
+            detail = re.sub(r"\s+", " ", m.group(3)).strip(" —-") or "open the packet for the evidence"
+            if detail and detail[0].islower(): detail = "… " + detail
             needs.append({"id": m.group(1), "title": m.group(2).strip().rstrip("?.").strip(),
-                          "detail": "decision packet", "link": packet})
+                          "detail": _trunc(detail, 200), "link": packet})
     if runs:
         for x in runs[0]["open_exceptions"]:
-            xid = x.split(":")[0][:26]
+            first = x.split(":")[0].strip()
+            title = (first[:57] + "…") if len(first) > 58 else first
             if any(n["id"] in x[:12] for n in needs): continue   # D1-D4 already listed via packet
-            needs.append({"id": "run", "title": xid, "detail": x[:150], "link": runs[0]["path"]})
+            needs.append({"id": "note", "title": title, "detail": _trunc(x, 200), "link": runs[0]["path"]})
     return needs[:6], packet
 
 
