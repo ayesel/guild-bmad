@@ -101,8 +101,19 @@ def _gate_exits(runs):
     return out[:10]
 
 
+def _pending_picks(art_root):
+    picks = []
+    for m in glob.glob(os.path.join(art_root, "regenerate", "*", "manifest.yaml")):
+        d = _yaml(m)
+        if d and d.get("pick") in (None, "null"):
+            picks.append({"id": "PICK", "title": f"Pick a treatment · {d.get('set','?')}",
+                          "detail": str(d.get("comment", ""))[:140],
+                          "link": m, "variants": len(d.get("variants") or {})})
+    return picks
+
+
 def _needs_you(art_root, runs):
-    needs = []
+    needs = list(_pending_picks(art_root))
     packets = sorted(glob.glob(os.path.join(art_root, "batched-review-*.md")), key=os.path.getmtime, reverse=True)
     packet = packets[0] if packets else None
     if packet:
@@ -169,7 +180,10 @@ def build(root):
     journey = (_phases_from_state(out_root) if out_root else None) or _phases_from_forge(root)
     spine = os.path.join(art_root, "spine.json")
     spine_n = len(json.load(open(spine))) if os.path.exists(spine) else 0
+    pstore = os.path.expanduser("~/.config/guild/patterns/patterns.yaml")
+    patterns = len((_yaml(pstore) or {}).get("patterns", [])) if os.path.exists(pstore) else 0
     return {
+        "patterns": patterns,
         "project": os.path.basename(root),
         "root": root,
         "mode": "project" if out_root else "engine",

@@ -152,7 +152,8 @@ def build_html(feed):
     health = "".join(
         f'<i class="{"bad" if g["exit"] else ""}"><b>{"✓" if g["exit"]==0 else "✗"}</b> {E(g["gate"])}</i>'
         for g in f["gates"][:6]) or '<i><b>—</b> no gate evidence yet</i>'
-    health += f'<i><b>{f["spine_nuggets"]}</b> nuggets</i><i><b>{len(runs)}</b> runs</i>'
+    health += (f'<i><b>{f["spine_nuggets"]}</b> nuggets</i><i><b>{len(runs)}</b> runs</i>'
+               f'<i><b>{f.get("patterns", 0)}</b> patterns</i>')
 
     nrows = "".join(
         f'<div class="nrow"><div class="ni">{E(n["id"])}</div>'
