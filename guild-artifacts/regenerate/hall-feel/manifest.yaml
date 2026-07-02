@@ -70,4 +70,6 @@ suites:
   a: hall selftest exit 0
   b: hall selftest exit 0
   c: hall selftest exit 0
-pick: null
+pick: "b"   # recorded 2026-07-02
+
+pick_note: "pick inferred from owner critique 2026-07-02 ('no icons, no status, no color indicators, cards all the same' = Composed's thesis); Fluid grafted per the stated combinability; icon + status-dot layer added beyond B at owner's ask"

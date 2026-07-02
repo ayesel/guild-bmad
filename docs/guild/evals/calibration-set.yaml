@@ -23,3 +23,5 @@ labels:
 
 # Real-signal winners (A/B test / HEART proxy) for the offline-online gap meta-metric.
 online_winners: []
+  - { pair: "regen-hall-feel-bva", picked: "b:Composed", rejected: "a:Fluid", source: "comment-regenerate", comment: "Owner (2026-07-02, live use): "I still feel like the UI for this is clunky." Com...", date: "2026-07-02" }
+  - { pair: "regen-hall-feel-bvc", picked: "b:Composed", rejected: "c:Alive", source: "comment-regenerate", comment: "Owner (2026-07-02, live use): "I still feel like the UI for this is clunky." Com...", date: "2026-07-02" }
