@@ -1,0 +1,41 @@
+diff --git a/scripts/guild-hall.py b/scripts/guild-hall.py
+index 89541c7..7bcd658 100644
+--- a/scripts/guild-hall.py
++++ b/scripts/guild-hall.py
+@@ -96,6 +96,9 @@ CSS = """
+ --ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
+ --sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;
+ --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
++@view-transition{navigation:auto}
++::view-transition-old(root){animation-duration:.14s}
++::view-transition-new(root){animation-duration:.18s}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
+ -webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
+@@ -116,19 +119,23 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
+ color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
+ .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
+ .card{border:1px solid var(--line-soft);border-radius:11px;background:var(--panel);padding:13px 15px;margin:9px 0;display:block}
+-a.card:hover{border-color:var(--line)}
++a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
++a.card:hover{border-color:var(--line);transform:translateX(3px)}
+ .card .row{display:flex;align-items:center;gap:10px}
+ .card b{font-size:14px;font-weight:660}
+ .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
+ .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
+ .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+-.acts button,.acts a{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
++.acts button,.acts a{transition:transform .12s cubic-bezier(.22,1,.36,1),filter .12s ease;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+ background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
+ .acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
+ .acts .quiet:hover{color:var(--ink)}
++.acts button:hover,.acts a:hover{filter:brightness(1.12)}
++.acts button:active,.acts a:active{transform:scale(.96)}
+ .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+ .pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
+-.pcard:hover{border-color:var(--line)}
++.pcard{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
++.pcard:hover{border-color:var(--line);transform:translateY(-2px)}
+ .pcard b{font-size:14.5px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
+ .pcard .meta{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
+ .badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
