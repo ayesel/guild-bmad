@@ -1,0 +1,1662 @@
+<!-- Deep-research output (110 agents, adversarially verified, 2026-07-02). -->
+# GUILD surface — mental-model research: the delegated-work inbox
+
+**Question:** GUILD is an AI design-agent system whose owner-facing surface (a status/decision widget with Now/Journey/Library tabs, decision inboxes, pick notes, pipeline journeys) currently reads as confusing — the owner "understands the core concept but it doesn't function like a true app." The contrast case: ...
+
+## Verdict
+
+The evidence converges on one answer: GUILD's owner surface should adopt the "delegated-work inbox + run timeline" mental model — the mission-control pattern that Linear (Agent Interaction Guidelines/SDK, Triage Intelligence) and GitHub (Agent HQ) have both independently codified: agents are teammates you DELEGATE work items to; decisions come back to you as provenance-bearing cards in an inbox/triage queue; each agent run is a legible timeline of explicit states and steps with glance-level summary and on-demand drill-down; and every tab is a non-mutating VIEW over one atomic work-item primitive. This rides the same familiar-model transfer that makes atrium instantly learnable: Jakob's law and mental-model inertia (NN/g) say users' models come from other products and should be leveraged, not fought, and recognition-over-recall explains the mechanism — a surface mapping onto a known model (inbox, editor, CI checks) activates existing memory cues where a bespoke widget offers none. The runner-up model is the CI-pipeline/checks run view (GitHub Actions/Vercel-style steps-completed timelines), which should be embedded as the Journey/run-detail lens inside the inbox model rather than being the top-level frame. Concretely: define ONE primitive (the quest/run item, delegated-to-agent but assigned-to-owner), make "Now" a decision inbox of elicitation cards (accept/decline, reasoning visible before acting, rendered in the product's existing visual language), make "Journey" the per-run timeline with explicit thinking/waiting-for-input/executing/finished states and steps completed/remaining, and make "Library" a saved-views lens over the same objects. For first-run learnability, NN/g's two-remedy framework favors conforming the system to the already-known model first, with clearer labels/explanation as the secondary teaching layer — though specific empty-state/first-run teaching patterns did not survive verification and remain an open gap.
+
+## Verified findings
+
+### 1. (high confidence, 3-0 x4 (merged claims 0, 1, 2, 6))
+Familiar-model transfer is the core learnability mechanism: users' mental models are formed by OTHER products (Jakob's Law), those models have strong inertia that designers should leverage rather than fight, and NN/g explicitly advises complex-application designers to ride established cultural metaphors and norms. When system and mental model mismatch, there are two remedies — conform the system to users' existing models, or teach users a better model via clearer labels/explanation — and NN/g leans toward conforming as the default. This directly explains why atrium (code-editor model) is instantly learnable while GUILD's bespoke widget is not, and frames GUILD's real choice as which remedy to LEAD with.
+Sources: https://www.nngroup.com/articles/mental-models/; https://www.nngroup.com/articles/usability-heuristics-complex-applications/
+> Verbatim NN/g quotes verified by all verifiers: "Users spend most of their time on websites other than yours"; "There's great inertia in users' mental models... Designers are better off leveraging this mental-model inertia instead of fighting it"; "Make the system conform to users' mental models... [or] Improve users' mental models... explain things better and make labels clearer"; "Designers can take advantage of already established cultural metaphors and norms to create natural mappings." Veri
+
+### 2. (high confidence, 3-0 x3 (merged claims 3, 4, 5))
+Recognition-over-recall is the cognitive mechanism behind familiar-model transfer: recognition is easier than recall because it provides more retrieval cues, cues work via spreading activation to related information already in memory, and the historical CLI-to-GUI shift succeeded precisely because visible options let users select rather than remember. A surface that maps onto an already-known model (inbox, editor) is therefore understood faster than a novel bespoke structure, whose elements activate nothing.
+Sources: https://www.nngroup.com/articles/recognition-and-recall/
+> All quotes verified verbatim in the NN/g article (Budiu, updated Jan 2024): "The difference between recognition and recall is the number of cues that help memory retrieval"; "Recognition is easier than recall because it involves more cues: all those cues spread activation to related information in memory"; "the available commands would be visible in the interface and users would be able to select them." One verifier noted spreading activation is one of two competing theoretical accounts (compoun
+
+### 3. (medium confidence, 3-0 (claim 7))
+For long-running/automated processes (waits over ~10 seconds — the norm for agent runs), status should be shown as explicit steps completed and steps in progress/remaining rather than generic loading or 'please wait' states. This is the established convention for pipeline/run timelines (GitHub Actions step checklists, Vercel deploy steps) and applies directly to GUILD's Journey view.
+Sources: https://www.nngroup.com/articles/usability-heuristics-complex-applications/
+> NN/g (Kaplan, 2021): "When waits exceed 10 seconds — a common scenario within complex applications — generic loop animations fail"; recommends a progress indicator including "a list of steps completed and steps in progress." Unanimous vote, but a single primary source (verifier cited corroborating NN/g progress-indicator research and Nielsen's response-time limits). Qualification: indicators must be honest/accurate.
+
+### 4. (high confidence, 3-0 x3 (merged claims 8, 9, 10))
+Convention 1 — agent output lives INSIDE existing surfaces, not on a new one: Linear's Triage Intelligence attaches AI suggestions (duplicates, related issues, labels, assignees) to items in the pre-existing triage inbox as they arrive; its stated design principles are that provenance/reasoning must be visible before a human acts ("if you are going to act on AI-generated suggestions, you need to see where they came from", with reasoning-on-hover and a thinking panel) and that suggestions render in the product's existing visual language so the AI feature reads as a natural extension while still being visually distinguished from human-set metadata. Humans accept/decline each suggestion by default.
+Sources: https://linear.app/now/how-we-built-triage-intelligence; https://linear.app/docs/triage-intelligence
+> Primary source verified: "a combination of search, ranking, and LLM-based reasoning to make suggestions as new issues come in"; "making the feature feel like a natural extension of Linear, not an add-on"; "we're careful not to blur the line between issue metadata set by humans or rules and suggestions from Triage Intelligence." Corroborated by live Linear docs (2026). Caveat: a Sept 2025 changelog added opt-in auto-apply rules per property, so human accept/decline is default but configurable; fe
+
+### 5. (high confidence, 3-0 x3 (merged claims 11, 12, 13))
+Convention 2 — dense tools become learnable through a SMALL explicit conceptual model, not feature lists: Linear's docs teach one atomic primitive (the issue, "the fundamental unit of work") with everything else (teams, cycles, projects, initiatives) defined as containers or rhythms around it, and define views as "different ways of looking at the same underlying work" that never mutate it. The one-object-model/many-lenses convention maps directly onto GUILD: define the quest/run as the single primitive and make Now/Journey/Library non-mutating views over it.
+Sources: https://linear.app/docs/conceptual-model
+> Live primary source fetched and verified verbatim (2026-07-02): "Understanding how these concepts relate makes it easier to organize work at every level"; "Issues are the fundamental unit of work in Linear"; "Views are different ways of looking at the same underlying work. They do not change the work itself." Minor caveats: Linear also has secondary objects (documents, triage), and the docs literally say "organize work" which the claim glosses as learnability; the GUILD application is researcher
+
+### 6. (high confidence, 3-0 x3 (merged claims 14, 18, 23))
+Convention 3 — agents ride the host platform's existing mental model as TEAMMATES, not via novel agent surfaces: Linear's official Agent Interaction Guidelines state "By default, agents should be able to work through existing UI patterns and standard actions of the platform they operate in" (principle: "an agent should inhabit the platform natively"); its SDK gives agents workspace identities operated through the same conventions as human coworkers (assignee dropdown, @-mentions, comments), clearly marked as agents. GitHub's Agent HQ makes the same bet explicitly: "You're still working with the primitives you know — Git, pull requests, issues" and "agents shouldn't be bolted on. They should work the way you already work." Two leading platforms independently converged on familiar-model transfer for agent UX.
+Sources: https://linear.app/developers/aig; https://linear.app/now/our-approach-to-building-the-agent-interaction-sdk; https://github.blog/news-insights/company-news/welcome-home-agents/; https://linear.app/docs/agents-in-linear
+> All quotes verified verbatim on primary sources; corroborated by live Linear docs (agents "behave similar to other users in a workspace... can be @-mentioned, delegated issues through assignment") and independent GitHub Agent HQ coverage (VentureBeat, hands-on reviews noting the pre-Agent-HQ experience "felt bolted on"). Caveats: these are first-party statements of design intent; Agent HQ does add one new surface (Mission Control) atop the familiar primitives; the Jakob's-law framing is interpre
+
+### 7. (high confidence, 3-0 x4 (merged claims 15, 16, 19, 21))
+Convention 4 — agent status is an explicit small state machine plus progressive disclosure: Linear's AIG requires agents to "clearly indicate whether they're thinking, waiting for input, executing, or finished working" (its shipped Agent Session API uses six states: pending/active/error/awaitingInput/complete/stale), and mandates a glanceable summary by default with on-demand drill-down into "the underlying reasoning, tool calls, prompts, and decision logic" via Agent Session views. Agent activity is made legible through structured activity types — thought, elicitation (request for human input), action/tool-call, response, error — now GA in the SDK. This gives GUILD a canonical status vocabulary and a two-layer (glance + inspect) information architecture for agent runs.
+Sources: https://linear.app/developers/aig; https://linear.app/now/our-approach-to-building-the-agent-interaction-sdk; https://linear.app/developers/agent-interaction
+> Verbatim on primary sources: "Agents should clearly indicate whether they're thinking, waiting for input, executing, or finished working"; "Humans should be able to understand what's happening at a glance and, when needed, inspect the underlying reasoning, tool calls, prompts, and decision logic"; "structured activity types—tool calls, thoughts, elicitations—that let agents surface their reasoning." Verifiers confirmed the SDK shipped (changelog 2025-07-30) with five AgentActivity types and six 
+
+### 8. (high confidence, 3-0 x2 (merged claims 17, 20))
+Convention 5 — human-decides-at-checkpoints is a codified design rule, implemented as delegation-not-assignment: Linear's AIG states "An agent can carry out tasks, but the final responsibility should always remain with a human" (principle: "an agent cannot be held accountable"), and its taxonomy enforces it — "issues can only be assigned to humans, and only delegated to agents" — so a responsible human stays visible on every agent-driven task while elicitation activities mark the explicit points where the agent asks the human to decide. This is the direct grounding for GUILD's decision-inbox pattern: decisions are elicitation cards attached to owner-assigned, agent-delegated work items.
+Sources: https://linear.app/developers/aig; https://linear.app/now/our-approach-to-building-the-agent-interaction-sdk; https://linear.app/docs/agents-in-linear
+> Both quotes verified verbatim on primary sources; corroborated by live 2026 Linear docs ("you remain the primary assignee and the agent is added as an additional contributor"; "the human teammate remains responsible for its completion"). Caveats: source says final "responsibility" (accountability) where the claim adds "decisions"; the decision-inbox grounding is researcher synthesis supported by the delegation model and elicitation activity type.
+
+### 9. (medium confidence, 3-0 (claim 22))
+Convention 6 — 'mission control': one command-center view of all running agents. GitHub Agent HQ ships mission control as "a unified command center that follows you wherever you work" across GitHub, VS Code, mobile, and CLI, letting users "choose from a fleet of agents, assign them work in parallel, and track their progress from any device." This establishes the fleet-supervision dashboard as a state-of-the-art convention for agent-status UIs — the frame GUILD's 'Now' tab should occupy.
+Sources: https://github.blog/news-insights/company-news/welcome-home-agents/; https://github.com/features/copilot/agents
+> Quotes verified on the GitHub blog (Oct 28, 2025) and GitHub's live product page ("a single command center to assign, steer, and track the work of multiple agents from anywhere"); corroborated by trade press (Visual Studio Magazine, The New Stack) and GA of GitHub's enterprise agent control plane (Feb 2026). Rated medium because the core quote is first-party marketing copy, the product was in preview at launch, and the "convention" generalization rests mainly on GitHub plus Linear's parallel inb
+
+### 10. (medium confidence, synthesis over 24 unanimous claims)
+SYNTHESIS / RECOMMENDATION — the ONE mental model for GUILD's surface is the DELEGATED-WORK INBOX (mission control): the owner is a manager triaging an inbox of work items delegated to agent teammates. Concrete redesign conventions, each grounded in a verified finding: (a) define one atomic primitive — the quest/run item, assigned-to-owner, delegated-to-agent — and make every tab a non-mutating view over it; (b) 'Now' becomes the decision inbox: elicitation cards showing agent reasoning/provenance before the owner accepts/declines, rendered in the product's existing visual language, each card carrying the responsible human; (c) 'Journey' becomes the per-run timeline: explicit thinking/waiting-for-input/executing/finished status chips plus steps-completed/steps-remaining (the CI-checks runner-up model — GitHub Actions/Vercel-style — embedded as the run-detail lens rather than the top-level frame); (d) 'Library' becomes saved views/filters over the same items; (e) glanceable summary by default, drill-down into reasoning/tool-calls on demand. RUNNER-UP top-level model: the CI pipeline/checks dashboard — rejected as the frame because it centers the machine's process rather than the owner's decisions, but adopted wholesale for run detail. FIRST-RUN TEACHING: per NN/g's two-remedy framework, lead with conforming to the known inbox model (remedy 1) so the surface needs no tutorial, and use clearer labels/explanation (remedy 2) as the secondary layer — e.g., label tabs in inbox vocabulary (Needs you / Runs / Archive) rather than bespoke terms.
+Sources: https://www.nngroup.com/articles/mental-models/; https://linear.app/developers/aig; https://linear.app/now/our-approach-to-building-the-agent-interaction-sdk; https://linear.app/docs/conceptual-model; https://linear.app/now/how-we-built-triage-intelligence; https://github.blog/news-insights/company-news/welcome-home-agents/; https://www.nngroup.com/articles/usability-heuristics-complex-applications/; https://www.nngroup.com/articles/recognition-and-recall/
+> This is the researcher's synthesis, not a single verified claim — rated medium accordingly. It is the intersection of every verified convention: Linear and GitHub both independently converged on delegated work items + decision checkpoints + status timelines riding existing platform primitives; NN/g supplies the theory (Jakob's law, recognition-over-recall, conform-vs-teach) for why an inbox model transfers instantly the way atrium's editor model does. Every individual convention cited (a-e) trac
+
+
+## Caveats (verified honestly)
+- 1
+- )
+-  
+- F
+- i
+- r
+- s
+- t
+- -
+- p
+- a
+- r
+- t
+- y
+-  
+- b
+- i
+- a
+- s
+- :
+-  
+- t
+- h
+- e
+-  
+- s
+- t
+- r
+- o
+- n
+- g
+- e
+- s
+- t
+-  
+- c
+- o
+- n
+- c
+- r
+- e
+- t
+- e
+-  
+- c
+- o
+- n
+- v
+- e
+- n
+- t
+- i
+- o
+- n
+- s
+-  
+- c
+- o
+- m
+- e
+-  
+- f
+- r
+- o
+- m
+-  
+- L
+- i
+- n
+- e
+- a
+- r
+- '
+- s
+-  
+- a
+- n
+- d
+-  
+- G
+- i
+- t
+- H
+- u
+- b
+- '
+- s
+-  
+- o
+- w
+- n
+-  
+- b
+- l
+- o
+- g
+- s
+- /
+- d
+- o
+- c
+- s
+-  
+- —
+-  
+- t
+- h
+- e
+- y
+-  
+- d
+- o
+- c
+- u
+- m
+- e
+- n
+- t
+-  
+- d
+- e
+- l
+- i
+- b
+- e
+- r
+- a
+- t
+- e
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+-  
+- I
+- N
+- T
+- E
+- N
+- T
+- ,
+-  
+- n
+- o
+- t
+-  
+- m
+- e
+- a
+- s
+- u
+- r
+- e
+- d
+-  
+- l
+- e
+- a
+- r
+- n
+- a
+- b
+- i
+- l
+- i
+- t
+- y
+-  
+- o
+- u
+- t
+- c
+- o
+- m
+- e
+- s
+- ;
+-  
+- n
+- o
+-  
+- i
+- n
+- d
+- e
+- p
+- e
+- n
+- d
+- e
+- n
+- t
+-  
+- u
+- s
+- a
+- b
+- i
+- l
+- i
+- t
+- y
+-  
+- d
+- a
+- t
+- a
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+- s
+- e
+-  
+- a
+- g
+- e
+- n
+- t
+-  
+- U
+- I
+- s
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- e
+- d
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- c
+- a
+- t
+- i
+- o
+- n
+- .
+-  
+- 2
+- )
+-  
+- C
+- o
+- n
+- v
+- e
+- r
+- g
+- e
+- n
+- c
+- e
+-  
+- s
+- a
+- m
+- p
+- l
+- e
+-  
+- i
+- s
+-  
+- n
+- a
+- r
+- r
+- o
+- w
+- :
+-  
+- n
+- o
+-  
+- c
+- l
+- a
+- i
+- m
+- s
+-  
+- a
+- b
+- o
+- u
+- t
+-  
+- D
+- e
+- v
+- i
+- n
+- ,
+-  
+- C
+- u
+- r
+- s
+- o
+- r
+-  
+- b
+- a
+- c
+- k
+- g
+- r
+- o
+- u
+- n
+- d
+-  
+- a
+- g
+- e
+- n
+- t
+- s
+- ,
+-  
+- R
+- e
+- p
+- l
+- i
+- t
+- ,
+-  
+- v
+- 0
+- ,
+-  
+- O
+- p
+- e
+- n
+- A
+- I
+- /
+- A
+- n
+- t
+- h
+- r
+- o
+- p
+- i
+- c
+-  
+- a
+- g
+- e
+- n
+- t
+-  
+- U
+- I
+- s
+- ,
+-  
+- S
+- u
+- p
+- e
+- r
+- h
+- u
+- m
+- a
+- n
+- ,
+-  
+- o
+- r
+-  
+- N
+- o
+- t
+- i
+- o
+- n
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- e
+- d
+- ,
+-  
+- s
+- o
+-  
+- t
+- h
+- e
+-  
+- "
+- i
+- n
+- d
+- u
+- s
+- t
+- r
+- y
+-  
+- c
+- o
+- n
+- v
+- e
+- r
+- g
+- e
+- n
+- c
+- e
+- "
+-  
+- r
+- e
+- s
+- t
+- s
+-  
+- e
+- s
+- s
+- e
+- n
+- t
+- i
+- a
+- l
+- l
+- y
+-  
+- o
+- n
+-  
+- L
+- i
+- n
+- e
+- a
+- r
+-  
+- +
+-  
+- G
+- i
+- t
+- H
+- u
+- b
+-  
+- (
+- t
+- w
+- o
+-  
+- w
+- e
+- l
+- l
+- -
+- r
+- e
+- g
+- a
+- r
+- d
+- e
+- d
+-  
+- b
+- u
+- t
+-  
+- s
+- e
+- l
+- f
+- -
+- i
+- n
+- t
+- e
+- r
+- e
+- s
+- t
+- e
+- d
+-  
+- v
+- e
+- n
+- d
+- o
+- r
+- s
+- )
+- .
+-  
+- 3
+- )
+-  
+- T
+- h
+- e
+-  
+- f
+- i
+- r
+- s
+- t
+- -
+- r
+- u
+- n
+-  
+- t
+- e
+- a
+- c
+- h
+- i
+- n
+- g
+-  
+- l
+- e
+- g
+-  
+- i
+- s
+-  
+- u
+- n
+- d
+- e
+- r
+- -
+- e
+- v
+- i
+- d
+- e
+- n
+- c
+- e
+- d
+- :
+-  
+- n
+- o
+- t
+- h
+- i
+- n
+- g
+-  
+- o
+- n
+-  
+- e
+- m
+- p
+- t
+- y
+- -
+- s
+- t
+- a
+- t
+- e
+- s
+- -
+- t
+- h
+- a
+- t
+- -
+- t
+- e
+- a
+- c
+- h
+-  
+- o
+- r
+-  
+- g
+- u
+- i
+- d
+- e
+- d
+-  
+- f
+- i
+- r
+- s
+- t
+-  
+- a
+- c
+- t
+- i
+- o
+- n
+- s
+-  
+- s
+- u
+- r
+- v
+- i
+- v
+- e
+- d
+- ;
+-  
+- o
+- n
+- l
+- y
+-  
+- N
+- N
+- /
+- g
+- '
+- s
+-  
+- g
+- e
+- n
+- e
+- r
+- i
+- c
+-  
+- t
+- w
+- o
+- -
+- r
+- e
+- m
+- e
+- d
+- y
+-  
+- f
+- r
+- a
+- m
+- e
+- w
+- o
+- r
+- k
+-  
+- s
+- u
+- p
+- p
+- o
+- r
+- t
+- s
+-  
+- t
+- h
+- e
+-  
+- t
+- e
+- a
+- c
+- h
+- i
+- n
+- g
+-  
+- r
+- e
+- c
+- o
+- m
+- m
+- e
+- n
+- d
+- a
+- t
+- i
+- o
+- n
+- .
+-  
+- 4
+- )
+-  
+- T
+- i
+- m
+- e
+- -
+- s
+- e
+- n
+- s
+- i
+- t
+- i
+- v
+- i
+- t
+- y
+- :
+-  
+- a
+- g
+- e
+- n
+- t
+- -
+- U
+- X
+-  
+- c
+- o
+- n
+- v
+- e
+- n
+- t
+- i
+- o
+- n
+- s
+-  
+- a
+- r
+- e
+-  
+- 2
+- 0
+- 2
+- 5
+- -
+- v
+- i
+- n
+- t
+- a
+- g
+- e
+-  
+- a
+- n
+- d
+-  
+- m
+- o
+- v
+- i
+- n
+- g
+-  
+- f
+- a
+- s
+- t
+-  
+- —
+-  
+- L
+- i
+- n
+- e
+- a
+- r
+- '
+- s
+-  
+- s
+- e
+- s
+- s
+- i
+- o
+- n
+-  
+- s
+- t
+- a
+- t
+- e
+- s
+-  
+- a
+- l
+- r
+- e
+- a
+- d
+- y
+-  
+- g
+- r
+- e
+- w
+-  
+- f
+- r
+- o
+- m
+-  
+- f
+- o
+- u
+- r
+-  
+- t
+- o
+-  
+- s
+- i
+- x
+- ,
+-  
+- t
+- e
+- r
+- m
+- i
+- n
+- o
+- l
+- o
+- g
+- y
+-  
+- d
+- r
+- i
+- f
+- t
+- e
+- d
+-  
+- (
+- t
+- o
+- o
+- l
+-  
+- c
+- a
+- l
+- l
+- s
+-  
+- →
+-  
+- a
+- c
+- t
+- i
+- o
+- n
+- )
+- ,
+-  
+- a
+- n
+- d
+-  
+- A
+- g
+- e
+- n
+- t
+-  
+- H
+- Q
+-  
+- w
+- a
+- s
+-  
+- p
+- r
+- e
+- v
+- i
+- e
+- w
+- -
+- g
+- a
+- t
+- e
+- d
+-  
+- a
+- t
+-  
+- l
+- a
+- u
+- n
+- c
+- h
+-  
+- (
+- e
+- n
+- t
+- e
+- r
+- p
+- r
+- i
+- s
+- e
+-  
+- c
+- o
+- n
+- t
+- r
+- o
+- l
+-  
+- p
+- l
+- a
+- n
+- e
+-  
+- G
+- A
+-  
+- F
+- e
+- b
+-  
+- 2
+- 0
+- 2
+- 6
+- )
+- .
+-  
+- 5
+- )
+-  
+- O
+- n
+- e
+-  
+- r
+- e
+- l
+- a
+- t
+- e
+- d
+-  
+- c
+- l
+- a
+- i
+- m
+-  
+- w
+- a
+- s
+-  
+- r
+- e
+- f
+- u
+- t
+- e
+- d
+-  
+- 0
+- -
+- 3
+-  
+- (
+- P
+- o
+- w
+- e
+- r
+-  
+- B
+- I
+-  
+- p
+- l
+- u
+- s
+- -
+- s
+- i
+- g
+- n
+-  
+- e
+- x
+- t
+- e
+- r
+- n
+- a
+- l
+- -
+- c
+- o
+- n
+- s
+- i
+- s
+- t
+- e
+- n
+- c
+- y
+-  
+- e
+- x
+- a
+- m
+- p
+- l
+- e
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- N
+- N
+- /
+- g
+-  
+- c
+- o
+- m
+- p
+- l
+- e
+- x
+- -
+- a
+- p
+- p
+- s
+-  
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- )
+-  
+- —
+-  
+- e
+- x
+- t
+- e
+- r
+- n
+- a
+- l
+- -
+- c
+- o
+- n
+- s
+- i
+- s
+- t
+- e
+- n
+- c
+- y
+- -
+- f
+- o
+- r
+- -
+- e
+- x
+- p
+- e
+- r
+- t
+- s
+-  
+- s
+- h
+- o
+- u
+- l
+- d
+-  
+- n
+- o
+- t
+-  
+- b
+- e
+-  
+- c
+- i
+- t
+- e
+- d
+-  
+- v
+- i
+- a
+-  
+- t
+- h
+- a
+- t
+-  
+- e
+- x
+- a
+- m
+- p
+- l
+- e
+- .
+-  
+- 6
+- )
+-  
+- J
+- a
+- k
+- o
+- b
+- '
+- s
+-  
+- l
+- a
+- w
+-  
+- i
+- s
+-  
+- a
+-  
+- d
+- e
+- f
+- a
+- u
+- l
+- t
+- ,
+-  
+- n
+- o
+- t
+-  
+- a
+-  
+- p
+- r
+- o
+- h
+- i
+- b
+- i
+- t
+- i
+- o
+- n
+-  
+- o
+- n
+-  
+- i
+- n
+- n
+- o
+- v
+- a
+- t
+- i
+- o
+- n
+- :
+-  
+- N
+- N
+- /
+- g
+- '
+- s
+-  
+- o
+- w
+- n
+-  
+- e
+- x
+- c
+- e
+- p
+- t
+- i
+- o
+- n
+-  
+- (
+- b
+- r
+- e
+- a
+- k
+-  
+- c
+- o
+- n
+- v
+- e
+- n
+- t
+- i
+- o
+- n
+-  
+- o
+- n
+- l
+- y
+-  
+- f
+- o
+- r
+-  
+- d
+- e
+- m
+- o
+- n
+- s
+- t
+- r
+- a
+- b
+- l
+- y
+-  
+- b
+- e
+- t
+- t
+- e
+- r
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+- s
+- )
+-  
+- m
+- e
+- a
+- n
+- s
+-  
+- G
+- U
+- I
+- L
+- D
+-  
+- m
+- a
+- y
+-  
+- s
+- t
+- i
+- l
+- l
+-  
+- i
+- n
+- n
+- o
+- v
+- a
+- t
+- e
+-  
+- w
+- i
+- t
+- h
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- i
+- n
+- b
+- o
+- x
+-  
+- f
+- r
+- a
+- m
+- e
+- ,
+-  
+- a
+- s
+-  
+- G
+- m
+- a
+- i
+- l
+-  
+- d
+- i
+- d
+-  
+- w
+- i
+- t
+- h
+- i
+- n
+-  
+- e
+- m
+- a
+- i
+- l
+- .
+-  
+- 7
+- )
+-  
+- T
+- h
+- e
+-  
+- f
+- i
+- n
+- a
+- l
+-  
+- o
+- n
+- e
+- -
+- m
+- o
+- d
+- e
+- l
+-  
+- r
+- e
+- c
+- o
+- m
+- m
+- e
+- n
+- d
+- a
+- t
+- i
+- o
+- n
+-  
+- i
+- s
+-  
+- s
+- y
+- n
+- t
+- h
+- e
+- s
+- i
+- s
+- :
+-  
+- w
+- e
+- l
+- l
+- -
+- g
+- r
+- o
+- u
+- n
+- d
+- e
+- d
+-  
+- i
+- n
+-  
+- u
+- n
+- a
+- n
+- i
+- m
+- o
+- u
+- s
+-  
+- c
+- l
+- a
+- i
+- m
+- s
+- ,
+-  
+- b
+- u
+- t
+-  
+- t
+- h
+- e
+-  
+- s
+- p
+- e
+- c
+- i
+- f
+- i
+- c
+-  
+- N
+- o
+- w
+- /
+- J
+- o
+- u
+- r
+- n
+- e
+- y
+- /
+- L
+- i
+- b
+- r
+- a
+- r
+- y
+-  
+- m
+- a
+- p
+- p
+- i
+- n
+- g
+-  
+- a
+- n
+- d
+-  
+- l
+- a
+- b
+- e
+- l
+-  
+- s
+- u
+- g
+- g
+- e
+- s
+- t
+- i
+- o
+- n
+- s
+-  
+- w
+- e
+- r
+- e
+-  
+- n
+- o
+- t
+-  
+- t
+- h
+- e
+- m
+- s
+- e
+- l
+- v
+- e
+- s
+-  
+- i
+- n
+- d
+- e
+- p
+- e
+- n
+- d
+- e
+- n
+- t
+- l
+- y
+-  
+- v
+- e
+- r
+- i
+- f
+- i
+- e
+- d
+- .
+
+## Open questions
+- Do the other current agent products (Devin's machine view, Cursor background agents, Replit Agent, Claude Code cloud sessions, OpenAI's agent surfaces) actually converge on the same delegated-inbox + run-timeline pattern, or do materially different models (chat-thread-first, diff-review-first) compete? None survived verification here.
+- What first-run teaching patterns (empty states that teach, guided first actions, seeded example items) are demonstrably effective for agent/pipeline tools — and does an inbox-model surface genuinely need none?
+- Does the inbox mental model hold at GUILD's scale — a single owner with a handful of quests — or does a near-empty inbox read as dead? (Linear/GitHub designs assume team-scale item volume.)
+- Is there any measured evidence (time-to-competence, task success) that familiar-model agent UIs outperform bespoke ones, beyond vendor design rationale and NN/g theory?
+
+## Refuted (do not cite)
+- External consistency with industry/web conventions matters even for expert users of dense tools: violating a convention (e.g., Power BI using the plus sign for both 'add new' and 'expand') confuses even daily users, and 
