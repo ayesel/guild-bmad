@@ -143,6 +143,10 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .snav a:hover{background:var(--panel2);color:var(--ink)}
 .snav .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
 .snav .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.subfil{margin:0 0 6px 14px;padding-left:10px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--line-soft)}
+.subfil .fbtn{font-size:10.5px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
+.subfil .fbtn:hover{border-color:var(--line-soft)}
+.subfil .fsel{font-size:10.5px}
 @media (max-width:1100px){.shell{grid-template-columns:1fr}.snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:center}.snav .grp{margin:0 2px}}
 .sfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
 .fbtn{font-size:11px;font-weight:700;padding:6px 13px;border-radius:18px;border:1px solid var(--line-soft);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px}
@@ -434,7 +438,7 @@ def project_view(wf, pidx, view, sv="cards"):
     sscreens = sorted({s["evidence"] for s in ss})
     sfil = ""
     if view == "needs" and ss:
-        sfil = ('<div class="grp">Filter improvements</div>'
+        sfil = ('<div class="subfil">'
                 f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({nsugg})</button>'
                 f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({sfirm})</button>'
                 f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({nsugg - sfirm})</button>'
@@ -443,7 +447,7 @@ def project_view(wf, pidx, view, sv="cards"):
                 + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen" style="margin-top:4px;width:100%">'
                 + f'<option value="all">every screen ({len(sscreens)})</option>'
                 + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
-                + '</select>')
+                + '</select></div>')
     def nv(href, label, cnt=None, on=False):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
         return f'<a href="{href}" class="{"on" if on else ""}">{label}{c}</a>'
