@@ -51,6 +51,15 @@ display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-siz
 border:none;cursor:pointer;background:var(--ember);color:#1d0f06}
 .pick:hover{filter:brightness(1.1)}
 .foot{margin-top:14px;font-size:11px;color:var(--ink-faint);line-height:1.5}
+.shotwrap{position:relative}
+.pin{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ember);color:#1d0f06;
+font-family:var(--mono);font-weight:800;font-size:11px;display:grid;place-items:center;
+border:2px solid #fff3;box-shadow:0 1px 6px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
+.legend{padding:9px 13px 0;display:grid;gap:4px}
+.legend span{font-size:11px;color:var(--ink-dim);line-height:1.45;display:flex;gap:7px}
+.legend b{flex:0 0 auto;width:16px;height:16px;border-radius:50%;background:var(--ember);color:#1d0f06;
+font-family:var(--mono);font-weight:800;font-size:9.5px;display:grid;place-items:center;margin-top:1px}
+.legend .np b{background:var(--panel2);color:var(--ink-dim)}
 """
 
 
@@ -64,11 +73,20 @@ def build_html(set_dir, manifest, embed=True):
     for key in sorted(v.keys()):
         m = v[key]
         shots = ""
+        callouts = m.get("callouts") or []
         for img in m.get("images", []):
             p = os.path.join(set_dir, img)
             src = b64img(p) if (embed and os.path.exists(p)) else E(p)
             label = "motion frozen mid-flight" if ("entrance" in img or "signature" in img) else "at rest"
-            shots += f'<img src="{src}" alt="{E(m["name"])} — {label}"><span class="cap">{E(label)}</span>'
+            pins = "".join(f'<span class="pin" style="left:{c["x"]}%;top:{c["y"]}%">{c["n"]}</span>'
+                           for c in callouts if c.get("image") == img)
+            shots += (f'<span class="shotwrap"><img src="{src}" alt="{E(m["name"])} — {label}">{pins}</span>'
+                      f'<span class="cap">{E(label)}</span>')
+        pinned_ns = {c["n"] for c in callouts}
+        legend = "".join(
+            f'<span class="{"" if i+1 in pinned_ns else "np"}"><b>{i+1}</b> {E(item)}</span>'
+            for i, item in enumerate(m.get("legend") or []))
+        legend_html = f'<div class="legend">{legend}</div>' if legend else ""
         gates = " ".join(f"✓ {E(g)}" for g, code in (m.get("gates") or {}).items() if code == 0)
         instr = (f"Record regenerate pick {key.upper()} — run: python3 ~/.claude/guild/scripts/regenerate-pick.py "
                  f"--project {manifest['project']} --set {manifest['set']} --pick {key} ; then run the project's "
@@ -77,6 +95,7 @@ def build_html(set_dir, manifest, embed=True):
             f'<div class="v"><div class="vh"><span class="k">{key.upper()}</span><b>{E(m["name"])}</b>'
             f'<em>{E(m.get("lane",""))}</em></div>'
             f'<div class="shots">{shots}</div>'
+            f'{legend_html}'
             f'<div class="why">{E(m["rationale"])}</div>'
             f'<div class="gates">{gates}</div>'
             f'<button class="pick" onclick=\'g({json.dumps(instr)})\'>Pick {key.upper()} — {E(m["name"])}</button></div>')
