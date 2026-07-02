@@ -1,0 +1,23 @@
+description = "Proactive HCI improvement suggestions — sweep the UI for missing affordances, unguarded destructive actions, absent empty states, and remembered patterns that fit; ranked with evidence"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN ORDER. The brain proposes what SHOULD exist, not just gates what does.
+
+## STEP 1 — RUN THE SWEEP (scripted, free)
+
+```
+python3 ~/.claude/guild/scripts/guild-suggest.py --project <project-root>
+```
+
+(fallback: `scripts/guild-suggest.py` in the guild-bmad repo). It writes `{artifacts}/guild-artifacts/suggestions.yaml` — every suggestion carries `source` (affordance-canon / product-baseline / pattern-memory), `confidence` (`firm` = canon-required, `check` = static heuristic, verify by eye), and `evidence` (the file it saw it in).
+
+## STEP 2 — TRIAGE HONESTLY (you are the designer, the script is the metal detector)
+
+Read the yaml. For each suggestion, open the evidence file and judge with real product sense:
+- **firm** items are canon gaps — confirm the pattern set genuinely fires for that surface (a page rendering a growable collection with no search IS a defect; a settings list of 4 fixed items is NOT — kill false fires and say so).
+- **check** items are leads — verify the destructive action really lacks undo, the collection really has no empty state, before presenting.
+- Group survivors BY SCREEN, rank by user impact (data-loss risks > findability > polish), and present the top 5–10 as one decision list — what, where, why it matters to a human, one line each.
+
+## STEP 3 — MAKE THEM ACTIONABLE
+
+For each suggestion the owner picks, run the reflex arc: `/guild-comment "<suggestion> — <evidence file>"` → 3 real variants → pick note. NEVER silently mass-apply suggestions; each one is a design decision. Record what the owner rejects — a rejected suggestion class (e.g. "stop proposing search on short fixed lists") gets appended to the sweep's known-noise notes in the project's guild-artifacts so it isn't re-proposed next run.
+"""

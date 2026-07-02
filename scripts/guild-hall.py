@@ -127,7 +127,7 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .sw:hover{color:var(--ink);border-color:var(--line)}
 .sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.card{border:1px solid var(--line-soft);border-left:3px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block;}.card:has(.chip.wait){border-left-color:var(--amber)}.card:has(.chip.done){border-left-color:var(--sage)}.card:has(.chip.exec){border-left-color:var(--ember)}.card:has(.chip.think):not(:has(.chip.wait)){border-left-color:var(--denim)}
+.card{border:1px solid var(--line-soft);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
@@ -135,6 +135,9 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.obtn{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ember-tx);cursor:pointer;min-height:44px;margin-left:auto;flex-shrink:0}
+.obtn:hover{border-color:var(--ember-tx)}
+button{font-family:var(--sans)}
 .acts a{font-size:12px;font-weight:650;padding:7px 14px;border-radius:8px;border:1px solid var(--line-soft);background:transparent;color:var(--ember-tx);display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .acts button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
 background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
@@ -246,6 +249,12 @@ def recommends(feed, project_path):
                      "/guild-auto-critique",
                      "checked: src/ exists but zero run records — real code Guild has never judged; unknown gaps compound into rework",
                      "medium-heavy — one agent per key screen; scripted gates are free"))
+    if os.path.isdir(os.path.join(project_path, "src")) and not has("suggestions"):
+        recs.append(("Ask Guild for UX improvement ideas",
+                     "/guild-suggest sweeps every screen for missing affordances, unguarded destructive actions, absent empty states, and remembered patterns that fit",
+                     "/guild-suggest",
+                     f"checked: {artrel}/suggestions.yaml — Guild has never proposed HCI improvements for this UI",
+                     "free — scripted static sweep, seconds, no agent"))
     if feed["runs"] and not has("batched-review"):
         recs.append(("Get a decision packet",
                      "/guild-pre-handoff turns findings into approve/waive decisions",
@@ -383,7 +392,7 @@ def project_view(wf, pidx, view):
             f'<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 2px">{explain[view]}</div>')
     if view == "needs":
         rec_rows = "".join(
-            f'<div class="card" style="border-left:3px solid var(--denim)"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
+            f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
             f'<span class="chip think">Guild recommends</span></div><div class="why">{E(why)}</div>'
             f'<div class="who" style="margin-top:6px">why: {E(because)}</div>'
             f'<div class="who">cost: {E(cost)}</div>'
@@ -399,7 +408,29 @@ def project_view(wf, pidx, view):
             f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
-        body += f'<div class="cardgrid">{cards}</div>' + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
+        sugg_rows = ""
+        for base in ("_bmad-output", "guild-output"):
+            sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
+            if os.path.exists(sf):
+                import yaml as _y
+                sd = _y.safe_load(open(sf)) or {}
+                ss = sd.get("suggestions", [])
+                shown = ss[:6]
+                sugg_rows = "".join(
+                    f'<div class="card"><div class="row"><span class="kic">💡</span><b>{E(s["title"])}</b>'
+                    f'<span class="chip {"wait" if s["confidence"] == "firm" else "think"}">'
+                    f'{"canon gap" if s["confidence"] == "firm" else "worth a look"}</span></div>'
+                    f'<div class="why">{E(s["why"])}</div><div class="who">where: {E(s["evidence"])}</div>'
+                    f'<div class="acts"><button onclick="run(this,{pidx},\'/guild-comment {E(s["title"])} — {E(s["evidence"])}\')">'
+                    f'Have Guild fix it — 3 variants to pick from</button></div></div>'
+                    for s in shown)
+                if len(ss) > len(shown):
+                    sugg_rows += (f'<div class="who" style="grid-column:1/-1">+ {len(ss) - len(shown)} more in '
+                                  f'{base}/guild-artifacts/suggestions.yaml (Library tab)</div>')
+                break
+        if sugg_rows:
+            sugg_rows = f'<h2 class="sect">UX improvements Guild noticed</h2><div class="cardgrid">{sugg_rows}</div>'
+        body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
               + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
 
     elif view == "runs":
@@ -537,7 +568,7 @@ def playbook(pidx=None):
     catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink-faint);'
                f'font-weight:650">Every command Guild knows ({len(rows)}) — the full catalog, read live from the command files</summary>'
                f'<div class="card" style="margin-top:10px">{"".join(rows)}</div></details>')
-    intro = ('<div class="card" style="border-left:3px solid var(--denim)"><div class="why" style="font-size:13px">'
+    intro = ('<div class="card"><div class="why" style="font-size:13px">'
              'You never need to memorize these. Guild recommends the right one at the right time on every project page — '
              'with its reasoning and cost. This page is the map for when you want to drive yourself.</div></div>')
     crumb = "what every command does, in plain words"
@@ -710,6 +741,15 @@ def selftest():
             os.remove(os.path.join(art, "runs", "RUN-1.yaml"))
             pv2 = project_view(wf, 0, "needs")
             ok = ok and "Agents keep working" in pv2
+            import re as _re
+            used = set()
+            for html in (h, pv, rv, playbook(0), playbook()):
+                for m in _re.finditer(r'class="([^"]+)"', html):
+                    used.update(c for c in m.group(1).split() if not c.startswith("shot"))
+            unstyled = sorted(c for c in used if not _re.search(r"\." + _re.escape(c) + r"[ ,{:.>#\[]", CSS))
+            if unstyled:
+                print("   ✗ classes used in markup with NO css rule:", unstyled)
+                ok = False
         finally:
             REG = old
     print("guild-hall self-test:", "✅ PASS" if ok else "❌ FAIL")
