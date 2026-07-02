@@ -1,0 +1,38 @@
+---
+name: 'guild-comment'
+description: 'Comment→regenerate reflex — point at any rendered element, complain, get 3 real variant treatments to pick from; your pick applies and trains taste'
+---
+
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN ORDER. This is the reflex arc: targeted beats blind sweep.
+
+## STEP 1 — READ THE COMMENT + ITS REAL CONTEXT
+
+The user's argument (or message) names an element and a complaint (e.g. "the Today screen feels static", "this ring reads flat"). Resolve the element to its REAL context before generating anything:
+- the component source file(s) behind it (read them — note what already exists so variants don't re-add basics),
+- the project's tokens (`globals.css` / DTCG export — variants must use existing tokens, additive only),
+- the spine (`{output_root}/guild-artifacts/spine.json`) for evidence bearing on this element,
+- the taste model / prior picks (engine `docs/guild/taste-model.yaml`, calibration labels) — never propose what the owner has already rejected.
+
+## STEP 2 — DIVERGE THREE (Mage discipline; never single-shot)
+
+Generate THREE visibly distinct candidate treatments via distinct lanes (GUILD-21 — e.g. restraint lane / data-energy lane / maximal lane), each with a one-line rationale. Each candidate is a REAL implementation: apply it, `git diff > variant-<x>.patch`, revert; smallest-possible-change discipline (styles/classes only, never restructure logic); every variant MUST honor prefers-reduced-motion and the project's 9 rules or equivalent invariants.
+
+## STEP 3 — PROVE EACH CANDIDATE
+
+Per variant: production build EXIT 0 · `reduced-motion-gate.py --screen <built.css>` EXIT 0 · capture RENDERED screenshots from the live built app (final state + the motion frozen mid-flight via paused-animation injection — actual pixels, never filenames/descriptions: the GUILD-79 law). Run the project's test suite per candidate (serialized mode acceptable where the project documents load-flakes). Store everything in `{output_root}/guild-artifacts/regenerate/<set-slug>/` with a `manifest.yaml` (comment, context_read, variants{name,lane,rationale,patch,images,gates}).
+
+## STEP 4 — DELIVER THE PICK NOTE
+
+```
+python3 ~/.claude/guild/scripts/regenerate-note.py --project <root> --set <slug> --render
+```
+
+One note, three treatments rendered side-by-side with rationales and gate chips, one Pick button each. The pick is the OWNER'S — never pick for them, never merge candidates (SELECT > MERGE, GUILD-85).
+
+## STEP 5 — ON PICK (when the owner clicks or tells you)
+
+```
+python3 ~/.claude/guild/scripts/regenerate-pick.py --project <root> --set <slug> --pick <a|b|c>
+```
+
+This applies the picked patch and captures the pick as taste data (one pairwise calibration label per rejected variant — the rejects teach as much as the pick). Then run the project's suite + build green and commit the applied change. The reflex is complete only when the pick is applied, tested, committed, and captured.
