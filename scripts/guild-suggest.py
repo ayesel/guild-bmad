@@ -75,6 +75,16 @@ PLAIN = {
 }
 
 
+# every suggestion carries an icon + category so 100 of them never read as identical
+CATEGORY = {
+    "search": ("🔍", "find it"), "filter": ("🔍", "find it"), "sort": ("🔍", "find it"),
+    "count": ("🔍", "find it"), "grouping": ("🗂️", "find it"),
+    "undo": ("🛡️", "safety"), "bulk-actions": ("✏️", "act in place"), "row-actions": ("✏️", "act in place"),
+    "empty-state": ("📭", "first run"), "zero-results": ("📭", "first run"),
+    "totals": ("🧮", "clarity"), "text-labels": ("🏷️", "clarity"),
+}
+
+
 def canon_gaps(root, files):
     sugg = []
     for f in files:
@@ -89,7 +99,9 @@ def canon_gaps(root, files):
         for g in data.get("gaps", []):
             name = (g.split(":")[-1].strip() if ":" in g else g).split(" ")[0]
             title, why = PLAIN.get(name, (f"Add {name}", f"screens like this are expected to have {name}, and it is not there"))
+            icon, cat = CATEGORY.get(name, ("💡", "polish"))
             sugg.append({"title": title, "why": why, "evidence": rel(root, f), "detail": g,
+                         "icon": icon, "category": cat,
                          "source": "affordance-canon", "confidence": "firm"})
     return sugg
 
@@ -121,9 +133,15 @@ def heuristics(root, files):
             src = open(f, encoding="utf-8", errors="ignore").read()
         except OSError:
             continue
+        hcat = {"Give this collection find controls": ("🔍", "find it"),
+                "Guard the destructive action with undo or confirm": ("🛡️", "safety"),
+                "Design the empty state": ("📭", "first run"),
+                "Roll up status counts": ("🧮", "clarity")}
         for fires, satisfies, title, why in HEUR:
             if fires.search(src) and not satisfies.search(src):
+                icon, cat = hcat.get(title, ("💡", "polish"))
                 sugg.append({"title": title, "why": why, "evidence": rel(root, f),
+                             "icon": icon, "category": cat,
                              "source": "product-baseline", "confidence": "check"})
         for m in ICON_ONLY.finditer(src):
             frag = src[max(0, m.start() - 500):m.end()]
@@ -131,7 +149,8 @@ def heuristics(root, files):
             if "aria-label" not in frag and "title=" not in frag:
                 sugg.append({"title": "Put words on the icon-only button",
                              "why": "a button is just a picture — no words anywhere, so people (and screen readers) have to guess",
-                             "evidence": rel(root, f), "source": "product-baseline", "confidence": "firm"})
+                             "evidence": rel(root, f), "icon": "🏷️", "category": "clarity",
+                             "source": "product-baseline", "confidence": "firm"})
                 break
     return sugg
 
@@ -159,7 +178,7 @@ def pattern_opps(root, files):
             sugg.append({"title": f'Consider the "{p.get("name", p["id"])}" pattern',
                          "why": f'this screen deals with {", ".join(hits[:3])} — Guild remembers a design that solved '
                                 f'this well before: {(p.get("problem") or "").strip()[:110]}',
-                         "detail": p["id"],
+                         "detail": p["id"], "icon": "🧠", "category": "from memory",
                          "evidence": f'pattern memory · matched keywords: {", ".join(hits[:4])}',
                          "source": "pattern-memory", "confidence": "check"})
     return sugg[:5]

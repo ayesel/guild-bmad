@@ -135,6 +135,14 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.sfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
+.fbtn{font-size:11px;font-weight:700;padding:6px 13px;border-radius:18px;border:1px solid var(--line-soft);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px}
+.fbtn.on{color:var(--ember-tx);border-color:rgba(206,83,40,.4);background:rgba(206,83,40,.08)}
+.fbtn:hover{border-color:var(--line);color:var(--ink)}
+.fsep{width:1px;height:24px;background:var(--line-soft)}
+.fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11.5px}
+.spage{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
+.ghead{margin:14px 2px 4px;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(206,83,40,.32)}
 .card.feat .kic{background:rgba(206,83,40,.14);border-color:rgba(206,83,40,.3);font-size:16px}
 .pick{margin-left:auto;font-size:10.5px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
@@ -435,43 +443,60 @@ def project_view(wf, pidx, view, sv="cards"):
             ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
             if not ss:
                 break
+            firm = sum(1 for s in ss if s["confidence"] == "firm")
+            cats, icon_of = {}, {}
+            for s in ss:
+                c = s.get("category", "polish")
+                cats[c] = cats.get(c, 0) + 1
+                icon_of.setdefault(c, s.get("icon", "💡"))
+            screens = sorted({s["evidence"] for s in ss})
             toggle = (f'<span style="margin-left:auto;font-family:var(--sans);font-size:11.5px;letter-spacing:0;text-transform:none">'
-                      f'<a href="/p/{pidx}?view=needs&sv=cards" style="color:{"var(--ember-tx)" if sv == "cards" else "var(--ink-faint)"};margin-right:10px">Top picks</a>'
-                      f'<a href="/p/{pidx}?view=needs&sv=list" style="color:{"var(--ember-tx)" if sv == "list" else "var(--ink-faint)"}">All {len(ss)} as a list</a></span>')
+                      f'<a href="/p/{pidx}?view=needs&sv=cards" style="color:{"var(--ember-tx)" if sv == "cards" else "var(--ink-faint)"};margin-right:10px">Cards</a>'
+                      f'<a href="/p/{pidx}?view=needs&sv=list" style="color:{"var(--ember-tx)" if sv == "list" else "var(--ink-faint)"}">List</a></span>')
+            pager = ('<span class="spage"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
+                     '<b id="spglab" style="font-size:11px;min-width:86px;text-align:center"></b>'
+                     '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span>') if sv == "cards" else ""
+            fbar = (f'<div class="sfilter">'
+                    f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({len(ss)})</button>'
+                    f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({firm})</button>'
+                    f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({len(ss) - firm})</button>'
+                    f'<span class="fsep"></span>'
+                    + "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{icon_of[c]} {E(c)} ({n})</button>'
+                              for c, n in sorted(cats.items(), key=lambda kv: -kv[1]))
+                    + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen"><option value="all">every screen ({len(screens)})</option>'
+                    + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in screens)
+                    + f'</select>{pager}</div>')
+
+            def _srow(s):
+                icon, cat = s.get("icon", "💡"), s.get("category", "polish")
+                conf = s["confidence"]
+                cchip = f'<span class="chip {"wait" if conf == "firm" else "think"}">{"missing a basic" if conf == "firm" else "worth a look"}</span>'
+                pick = (f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" '
+                        f'data-cmd="/guild-comment {E(s["title"])} — {E(s["evidence"])}">queue</label>')
+                attrs = f'data-conf="{conf}" data-screen="{E(s["evidence"])}" data-cat="{E(cat)}"'
+                if sv == "list":
+                    return (f'<div class="lib" {attrs}><span class="th" style="font-size:13px">{icon}</span>'
+                            f'<span><b>{E(s["title"])}</b><div class="m">{E(s["why"][:110])}</div></span>'
+                            f'<span class="chip proj" style="flex-shrink:0">{E(cat)}</span>{cchip}{pick}</div>')
+                return (f'<div class="card" {attrs}><div class="row"><span class="kic">{icon}</span><b>{E(s["title"])}</b>'
+                        f'<span class="chip proj">{E(cat)}</span>{cchip}{pick}</div>'
+                        f'<div class="why">{E(s["why"])}</div><div class="who">where: {E(s["evidence"])}</div>'
+                        f'<div class="acts"><button onclick="run(this,{pidx},\'/guild-comment {E(s["title"])} — {E(s["evidence"])}\')">'
+                        f'Have Guild fix it — 3 variants to pick from</button></div></div>')
+
             if sv == "list":
                 bysrc = {}
                 for s in ss:
                     bysrc.setdefault(s["evidence"], []).append(s)
                 rows = []
                 for src, group in sorted(bysrc.items(), key=lambda kv: -len(kv[1])):
-                    rows.append(f'<div class="who" style="margin:14px 2px 4px;font-family:var(--mono)">{E(src)} — {len(group)}</div>')
-                    rows += [
-                        f'<div class="lib"><span class="th" style="font-size:13px">💡</span>'
-                        f'<span><b>{E(s["title"])}</b><div class="m">{E(s["why"][:110])}</div></span>'
-                        f'<span class="chip {"wait" if s["confidence"] == "firm" else "think"}" style="flex-shrink:0">'
-                        f'{"missing a basic" if s["confidence"] == "firm" else "worth a look"}</span>'
-                        f'<label class="pick" style="margin-left:8px"><input type="checkbox" class="pickbox" data-pidx="{pidx}" '
-                        f'data-cmd="/guild-comment {E(s["title"])} — {E(s["evidence"])}">queue</label></div>'
-                        for s in group]
+                    rows.append(f'<div class="ghead" data-screen="{E(src)}">{E(src)} — {len(group)}</div>')
+                    rows += [_srow(s) for s in group]
                 sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
             else:
-                shown = ss[:6]
-                sugg_rows = "".join(
-                    f'<div class="card"><div class="row"><span class="kic">💡</span><b>{E(s["title"])}</b>'
-                    f'<span class="chip {"wait" if s["confidence"] == "firm" else "think"}">'
-                    f'{"missing a basic" if s["confidence"] == "firm" else "worth a look"}</span>'
-                    f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" '
-                    f'data-cmd="/guild-comment {E(s["title"])} — {E(s["evidence"])}">queue</label></div>'
-                    f'<div class="why">{E(s["why"])}</div><div class="who">where: {E(s["evidence"])}</div>'
-                    f'<div class="acts"><button onclick="run(this,{pidx},\'/guild-comment {E(s["title"])} — {E(s["evidence"])}\')">'
-                    f'Have Guild fix it — 3 variants to pick from</button></div></div>'
-                    for s in shown)
-                if len(ss) > len(shown):
-                    sugg_rows += (f'<a class="card" href="/p/{pidx}?view=needs&sv=list" style="display:flex;align-items:center;'
-                                  f'justify-content:center;font-weight:700;color:var(--ember-tx)">'
-                                  f'See all {len(ss)} as a list →</a>')
-            sugg_rows = (f'<h2 class="sect">UX improvements Guild noticed{toggle}</h2>'
-                         f'<div class="cardgrid">{sugg_rows}</div>')
+                sugg_rows = "".join(_srow(s) for s in ss)
+            sugg_rows = (f'<h2 class="sect">UX improvements Guild noticed{toggle}</h2>{fbar}'
+                         f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
             break
         body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
               + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
@@ -580,6 +605,33 @@ async function runbatch(btn){
   }
   btn.textContent = '✓ ' + done + ' agents launched' + (fail ? ' · ' + fail + ' failed' : '');
 }
+let SP = {conf:'all', cat:'all', screen:'all', page:0};
+function sflt(b){
+  if (b.dataset.k == 'conf') { SP.conf = b.dataset.f; if (b.dataset.f == 'all') SP.cat = 'all'; }
+  else SP.cat = (SP.cat == b.dataset.f ? 'all' : b.dataset.f);
+  SP.page = 0;
+  document.querySelectorAll('.fbtn[data-k]').forEach(x => x.classList.toggle('on',
+    (x.dataset.k == 'conf' && x.dataset.f == SP.conf) || (x.dataset.k == 'cat' && x.dataset.f == SP.cat)));
+  sapply();
+}
+function sscr(sel){ SP.screen = sel.value; SP.page = 0; sapply(); }
+function spg(d){ SP.page = Math.max(0, SP.page + d); sapply(); }
+function sapply(){
+  const g = document.getElementById('sgrid'); if (!g) return;
+  const items = [...g.querySelectorAll('[data-conf]')];
+  const vis = items.filter(c => (SP.conf == 'all' || c.dataset.conf == SP.conf)
+    && (SP.cat == 'all' || c.dataset.cat == SP.cat)
+    && (SP.screen == 'all' || c.dataset.screen == SP.screen));
+  items.forEach(c => c.style.display = 'none');
+  const per = g.dataset.mode == 'cards' ? 6 : 100000;
+  const maxp = Math.max(0, Math.ceil(vis.length / per) - 1); if (SP.page > maxp) SP.page = maxp;
+  vis.slice(SP.page * per, (SP.page + 1) * per).forEach(c => c.style.display = '');
+  const lab = document.getElementById('spglab');
+  if (lab) lab.textContent = vis.length ? ((SP.page * per + 1) + '–' + Math.min(vis.length, (SP.page + 1) * per) + ' of ' + vis.length) : 'none match';
+  document.querySelectorAll('#sgrid .ghead').forEach(h => {
+    h.style.display = vis.some(c => c.dataset.screen == h.dataset.screen && c.style.display == '') ? '' : 'none'; });
+}
+window.addEventListener('DOMContentLoaded', sapply);
 function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); }
 document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) syncbar(); });
 </script>"""
@@ -666,6 +718,10 @@ def playbook(pidx=None):
     crumb = "what every command does, in plain words"
     title = f"Playbook \u00b7 {pname}" if runnable else "Playbook"
     html = page(title, crumb, intro + "".join(secs) + catalog + JS, current=pidx)
+    if runnable:
+        html = html.replace('<a class="home" href="/">',
+                            f'<a class="home" href="/p/{pidx}">← Back to {E(pname)}</a>'
+                            f'<a class="home" href="/" style="margin-left:10px">', 1)
     return html.replace('class="sw" style="margin-left:auto"',
                         'class="sw" style="margin-left:auto;color:var(--ember-tx);border-color:rgba(206,83,40,.4)"', 1)
 
