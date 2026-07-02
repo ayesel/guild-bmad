@@ -94,7 +94,7 @@ def activity_events(wf, regs):
 CSS = """
 :root{--bg:#100f0d;--panel:#1f1b16;--panel2:#282119;--inset:#171512;--line:#2c2820;--line-soft:#221e18;
 --ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
---sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;
+--sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;--denim:#5b7a8b;--denim-tx:#a9c4d4;--gold-tx:var(--gold-tx);
 --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
 @view-transition{navigation:auto}
 ::view-transition-old(root){animation-duration:.14s}
@@ -117,15 +117,15 @@ display:inline-grid;place-items:center;font-size:14px;flex:0 0 auto}
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
 .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:700;
 border-radius:6px;padding:2px 8px;white-space:nowrap}
-.chip.wait{background:rgba(201,151,31,.16);color:#f3dca3}
+.chip.wait{background:rgba(201,151,31,.16);color:var(--gold-tx)}
 .chip.exec{background:rgba(206,83,40,.16);color:var(--ember-tx)}
 .chip.done{background:rgba(143,174,125,.14);color:var(--sage-tx)}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
+.chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
 .swbar{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}
-.sw{font-size:11.5px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:16px;padding:5px 13px;display:inline-flex;align-items:center;min-height:32px}
+.sw{font-size:11.5px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
-.sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ember-tx);opacity:.8;
-color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
+.sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
 .card{border:1px solid var(--line-soft);border-left:3px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block;}.card:has(.chip.wait){border-left-color:var(--amber)}.card:has(.chip.done){border-left-color:var(--sage)}.card:has(.chip.exec){border-left-color:var(--ember)}.card:has(.chip.think):not(:has(.chip.wait)){border-left-color:var(--denim)}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
@@ -135,7 +135,8 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-.acts button,.acts a{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+.acts a{font-size:12px;font-weight:650;padding:7px 14px;border-radius:8px;border:1px solid var(--line-soft);background:transparent;color:var(--ember-tx);display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.acts button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
 background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
 .acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .acts .quiet:hover{color:var(--ink)}
@@ -150,6 +151,7 @@ background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min
 .badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
 border-radius:12px;padding:1px 8px;margin-left:auto}
 .badge.zero{background:var(--panel2);color:var(--ink-faint)}
+.badge.fyi{background:var(--panel2);color:var(--ink-dim)}
 .tabs{display:flex;gap:4px;margin:16px 0 4px;border-bottom:1px solid var(--line-soft);padding-bottom:0}
 .tabs a{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent;display:inline-flex;align-items:center;min-height:44px}
 .tabs a.on{color:var(--ember-tx);border-bottom-color:var(--ember-tx)}
@@ -160,7 +162,7 @@ font-size:13px;margin:10px 0;line-height:1.6}
 .tl{list-style:none;margin:8px 0}
 .tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim);line-height:1.5}
 .tl li:before{content:"✓";color:var(--sage-tx);font-weight:700;flex:0 0 auto}
-.confirm .undo{margin-left:10px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:32px}
+.confirm .undo{margin-left:10px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px;padding:4px 14px}
 .confirm{background:rgba(143,174,125,.12);border:1px solid rgba(143,174,125,.3);border-radius:9px;
 padding:10px 14px;color:var(--sage-tx);font-size:13px;margin:10px 0}
 .lib{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;
@@ -205,10 +207,10 @@ def switcher(current=None):
     wf = _feed_mod()
     out = []
     for i, pr in enumerate(regs):
-        try: n = len(wf.build(pr["path"])["needs_you"])
+        try: n = sum(1 for x in wf.build(pr["path"])["needs_you"] if x.get("id") != "note")
         except Exception: n = 0
         on = ' style="color:var(--ember-tx);border-color:rgba(206,83,40,.4)"' if current == i else ""
-        badge = f'<b style="color:#f3dca3;margin-left:5px">{n}</b>' if n else ""
+        badge = f'<b style="color:var(--gold-tx);margin-left:5px">{n}</b>' if n else ""
         out.append(f'<a href="/p/{i}"{on} class="sw">{E(pr["name"])}{badge}</a>')
     pb = f'<a href="/playbook{"?p=%d" % current if current is not None else ""}" class="sw" style="margin-left:auto">&#128214; Playbook</a>'
     return f'<div class="swbar">{"".join(out)}{pb}</div>'
@@ -258,8 +260,8 @@ def recommends(feed, project_path):
 
 
 def page(title, crumb, body, current=None):
-    body = switcher(current) + body
-    return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    body = f'<nav aria-label="projects">{switcher(current)}</nav><main>' + body + '</main>'
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'{"" if crumb.startswith("everything") else chr(60)+chr(97)+chr(32)+chr(99)+chr(108)+chr(97)+chr(115)+chr(115)+chr(61)+chr(34)+chr(104)+chr(111)+chr(109)+chr(101)+chr(34)+chr(32)+chr(104)+chr(114)+chr(101)+chr(102)+chr(61)+chr(34)+chr(47)+chr(34)+chr(62)+chr(66)+chr(97)+chr(99)+chr(107)+chr(32)+chr(116)+chr(111)+chr(32)+chr(97)+chr(108)+chr(108)+chr(32)+chr(112)+chr(114)+chr(111)+chr(106)+chr(101)+chr(99)+chr(116)+chr(115)+chr(60)+chr(47)+chr(97)+chr(62)}</div>{body}'
@@ -273,13 +275,13 @@ def chip(state):
 
 
 def decision_card(item, pidx, project_name=""):
-    why = item.get("why") or item.get("detail") or ""
+    why = (item.get("why") or item.get("detail") or "").strip().lstrip("\u2026.").strip().replace("`", "")
     when = ""
     try:
         when = time.strftime("prepared %b %d", time.localtime(os.path.getmtime(item.get("link", ""))))
     except OSError:
         pass
-    proj = f'<span class="chip think">{E(project_name)}</span>' if project_name else ""
+    proj = f'<span class="chip proj">{E(project_name)}</span>' if project_name else ""
     if item["id"] == "note":
         return (f'<div class="card" style="opacity:.75"><div class="row"><span class="kic">ℹ️</span><b>{E(item["title"])}</b>'
                 f'<span class="chip think">for your awareness</span>{proj}</div>'
@@ -294,7 +296,7 @@ def decision_card(item, pidx, project_name=""):
                 f'<button class="quiet" onclick="act(this,{pidx},\'pick\',\'{E(slug)}\',\'none\')">None fit — try again</button></div>')
     elif item["id"].startswith("D"):
         acts = (f'<div class="acts"><a href="/doc/{pidx}?path={E(item["link"])}">Read the evidence first</a>'
-                f'<button class="quiet" onclick="act(this,{pidx},\'approve\',\'{E(item["id"])}\',\'\')">Approve</button>'
+                f'<button onclick="act(this,{pidx},\'approve\',\'{E(item["id"])}\',\'\')">Approve</button>'
                 f'<button class="quiet" onclick="act(this,{pidx},\'waive\',\'{E(item["id"])}\',\'\')">Not now</button></div>')
     else:
         acts = f'<div class="acts"><a class="quiet" href="/open?path={E(item["link"])}">Open</a></div>'
@@ -306,11 +308,9 @@ def decision_card(item, pidx, project_name=""):
 
 def home(wf, view="inbox"):
     regs = projects()
-    hometabs = "".join(f'<a href="/?view={v}" class="{"on" if view == v else ""}" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent">{label}</a>'
+    hometabs = "".join(f'<a href="/?view={v}" class="{"on" if view == v else ""}">{label}</a>'
                        for v, label in (("inbox", "Inbox"), ("activity", "Activity")))
-    hometabs = f'<div class="tabs" style="margin-top:0">{hometabs}</div>'.replace(
-        'class="on" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ink-faint)',
-        'class="on" style="padding:10px 16px;font-size:13px;font-weight:650;color:var(--ember-tx);border-bottom-color:var(--ember-tx)')
+    hometabs = f'<div class="tabs" style="margin-top:0">{hometabs}</div>'
     if view == "activity":
         ev = activity_events(wf, regs)
         waiting = sum(1 for e in ev if e["state"] == "waiting for you")
@@ -322,23 +322,24 @@ def home(wf, view="inbox"):
             import yaml as _y
             pats = len((_y.safe_load(open(pstore)) or {}).get("patterns", []))
         meters = (f'<div class="card"><div class="row" style="gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px">'
-                  f'<span><b style="color:#f3dca3">{waiting}</b> waiting on you</span>'
+                  f'<span><b style="color:var(--gold-tx)">{waiting}</b> waiting on you</span>'
                   f'<span><b style="color:var(--ember-tx)">{execing}</b> agents executing</span>'
                   f'<span><b style="color:var(--sage-tx)">{pats}</b> patterns Guild remembers</span>'
                   f'<span><b style="color:var(--sage-tx)">{cal}</b>/50 taste picks toward calibrated judgment</span></div>'
-                  f'<div class="who">every number below is a door — click any row</div></div>')
+                  f'<div class="who">every row below is a door — click it</div></div>')
         rows = "".join(f'<a class="card" href="{e["href"]}" style="padding:10px 15px"><div class="row">'
-                       f'<span class="chip think">{E(e["project"])}</span><b style="font-size:13px;font-weight:600">{E(e["text"][:110])}</b>'
+                       f'<span class="chip proj">{E(e["project"])}</span><b style="font-size:13px;font-weight:600">{E(e["text"][:110])}</b>'
                        f'{chip(e["state"])}</div></a>' for e in ev)             or '<div class="quiet-empty"><span class="pulse"></span>No activity yet — delegate something.</div>'
         body = (f'{hometabs}<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 10px">'
                 f'What agents did across every project, newest first — is the fleet healthy, what happened while you were away.</div>'
-                f'{meters}<div class="sect">Recent activity</div>{rows}')
+                f'{meters}<h2 class="sect">Recent activity</h2>{rows}')
         return page("GUILD Hall", "everything you delegated, one inbox", body)
     all_needs, grid = [], []
     for i, p in enumerate(regs):
         try: feed = wf.build(p["path"])
         except Exception: continue
         needs = feed["needs_you"]
+        actn = [x for x in needs if x.get("id") != "note"]
         all_needs += [(i, n, feed) for n in needs[:8]]
         j = feed.get("journey") or {}
         phase = "no work started yet"
@@ -346,17 +347,23 @@ def home(wf, view="inbox"):
             done = sum(1 for x in j["phases"] if x["status"] == "done")
             cur = next((x["name"] for x in j["phases"] if x["status"] != "done"), "all steps finished")
             phase = f"{done} of {len(j['phases'])} steps done · now: {cur[:34]}"
+        if phase == "no work started yet" and feed["library"]:
+            phase = f'{len(feed["library"])} outputs · no runs recorded yet'
         last = max((it["mtime"] for it in feed["library"]), default=0)
         ago = f'{int((time.time()-last)/3600)}h ago' if last else "—"
-        badge = f'<span class="badge{"" if needs else " zero"}">{len(needs) or "0"}</span>'
+        badge = (f'<span class="badge">{len(actn)}</span>' if actn else
+                 f'<span class="badge fyi">{len(needs)} fyi</span>' if needs else '<span class="badge zero">0</span>')
         grid.append(f'<a class="pcard" href="/p/{i}"><div style="display:flex;align-items:center"><b>{E(p["name"])}</b>{badge}</div>'
                     f'<div class="ph">{E(phase)}</div><div class="meta"><span>{len(feed["runs"])} runs</span>'
                     f'<span>last activity {ago}</span></div></a>')
     inbox = "".join(decision_card({"kind": "decision", "state": "waiting for you", **n[1]}, n[0], project_name=regs[n[0]]["name"]) for n in all_needs) \
         or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you right now. '
             'Agents keep working and decisions will land here when they are yours to make.</div>')
-    body = (f'{hometabs}<div class="sect">Needs you — across every project ({len(all_needs)})</div><div class="cardgrid">{inbox}</div>'
-            f'<div class="sect">Your projects</div><div class="pgrid">{"".join(grid)}</div>{JS}')
+    ndec = sum(1 for n in all_needs if n[1].get("id") != "note")
+    nfyi = len(all_needs) - ndec
+    hdr = f"{ndec} decisions" + (f", {nfyi} for your awareness" if nfyi else "")
+    body = (f'{hometabs}<h2 class="sect">Needs you — across every project ({hdr})</h2><div class="cardgrid">{inbox}</div>'
+            f'<h2 class="sect">Your projects</h2><div class="pgrid">{"".join(grid)}</div>{JS}')
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
 
@@ -392,8 +399,8 @@ def project_view(wf, pidx, view):
             f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
-        body += f'<div class="cardgrid">{cards}</div>' + f'<div class="sect">What Guild would run next</div><div class="cardgrid">{rec_rows}</div>' \
-              + f'<div class="sect">Your guild — summon a specialist</div><div class="libgrid">{roster_rows}</div>'
+        body += f'<div class="cardgrid">{cards}</div>' + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
+              + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -403,23 +410,24 @@ def project_view(wf, pidx, view):
                      f'<div class="why">{E(i["why"])}</div>'
                      f'<div class="who">{i["checkpoints"]} steps completed</div><ul class="tl">{tl}</ul></div>')
         if not any(x["kind"] == "run" for x in its):
-            body += '<div class="quiet-empty">No runs yet — delegate work with /guild-quest or /guild-comment.</div>'
+            body += (f'<div class="quiet-empty">No runs yet — delegate work with /guild-quest or /guild-comment '
+                     f'(<a href="/playbook?p={pidx}" style="color:var(--ember-tx)">what do these do?</a>).</div>')
     else:
         ds = feed.get("design_system") or []
         if ds:
-            body += '<div class="sect">Design system</div>'
+            body += '<h2 class="sect">Design system</h2>'
             for d in ds:
                 body += (f'<div class="lib"><span class="th">{E(d["kind"][:5])}</span><span><b>{E(d["name"])}</b>'
                          f'<div style="font-size:11px;color:var(--ink-faint)">{E(d.get("hint",""))}</div></span>'
                          f'<span class="m"><a href="/open?path={E(d["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
         else:
-            body += ('<div class="sect">Design system</div><div class="quiet-empty">No Storybook, tokens file, or '
-                     'Claude Design bundle registered here yet — Tinker can set one up (summon below in Needs you).</div>')
+            body += ('<h2 class="sect">Design system</h2><div class="quiet-empty">No Storybook, tokens file, or '
+                     'Claude Design bundle registered here yet — Tinker can set one up — find Summon under &quot;Your guild&quot; on the Needs-you tab.</div>')
         current_group = None
         for it in feed["library"]:
             if it["kind"] != current_group:
                 current_group = it["kind"]
-                body += f'<div class="sect">{E(current_group)}</div>'
+                body += f'<h2 class="sect">{E(current_group)}</h2>'
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
@@ -428,14 +436,14 @@ def project_view(wf, pidx, view):
 
 JS = """<script>
 async function run(btn, pidx, cmd){
-  btn.disabled = true; btn.textContent = "launching agent…";
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "launching agent…";
   const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({pidx, cmd})});
   const d = await r.json();
-  const note = document.createElement('div'); note.className = 'confirm';
+  const note = document.createElement('div'); note.className = 'confirm'; note.setAttribute('role','status'); note.setAttribute('aria-live','polite');
   note.textContent = (d.ok ? '✓ ' : '✗ ') + d.message;
   btn.closest('.card').appendChild(note);
-  if (!d.ok) { btn.disabled = false; btn.textContent = 'Run it — Guild opens an agent and starts'; }
+  if (!d.ok) { btn.disabled = false; btn.textContent = label; }
 }
 async function act(btn, pidx, action, target, choice){
   btn.disabled = true; const label = btn.textContent; btn.textContent = "…";
@@ -443,7 +451,7 @@ async function act(btn, pidx, action, target, choice){
     body: JSON.stringify({pidx, action, target, choice})});
   const d = await r.json();
   const card = btn.closest('.card');
-  const note = document.createElement('div'); note.className = 'confirm';
+  const note = document.createElement('div'); note.className = 'confirm'; note.setAttribute('role','status'); note.setAttribute('aria-live','polite');
   if (d.ok && d.token) {
     let secs = Math.round(d.window);
     note.innerHTML = '✓ ' + d.message + ' <button class="undo">Undo (' + secs + 's)</button>';
@@ -501,16 +509,19 @@ PLAYBOOK = [
 def playbook(pidx=None):
     import re as _re
     runnable = pidx is not None
+    pname = projects()[pidx]["name"] if runnable else None
+    heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint")
     secs = []
     for title, cmds in PLAYBOOK:
         cards = []
         for cmd, what, cost in cmds:
-            act = (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it here</button></div>'
+            guard = (f"if(confirm('This starts a HEAVY run ({cmd}) on {pname} — proceed?'))" if cmd in heavy else "")
+            act = (f'<div class="acts"><button onclick="{guard}run(this,{pidx},\'{E(cmd)}\')">Run on {E(pname)}</button></div>'
                    if runnable else f'<div class="who">open this Playbook from a project page to run it there</div>')
             cards.append(f'<div class="card"><div class="row"><span class="kic">▶</span>'
                          f'<b style="font-family:var(--mono);font-size:13px">{E(cmd)}</b></div>'
                          f'<div class="why">{E(what)}</div><div class="who">cost: {E(cost)}</div>{act}</div>')
-        secs.append(f'<div class="sect">{E(title)}</div><div class="cardgrid">{"".join(cards)}</div>')
+        secs.append(f'<h2 class="sect">{E(title)}</h2><div class="cardgrid">{"".join(cards)}</div>')
     # full catalog, straight from the real command files — never a stale hand-list
     cdir = os.path.join(os.path.dirname(HERE), ".claude", "commands")
     rows = []
@@ -518,10 +529,11 @@ def playbook(pidx=None):
         if not (f.startswith("guild-") and f.endswith(".md")): continue
         head = open(os.path.join(cdir, f), encoding="utf-8").read(2000)
         m = _re.search(r"^description:\s*['\"]?(.*?)['\"]?$", head, _re.M)
-        desc = (m.group(1) if m else "").strip()
-        rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid rgba(255,255,255,.05)">'
+        desc = (m.group(1) if m else "").strip().replace("\\'", "'").replace('\\"', '"')
+        if len(desc) > 160: desc = desc[:160].rsplit(" ", 1)[0] + "\u2026"
+        rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid var(--line-soft)">'
                     f'<b style="font-family:var(--mono);font-size:12px;color:var(--ember-tx)">/{E(f[:-3])}</b> '
-                    f'<span style="font-size:12px;color:var(--ink-faint)">— {E(desc[:180])}</span></div>')
+                    f'<span style="font-size:12px;color:var(--ink-faint)">— {E(desc)}</span></div>')
     catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink-faint);'
                f'font-weight:650">Every command Guild knows ({len(rows)}) — the full catalog, read live from the command files</summary>'
                f'<div class="card" style="margin-top:10px">{"".join(rows)}</div></details>')
@@ -529,7 +541,10 @@ def playbook(pidx=None):
              'You never need to memorize these. Guild recommends the right one at the right time on every project page — '
              'with its reasoning and cost. This page is the map for when you want to drive yourself.</div></div>')
     crumb = "what every command does, in plain words"
-    return page("Playbook", crumb, intro + "".join(secs) + catalog + JS, current=pidx)
+    title = f"Playbook \u00b7 {pname}" if runnable else "Playbook"
+    html = page(title, crumb, intro + "".join(secs) + catalog + JS, current=pidx)
+    return html.replace('class="sw" style="margin-left:auto"',
+                        'class="sw" style="margin-left:auto;color:var(--ember-tx);border-color:rgba(206,83,40,.4)"', 1)
 
 
 def record_verdict(project_path, target, decision):
