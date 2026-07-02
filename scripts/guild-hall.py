@@ -135,6 +135,13 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(206,83,40,.32)}
+.card.feat .kic{background:rgba(206,83,40,.14);border-color:rgba(206,83,40,.3);font-size:16px}
+.pick{margin-left:auto;font-size:10.5px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
+.pickbox{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
+.batchbar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:60;font-size:12.5px;box-shadow:0 6px 24px rgba(20,15,10,.5)}
+.batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#fff;min-height:44px}
+.batchbar .clearsel{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .obtn{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ember-tx);cursor:pointer;min-height:44px;margin-left:auto;flex-shrink:0}
 .obtn:hover{border-color:var(--ember-tx)}
 button{font-family:var(--sans)}
@@ -219,6 +226,15 @@ def switcher(current=None):
     return f'<div class="swbar">{"".join(out)}{pb}</div>'
 
 
+BMAD_ROSTER = [
+    ("PM", "📋", "decides what to build and why — owns the product brief", "/bmad-agent-pm"),
+    ("Analyst", "📊", "digs into requirements and edge cases before anyone designs", "/bmad-agent-analyst"),
+    ("Architect", "🏛️", "shapes the technical plan — stack, data, boundaries", "/bmad-agent-architect"),
+    ("Scrum Master", "🏃", "cuts the plan into buildable stories and keeps the sprint honest", "/bmad-agent-sm"),
+    ("Dev", "💻", "builds the stories — code, tests, review", "/bmad-agent-dev"),
+]
+
+
 def recommends(feed, project_path):
     """Guild proposes the next UX process — with its REASONING and COST visible,
     so nobody spends tokens on an unexplained suggestion (owner rule 2026-07-02)."""
@@ -235,7 +251,7 @@ def recommends(feed, project_path):
         recs.append(("Give the brain evidence",
                      "run /guild-spine-backfill (existing research) or /guild-research-synthesis (fresh)",
                      "/guild-spine-backfill",
-                     f"checked: {artrel}/spine.json — does not exist, so IA/design decisions here can't cite evidence",
+                     f"checked: this project has no research file yet ({artrel}) — so nothing here can point at evidence",
                      "medium — one agent session reading your existing docs (~5-15 min)"))
     if not has("design-direction") and not has("charter"):
         recs.append(("Capture your taste once",
@@ -245,15 +261,15 @@ def recommends(feed, project_path):
                      "light — ~10 min, mostly YOUR answers; saves tokens on every later run"))
     if os.path.isdir(os.path.join(project_path, "src")) and not feed["runs"]:
         recs.append(("Audit what's built",
-                     "/guild-auto-critique per key screen + affordance-check + equivalence-check find the gaps in one pass",
+                     "/guild-auto-critique reviews every key screen for craft problems and missing basics in one pass",
                      "/guild-auto-critique",
                      "checked: src/ exists but zero run records — real code Guild has never judged; unknown gaps compound into rework",
                      "medium-heavy — one agent per key screen; scripted gates are free"))
     if os.path.isdir(os.path.join(project_path, "src")) and not has("suggestions"):
         recs.append(("Ask Guild for UX improvement ideas",
-                     "/guild-suggest sweeps every screen for missing affordances, unguarded destructive actions, absent empty states, and remembered patterns that fit",
+                     "/guild-suggest sweeps every screen for missing basics — no search on growing lists, deletes without undo, blank empty screens — plus ideas Guild remembers working before",
                      "/guild-suggest",
-                     f"checked: {artrel}/suggestions.yaml — Guild has never proposed HCI improvements for this UI",
+                     f"checked: Guild has never proposed improvements for this app's screens (no suggestions file in {artrel})",
                      "free — scripted static sweep, seconds, no agent"))
     if feed["runs"] and not has("batched-review"):
         recs.append(("Get a decision packet",
@@ -263,7 +279,7 @@ def recommends(feed, project_path):
                      "light-medium — one agent compiling what already exists"))
     if not recs:
         recs.append(("Ship or extend", "/guild-quest for the next feature, or /guild-comment on anything that feels off",
-                     "/guild-quest", "checked: spine, charter, runs, packet all present — state is healthy",
+                     "/guild-quest", "checked: research, taste, runs, and decisions are all in place — this project is healthy",
                      "heavy — a full pipeline run; only start it deliberately"))
     return recs[:4]
 
@@ -271,7 +287,7 @@ def recommends(feed, project_path):
 def page(title, crumb, body, current=None):
     body = f'<nav aria-label="projects">{switcher(current)}</nav><main>' + body + '</main>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{E(title)}</title><style>{CSS}</style></head><body>'
+            f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'{"" if crumb.startswith("everything") else chr(60)+chr(97)+chr(32)+chr(99)+chr(108)+chr(97)+chr(115)+chr(115)+chr(61)+chr(34)+chr(104)+chr(111)+chr(109)+chr(101)+chr(34)+chr(32)+chr(104)+chr(114)+chr(101)+chr(102)+chr(61)+chr(34)+chr(47)+chr(34)+chr(62)+chr(66)+chr(97)+chr(99)+chr(107)+chr(32)+chr(116)+chr(111)+chr(32)+chr(97)+chr(108)+chr(108)+chr(32)+chr(112)+chr(114)+chr(111)+chr(106)+chr(101)+chr(99)+chr(116)+chr(115)+chr(60)+chr(47)+chr(97)+chr(62)}</div>{body}'
             f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
@@ -334,7 +350,7 @@ def home(wf, view="inbox"):
                   f'<span><b style="color:var(--gold-tx)">{waiting}</b> waiting on you</span>'
                   f'<span><b style="color:var(--ember-tx)">{execing}</b> agents executing</span>'
                   f'<span><b style="color:var(--sage-tx)">{pats}</b> patterns Guild remembers</span>'
-                  f'<span><b style="color:var(--sage-tx)">{cal}</b>/50 taste picks toward calibrated judgment</span></div>'
+                  f'<span><b style="color:var(--sage-tx)">{cal}</b> of 50 picks made — Guild is learning your taste</span></div>'
                   f'<div class="who">every row below is a door — click it</div></div>')
         rows = "".join(f'<a class="card" href="{e["href"]}" style="padding:10px 15px"><div class="row">'
                        f'<span class="chip proj">{E(e["project"])}</span><b style="font-size:13px;font-weight:600">{E(e["text"][:110])}</b>'
@@ -393,7 +409,9 @@ def project_view(wf, pidx, view):
     if view == "needs":
         rec_rows = "".join(
             f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
-            f'<span class="chip think">Guild recommends</span></div><div class="why">{E(why)}</div>'
+            f'<span class="chip think">Guild recommends</span>'
+            + (f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue</label>' if cmd != "top" else "")
+            + f'</div><div class="why">{E(why)}</div>'
             f'<div class="who" style="margin-top:6px">why: {E(because)}</div>'
             f'<div class="who">cost: {E(cost)}</div>'
             + (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it — Guild opens an agent and starts</button>'
@@ -419,7 +437,9 @@ def project_view(wf, pidx, view):
                 sugg_rows = "".join(
                     f'<div class="card"><div class="row"><span class="kic">💡</span><b>{E(s["title"])}</b>'
                     f'<span class="chip {"wait" if s["confidence"] == "firm" else "think"}">'
-                    f'{"canon gap" if s["confidence"] == "firm" else "worth a look"}</span></div>'
+                    f'{"missing a basic" if s["confidence"] == "firm" else "worth a look"}</span>'
+                    f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" '
+                    f'data-cmd="/guild-comment {E(s["title"])} — {E(s["evidence"])}">queue</label></div>'
                     f'<div class="why">{E(s["why"])}</div><div class="who">where: {E(s["evidence"])}</div>'
                     f'<div class="acts"><button onclick="run(this,{pidx},\'/guild-comment {E(s["title"])} — {E(s["evidence"])}\')">'
                     f'Have Guild fix it — 3 variants to pick from</button></div></div>'
@@ -432,6 +452,12 @@ def project_view(wf, pidx, view):
             sugg_rows = f'<h2 class="sect">UX improvements Guild noticed</h2><div class="cardgrid">{sugg_rows}</div>'
         body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
               + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
+        bmad_rows = "".join(
+            f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
+            f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
+            f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
+            for name, icon, job, cmd in BMAD_ROSTER)
+        body += f'<h2 class="sect">The build council (BMAD) — plans and builds inside every full quest</h2><div class="libgrid">{bmad_rows}</div>'
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -505,6 +531,34 @@ async function act(btn, pidx, action, target, choice){
   }
   card.appendChild(note);
 }
+
+function syncbar(){
+  const sel = [...document.querySelectorAll('.pickbox:checked')];
+  let bar = document.getElementById('batchbar');
+  if (!sel.length) { if (bar) bar.remove(); return; }
+  if (!bar) { bar = document.createElement('div'); bar.id = 'batchbar'; bar.className = 'batchbar';
+    bar.setAttribute('role','status'); document.body.appendChild(bar); }
+  bar.innerHTML = '<b>' + sel.length + ' queued</b>' +
+    '<button onclick="runbatch(this)">Run all ' + sel.length + ' — one agent each</button>' +
+    '<button class="clearsel" onclick="clearsel()">Clear</button>';
+}
+async function runbatch(btn){
+  btn.disabled = true;
+  const sel = [...document.querySelectorAll('.pickbox:checked')];
+  let done = 0, fail = 0;
+  for (const c of sel) {
+    btn.textContent = 'launching ' + (done + fail + 1) + '/' + sel.length + '…';
+    try {
+      const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({pidx: +c.dataset.pidx, cmd: c.dataset.cmd})});
+      (await r.json()).ok ? done++ : fail++;
+    } catch (e) { fail++; }
+    c.checked = false; c.disabled = true;
+  }
+  btn.textContent = '✓ ' + done + ' agents launched' + (fail ? ' · ' + fail + ' failed' : '');
+}
+function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); }
+document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) syncbar(); });
 </script>"""
 
 
@@ -514,14 +568,14 @@ PLAYBOOK = [
     ("Start a project (do these once)", [
         ("/guild-design-direction", "Tell Guild your taste ONCE — ~10 min of questions about look, feel, references. Every agent afterward designs to your answers instead of re-asking.", "light — mostly your answers"),
         ("/guild-charter", "Set the autonomy contract: what agents may decide alone vs. must bring to you. This is why your inbox stays quiet.", "light — a short conversation"),
-        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a cited evidence spine so decisions can point at proof.", "medium — one agent reads your corpus"),
+        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a research file Guild can cite, so decisions point at proof.", "medium — one agent reads your corpus"),
     ]),
     ("Get evidence", [
-        ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Output is the evidence spine (every claim traceable or honestly cut).", "medium-heavy — real research takes agent time"),
-        ("/guild-ia", "Information architecture FROM the spine — sitemap, flows, content model. Gated: it refuses to invent structure without evidence.", "medium — needs a spine first"),
+        ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy — real research takes agent time"),
+        ("/guild-ia", "Plans the app's structure from the research — screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium — needs the research step first"),
     ]),
     ("Design & build", [
-        ("/guild-quest", "THE BIG ONE. Idea in, working app out: planning → research → design → build → test, agents handing off to each other. Start it and watch this Hall.", "heavy — a full pipeline; start deliberately"),
+        ("/guild-quest", "THE BIG ONE. Idea in, working app out. BMAD plans it (PM scopes → Analyst digs into requirements → Architect shapes the tech → Scrum Master cuts it into stories), Guild designs it, then it gets built and tested — agents handing off to each other. Start it and watch this Hall.", "heavy — a full pipeline; start deliberately"),
         ("/guild-design-sprint", "The design phases only (research → interaction → visual → content → QA), no code build. For when you want designs to react to first.", "medium-heavy"),
         ("/guild-render", "One design model fanned out to every platform at once — native FigJam board + clickable HTML prototype. Change the model, re-run, both update.", "light — scripted, seconds"),
         ("/guild-raid", "Every Guild agent runs on Claude, Codex AND Gemini in parallel; the best take per discipline is synthesized. Three independent design teams for the price of one prompt.", "heaviest — 3× everything; big decisions only"),
@@ -542,15 +596,25 @@ def playbook(pidx=None):
     runnable = pidx is not None
     pname = projects()[pidx]["name"] if runnable else None
     heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint")
+    icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-spine-backfill": "📚",
+             "/guild-research-synthesis": "🔬", "/guild-ia": "🧭", "/guild-quest": "🏰",
+             "/guild-design-sprint": "🖌️", "/guild-render": "🖼️", "/guild-raid": "⚔️",
+             "/guild-auto-critique": "🧪", "/guild-comment": "💬", "/guild-pre-handoff": "📦",
+             "/guild-agent-mage": "🧙"}
     secs = []
     for title, cmds in PLAYBOOK:
         cards = []
         for cmd, what, cost in cmds:
             guard = (f"if(confirm('This starts a HEAVY run ({cmd}) on {pname} — proceed?'))" if cmd in heavy else "")
-            act = (f'<div class="acts"><button onclick="{guard}run(this,{pidx},\'{E(cmd)}\')">Run on {E(pname)}</button></div>'
+            act = (f'<div class="acts"><button onclick="{guard}run(this,{pidx},\'{E(cmd)}\')">Run on {E(pname)}</button>'
+                   f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue</label></div>'
                    if runnable else f'<div class="who">open this Playbook from a project page to run it there</div>')
-            cards.append(f'<div class="card"><div class="row"><span class="kic">▶</span>'
-                         f'<b style="font-family:var(--mono);font-size:13px">{E(cmd)}</b></div>'
+            tier = "heavy" if cmd in heavy else ("medium" if "medium" in cost else "light")
+            tchip = {"light": "done", "medium": "wait", "heavy": "exec"}[tier]
+            cards.append(f'<div class="card{" feat" if cmd in heavy else ""}"><div class="row">'
+                         f'<span class="kic">{icons.get(cmd, "▶")}</span>'
+                         f'<b style="font-family:var(--mono);font-size:13px">{E(cmd)}</b>'
+                         f'<span class="chip {tchip}">{tier}</span></div>'
                          f'<div class="why">{E(what)}</div><div class="who">cost: {E(cost)}</div>{act}</div>')
         secs.append(f'<h2 class="sect">{E(title)}</h2><div class="cardgrid">{"".join(cards)}</div>')
     # full catalog, straight from the real command files — never a stale hand-list
@@ -561,6 +625,11 @@ def playbook(pidx=None):
         head = open(os.path.join(cdir, f), encoding="utf-8").read(2000)
         m = _re.search(r"^description:\s*['\"]?(.*?)['\"]?$", head, _re.M)
         desc = (m.group(1) if m else "").strip().replace("\\'", "'").replace('\\"', '"')
+        for jargon, plain in (("canonical artifact model", "master design model"), ("artifact model", "master design model"),
+                              ("evidence spine", "research file"), ("affordances", "expected controls"),
+                              ("affordance", "expected control"), ("calibration", "taste-learning"),
+                              ("nuggets", "verified facts"), ("nugget", "verified fact")):
+            desc = desc.replace(jargon, plain).replace(jargon.capitalize(), plain)
         if len(desc) > 160: desc = desc[:160].rsplit(" ", 1)[0] + "\u2026"
         rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid var(--line-soft)">'
                     f'<b style="font-family:var(--mono);font-size:12px;color:var(--ember-tx)">/{E(f[:-3])}</b> '
@@ -671,7 +740,15 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/run":
             pr = projects()[req["pidx"]]
             cli = os.environ.get("ATRIUM_CLI_PATH", "atrium")
-            r = subprocess.run([cli, "pane", "create", "--adapter", "claude-code", "--cwd", pr["path"]],
+            split = []
+            try:
+                pl = subprocess.run([cli, "pane", "list", "--json"], capture_output=True, text=True, timeout=10)
+                hallpane = next((x["id"] for x in json.loads(pl.stdout)
+                                 if x.get("type") == "browser" and (x.get("name") or "").startswith("GUILD Hall")), None)
+                if hallpane: split = ["--split", hallpane, "--direction", "right"]
+            except Exception:
+                pass
+            r = subprocess.run([cli, "pane", "create", "--adapter", "claude-code", "--cwd", pr["path"], *split],
                                capture_output=True, text=True, timeout=30)
             pane = ""
             for tok in (r.stdout + r.stderr).split():
@@ -684,7 +761,8 @@ class Handler(BaseHTTPRequestHandler):
             m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
             ok = m.returncode == 0
             return self._send(json.dumps({"ok": ok,
-                "message": f"agent launched in a new pane and told to run {req['cmd']} — watch it in your room" if ok
+                "message": (f"agent launched beside the Hall in this room — running {req['cmd']}" if split
+                            else f"agent launched in a new room — running {req['cmd']}") if ok
                            else (m.stderr or "message failed")[:140]}), "application/json")
         if self.path == "/undo":
             timer = PENDING.pop(req.get("token", ""), None)
@@ -747,6 +825,12 @@ def selftest():
                 for m in _re.finditer(r'class="([^"]+)"', html):
                     used.update(c for c in m.group(1).split() if not c.startswith("shot"))
             unstyled = sorted(c for c in used if not _re.search(r"\." + _re.escape(c) + r"[ ,{:.>#\[]", CSS))
+            blob = (h + pv + rv + playbook(0)).lower()
+            leaked = [w for w in ("affordance", "fired pattern", "canon gap", "calibrated judgment",
+                                  "spine.json", "evidence spine", "artifact model", "nugget") if w in blob]
+            if leaked:
+                print("   ✗ jargon leaked into owner-facing pages:", leaked)
+                ok = False
             if unstyled:
                 print("   ✗ classes used in markup with NO css rule:", unstyled)
                 ok = False
