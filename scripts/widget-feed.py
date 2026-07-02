@@ -139,20 +139,39 @@ def _needs_you(art_root, runs):
     return needs[:6], packet
 
 
-def _library(art_root, limit=12):
-    items = []
-    for p in sorted(glob.glob(os.path.join(art_root, "*")), key=os.path.getmtime, reverse=True):
-        base = os.path.basename(p)
-        if base in ("runs",) or base.startswith("."): continue
-        kind = ("IA" if "spine" in base or "-ia" in base else
-                "packet" if "batched-review" in base else
-                "personas" if "persona" in base else
-                "shots" if "screenshot" in base else
-                "doc" if base.endswith((".md", ".yaml", ".json")) else "dir")
-        items.append({"name": base[:48], "kind": kind, "path": p,
-                      "mtime": int(os.path.getmtime(p))})
-        if len(items) >= limit: break
-    return items
+def _library(art_root, limit=40):
+    """The product-design hub: EVERYTHING the project's design work produced,
+    grouped — decisions, research, design artifacts, specs — 2 levels deep."""
+    groups = {"decisions": [], "research": [], "design": [], "specs & docs": [], "other": []}
+    def classify(base):
+        b = base.lower()
+        if "batched-review" in b or "decision" in b or "verdict" in b or "pick" in b: return "decisions"
+        if "spine" in b or "persona" in b or "research" in b or "synthesis" in b or "interview" in b: return "research"
+        if b.endswith((".png", ".html", ".svg", ".gif")) or "mock" in b or "wireframe" in b or "screenshot" in b \
+           or "prototype" in b or "render" in b or "figma" in b or "regenerate" in b: return "design"
+        if b.endswith((".md", ".yaml", ".json")): return "specs & docs"
+        return "other"
+    if not os.path.isdir(art_root): return []
+    for entry in sorted(glob.glob(os.path.join(art_root, "*")), key=os.path.getmtime, reverse=True):
+        base = os.path.basename(entry)
+        if base == "runs" or base.startswith("."): continue
+        if os.path.isdir(entry):
+            kids = sorted(glob.glob(os.path.join(entry, "*")), key=os.path.getmtime, reverse=True)
+            for k in kids[:6]:
+                kb = os.path.basename(k)
+                if kb.startswith("."): continue
+                groups[classify(kb)].append({"name": f"{base}/{kb}"[:56], "path": k,
+                                             "mtime": int(os.path.getmtime(k))})
+        else:
+            groups[classify(base)].append({"name": base[:56], "path": entry,
+                                           "mtime": int(os.path.getmtime(entry))})
+    out = []
+    for g, items in groups.items():
+        for it in items[:12]:
+            it["kind"] = g
+            out.append(it)
+    out.sort(key=lambda x: (x["kind"], -x["mtime"]))
+    return out[:limit]
 
 
 def _suggestions(root, runs, needs):
@@ -180,6 +199,30 @@ def _cards():
         return []
 
 
+
+def _design_system(root):
+    """Surface the project's design-system assets: Storybook, DTCG tokens, Claude Design bundles, DS specs."""
+    ds = []
+    if os.path.isdir(os.path.join(root, ".storybook")):
+        ds.append({"name": "Storybook", "kind": "storybook", "path": os.path.join(root, ".storybook"),
+                   "hint": "component workshop — run its dev server to browse"})
+    for pat in ("tokens*.json", "*.dtcg.json", "src/**/tokens*.json"):
+        for f in glob.glob(os.path.join(root, pat), recursive=True)[:2]:
+            if "node_modules" in f: continue
+            ds.append({"name": os.path.basename(f), "kind": "tokens", "path": f, "hint": "design tokens (DTCG)"})
+    for pat in ("*claude-design*", "**/cd-seed", "**/claude-design-bundle"):
+        for f in glob.glob(os.path.join(root, pat), recursive=True)[:2]:
+            if "node_modules" in f: continue
+            ds.append({"name": os.path.basename(f), "kind": "claude-design", "path": f, "hint": "Claude Design bundle"})
+    for f in (os.path.join(root, "docs", "guild", "design-system.yaml"),):
+        if os.path.exists(f):
+            ds.append({"name": "design-system.yaml", "kind": "ds-spec", "path": f, "hint": "Guild design-system spec"})
+    seen, out = set(), []
+    for d in ds:
+        if d["path"] in seen: continue
+        seen.add(d["path"]); out.append(d)
+    return out[:6]
+
 def build(root):
     root = os.path.abspath(os.path.expanduser(root))
     out_root = _out_root(root)
@@ -206,6 +249,7 @@ def build(root):
         "library": _library(art_root),
         "spine_nuggets": spine_n,
         "cards": _cards(),
+        "design_system": _design_system(root),
     }
 
 

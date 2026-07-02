@@ -166,6 +166,19 @@ display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:va
 """
 
 
+
+ROSTER = [
+    ("Ranger", "🔍", "researches your users and market — interviews, synthesis, evidence", "/guild-agent-ranger"),
+    ("Cartographer", "🗺️", "organizes the product — IA, sitemaps, user flows on boards", "/guild-agent-cartographer"),
+    ("Rogue", "🔀", "designs interactions — flows, wireframes, states", "/guild-agent-rogue"),
+    ("Mage", "🎨", "designs visuals — critique, polish, motion, variants", "/guild-agent-mage"),
+    ("Warlock", "✍️", "writes the words — microcopy, errors, voice", "/guild-agent-warlock"),
+    ("Tinker", "🔧", "builds the design system — components, tokens, Figma/Storybook", "/guild-agent-tinker"),
+    ("Sage", "🛡️", "quality gate — accessibility, consistency, go/no-go", "/guild-agent-sage"),
+    ("Healer", "📦", "hands off to dev — specs, stories, tokens", "/guild-agent-healer"),
+    ("Guild Master", "🎯", "runs the whole pipeline — point it at a goal", "/guild-quest"),
+]
+
 def switcher(current=None):
     regs = projects()
     wf = _feed_mod()
@@ -320,13 +333,21 @@ def project_view(wf, pidx, view):
         rec_rows = "".join(
             f'<div class="card" style="border-left:3px solid var(--denim)"><div class="row"><b>{E(title)}</b>'
             f'<span class="chip think">Guild recommends</span></div><div class="why">{E(why)}</div>'
-            + (f'<div class="who">start it: type {E(cmd)} in any agent pane</div>' if cmd != "top" else "")
+            + (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it — Guild opens an agent and starts</button>'
+               f'<span class="who" style="align-self:center">or type {E(cmd)} yourself</span></div>' if cmd != "top" else "")
             + '</div>'
             for title, why, cmd in recommends(feed, p["path"]))
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
-        body += cards + f'<div class="sect">What Guild would run next</div>{rec_rows}'
+        roster_rows = "".join(
+            f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
+            f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
+            f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
+            for name, icon, job, cmd in ROSTER)
+        body += cards + f'<div class="sect">What Guild would run next</div>{rec_rows}' \
+              + f'<div class="sect">Your guild — summon a specialist</div>{roster_rows}'
+
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
             d = wf._yaml(i["link"])
@@ -337,7 +358,21 @@ def project_view(wf, pidx, view):
         if not any(x["kind"] == "run" for x in its):
             body += '<div class="quiet-empty">No runs yet — delegate work with /guild-quest or /guild-comment.</div>'
     else:
+        ds = feed.get("design_system") or []
+        if ds:
+            body += '<div class="sect">Design system</div>'
+            for d in ds:
+                body += (f'<div class="lib"><span class="th">{E(d["kind"][:5])}</span><span><b>{E(d["name"])}</b>'
+                         f'<div style="font-size:11px;color:var(--ink-faint)">{E(d.get("hint",""))}</div></span>'
+                         f'<span class="m"><a href="/open?path={E(d["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
+        else:
+            body += ('<div class="sect">Design system</div><div class="quiet-empty">No Storybook, tokens file, or '
+                     'Claude Design bundle registered here yet — Tinker can set one up (summon below in Needs you).</div>')
+        current_group = None
         for it in feed["library"]:
+            if it["kind"] != current_group:
+                current_group = it["kind"]
+                body += f'<div class="sect">{E(current_group)}</div>'
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
@@ -345,6 +380,16 @@ def project_view(wf, pidx, view):
 
 
 JS = """<script>
+async function run(btn, pidx, cmd){
+  btn.disabled = true; btn.textContent = "launching agent…";
+  const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({pidx, cmd})});
+  const d = await r.json();
+  const note = document.createElement('div'); note.className = 'confirm';
+  note.textContent = (d.ok ? '✓ ' : '✗ ') + d.message;
+  btn.closest('.card').appendChild(note);
+  if (!d.ok) { btn.disabled = false; btn.textContent = 'Run it — Guild opens an agent and starts'; }
+}
 async function act(btn, pidx, action, target, choice){
   btn.disabled = true; const label = btn.textContent; btn.textContent = "…";
   const r = await fetch('/act', {method:'POST', headers:{'Content-Type':'application/json'},
@@ -466,6 +511,24 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         n = int(self.headers.get("Content-Length", 0))
         req = json.loads(self.rfile.read(n))
+        if self.path == "/run":
+            pr = projects()[req["pidx"]]
+            cli = os.environ.get("ATRIUM_CLI_PATH", "atrium")
+            r = subprocess.run([cli, "pane", "create", "--adapter", "claude-code", "--cwd", pr["path"]],
+                               capture_output=True, text=True, timeout=30)
+            pane = ""
+            for tok in (r.stdout + r.stderr).split():
+                if len(tok) >= 8 and all(c in "0123456789abcdef-" for c in tok[:8]): pane = tok; break
+            if r.returncode != 0 or not pane:
+                return self._send(json.dumps({"ok": False, "message": (r.stderr or "pane create failed")[:140]}), "application/json")
+            time.sleep(4)   # let the adapter boot before the instruction lands
+            msg = (f'{req["cmd"]} — launched from GUILD Hall for the project at {pr["path"]}. '
+                   f'Work in that project; deliver results to its guild-artifacts and the Hall inbox.')
+            m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
+            ok = m.returncode == 0
+            return self._send(json.dumps({"ok": ok,
+                "message": f"agent launched in a new pane and told to run {req['cmd']} — watch it in your room" if ok
+                           else (m.stderr or "message failed")[:140]}), "application/json")
         if self.path == "/undo":
             timer = PENDING.pop(req.get("token", ""), None)
             if timer: timer.cancel(); return self._send(json.dumps({"ok": True, "message": "undone"}), "application/json")
