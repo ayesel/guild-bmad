@@ -96,12 +96,11 @@ CSS = """
 --ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
 --sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;
 --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
-@view-transition{navigation:auto}
-::view-transition-old(root){animation-duration:.14s}
-::view-transition-new(root){animation-duration:.18s}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
 -webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
+@media(min-width:1100px){body{max-width:1200px}}
+@media(min-width:1500px){body{max-width:1400px}}
 a{color:inherit;text-decoration:none}
 .top{display:flex;align-items:center;gap:11px;margin-bottom:18px}
 .gm{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--ember),var(--ember-deep));
@@ -122,23 +121,19 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
 .card{border:1px solid var(--line-soft);border-radius:11px;background:var(--panel);padding:13px 15px;margin:9px 0;display:block}
-a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
-a.card:hover{border-color:var(--line);transform:translateX(3px)}
+a.card:hover{border-color:var(--line)}
 .card .row{display:flex;align-items:center;gap:10px}
 .card b{font-size:14px;font-weight:660}
 .card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-.acts button,.acts a{transition:transform .12s cubic-bezier(.22,1,.36,1),filter .12s ease;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+.acts button,.acts a{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
 background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
 .acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .acts .quiet:hover{color:var(--ink)}
-.acts button:hover,.acts a:hover{filter:brightness(1.12)}
-.acts button:active,.acts a:active{transform:scale(.96)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
-.pcard{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
-.pcard:hover{border-color:var(--line);transform:translateY(-2px)}
+.pcard:hover{border-color:var(--line)}
 .pcard b{font-size:14.5px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
 .pcard .meta{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
 .badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
@@ -163,6 +158,21 @@ border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);mar
 display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:var(--ink-faint)}
 .lib b{font-size:13px}.lib .m{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono)}
 .foot{margin-top:26px;font-size:11px;color:var(--ink-faint);line-height:1.6}
+.cardgrid{display:grid;grid-template-columns:1fr;gap:10px;margin:9px 0}
+.cardgrid .card{margin:0;height:100%;display:flex;flex-direction:column}
+.cardgrid .card .acts{margin-top:auto;padding-top:11px}
+.cardgrid > .quiet-empty{grid-column:1/-1}
+@media(min-width:1100px){.cardgrid{grid-template-columns:1fr 1fr;gap:12px}}
+@media(min-width:1500px){.cardgrid{grid-template-columns:repeat(3,1fr)}}
+.card .why{max-width:64ch}
+.tl li{max-width:72ch}
+.libgrid{display:grid;grid-template-columns:1fr;gap:8px}
+.libgrid .lib{margin:0}
+@media(min-width:900px){.libgrid{grid-template-columns:1fr 1fr}}
+@media(min-width:1400px){.libgrid{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){
+*,::before,::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+::view-transition-old(root),::view-transition-new(root){animation:none}}
 """
 
 
@@ -310,7 +320,7 @@ def home(wf, view="inbox"):
     inbox = "".join(decision_card({"kind": "decision", "state": "waiting for you", **n[1]}, n[0], project_name=regs[n[0]]["name"]) for n in all_needs) \
         or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you right now. '
             'Agents keep working and decisions will land here when they are yours to make.</div>')
-    body = (f'{hometabs}<div class="sect">Needs you — across every project ({len(all_needs)})</div>{inbox}'
+    body = (f'{hometabs}<div class="sect">Needs you — across every project ({len(all_needs)})</div><div class="cardgrid">{inbox}</div>'
             f'<div class="sect">Your projects</div><div class="pgrid">{"".join(grid)}</div>{JS}')
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
@@ -345,8 +355,8 @@ def project_view(wf, pidx, view):
             f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
-        body += cards + f'<div class="sect">What Guild would run next</div>{rec_rows}' \
-              + f'<div class="sect">Your guild — summon a specialist</div>{roster_rows}'
+        body += f'<div class="cardgrid">{cards}</div>' + f'<div class="sect">What Guild would run next</div><div class="cardgrid">{rec_rows}</div>' \
+              + f'<div class="sect">Your guild — summon a specialist</div><div class="libgrid">{roster_rows}</div>'
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
