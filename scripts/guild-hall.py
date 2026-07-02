@@ -100,6 +100,7 @@ CSS = """
 ::view-transition-old(root){animation-duration:.14s}
 ::view-transition-new(root){animation-duration:.18s}
 *{box-sizing:border-box;margin:0;padding:0}
+:focus-visible{outline:2px solid var(--ember-tx);outline-offset:2px;border-radius:4px}
 body{background:linear-gradient(180deg,#12100e 0%,#100f0d 240px);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
 -webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
 @media(min-width:1100px){body{max-width:1200px}}
@@ -126,7 +127,7 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ember-tx);opacity:.8;
 color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.card{border:1px solid var(--line-soft);border-left:3px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block;box-shadow:0 1px 4px rgba(0,0,0,.25)}.card:has(.chip.wait){border-left-color:var(--amber)}.card:has(.chip.done){border-left-color:var(--sage)}.card:has(.chip.exec){border-left-color:var(--ember)}.card:has(.chip.think):not(:has(.chip.wait)){border-left-color:var(--denim)}
+.card{border:1px solid var(--line-soft);border-left:3px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block;}.card:has(.chip.wait){border-left-color:var(--amber)}.card:has(.chip.done){border-left-color:var(--sage)}.card:has(.chip.exec){border-left-color:var(--ember)}.card:has(.chip.think):not(:has(.chip.wait)){border-left-color:var(--denim)}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
@@ -209,27 +210,50 @@ def switcher(current=None):
         on = ' style="color:var(--ember-tx);border-color:rgba(206,83,40,.4)"' if current == i else ""
         badge = f'<b style="color:#f3dca3;margin-left:5px">{n}</b>' if n else ""
         out.append(f'<a href="/p/{i}"{on} class="sw">{E(pr["name"])}{badge}</a>')
-    return f'<div class="swbar">{"".join(out)}</div>'
+    pb = f'<a href="/playbook{"?p=%d" % current if current is not None else ""}" class="sw" style="margin-left:auto">&#128214; Playbook</a>'
+    return f'<div class="swbar">{"".join(out)}{pb}</div>'
 
 
 def recommends(feed, project_path):
-    """Guild proposes the next UX process from the project's actual state."""
+    """Guild proposes the next UX process — with its REASONING and COST visible,
+    so nobody spends tokens on an unexplained suggestion (owner rule 2026-07-02)."""
     recs = []
     art = os.path.join(project_path, "_bmad-output", "guild-artifacts")
     if not os.path.isdir(art): art = os.path.join(project_path, "guild-output", "guild-artifacts")
     has = (lambda name: any(name in f for f in os.listdir(art))) if os.path.isdir(art) else (lambda name: False)
+    artrel = art.replace(project_path, ".")
     if feed["needs_you"]:
-        recs.append(("Answer what's waiting first", f'{len(feed["needs_you"])} decisions above — everything downstream moves faster once they land', "top"))
+        recs.append(("Answer what's waiting first",
+                     f'{len(feed["needs_you"])} decisions above — everything downstream moves faster once they land',
+                     "top", f'checked: your inbox — {len(feed["needs_you"])} items waiting', "free — just your clicks"))
     if feed["spine_nuggets"] == 0:
-        recs.append(("Give the brain evidence", "no research spine here yet — run /guild-spine-backfill (existing research) or /guild-research-synthesis (fresh)", "/guild-spine-backfill"))
+        recs.append(("Give the brain evidence",
+                     "run /guild-spine-backfill (existing research) or /guild-research-synthesis (fresh)",
+                     "/guild-spine-backfill",
+                     f"checked: {artrel}/spine.json — does not exist, so IA/design decisions here can't cite evidence",
+                     "medium — one agent session reading your existing docs (~5-15 min)"))
     if not has("design-direction") and not has("charter"):
-        recs.append(("Capture your taste once", "no design direction on file — /guild-design-direction + /guild-charter stop every agent re-asking what you want", "/guild-design-direction"))
+        recs.append(("Capture your taste once",
+                     "/guild-design-direction + /guild-charter stop every agent re-asking what you want",
+                     "/guild-design-direction",
+                     f"checked: {artrel} — no design-direction or charter file, so every future agent will ask you the same questions again",
+                     "light — ~10 min, mostly YOUR answers; saves tokens on every later run"))
     if os.path.isdir(os.path.join(project_path, "src")) and not feed["runs"]:
-        recs.append(("Audit what's built", "real code, never judged by Guild — /guild-auto-critique per key screen + affordance-check + equivalence-check find the gaps in one pass", "/guild-auto-critique"))
+        recs.append(("Audit what's built",
+                     "/guild-auto-critique per key screen + affordance-check + equivalence-check find the gaps in one pass",
+                     "/guild-auto-critique",
+                     "checked: src/ exists but zero run records — real code Guild has never judged; unknown gaps compound into rework",
+                     "medium-heavy — one agent per key screen; scripted gates are free"))
     if feed["runs"] and not has("batched-review"):
-        recs.append(("Get a decision packet", "runs exist but no batched review — /guild-pre-handoff turns findings into approve/waive decisions", "/guild-pre-handoff"))
+        recs.append(("Get a decision packet",
+                     "/guild-pre-handoff turns findings into approve/waive decisions",
+                     "/guild-pre-handoff",
+                     f'checked: {len(feed["runs"])} run(s) recorded but no batched-review packet — findings exist that never became decisions',
+                     "light-medium — one agent compiling what already exists"))
     if not recs:
-        recs.append(("Ship or extend", "state looks healthy — /guild-quest for the next feature, or /guild-comment on anything that feels off", "/guild-quest"))
+        recs.append(("Ship or extend", "/guild-quest for the next feature, or /guild-comment on anything that feels off",
+                     "/guild-quest", "checked: spine, charter, runs, packet all present — state is healthy",
+                     "heavy — a full pipeline run; only start it deliberately"))
     return recs[:4]
 
 
@@ -354,10 +378,12 @@ def project_view(wf, pidx, view):
         rec_rows = "".join(
             f'<div class="card" style="border-left:3px solid var(--denim)"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
             f'<span class="chip think">Guild recommends</span></div><div class="why">{E(why)}</div>'
+            f'<div class="who" style="margin-top:6px">why: {E(because)}</div>'
+            f'<div class="who">cost: {E(cost)}</div>'
             + (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it — Guild opens an agent and starts</button>'
                f'<span class="who" style="align-self:center">or type {E(cmd)} yourself</span></div>' if cmd != "top" else "")
             + '</div>'
-            for title, why, cmd in recommends(feed, p["path"]))
+            for title, why, cmd, because, cost in recommends(feed, p["path"]))
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
@@ -445,6 +471,67 @@ async function act(btn, pidx, action, target, choice){
 
 # ── the write channel ────────────────────────────────────────────────────────
 
+PLAYBOOK = [
+    ("Start a project (do these once)", [
+        ("/guild-design-direction", "Tell Guild your taste ONCE — ~10 min of questions about look, feel, references. Every agent afterward designs to your answers instead of re-asking.", "light — mostly your answers"),
+        ("/guild-charter", "Set the autonomy contract: what agents may decide alone vs. must bring to you. This is why your inbox stays quiet.", "light — a short conversation"),
+        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a cited evidence spine so decisions can point at proof.", "medium — one agent reads your corpus"),
+    ]),
+    ("Get evidence", [
+        ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Output is the evidence spine (every claim traceable or honestly cut).", "medium-heavy — real research takes agent time"),
+        ("/guild-ia", "Information architecture FROM the spine — sitemap, flows, content model. Gated: it refuses to invent structure without evidence.", "medium — needs a spine first"),
+    ]),
+    ("Design & build", [
+        ("/guild-quest", "THE BIG ONE. Idea in, working app out: planning → research → design → build → test, agents handing off to each other. Start it and watch this Hall.", "heavy — a full pipeline; start deliberately"),
+        ("/guild-design-sprint", "The design phases only (research → interaction → visual → content → QA), no code build. For when you want designs to react to first.", "medium-heavy"),
+        ("/guild-render", "One design model fanned out to every platform at once — native FigJam board + clickable HTML prototype. Change the model, re-run, both update.", "light — scripted, seconds"),
+        ("/guild-raid", "Every Guild agent runs on Claude, Codex AND Gemini in parallel; the best take per discipline is synthesized. Three independent design teams for the price of one prompt.", "heaviest — 3× everything; big decisions only"),
+    ]),
+    ("Judge & fix what exists", [
+        ("/guild-auto-critique", "Point it at a screen: Mage critiques like a design lead + every craft gate runs (spacing, type, tokens, states, motion, a11y). Findings, not vibes.", "medium — one agent per screen; gates are free"),
+        ("/guild-comment", "Anything feel off? Say it in plain words. Guild builds 3 real fixed variants and sends you a pick note with rendered pixels — you choose, it applies.", "medium — 3 real patches get built"),
+        ("/guild-pre-handoff", "Sweeps everything agents produced into ONE decision packet — approve / waive / redo. The end-of-run ritual before shipping.", "light-medium — compiles what exists"),
+    ]),
+    ("Talk to one specialist", [
+        ("/guild-agent-mage", "Summon a single agent instead of a pipeline — Mage (visual), Ranger (research), Rogue (interaction), Cartographer (IA), Sage (QA), Warlock (content), Healer (handoff), Tinker (design systems). Full roster with Summon buttons lives on every project page.", "light — one conversation"),
+    ]),
+]
+
+
+def playbook(pidx=None):
+    import re as _re
+    runnable = pidx is not None
+    secs = []
+    for title, cmds in PLAYBOOK:
+        cards = []
+        for cmd, what, cost in cmds:
+            act = (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it here</button></div>'
+                   if runnable else f'<div class="who">open this Playbook from a project page to run it there</div>')
+            cards.append(f'<div class="card"><div class="row"><span class="kic">▶</span>'
+                         f'<b style="font-family:var(--mono);font-size:13px">{E(cmd)}</b></div>'
+                         f'<div class="why">{E(what)}</div><div class="who">cost: {E(cost)}</div>{act}</div>')
+        secs.append(f'<div class="sect">{E(title)}</div><div class="cardgrid">{"".join(cards)}</div>')
+    # full catalog, straight from the real command files — never a stale hand-list
+    cdir = os.path.join(os.path.dirname(HERE), ".claude", "commands")
+    rows = []
+    for f in sorted(os.listdir(cdir)) if os.path.isdir(cdir) else []:
+        if not (f.startswith("guild-") and f.endswith(".md")): continue
+        head = open(os.path.join(cdir, f), encoding="utf-8").read(2000)
+        m = _re.search(r"^description:\s*['\"]?(.*?)['\"]?$", head, _re.M)
+        desc = (m.group(1) if m else "").strip()
+        rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid rgba(255,255,255,.05)">'
+                    f'<b style="font-family:var(--mono);font-size:12px;color:var(--ember-tx)">/{E(f[:-3])}</b> '
+                    f'<span style="font-size:12px;color:var(--ink-faint)">— {E(desc[:180])}</span></div>')
+    catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink-faint);'
+               f'font-weight:650">Every command Guild knows ({len(rows)}) — the full catalog, read live from the command files</summary>'
+               f'<div class="card" style="margin-top:10px">{"".join(rows)}</div></details>')
+    intro = ('<div class="card" style="border-left:3px solid var(--denim)"><div class="why" style="font-size:13px">'
+             'You never need to memorize these. Guild recommends the right one at the right time on every project page — '
+             'with its reasoning and cost. This page is the map for when you want to drive yourself.</div></div>')
+    crumb = "what every command does, in plain words"
+    return page("Playbook", crumb, intro + "".join(secs) + catalog + JS, current=pidx)
+
+
 def record_verdict(project_path, target, decision):
     """Approve/Waive a packet decision -> {art_root}/decisions.yaml, append-only."""
     wf = _feed_mod()
@@ -485,6 +572,9 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path); q = parse_qs(u.query)
         if u.path == "/":
             return self._send(home(self.wf, q.get("view", ["inbox"])[0]))
+        if u.path == "/playbook":
+            pq = q.get("p", [None])[0]
+            return self._send(playbook(int(pq) if pq is not None else None))
         if u.path.startswith("/p/"):
             return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0]))
         if u.path.startswith("/pick/"):
