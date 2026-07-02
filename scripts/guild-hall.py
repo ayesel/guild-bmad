@@ -392,7 +392,7 @@ def home(wf, view="inbox"):
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
 
-def project_view(wf, pidx, view):
+def project_view(wf, pidx, view, sv="cards"):
     regs = projects()
     p = regs[pidx]
     feed = wf.build(p["path"])
@@ -429,10 +429,32 @@ def project_view(wf, pidx, view):
         sugg_rows = ""
         for base in ("_bmad-output", "guild-output"):
             sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
-            if os.path.exists(sf):
-                import yaml as _y
-                sd = _y.safe_load(open(sf)) or {}
-                ss = sd.get("suggestions", [])
+            if not os.path.exists(sf):
+                continue
+            import yaml as _y
+            ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
+            if not ss:
+                break
+            toggle = (f'<span style="margin-left:auto;font-family:var(--sans);font-size:11.5px;letter-spacing:0;text-transform:none">'
+                      f'<a href="/p/{pidx}?view=needs&sv=cards" style="color:{"var(--ember-tx)" if sv == "cards" else "var(--ink-faint)"};margin-right:10px">Top picks</a>'
+                      f'<a href="/p/{pidx}?view=needs&sv=list" style="color:{"var(--ember-tx)" if sv == "list" else "var(--ink-faint)"}">All {len(ss)} as a list</a></span>')
+            if sv == "list":
+                bysrc = {}
+                for s in ss:
+                    bysrc.setdefault(s["evidence"], []).append(s)
+                rows = []
+                for src, group in sorted(bysrc.items(), key=lambda kv: -len(kv[1])):
+                    rows.append(f'<div class="who" style="margin:14px 2px 4px;font-family:var(--mono)">{E(src)} — {len(group)}</div>')
+                    rows += [
+                        f'<div class="lib"><span class="th" style="font-size:13px">💡</span>'
+                        f'<span><b>{E(s["title"])}</b><div class="m">{E(s["why"][:110])}</div></span>'
+                        f'<span class="chip {"wait" if s["confidence"] == "firm" else "think"}" style="flex-shrink:0">'
+                        f'{"missing a basic" if s["confidence"] == "firm" else "worth a look"}</span>'
+                        f'<label class="pick" style="margin-left:8px"><input type="checkbox" class="pickbox" data-pidx="{pidx}" '
+                        f'data-cmd="/guild-comment {E(s["title"])} — {E(s["evidence"])}">queue</label></div>'
+                        for s in group]
+                sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
+            else:
                 shown = ss[:6]
                 sugg_rows = "".join(
                     f'<div class="card"><div class="row"><span class="kic">💡</span><b>{E(s["title"])}</b>'
@@ -445,11 +467,12 @@ def project_view(wf, pidx, view):
                     f'Have Guild fix it — 3 variants to pick from</button></div></div>'
                     for s in shown)
                 if len(ss) > len(shown):
-                    sugg_rows += (f'<div class="who" style="grid-column:1/-1">+ {len(ss) - len(shown)} more in '
-                                  f'{base}/guild-artifacts/suggestions.yaml (Library tab)</div>')
-                break
-        if sugg_rows:
-            sugg_rows = f'<h2 class="sect">UX improvements Guild noticed</h2><div class="cardgrid">{sugg_rows}</div>'
+                    sugg_rows += (f'<a class="card" href="/p/{pidx}?view=needs&sv=list" style="display:flex;align-items:center;'
+                                  f'justify-content:center;font-weight:700;color:var(--ember-tx)">'
+                                  f'See all {len(ss)} as a list →</a>')
+            sugg_rows = (f'<h2 class="sect">UX improvements Guild noticed{toggle}</h2>'
+                         f'<div class="cardgrid">{sugg_rows}</div>')
+            break
         body += f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
               + f'<h2 class="sect">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
         bmad_rows = "".join(
@@ -691,7 +714,8 @@ class Handler(BaseHTTPRequestHandler):
             pq = q.get("p", [None])[0]
             return self._send(playbook(int(pq) if pq is not None else None))
         if u.path.startswith("/p/"):
-            return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0]))
+            return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0],
+                                           q.get("sv", ["cards"])[0]))
         if u.path.startswith("/pick/"):
             _, _, pidx, slug = u.path.split("/", 3)
             proj = projects()[int(pidx)]["path"]
