@@ -149,6 +149,7 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
 .chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
 .swbar{display:flex;gap:10px;align-items:center;margin:2px 0 6px}
+.runcfg{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line-soft);border-radius:10px;background:var(--panel)}
 .swlab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 .sw{font-size:11px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
@@ -365,6 +366,12 @@ def page(title, crumb, body, current=None):
             f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}</div>'
+            f'<div class="runcfg"><span class="swlab">Run with</span>'
+            f'<select id="runmodel" class="fsel" aria-label="model to launch runs with">'
+            f'<option value="claude-code">Claude</option><option value="codex">Codex</option>'
+            f'<option value="gemini">Gemini</option><option value="cursor-agent">Cursor</option></select>'
+            f'<label class="pick"><input type="checkbox" id="runreuse"> reuse one pane</label>'
+            f'<span class="who" style="margin:0">applies to every Run below · raids always use all 3 models</span></div>'
             f'<main>{body}</main>'
             f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
             f'Quiet inbox = agents working, nothing needs you.</div></body></html>')
@@ -631,10 +638,23 @@ def project_view(wf, pidx, view, sv="cards"):
 
 
 JS = """<script>
+function launchCfg(){
+  const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
+  return {adapter: m ? m.value : 'claude-code', reuse: r ? r.checked : false};
+}
+(function(){
+  const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
+  try {
+    if (m && localStorage.guildAdapter) m.value = localStorage.guildAdapter;
+    if (r && localStorage.guildReuse === '1') r.checked = true;
+  } catch(e){}
+  if (m) m.addEventListener('change', () => { try { localStorage.guildAdapter = m.value; } catch(e){} });
+  if (r) r.addEventListener('change', () => { try { localStorage.guildReuse = r.checked ? '1' : '0'; } catch(e){} });
+})();
 async function run(btn, pidx, cmd){
   const label = btn.textContent; btn.disabled = true; btn.textContent = "launching agent…";
   const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({pidx, cmd})});
+    body: JSON.stringify({pidx, cmd, ...launchCfg()})});
   const d = await r.json();
   const note = document.createElement('div'); note.className = 'confirm'; note.setAttribute('role','status'); note.setAttribute('aria-live','polite');
   note.textContent = (d.ok ? '✓ ' : '✗ ') + d.message;
@@ -689,7 +709,7 @@ async function runbatch(btn){
     btn.textContent = 'launching ' + (done + fail + 1) + '/' + sel.length + '…';
     try {
       const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({pidx: +c.dataset.pidx, cmd: c.dataset.cmd})});
+        body: JSON.stringify({pidx: +c.dataset.pidx, cmd: c.dataset.cmd, ...launchCfg()})});
       (await r.json()).ok ? done++ : fail++;
     } catch (e) { fail++; }
     c.checked = false; c.disabled = true;
@@ -732,7 +752,7 @@ async function explaunch(pidx){
     + (ask ? ' — rough ask: ' + ask : ' — ask me for the rough question, then forge and run the wave');
   st.innerHTML = '<div class="confirm" role="status">launching ' + provs.length + ' researcher' + (provs.length>1?'s':'') + '…</div>';
   try {
-    const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pidx, cmd})});
+    const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pidx, cmd, ...launchCfg()})});
     const d = await r.json();
     st.innerHTML = '<div class="confirm" role="status">' + (d.ok ? '✓ ' : '✗ ') + d.message + '</div>';
   } catch (e) { st.innerHTML = '<div class="confirm" role="status">✗ ' + e + '</div>'; }
@@ -987,29 +1007,54 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/run":
             pr = projects()[req["pidx"]]
             cli = os.environ.get("ATRIUM_CLI_PATH", "atrium")
-            split = []
+            adapter = req.get("adapter") or "claude-code"
+            if adapter not in ("claude-code", "codex", "gemini", "cursor-agent"):
+                adapter = "claude-code"
+            reuse = bool(req.get("reuse"))
+            msg = (f'{req["cmd"]} — launched from GUILD Hall for the project at {pr["path"]}. '
+                   f'Work in that project; deliver results to its guild-artifacts and the Hall inbox.')
+            runner_file = os.path.expanduser("~/.config/guild/hall-runner.yaml")
+            import yaml as _y
             try:
                 pl = subprocess.run([cli, "pane", "list", "--json"], capture_output=True, text=True, timeout=10)
-                hallpane = next((x["id"] for x in json.loads(pl.stdout)
-                                 if x.get("type") == "browser" and (x.get("name") or "").startswith("GUILD Hall")), None)
-                if hallpane: split = ["--split", hallpane, "--direction", "right"]
+                panes = json.loads(pl.stdout)
             except Exception:
-                pass
-            r = subprocess.run([cli, "pane", "create", "--adapter", "claude-code", "--cwd", pr["path"], *split],
+                panes = []
+            live_ids = {x["id"] for x in panes}
+            # reuse mode: one persistent "Guild Runner" pane PER adapter — feed successive
+            # prompts into it (shared context, no pane sprawl). Dead runner -> re-created.
+            if reuse:
+                runners = (_y.safe_load(open(runner_file)) or {}) if os.path.exists(runner_file) else {}
+                pane = runners.get(adapter)
+                if pane in live_ids:
+                    m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
+                    return self._send(json.dumps({"ok": m.returncode == 0,
+                        "message": f"sent to your {adapter} runner (same pane) — running {req['cmd']}" if m.returncode == 0
+                                   else (m.stderr or "message failed")[:140]}), "application/json")
+            split = []
+            hallpane = next((x["id"] for x in panes
+                             if x.get("type") == "browser" and (x.get("name") or "").startswith("GUILD Hall")), None)
+            if hallpane:
+                split = ["--split", hallpane, "--direction", "right"]
+            r = subprocess.run([cli, "pane", "create", "--adapter", adapter, "--cwd", pr["path"], *split],
                                capture_output=True, text=True, timeout=30)
             pane = ""
             for tok in (r.stdout + r.stderr).split():
                 if len(tok) >= 8 and all(c in "0123456789abcdef-" for c in tok[:8]): pane = tok; break
             if r.returncode != 0 or not pane:
                 return self._send(json.dumps({"ok": False, "message": (r.stderr or "pane create failed")[:140]}), "application/json")
+            if reuse:
+                runners = (_y.safe_load(open(runner_file)) or {}) if os.path.exists(runner_file) else {}
+                runners[adapter] = pane
+                os.makedirs(os.path.dirname(runner_file), exist_ok=True)
+                _y.safe_dump(runners, open(runner_file, "w"))
             time.sleep(4)   # let the adapter boot before the instruction lands
-            msg = (f'{req["cmd"]} — launched from GUILD Hall for the project at {pr["path"]}. '
-                   f'Work in that project; deliver results to its guild-artifacts and the Hall inbox.')
             m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
             ok = m.returncode == 0
+            where = (f"your new {adapter} runner (reused next time)" if reuse
+                     else "beside the Hall in this room" if split else "in a new room")
             return self._send(json.dumps({"ok": ok,
-                "message": (f"agent launched beside the Hall in this room — running {req['cmd']}" if split
-                            else f"agent launched in a new room — running {req['cmd']}") if ok
+                "message": f"{adapter} agent launched {where} — running {req['cmd']}" if ok
                            else (m.stderr or "message failed")[:140]}), "application/json")
         if self.path == "/undo":
             timer = PENDING.pop(req.get("token", ""), None)
