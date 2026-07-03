@@ -677,6 +677,7 @@ PLAYBOOK = [
     ]),
     ("Get evidence", [
         ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy — real research takes agent time"),
+        ("/guild-research-wave", "Turns a rough question into an excellent brief, sends it to ChatGPT + Gemini + Perplexity + Claude deep-research at once, and reconciles their reports — where they agree is solid, where they disagree is what you should look at.", "medium — several browser research runs, ~10-15 min each"),
         ("/guild-ia", "Plans the app's structure from the research — screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium — needs the research step first"),
     ]),
     ("Design & build", [
@@ -702,7 +703,7 @@ def playbook(pidx=None):
     pname = projects()[pidx]["name"] if runnable else None
     heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint")
     icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-spine-backfill": "📚",
-             "/guild-research-synthesis": "🔬", "/guild-ia": "🧭", "/guild-quest": "🏰",
+             "/guild-research-synthesis": "🔬", "/guild-research-wave": "🌊", "/guild-ia": "🧭", "/guild-quest": "🏰",
              "/guild-design-sprint": "🖌️", "/guild-render": "🖼️", "/guild-raid": "⚔️",
              "/guild-auto-critique": "🧪", "/guild-comment": "💬", "/guild-pre-handoff": "📦",
              "/guild-agent-mage": "🧙"}
