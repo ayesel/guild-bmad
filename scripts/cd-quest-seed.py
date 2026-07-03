@@ -3,12 +3,18 @@
 cd-quest-seed.py — GUILD-32: automate Claude Design as a /guild-quest stage (seed-PUSH).
 
 Assembles Guild's system (canonical DTCG tokens + Product Baseline) into a Claude Design
-WRITE PLAN, gates it (GUILD-29 onboarding contrast + GUILD-28 handoff), and DRY-RUNS it.
-The actual DesignSync write_files (which MUTATES the owner's prod CD project) is a
-separate, OWNER-CONFIRMED step — this script never writes to CD; it only produces the
-plan + gate verdict so a bad token is caught BEFORE it propagates.
+WRITE PLAN, gates it (GUILD-29 onboarding contrast), and either DRY-RUNS it or EMITS the
+gated bundle to disk so DesignSync can push it. The script itself NEVER calls DesignSync —
+it only produces the gated, on-disk bundle + a finalize_plan spec (plan.json). The actual
+DesignSync finalize_plan + write_files (which MUTATES the owner's prod CD project) is the
+agent's separate, OWNER-CONFIRMED step (the finalize_plan permission prompt IS the confirm).
+A NO-GO gate refuses to emit — a bad token is caught BEFORE it can propagate into CD.
 
-  python3 scripts/cd-quest-seed.py --dry-run     # show the write plan + gate verdict
+This is BOTH halves of the loop's write side: the programmatic SEED (prime CD's generation
+with Guild's tokens + baseline) and the corrective PUSH-BACK use the same gated bundle.
+
+  python3 scripts/cd-quest-seed.py --dry-run          # show the write plan + gate verdict
+  python3 scripts/cd-quest-seed.py --emit <dir>       # gate, then write the bundle + plan.json
   python3 scripts/cd-quest-seed.py --selftest
 """
 import os, sys, json, importlib.util, argparse
@@ -50,6 +56,35 @@ def gate_seed(seed):
     fails = og.audit(og.standard_pairings(pal)) if pal else ["no palette to gate"]
     return fails
 
+def emit_bundle(out_dir):
+    """Gate, then write the bundle to disk + a plan.json (finalize_plan spec). NO-GO -> refuse."""
+    seed = build_seed()
+    fails = gate_seed(seed)
+    if fails:
+        print("=== CD seed-push: NO-GO — refusing to emit (bad token caught at source) ===")
+        for x in fails:
+            print("  ✗", x)
+        sys.exit(1)
+    out_dir = os.path.abspath(os.path.expanduser(out_dir))
+    for s in seed:
+        p = os.path.join(out_dir, s["path"])
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        open(p, "w", encoding="utf-8").write(s["content"])
+    writes = [s["path"] for s in seed]
+    plan = {"localDir": out_dir, "writes": writes, "gate": "GO",
+            "note": "finalize_plan(localDir, writes) then write_files(planId, [{path, localPath: path}]) — owner-confirmed."}
+    json.dump(plan, open(os.path.join(out_dir, "plan.json"), "w"), indent=2)
+    print(f"=== CD seed-push bundle EMITTED (gated GO) -> {out_dir} ===")
+    for w in writes:
+        print(f"  wrote {w}")
+    print("\nfinalize_plan spec: plan.json")
+    print("  localDir:", out_dir)
+    print("  writes:  ", writes)
+    print("\nNEXT (agent, owner-confirmed): DesignSync finalize_plan(localDir, writes) — the permission")
+    print("prompt IS the confirm — then write_files(planId, [{path, localPath: path} ...]).")
+    sys.exit(0)
+
+
 def selftest():
     seed = build_seed()
     fails = gate_seed(seed)
@@ -64,8 +99,10 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true"); ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--emit", metavar="DIR", help="gate, then write the bundle + plan.json to DIR for DesignSync push")
     a = ap.parse_args()
     if a.selftest: selftest()
+    if a.emit: emit_bundle(a.emit)
     if a.dry_run:
         seed = build_seed(); fails = gate_seed(seed)
         print("=== CD seed-push WRITE PLAN (dry-run — NOTHING written to Claude Design) ===")
