@@ -149,6 +149,7 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
 .chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
 .swbar{display:flex;gap:10px;align-items:center;margin:2px 0 6px}
+.cardmodel{font-size:10.5px;padding:3px 6px;border-radius:7px;background:var(--inset);color:var(--ink-dim);border:1px solid var(--line-soft);min-height:44px;margin-right:6px;align-self:center}
 .runcfg{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line-soft);border-radius:10px;background:var(--panel)}
 .swlab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 .sw{font-size:11px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
@@ -366,12 +367,12 @@ def page(title, crumb, body, current=None):
             f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}</div>'
-            f'<div class="runcfg"><span class="swlab">Run with</span>'
+            f'<div class="runcfg"><span class="swlab">Default model</span>'
             f'<select id="runmodel" class="fsel" aria-label="model to launch runs with">'
             f'<option value="claude-code">Claude</option><option value="codex">Codex</option>'
             f'<option value="gemini">Gemini</option><option value="cursor-agent">Cursor</option></select>'
             f'<label class="pick"><input type="checkbox" id="runreuse"> reuse one pane</label>'
-            f'<span class="who" style="margin:0">applies to every Run below · raids always use all 3 models</span></div>'
+            f'<span class="who" style="margin:0">seeds each card&#39;s picker — change any card individually · raids always use all 3 models</span></div>'
             f'<main>{body}</main>'
             f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
             f'Quiet inbox = agents working, nothing needs you.</div></body></html>')
@@ -652,9 +653,10 @@ function launchCfg(){
   if (r) r.addEventListener('change', () => { try { localStorage.guildReuse = r.checked ? '1' : '0'; } catch(e){} });
 })();
 async function run(btn, pidx, cmd){
+  const cm = btn.parentNode.querySelector('.cardmodel'); const cfg = launchCfg();
   const label = btn.textContent; btn.disabled = true; btn.textContent = "launching agent…";
   const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({pidx, cmd, ...launchCfg()})});
+    body: JSON.stringify({pidx, cmd, adapter: cm ? cm.value : cfg.adapter, reuse: cfg.reuse})});
   const d = await r.json();
   const note = document.createElement('div'); note.className = 'confirm'; note.setAttribute('role','status'); note.setAttribute('aria-live','polite');
   note.textContent = (d.ok ? '✓ ' : '✗ ') + d.message;
@@ -757,6 +759,23 @@ async function explaunch(pidx){
     st.innerHTML = '<div class="confirm" role="status">' + (d.ok ? '✓ ' : '✗ ') + d.message + '</div>';
   } catch (e) { st.innerHTML = '<div class="confirm" role="status">✗ ' + e + '</div>'; }
 }
+function injectCardModels(){
+  const g = (document.getElementById('runmodel')||{}).value || 'claude-code';
+  document.querySelectorAll('button[onclick*="run(this,"]').forEach(b => {
+    if (b.dataset.hasmodel) return;
+    const oc = b.getAttribute('onclick') || '';
+    if (/raid/i.test(oc)) { b.dataset.hasmodel='1'; return; }   // raids use all 3 models
+    b.dataset.hasmodel = '1';
+    const s = document.createElement('select'); s.className = 'cardmodel';
+    s.setAttribute('aria-label', 'model for this run');
+    [['claude-code','Claude'],['codex','Codex'],['gemini','Gemini'],['cursor-agent','Cursor']].forEach(([v,l]) => {
+      const o = document.createElement('option'); o.value = v; o.textContent = l;
+      if (v === g) o.selected = true; s.appendChild(o);
+    });
+    b.parentNode.insertBefore(s, b);
+  });
+}
+window.addEventListener('DOMContentLoaded', injectCardModels);
 function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); }
 document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) syncbar(); });
 </script>"""
