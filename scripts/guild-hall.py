@@ -117,8 +117,8 @@ def activity_events(wf, regs):
 
 CSS = """
 :root{--bg:#100f0d;--panel:#1f1b16;--panel2:#282119;--inset:#171512;--line:#2c2820;--line-soft:#221e18;
---ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#7c7063;--ember:#ce5328;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
---sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;--denim:#5b7a8b;--denim-tx:#a9c4d4;--gold-tx:var(--gold-tx);
+--ink:#f4ece2;--ink-dim:#aa9c8d;--ink-faint:#9a8d7d;--ember:#d55e2e;--ember-tx:#f3bca1;--ember-deep:#9e3f1e;
+--sage:#728b5b;--sage-tx:#b7c9a6;--amber:#c9971f;--denim:#5b7a8b;--denim-tx:#a9c4d4;--gold-tx:#e8c15f;
 --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
 @view-transition{navigation:auto}
 ::view-transition-old(root){animation-duration:.14s}
@@ -150,25 +150,25 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.think{background:var(--panel2);color:var(--ink-dim)}
 .chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
 .swbar{display:flex;gap:10px;align-items:center;margin:2px 0 6px}
-.swlab{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
-.sw{font-size:11.5px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
+.swlab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.sw{font-size:11px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
 .sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.card{border:1px solid var(--line-soft);border-radius:11px;background:linear-gradient(180deg,#211d17,#1f1b16);padding:14px 16px;margin:9px 0;display:block}
+.card{border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);padding:14px 16px;margin:9px 0;display:block;box-shadow:0 1px 2px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.16)}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
 .card b{font-size:14px;font-weight:660}
-.card .why{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
+.card .why{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
 .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
 .shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:10px}
-.snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
+.snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
 .snav a.on{background:rgba(206,83,40,.1);color:var(--ember-tx)}
 .snav a:hover{background:var(--panel2);color:var(--ink)}
-.snav .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
+.snav .grp{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
 .snav details.ngrp{margin:0}
 .snav details.ngrp[open]{margin-bottom:4px}
 .snav summary.grp{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;min-height:30px}
@@ -176,28 +176,33 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .snav summary.grp::before{content:"\\25be";font-size:9px;color:var(--ink-faint);transition:transform .15s ease}
 .snav details.ngrp:not([open]) summary.grp::before{transform:rotate(-90deg)}
 .snav summary.grp:hover{color:var(--ink-dim)}
-.snav .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.snav .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .subfil{margin:0 0 6px 14px;padding-left:10px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--line-soft)}
-.subfil .fbtn{font-size:10.5px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
+.subfil .fbtn{font-size:11px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
 .subfil .fbtn:hover{border-color:var(--line-soft)}
-.subfil .fsel{font-size:10.5px}
-@media (max-width:1100px){.shell{grid-template-columns:1fr}.snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:center}.snav .grp{margin:0 2px}}
+.subfil .fsel{font-size:11px}
+@media (max-width:860px){.shell{grid-template-columns:1fr;gap:14px}
+.snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:0;background:transparent;border:none;border-radius:0}
+.snav details.ngrp{border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);padding:6px 9px;margin:0}
+.snav details.ngrp[open]{flex-basis:100%;margin-bottom:0}
+.snav details.ngrp[open] summary.grp{margin-bottom:4px}
+.snav .grp{margin:0}}
 .sfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
 .fbtn{font-size:11px;font-weight:700;padding:6px 13px;border-radius:18px;border:1px solid var(--line-soft);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px}
 .fbtn.on{color:var(--ember-tx);border-color:rgba(206,83,40,.4);background:rgba(206,83,40,.08)}
 .fbtn:hover{border-color:var(--line);color:var(--ink)}
 .fsep{width:1px;height:24px;background:var(--line-soft)}
-.fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11.5px}
+.fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11px}
 .spage{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
 .ghead{margin:14px 2px 4px;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .wprov{cursor:pointer}.wprov input{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
 .wprov:has(.wsel:checked){border-color:rgba(206,83,40,.4);background:linear-gradient(150deg,#241a12,#1f1b16)}
 .card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(206,83,40,.32)}
 .card.feat .kic{background:rgba(206,83,40,.14);border-color:rgba(206,83,40,.3);font-size:16px}
-.pick{margin-left:auto;font-size:10.5px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
+.pick{margin-left:auto;font-size:11px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
 .pickbox{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
-.batchbar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:60;font-size:12.5px;box-shadow:0 6px 24px rgba(20,15,10,.5)}
-.batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#fff;min-height:44px}
+.batchbar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:60;font-size:12px;box-shadow:0 6px 24px rgba(20,15,10,.5)}
+.batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#1d0f06;min-height:44px}
 .batchbar .clearsel{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .obtn{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ember-tx);cursor:pointer;min-height:44px;margin-left:auto;flex-shrink:0}
 .obtn:hover{border-color:var(--ember-tx)}
@@ -213,9 +218,9 @@ background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min
 .pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
 .pcard{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 .pcard:hover{border-color:var(--line);transform:translateY(-2px)}
-.pcard b{font-size:14.5px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
-.pcard .meta{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
-.badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:10.5px;
+.pcard b{font-size:14px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
+.pcard .meta{font-size:11px;color:var(--ink-faint);font-family:var(--mono);margin-top:9px;display:flex;gap:10px}
+.badge{background:var(--amber);color:#241c08;font-family:var(--mono);font-weight:700;font-size:11px;
 border-radius:12px;padding:1px 8px;margin-left:auto}
 .badge.zero{background:var(--panel2);color:var(--ink-faint)}
 .badge.fyi{background:var(--panel2);color:var(--ink-dim)}
@@ -227,7 +232,7 @@ border-radius:12px;padding:1px 8px;margin-left:auto}
 font-size:13px;margin:10px 0;line-height:1.6}
 .quiet-empty .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);margin-right:7px}
 .tl{list-style:none;margin:8px 0}
-.tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+.tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12px;color:var(--ink-dim);line-height:1.5}
 .tl li:before{content:"✓";color:var(--sage-tx);font-weight:700;flex:0 0 auto}
 .confirm .undo{margin-left:10px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px;padding:4px 14px}
 .confirm{background:rgba(143,174,125,.12);border:1px solid rgba(143,174,125,.3);border-radius:9px;
@@ -235,8 +240,8 @@ padding:10px 14px;color:var(--sage-tx);font-size:13px;margin:10px 0}
 .lib{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;
 border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);margin:7px 0}
 .lib .th{width:36px;height:32px;border-radius:6px;background:var(--inset);border:1px solid var(--line);
-display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:var(--ink-faint)}
-.lib b{font-size:13px}.lib .m{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono)}
+display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+.lib b{font-size:13px}.lib .m{font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
 .foot{margin-top:26px;font-size:11px;color:var(--ink-faint);line-height:1.6}
 .cardgrid{display:grid;grid-template-columns:1fr;gap:10px;margin:9px 0}
 .cardgrid .card{margin:0;height:100%;display:flex;flex-direction:column}
@@ -247,7 +252,7 @@ display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:va
 .card .why{max-width:64ch}
 .tl li{max-width:72ch}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto}
-.seg a{padding:6px 14px;font-size:11.5px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;letter-spacing:0;text-transform:none;font-family:var(--sans)}
+.seg a{padding:6px 14px;font-size:11px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;letter-spacing:0;text-transform:none;font-family:var(--sans)}
 .seg a.on{background:rgba(206,83,40,.12);color:var(--ember-tx)}
 .seg a:hover{color:var(--ink)}
 .sugc{border-left:3px solid var(--line-soft)}
@@ -424,7 +429,7 @@ def home(wf, view="inbox"):
         rows = "".join(f'<a class="card" href="{e["href"]}" style="padding:10px 15px"><div class="row">'
                        f'<span class="chip proj">{E(e["project"])}</span><b style="font-size:13px;font-weight:600">{E(e["text"][:110])}</b>'
                        f'{chip(e["state"])}</div></a>' for e in ev)             or '<div class="quiet-empty"><span class="pulse"></span>No activity yet — delegate something.</div>'
-        body = (f'{hometabs}<div style="font-size:11.5px;color:var(--ink-faint);margin:6px 2px 10px">'
+        body = (f'{hometabs}<div style="font-size:11px;color:var(--ink-faint);margin:6px 2px 10px">'
                 f'What agents did across every project, newest first — is the fleet healthy, what happened while you were away.</div>'
                 f'{meters}<h2 class="sect">Recent activity</h2>{rows}')
         return page("GUILD Hall", "everything you delegated, one inbox", body)
@@ -520,7 +525,7 @@ def project_view(wf, pidx, view, sv="cards"):
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
-    body = f'<div style="font-size:11.5px;color:var(--ink-faint);margin:2px 2px 2px">{explain[view]}</div>' 
+    body = f'<div style="font-size:11px;color:var(--ink-faint);margin:2px 2px 2px">{explain[view]}</div>' 
     if view == "needs":
         rec_rows = "".join(
             f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
@@ -538,7 +543,7 @@ def project_view(wf, pidx, view, sv="cards"):
                 'Agents keep working; decisions land here.</div>')
         roster_rows = "".join(
             f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
+            f'<span><b>{name}</b><div style="font-size:11px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
         sugg_rows = ""
@@ -586,7 +591,7 @@ def project_view(wf, pidx, view, sv="cards"):
               + f'<h2 class="sect" id="roster">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
         bmad_rows = "".join(
             f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div style="font-size:11.5px;color:var(--ink-dim)">{job}</div></span>'
+            f'<span><b>{name}</b><div style="font-size:11px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in BMAD_ROSTER)
         body += f'<h2 class="sect" id="bmad">The build council (BMAD) — plans and builds inside every full quest</h2><div class="libgrid">{bmad_rows}</div>'
@@ -867,7 +872,7 @@ def playbook(pidx=None):
         rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid var(--line-soft)">'
                     f'<b style="font-family:var(--mono);font-size:12px;color:var(--ember-tx)">/{E(f[:-3])}</b> '
                     f'<span style="font-size:12px;color:var(--ink-faint)">— {E(desc)}</span></div>')
-    catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink-faint);'
+    catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12px;color:var(--ink-faint);'
                f'font-weight:650">Every command Guild knows ({len(rows)}) — the full catalog, read live from the command files</summary>'
                f'<div class="card" style="margin-top:10px">{"".join(rows)}</div></details>')
     intro = ('<div class="card"><div class="why" style="font-size:13px">'
