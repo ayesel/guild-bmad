@@ -156,6 +156,8 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11.5px}
 .spage{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
 .ghead{margin:14px 2px 4px;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+.wprov{cursor:pointer}.wprov input{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
+.wprov:has(.wsel:checked){border-color:rgba(206,83,40,.4);background:linear-gradient(150deg,#241a12,#1f1b16)}
 .card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(206,83,40,.32)}
 .card.feat .kic{background:rgba(206,83,40,.14);border-color:rgba(206,83,40,.3);font-size:16px}
 .pick{margin-left:auto;font-size:10.5px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
@@ -456,6 +458,7 @@ def project_view(wf, pidx, view, sv="cards"):
             + nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs")
             + nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg) + sfil
             + nv(f"/p/{pidx}?view=needs#recs", "What to run next")
+            + nv(f"/wave?p={pidx}", "Research wave")
             + '<div class="grp">Watch</div>'
             + nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")
             + '<div class="grp">Browse</div>'
@@ -662,6 +665,20 @@ function sapply(){
     h.style.display = vis.some(c => c.dataset.screen == h.dataset.screen && c.style.display == '') ? '' : 'none'; });
 }
 window.addEventListener('DOMContentLoaded', sapply);
+async function wavelaunch(pidx){
+  const provs = [...document.querySelectorAll('.wsel:checked')].map(c => c.value);
+  const st = document.getElementById('wavestatus');
+  if (!provs.length) { st.innerHTML = '<div class="confirm" role="status">Pick at least one researcher first.</div>'; return; }
+  const ask = (document.getElementById('waveask').value || '').trim();
+  const cmd = '/guild-research-wave — providers: ' + provs.join(', ')
+    + (ask ? ' — rough ask: ' + ask : ' — ask me for the rough question, then forge and run the wave');
+  st.innerHTML = '<div class="confirm" role="status">launching ' + provs.length + ' researcher' + (provs.length>1?'s':'') + '…</div>';
+  try {
+    const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pidx, cmd})});
+    const d = await r.json();
+    st.innerHTML = '<div class="confirm" role="status">' + (d.ok ? '✓ ' : '✗ ') + d.message + '</div>';
+  } catch (e) { st.innerHTML = '<div class="confirm" role="status">✗ ' + e + '</div>'; }
+}
 function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); }
 document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) syncbar(); });
 </script>"""
@@ -677,7 +694,6 @@ PLAYBOOK = [
     ]),
     ("Get evidence", [
         ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy — real research takes agent time"),
-        ("/guild-research-wave", "Turns a rough question into an excellent brief, sends it to ChatGPT + Gemini + Perplexity + Claude deep-research at once, and reconciles their reports — where they agree is solid, where they disagree is what you should look at.", "medium — several browser research runs, ~10-15 min each"),
         ("/guild-ia", "Plans the app's structure from the research — screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium — needs the research step first"),
     ]),
     ("Design & build", [
@@ -697,6 +713,44 @@ PLAYBOOK = [
 ]
 
 
+def _forge_mod():
+    spec = importlib.util.spec_from_file_location("rf", os.path.join(HERE, "research-forge.py"))
+    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+    return m
+
+
+def wave_page(pidx):
+    p = projects()[pidx]
+    rf = _forge_mod()
+    default = set(rf.DEFAULT_PROVIDERS)
+    cards = "".join(
+        f'<label class="card wprov"><div class="row"><input type="checkbox" class="wsel" value="{slug}" '
+        f'{"checked" if slug in default else ""}><b>{E(info["name"])}</b>'
+        f'<span class="chip proj" style="margin-left:auto">{"on by default" if slug in default else "off"}</span></div>'
+        f'<div class="why">{E(info.get("strength", ""))}</div></label>'
+        for slug, info in rf.PROVIDERS.items())
+    intro = ('<div class="card"><div class="why" style="font-size:13px">'
+             'Guild forges your rough question into an excellent brief, then sends it to the deep-research '
+             'products you pick below — each in its own browser pane. Where they agree is solid; where they '
+             'disagree is what you should look at. Runs take ~10–15 min each; pick your researchers, then launch.'
+             '</div></div>')
+    ask = ('<h2 class="sect">What do you want researched?</h2>'
+           '<textarea id="waveask" placeholder="A rough question is fine — Guild sharpens it into the brief. '
+           'e.g. \'what mental model should Guild&#39;s UI adopt so it feels like a real app?\'" '
+           'style="width:100%;min-height:90px;background:var(--inset);color:var(--ink);border:1px solid var(--line);'
+           'border-radius:10px;padding:12px;font:inherit;font-size:13px"></textarea>')
+    picker = f'<h2 class="sect">Pick your researchers</h2><div class="cardgrid">{cards}</div>'
+    launch = ('<div class="acts" style="margin-top:16px"><button onclick="wavelaunch(%d)">'
+              'Forge the brief &amp; launch the wave</button>'
+              '<span class="who" style="align-self:center">opens one pane per picked model, beside this Hall</span></div>'
+              '<div id="wavestatus"></div>') % pidx
+    return page(f"Research wave · {p['name']}", "pick your researchers, then run",
+                f'<div class="shell"><aside class="snav" aria-label="sections">'
+                f'<a href="/p/{pidx}">← Back to {E(p["name"])}</a>'
+                f'<a href="/playbook?p={pidx}">Playbook</a></aside><div>{intro}{ask}{picker}{launch}</div></div>' + JS,
+                current=pidx)
+
+
 def playbook(pidx=None):
     import re as _re
     runnable = pidx is not None
@@ -710,6 +764,17 @@ def playbook(pidx=None):
     secs = []
     for title, cmds in PLAYBOOK:
         cards = []
+        if title == "Get evidence" and runnable:
+            cards.append(
+                '<div class="card feat"><div class="row"><span class="kic">🌊</span>'
+                '<b style="font-family:var(--mono);font-size:13px">/guild-research-wave</b>'
+                '<span class="chip wait">medium</span></div>'
+                '<div class="why">Sends your question to several deep-research products at once '
+                '(ChatGPT, Gemini, Perplexity, Claude) and reconciles their reports — where they agree is '
+                'solid, where they disagree is what to look at. Different from a raid: a raid runs Guild&#39;s '
+                'own researcher on 3 reasoning models; a wave harnesses the models&#39; own deep-research.</div>'
+                '<div class="who">cost: medium — several browser runs, ~10–15 min each</div>'
+                f'<div class="acts"><a href="/wave?p={pidx}">Pick researchers &amp; run →</a></div></div>')
         for cmd, what, cost in cmds:
             guard = (f"if(confirm('This starts a HEAVY run ({cmd}) on {pname} — proceed?'))" if cmd in heavy else "")
             act = (f'<div class="acts"><button onclick="{guard}run(this,{pidx},\'{E(cmd)}\')">Run on {E(pname)}</button>'
@@ -797,6 +862,8 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path); q = parse_qs(u.query)
         if u.path == "/":
             return self._send(home(self.wf, q.get("view", ["inbox"])[0]))
+        if u.path == "/wave":
+            return self._send(wave_page(int(q.get("p", ["0"])[0])))
         if u.path == "/playbook":
             pq = q.get("p", [None])[0]
             return self._send(playbook(int(pq) if pq is not None else None))

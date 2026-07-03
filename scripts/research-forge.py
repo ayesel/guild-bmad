@@ -30,6 +30,7 @@ import argparse, datetime, json, os, re, sys
 PROVIDERS = {
     "chatgpt": {
         "name": "ChatGPT Deep Research",
+        "strength": "broad, thorough agentic browsing — strong synthesis",
         "url": "https://chatgpt.com/",
         "deep_toggle": "Click the '+' / tools menu and enable 'Deep research' before sending.",
         "preamble": (
@@ -40,6 +41,7 @@ PROVIDERS = {
     },
     "gemini": {
         "name": "Gemini Deep Research",
+        "strength": "Google-grounded, plans then executes — great breadth + recency",
         "url": "https://gemini.google.com/app",
         "deep_toggle": "Select 'Deep Research' from the model/tools selector, submit, then approve the plan.",
         "preamble": (
@@ -49,6 +51,7 @@ PROVIDERS = {
     },
     "perplexity": {
         "name": "Perplexity Deep Research",
+        "strength": "fast, source-dense, citation-first",
         "url": "https://www.perplexity.ai/",
         "deep_toggle": "Set the mode to 'Deep Research' (or 'Research') before sending.",
         "preamble": (
@@ -57,6 +60,7 @@ PROVIDERS = {
     },
     "claude": {
         "name": "Claude Research",
+        "strength": "careful reasoning — flags disagreement honestly",
         "url": "https://claude.ai/new",
         "deep_toggle": "Enable the 'Research' tool, then send.",
         "preamble": (
@@ -66,6 +70,7 @@ PROVIDERS = {
     },
     "grok": {
         "name": "Grok DeepSearch",
+        "strength": "real-time / X-aware — current events",
         "url": "https://grok.com/",
         "deep_toggle": "Enable 'DeepSearch' before sending.",
         "preamble": (
