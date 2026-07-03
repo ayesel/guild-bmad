@@ -19,7 +19,7 @@ regenerate-pick.py (incl. taste capture).
 Projects registry: ~/.config/guild/hall-projects.yaml (operator-owned).
 """
 import os, sys, json, html, time, argparse, importlib.util, subprocess, datetime, threading, uuid
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -29,9 +29,33 @@ REG = os.path.expanduser("~/.config/guild/hall-projects.yaml")
 E = html.escape
 
 
+_WF = None
+_BUILD_CACHE = {}
+_BUILD_TTL = 4.0  # a status inbox may lag reality by a few seconds; snappy pages matter more
+
+
 def _feed_mod():
-    spec = importlib.util.spec_from_file_location("wf", os.path.join(HERE, "widget-feed.py"))
-    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+    # singleton + short-TTL build cache: home() and switcher() each build every
+    # project's feed, so one page load was ~5s of duplicated work (2× per project).
+    # Cache makes the second pass instant and warm navigation near-instant.
+    global _WF
+    if _WF is None:
+        spec = importlib.util.spec_from_file_location("wf", os.path.join(HERE, "widget-feed.py"))
+        m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+        _raw = m.build
+
+        def cached_build(path):
+            now = time.time()
+            hit = _BUILD_CACHE.get(path)
+            if hit and now - hit[0] < _BUILD_TTL:
+                return hit[1]
+            res = _raw(path)
+            _BUILD_CACHE[path] = (now, res)
+            return res
+
+        m.build = cached_build
+        _WF = m
+    return _WF
 
 
 def projects():
@@ -876,7 +900,7 @@ def record_verdict(project_path, target, decision):
 def do_pick(project_path, slug, choice, dry=False):
     cmd = [sys.executable, os.path.join(HERE, "regenerate-pick.py"),
            "--project", project_path, "--set", slug, "--pick", choice] + (["--dry-run"] if dry else [])
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
     ok = r.returncode == 0
     msg = (r.stdout or r.stderr).strip().splitlines()
     return ok, (msg[-1] if msg else "done")
@@ -952,6 +976,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         n = int(self.headers.get("Content-Length", 0))
         req = json.loads(self.rfile.read(n))
+        _BUILD_CACHE.clear()  # a POST mutates state — next render must be fresh, not TTL-stale
         if self.path == "/run":
             pr = projects()[req["pidx"]]
             cli = os.environ.get("ATRIUM_CLI_PATH", "atrium")
@@ -1032,6 +1057,7 @@ def selftest():
             # empty-inbox reads alive, not dead
             open(os.path.join(art, "batched-review-t.md"), "w").write("no decisions here\n")
             os.remove(os.path.join(art, "runs", "RUN-1.yaml"))
+            _BUILD_CACHE.clear()  # mutation happened — feed must reflect it (as the POST handler does live)
             pv2 = project_view(wf, 0, "needs")
             ok = ok and "Agents keep working" in pv2
             import re as _re
@@ -1066,8 +1092,13 @@ def main():
         return
     if a.serve:
         Handler.wf = _feed_mod()
-        print(f"GUILD HALL serving http://localhost:{a.port}  (registry: {REG})")
-        HTTPServer(("127.0.0.1", a.port), Handler).serve_forever()
+        # ThreadingHTTPServer: a slow /run (subprocess + boot wait) must never block
+        # other requests, or the pane appears dead. daemon_threads so shutdown is clean.
+        srv = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
+        srv.daemon_threads = True
+        srv.allow_reuse_address = True
+        print(f"GUILD HALL serving http://localhost:{a.port}  (registry: {REG})", flush=True)
+        srv.serve_forever()
     ap.print_help()
 
 
