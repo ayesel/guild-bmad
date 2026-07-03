@@ -79,8 +79,12 @@ def _phases_from_forge(root):
 def _runs(art_root):
     runs = []
     for p in sorted(glob.glob(os.path.join(art_root, "runs", "RUN-*.yaml")), reverse=True):
+        # skip schema/template docs (e.g. RUN-schema.yaml) — they match the glob but aren't runs
+        if re.search(r"(schema|template|example)", os.path.basename(p), re.I): continue
         d = _yaml(p)
         if not d: continue
+        # a real run has an identity/state; a bare schema doc does not
+        if not (d.get("run_id") or d.get("state") or d.get("checkpoints") or d.get("objective")): continue
         runs.append({
             "id": d.get("run_id", os.path.basename(p)),
             "state": d.get("state", "unknown"),

@@ -383,6 +383,19 @@ def chip(state):
     return f'<span class="chip {cls}">{E(state)}</span>'
 
 
+def kicon(kind):
+    """Map a library/artifact kind to a clean glyph (beats cryptic kind[:5] truncation)."""
+    k = (kind or "").lower()
+    for needle, glyph in (("token", "🎨"), ("design-system", "🎨"), ("ds", "🎨"),
+                          ("claude", "📦"), ("bundle", "📦"), ("cd", "📦"),
+                          ("research", "🔍"), ("spec", "📐"), ("story", "📝"),
+                          ("flow", "🔀"), ("wireframe", "▢"), ("figma", "🖼"),
+                          ("run", "▶"), ("report", "📊")):
+        if needle in k:
+            return glyph
+    return "📄"
+
+
 def decision_card(item, pidx, project_name=""):
     why = (item.get("why") or item.get("detail") or "").strip().lstrip("\u2026.").strip().replace("`", "")
     when = ""
@@ -621,7 +634,7 @@ def project_view(wf, pidx, view, sv="cards"):
         if ds:
             body += '<h2 class="sect">Design system</h2>'
             for d in ds:
-                body += (f'<div class="lib"><span class="th">{E(d["kind"][:5])}</span><span><b>{E(d["name"])}</b>'
+                body += (f'<div class="lib"><span class="th" style="font-size:15px">{kicon(d["kind"])}</span><span><b>{E(d["name"])}</b>'
                          f'<div style="font-size:11px;color:var(--ink-faint)">{E(d.get("hint",""))}</div></span>'
                          f'<span class="m"><a href="/open?path={E(d["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
         else:
@@ -633,7 +646,7 @@ def project_view(wf, pidx, view, sv="cards"):
                 current_group = it["kind"]
                 body += f'<h2 class="sect">{E(current_group)}</h2>'
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
-            body += (f'<div class="lib"><span class="th">{E(it["kind"][:5])}</span><span><b>{E(it["name"])}</b></span>'
+            body += (f'<div class="lib"><span class="th" style="font-size:15px">{kicon(it["kind"])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
     return page(p["name"], "a project in your hall", f'<div class="shell">{side}<div>{body}</div></div>' + JS, current=pidx)
 
