@@ -126,9 +126,8 @@ CSS = """
 *{box-sizing:border-box;margin:0;padding:0}
 :focus-visible{outline:2px solid var(--ember-tx);outline-offset:2px;border-radius:4px}
 body{background:linear-gradient(180deg,#12100e 0%,#100f0d 240px);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
--webkit-font-smoothing:antialiased;max-width:860px;margin:0 auto;padding:22px 18px 60px}
-@media(min-width:1100px){body{max-width:1200px}}
-@media(min-width:1500px){body{max-width:1400px}}
+-webkit-font-smoothing:antialiased;max-width:min(1400px,94vw);margin:0 auto;padding:22px 18px 60px}
+@media(max-width:860px){body{max-width:100%;padding:16px 14px 48px}}
 a{color:inherit;text-decoration:none}
 .top{display:flex;align-items:center;gap:11px;margin-bottom:10px;position:sticky;top:0;z-index:40;background:linear-gradient(180deg,var(--bg) 82%,transparent);padding:10px 0 14px}
 .gm{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--ember),var(--ember-deep));
@@ -153,16 +152,16 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .swlab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 .sw{font-size:11px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
-.sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:22px 0 9px;display:flex;align-items:center;gap:8px}
+.sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.card{border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);padding:14px 16px;margin:9px 0;display:block;box-shadow:0 1px 2px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.16)}
+.card{border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);padding:16px;margin:8px 0;display:block;box-shadow:0 1px 2px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.16)}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
 .card b{font-size:14px;font-weight:660}
 .card .why{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
-.acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:10px}
 .snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
@@ -228,7 +227,7 @@ border-radius:12px;padding:1px 8px;margin-left:auto}
 .tabs a{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent;display:inline-flex;align-items:center;min-height:44px}
 .tabs a.on{color:var(--ember-tx);border-bottom-color:var(--ember-tx)}
 .tabs a:hover{color:var(--ink-dim)}
-.quiet-empty{border:1px dashed var(--line);border-radius:11px;padding:22px;text-align:center;color:var(--ink-dim);
+.quiet-empty{border:1px dashed var(--line);border-radius:11px;padding:24px;text-align:center;color:var(--ink-dim);
 font-size:13px;margin:10px 0;line-height:1.6}
 .quiet-empty .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);margin-right:7px}
 .tl{list-style:none;margin:8px 0}
@@ -237,15 +236,15 @@ font-size:13px;margin:10px 0;line-height:1.6}
 .confirm .undo{margin-left:10px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px;padding:4px 14px}
 .confirm{background:rgba(143,174,125,.12);border:1px solid rgba(143,174,125,.3);border-radius:9px;
 padding:10px 14px;color:var(--sage-tx);font-size:13px;margin:10px 0}
-.lib{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;
+.lib{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;
 border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);margin:7px 0}
 .lib .th{width:36px;height:32px;border-radius:6px;background:var(--inset);border:1px solid var(--line);
 display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
 .lib b{font-size:13px}.lib .m{font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
 .foot{margin-top:26px;font-size:11px;color:var(--ink-faint);line-height:1.6}
-.cardgrid{display:grid;grid-template-columns:1fr;gap:10px;margin:9px 0}
+.cardgrid{display:grid;grid-template-columns:1fr;gap:12px;margin:8px 0}
 .cardgrid .card{margin:0;height:100%;display:flex;flex-direction:column}
-.cardgrid .card .acts{margin-top:auto;padding-top:11px}
+.cardgrid .card .acts{margin-top:auto;padding-top:12px}
 .cardgrid > .quiet-empty{grid-column:1/-1}
 @media(min-width:1100px){.cardgrid{grid-template-columns:1fr 1fr;gap:12px}}
 @media(min-width:1500px){.cardgrid{grid-template-columns:repeat(3,1fr)}}
