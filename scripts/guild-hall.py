@@ -110,7 +110,10 @@ a{color:inherit;text-decoration:none}
 .gm{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--ember),var(--ember-deep));
 display:grid;place-items:center;color:#1a0f08;font-weight:800;font-size:14px}
 .top h1{font-size:19px;letter-spacing:-.01em}.top .crumb{color:var(--ink-faint);font-size:13px}
-.top .home{margin-left:auto;font-size:12px;color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;padding:5px 13px;display:inline-flex;align-items:center;min-height:44px}
+.top{flex-wrap:wrap}
+.top .swlab{margin-left:auto}
+.topsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:7px 10px;min-height:38px;font-size:12px;max-width:220px}
+.top .home{font-size:12px;color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;padding:5px 13px;display:inline-flex;align-items:center;min-height:44px;margin-left:12px}
 .top .home:hover{color:var(--ink)}
 .kic{width:30px;height:30px;border-radius:8px;background:var(--inset);border:1px solid var(--line);
 display:inline-grid;place-items:center;font-size:14px;flex:0 0 auto}
@@ -142,6 +145,13 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .snav a.on{background:rgba(206,83,40,.1);color:var(--ember-tx)}
 .snav a:hover{background:var(--panel2);color:var(--ink)}
 .snav .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
+.snav details.ngrp{margin:0}
+.snav details.ngrp[open]{margin-bottom:4px}
+.snav summary.grp{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;min-height:30px}
+.snav summary.grp::-webkit-details-marker{display:none}
+.snav summary.grp::before{content:"\\25be";font-size:9px;color:var(--ink-faint);transition:transform .15s ease}
+.snav details.ngrp:not([open]) summary.grp::before{transform:rotate(-90deg)}
+.snav summary.grp:hover{color:var(--ink-dim)}
 .snav .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
 .subfil{margin:0 0 6px 14px;padding-left:10px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--line-soft)}
 .subfil .fbtn{font-size:10.5px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
@@ -212,6 +222,17 @@ display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;color:va
 @media(min-width:1500px){.cardgrid{grid-template-columns:repeat(3,1fr)}}
 .card .why{max-width:64ch}
 .tl li{max-width:72ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto}
+.seg a{padding:6px 14px;font-size:11.5px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;letter-spacing:0;text-transform:none;font-family:var(--sans)}
+.seg a.on{background:rgba(206,83,40,.12);color:var(--ember-tx)}
+.seg a:hover{color:var(--ink)}
+.sugc{border-left:3px solid var(--line-soft)}
+.sugc[data-conf="firm"]{border-left-color:var(--amber)}
+.sugc[data-conf="check"]{border-left-color:var(--denim)}
+.acts .soft{background:rgba(206,83,40,.1);color:var(--ember-tx);border:1px solid rgba(206,83,40,.32)}
+.acts .soft:hover{background:rgba(206,83,40,.17)}
+.sugc .acts{align-items:center}
+.sugc .acts .pick{margin-left:auto}
 .libgrid{display:grid;grid-template-columns:1fr;gap:8px}
 .libgrid .lib{margin:0}
 @media(min-width:900px){.libgrid{grid-template-columns:1fr 1fr}}
@@ -244,10 +265,9 @@ def switcher(current=None):
         except Exception: n = 0
         opts.append(f'<option value="/p/{i}"{" selected" if current == i else ""}>'
                     f'{E(pr["name"])}{f" · {n} waiting" if n else ""}</option>')
-    pb = f'<a href="/playbook{"?p=%d" % current if current is not None else ""}" class="sw" style="margin-left:auto">&#128214; Playbook</a>'
-    return (f'<div class="swbar"><label class="swlab" for="projsel">Project</label>'
-            f'<select id="projsel" class="fsel" onchange="location.href=this.value" aria-label="switch project">'
-            f'{"".join(opts)}</select>{pb}</div>')
+    return (f'<label class="swlab" for="projsel">Project</label>'
+            f'<select id="projsel" class="topsel" onchange="location.href=this.value" aria-label="switch project">'
+            f'{"".join(opts)}</select>')
 
 
 BMAD_ROSTER = [
@@ -309,11 +329,12 @@ def recommends(feed, project_path):
 
 
 def page(title, crumb, body, current=None):
-    body = f'<nav aria-label="projects">{switcher(current)}</nav><main>' + body + '</main>'
+    home_link = "" if crumb.startswith("everything") else '<a class="home" href="/">Back to all projects</a>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
-            f'{"" if crumb.startswith("everything") else chr(60)+chr(97)+chr(32)+chr(99)+chr(108)+chr(97)+chr(115)+chr(115)+chr(61)+chr(34)+chr(104)+chr(111)+chr(109)+chr(101)+chr(34)+chr(32)+chr(104)+chr(114)+chr(101)+chr(102)+chr(61)+chr(34)+chr(47)+chr(34)+chr(62)+chr(66)+chr(97)+chr(99)+chr(107)+chr(32)+chr(116)+chr(111)+chr(32)+chr(97)+chr(108)+chr(108)+chr(32)+chr(112)+chr(114)+chr(111)+chr(106)+chr(101)+chr(99)+chr(116)+chr(115)+chr(60)+chr(47)+chr(97)+chr(62)}</div>{body}'
+            f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}</div>'
+            f'<main>{body}</main>'
             f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
             f'Quiet inbox = agents working, nothing needs you.</div></body></html>')
 
@@ -438,35 +459,39 @@ def project_view(wf, pidx, view, sv="cards"):
         scats[c] = scats.get(c, 0) + 1
         sicon.setdefault(c, s.get("icon", "💡"))
     sscreens = sorted({s["evidence"] for s in ss})
-    sfil = ""
+    # Suggestion filters live WITH the suggestions (main content), not in the nav.
+    sbar = ""
     if view == "needs" and ss:
-        sfil = ('<div class="subfil">'
+        sbar = ('<div class="sfilter">'
                 f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({nsugg})</button>'
                 f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({sfirm})</button>'
                 f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({nsugg - sfirm})</button>'
+                '<span class="fsep"></span>'
                 + "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{sicon[c]} {E(c)} ({n})</button>'
                           for c, n in sorted(scats.items(), key=lambda kv: -kv[1]))
-                + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen" style="margin-top:4px;width:100%">'
+                + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen" style="margin-left:auto">'
                 + f'<option value="all">every screen ({len(sscreens)})</option>'
                 + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
                 + '</select></div>')
     def nv(href, label, cnt=None, on=False):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
         return f'<a href="{href}" class="{"on" if on else ""}">{label}{c}</a>'
+    def grp(title, links, open=True):
+        return (f'<details class="ngrp"{" open" if open else ""}><summary class="grp">{title}</summary>'
+                + "".join(links) + '</details>')
     side = ('<aside class="snav" aria-label="project sections">'
-            '<div class="grp">Decide</div>'
-            + nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs")
-            + nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg) + sfil
-            + nv(f"/p/{pidx}?view=needs#recs", "What to run next")
-            + nv(f"/wave?p={pidx}", "Research wave")
-            + '<div class="grp">Watch</div>'
-            + nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")
-            + '<div class="grp">Browse</div>'
-            + nv(f"/p/{pidx}?view=library", "Library", len(feed["library"]), view == "library")
-            + nv(f"/playbook?p={pidx}", "Playbook")
-            + '<div class="grp">People</div>'
-            + nv(f"/p/{pidx}?view=needs#roster", "Your guild")
-            + nv(f"/p/{pidx}?view=needs#bmad", "Build council")
+            + grp("Decide", [
+                nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs"),
+                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg),
+                nv(f"/p/{pidx}?view=needs#recs", "What to run next"),
+                nv(f"/wave?p={pidx}", "Research wave")])
+            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")], open=(view == "runs"))
+            + grp("Browse", [
+                nv(f"/p/{pidx}?view=library", "Library", len(feed["library"]), view == "library"),
+                nv(f"/playbook?p={pidx}", "Playbook")], open=(view == "library"))
+            + grp("People", [
+                nv(f"/p/{pidx}?view=needs#roster", "Your guild"),
+                nv(f"/p/{pidx}?view=needs#bmad", "Build council")], open=False)
             + '</aside>')
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
@@ -686,32 +711,43 @@ document.addEventListener('change', e => { if (e.target.classList.contains('pick
 
 # ── the write channel ────────────────────────────────────────────────────────
 
+# Organized by WORKFLOW PHASE, and within each phase by the DISCIPLINE that owns it.
+# Each specialist's raid (that discipline across 3 models) lives with its discipline —
+# ranger-raid is research, not "design & build" (owner, 2026-07-03).
 PLAYBOOK = [
-    ("Start a project (do these once)", [
-        ("/guild-design-direction", "Tell Guild your taste ONCE — ~10 min of questions about look, feel, references. Every agent afterward designs to your answers instead of re-asking.", "light — mostly your answers"),
-        ("/guild-charter", "Set the autonomy contract: what agents may decide alone vs. must bring to you. This is why your inbox stays quiet.", "light — a short conversation"),
-        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a research file Guild can cite, so decisions point at proof.", "medium — one agent reads your corpus"),
+    ("Set up your project \u00b7 once", [
+        ("/guild-design-direction", "Tell Guild your taste ONCE \u2014 ~10 min of questions about look, feel, references. Every agent afterward designs to your answers instead of re-asking.", "light \u2014 mostly your answers"),
+        ("/guild-charter", "Set the autonomy contract: what agents may decide alone vs. must bring to you. This is why your inbox stays quiet.", "light \u2014 a short conversation"),
+        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a research file Guild can cite, so decisions point at proof.", "medium \u2014 one agent reads your corpus"),
     ]),
-    ("Get evidence", [
-        ("/guild-research-synthesis", "Fresh research from zero — questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy — real research takes agent time"),
-        ("/guild-ia", "Plans the app's structure from the research — screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium — needs the research step first"),
+    ("Research your users \u00b7 Ranger \U0001f50d", [
+        ("/guild-research-synthesis", "Fresh research from zero \u2014 questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy \u2014 real research takes agent time"),
+        ("/ranger-raid", "Your research question answered three ways \u2014 Ranger runs on Claude, Codex, and Gemini in parallel and the strongest findings are synthesized. Use when the research really matters.", "heavy \u2014 3 models researching at once"),
     ]),
-    ("Design & build", [
-        ("/guild-quest", "THE BIG ONE. Idea in, working app out. BMAD plans it (PM scopes → Analyst digs into requirements → Architect shapes the tech → Scrum Master cuts it into stories), Guild designs it, then it gets built and tested — agents handing off to each other. Start it and watch this Hall.", "heavy — a full pipeline; start deliberately"),
-        ("/guild-design-sprint", "The design phases only (research → interaction → visual → content → QA), no code build. For when you want designs to react to first.", "medium-heavy"),
-        ("/guild-render", "One design model fanned out to every platform at once — native FigJam board + clickable HTML prototype. Change the model, re-run, both update.", "light — scripted, seconds"),
-        ("/guild-raid", "Every Guild agent runs on Claude, Codex AND Gemini in parallel; the best take per discipline is synthesized. Three independent design teams for the price of one prompt.", "heaviest — 3× everything; big decisions only"),
+    ("Map the structure \u00b7 Cartographer \U0001f5fa\ufe0f", [
+        ("/guild-ia", "Plans the app's structure from the research \u2014 screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium \u2014 needs the research step first"),
     ]),
-    ("Judge & fix what exists", [
-        ("/guild-auto-critique", "Point it at a screen: Mage critiques like a design lead + every craft gate runs (spacing, type, tokens, states, motion, a11y). Findings, not vibes.", "medium — one agent per screen; gates are free"),
-        ("/guild-comment", "Anything feel off? Say it in plain words. Guild builds 3 real fixed variants and sends you a pick note with rendered pixels — you choose, it applies.", "medium — 3 real patches get built"),
-        ("/guild-pre-handoff", "Sweeps everything agents produced into ONE decision packet — approve / waive / redo. The end-of-run ritual before shipping.", "light-medium — compiles what exists"),
+    ("Design the experience \u00b7 Rogue / Mage / Warlock", [
+        ("/guild-design-sprint", "The design phases in sequence (research \u2192 interaction \u2192 visual \u2192 content \u2192 QA), no code build. For when you want designs to react to first.", "medium-heavy"),
+        ("/guild-render", "One design model fanned out to every platform at once \u2014 native FigJam board + clickable HTML prototype. Change the model, re-run, both update.", "light \u2014 scripted, seconds"),
+        ("/rogue-raid", "Interaction & flow design from three engines at once, best take synthesized (Rogue \U0001f500).", "heavy \u2014 3 models"),
+        ("/mage-raid", "Visual design three ways \u2014 three independent looks, the strongest synthesized (Mage \U0001f3a8).", "heavy \u2014 3 models"),
+        ("/warlock-raid", "Content & copy three ways, best synthesized (Warlock \u270d\ufe0f).", "heavy \u2014 3 models"),
     ]),
-    ("Talk to one specialist", [
-        ("/guild-agent-mage", "Summon a single agent instead of a pipeline — Mage (visual), Ranger (research), Rogue (interaction), Cartographer (IA), Sage (QA), Warlock (content), Healer (handoff), Tinker (design systems). Full roster with Summon buttons lives on every project page.", "light — one conversation"),
+    ("Judge & fix \u00b7 Sage \U0001f6e1\ufe0f", [
+        ("/guild-auto-critique", "Point it at a screen: Mage critiques like a design lead + every craft gate runs (spacing, type, tokens, states, motion, a11y). Findings, not vibes.", "medium \u2014 one agent per screen; gates are free"),
+        ("/guild-comment", "Anything feel off? Say it in plain words. Guild builds 3 real fixed variants and sends you a pick note with rendered pixels \u2014 you choose, it applies.", "medium \u2014 3 real patches get built"),
+        ("/sage-raid", "Design QA from three engines \u2014 three independent quality reads, reconciled into one go/no-go.", "heavy \u2014 3 models"),
+        ("/guild-pre-handoff", "Sweeps everything agents produced into ONE decision packet \u2014 approve / waive / redo. The end-of-run ritual before shipping.", "light-medium \u2014 compiles what exists"),
+    ]),
+    ("Run the whole pipeline", [
+        ("/guild-quest", "THE BIG ONE. Idea in, working app out. BMAD plans it (PM scopes \u2192 Analyst digs into requirements \u2192 Architect shapes the tech \u2192 Scrum Master cuts it into stories), Guild designs it, then it gets built and tested \u2014 agents handing off to each other. Start it and watch this Hall.", "heavy \u2014 a full pipeline; start deliberately"),
+        ("/guild-raid", "The FULL raid \u2014 EVERY specialist runs across all three models; the best take per discipline is synthesized. Heaviest option; big decisions only.", "heaviest \u2014 3\u00d7 everything"),
+    ]),
+    ("Summon one specialist", [
+        ("/guild-agent-mage", "Talk to a single agent instead of a pipeline \u2014 Ranger (research), Cartographer (IA), Rogue (interaction), Mage (visual), Warlock (content), Sage (QA), Healer (handoff), Tinker (design systems). Every specialist runs solo like this OR as a 3-model raid. Full roster with Summon buttons lives on every project page.", "light \u2014 one conversation"),
     ]),
 ]
-
 
 def _forge_mod():
     spec = importlib.util.spec_from_file_location("rf", os.path.join(HERE, "research-forge.py"))
@@ -755,12 +791,12 @@ def playbook(pidx=None):
     import re as _re
     runnable = pidx is not None
     pname = projects()[pidx]["name"] if runnable else None
-    heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint")
+    heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint", "/ranger-raid", "/rogue-raid", "/mage-raid", "/warlock-raid", "/sage-raid")
     icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-spine-backfill": "📚",
              "/guild-research-synthesis": "🔬", "/guild-research-wave": "🌊", "/guild-ia": "🧭", "/guild-quest": "🏰",
              "/guild-design-sprint": "🖌️", "/guild-render": "🖼️", "/guild-raid": "⚔️",
              "/guild-auto-critique": "🧪", "/guild-comment": "💬", "/guild-pre-handoff": "📦",
-             "/guild-agent-mage": "🧙"}
+             "/guild-agent-mage": "🧙", "/ranger-raid": "🔍", "/rogue-raid": "🔀", "/mage-raid": "🎨", "/warlock-raid": "✍️", "/sage-raid": "🛡️"}
     secs = []
     for title, cmds in PLAYBOOK:
         cards = []
