@@ -1,0 +1,37 @@
+slug: guild-competitive-positioning
+title: GUILD competitive positioning in agent-native design orchestration
+created: '2026-07-03'
+objective: 'decide GUILD''s positioning: is there a direct competitor, and should GUILD compete on generation
+  or on discipline-specialized design orchestration?'
+providers:
+- slug: chatgpt
+  name: ChatGPT Deep Research
+  url: https://chatgpt.com/
+  deep_toggle: Click the '+' / tools menu and enable 'Deep research' before sending.
+  prompt: prompts/chatgpt.md
+  report: reports/chatgpt.md
+  status: collected
+- slug: gemini
+  name: Gemini Deep Research
+  url: https://gemini.google.com/app
+  deep_toggle: Select 'Deep Research' from the model/tools selector, submit, then approve the plan.
+  prompt: prompts/gemini.md
+  report: reports/gemini.md
+  status: not-run
+- slug: perplexity
+  name: Perplexity Deep Research
+  url: https://www.perplexity.ai/
+  deep_toggle: Set the mode to 'Deep Research' (or 'Research') before sending.
+  prompt: prompts/perplexity.md
+  report: reports/perplexity.md
+  status: not-run
+- slug: claude
+  name: Claude Research
+  url: https://claude.ai/new
+  deep_toggle: Enable the 'Research' tool, then send.
+  prompt: prompts/claude.md
+  report: reports/claude.md
+  status: collected
+  note: provider attribution inferred; owner ran this manually as an Expedition dry run (2026-07-03)
+note: First real Expedition Reconcile proof — two premium deep-research reports collected manually, reconciled
+  into reconciliation.md.

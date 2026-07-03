@@ -1,0 +1,27 @@
+{
+  "title": "GUILD competitive positioning in agent-native design orchestration",
+  "objective": "decide GUILD's positioning: is there a direct competitor, and should GUILD compete on generation or on discipline-specialized design orchestration?",
+  "context": "GUILD is an 8-persona design guild (research/IA/interaction/visual/content/QA/ops/design-system) with a hard Sage GO/NO-GO gate, brownfield traceability spine, multi-model raids, and Deep Research expeditions, running natively inside AI coding agents and integrating with BMAD.",
+  "questions": [
+    "Does any tool orchestrate multiple discipline-specialized DESIGN personas through a full research-to-handoff pipeline?",
+    "Which tools span the full UX research -> IA -> interaction -> visual -> content -> QA -> handoff lifecycle vs only a slice?",
+    "Are there open-source repos templated specifically for design workflows inside AI coding agents?",
+    "Is there a real IDE-native / agent-native design trend, and what form does it take?",
+    "Who are the closest comparables, and do we compete / complement / integrate with each?",
+    "Do GUILD's Raid (multi-model) and Expedition (multi-Deep-Research reconcile) mechanics have any first-party equivalent?",
+    "What are the pricing, business model, and adoption signals of the closest comparables?"
+  ],
+  "must_cover": [
+    "BMAD-METHOD",
+    "Figma MCP + Code Connect",
+    "Claude Design",
+    "v0 / Lovable / Bolt / Builder Fusion / Subframe / Magic Patterns",
+    "hard design QA gate as differentiator"
+  ],
+  "exclude": [
+    "building our own prompt-to-UI generator",
+    "rebuilding design-to-code"
+  ],
+  "slug": "guild-competitive-positioning",
+  "sources_guidance": "Prefer primary sources and material from the last 18 months; cite every claim."
+}
