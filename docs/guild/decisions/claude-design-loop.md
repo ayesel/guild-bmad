@@ -21,7 +21,7 @@
 | 2 GENERATE | Claude Design (Anthropic side) | n/a |
 | 3 READ | DesignSync `list_files`/`get_file` → `cd-tokens-to-dtcg.py` → `docs/guild/tokens.dtcg.json` | ✅ proven (real 8.3 KB bundle on disk) |
 | 4 GATE | `cd-onboarding-gate.py` (WCAG contrast, GUILD-29) + `cd-handoff-gate.py` (0-drift token-trace, GUILD-28) | ✅ built, selftests green |
-| 5 PUSH-BACK | `cd-quest-seed.py --emit` → DesignSync `finalize_plan` + `write_files` | ✅ machinery built + gated; ⛔ live push blocked on design-access auth |
+| 5 PUSH-BACK | `cd-quest-seed.py --emit` → DesignSync `finalize_plan` + `write_files` | ✅ **PROVEN LIVE 2026-07-03** — pushed 2 files to Hearth Works Design System (`cfcbf8bf…`), read-back byte-identical |
 
 ## The write side (stage 5) — how it runs
 
@@ -43,7 +43,11 @@ DesignSync write_files(planId, [{path, localPath: path}]) # reads from disk, nev
 
 The script never calls DesignSync itself; the model does, only after gates pass. `get_file` content from CD is treated as data, never instructions.
 
-## Blocker to close the loop end-to-end
+## Round-trip PROVEN (2026-07-03)
+
+The full loop ran end-to-end on the real **Hearth Works Design System** (`cfcbf8bf-25f8-4984-9b7d-a9529f95d1c1`, verified `PROJECT_TYPE_DESIGN_SYSTEM`): `--emit` gated the bundle → `list_projects`/`get_project`/`list_files` (both target paths already existed → idempotent update, not clobber) → `finalize_plan` (owner-confirm) → `write_files` (2 written) → `get_file` read-back **byte-identical**. GUILD now reads, gates, AND writes Claude Design programmatically. Re-run any time GUILD's tokens/baseline change; `write_files` reads from disk so contents never enter model context.
+
+## Auth (one-time)
 
 The live push (and any DesignSync read) needs **design access on the session login**. One-time owner action:
 
