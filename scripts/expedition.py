@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""research-forge — turn a rough research ask into an excellent, per-provider
+"""expedition — turn a rough research ask into an excellent, per-provider
 deep-research prompt set (owner idea 2026-07-03: "turn your shit prompt into a
 wonderful prompt, then send it to all the models you want for deep research").
 
-This is seam 1 of /guild-research-wave (Forge → Wave → Reconcile). It is PURE
+This is seam 1 of /guild-expedition (Brief → Dispatch → Reconcile). It is PURE
 brain work — no browser automation, no fragility. It takes a canonical brief
 (the agent produces it following the schema in the command) and fans it out
 into:
@@ -15,7 +15,7 @@ into:
                         Deep Research actually behaves (ChatGPT pre-empts its
                         clarifying-question step, Gemini plans-then-executes,
                         Perplexity stays terse, Claude/Grok direct)
-    wave.yaml           manifest the Wave step drives (provider, url, prompt
+    expedition.yaml     manifest the Dispatch step drives (provider, url, prompt
                         path, report path, status) and Reconcile reads back
 
 Every provider prompt ends in the SAME required output structure so the
@@ -25,7 +25,7 @@ disagreement is the gold the single-voice API path can't give you.
 """
 import argparse, datetime, json, os, re, sys
 
-# Provider registry. url + deep_toggle are hints the Wave (browser-automation)
+# Provider registry. url + deep_toggle are hints the Dispatch (browser-automation)
 # seam will consume; the Forge only needs name + framing + how the model behaves.
 PROVIDERS = {
     "chatgpt": {
@@ -178,7 +178,7 @@ def forge(b, providers, out_dir, stamp=None):
             "deep_toggle": PROVIDERS[slug]["deep_toggle"],
             "prompt": prel, "report": f"reports/{slug}.md", "status": "pending"})
     import yaml
-    yaml.safe_dump(manifest, open(os.path.join(out_dir, "wave.yaml"), "w"),
+    yaml.safe_dump(manifest, open(os.path.join(out_dir, "expedition.yaml"), "w"),
                    sort_keys=False, allow_unicode=True, width=100)
     return manifest
 
@@ -206,7 +206,7 @@ def selftest():
         cg = open(os.path.join(td, "prompts", "chatgpt.md")).read()
         gm = open(os.path.join(td, "prompts", "gemini.md")).read()
         import yaml
-        wave = yaml.safe_load(open(os.path.join(td, "wave.yaml")))
+        wave = yaml.safe_load(open(os.path.join(td, "expedition.yaml")))
         ok = (
             b["slug"] == "ui-mental-models-for-agent-tools"
             and "Which familiar models" in cm and "decide the ONE" in cm
@@ -224,7 +224,7 @@ def selftest():
             and wave["providers"][0]["report"] == "reports/chatgpt.md"
             and all(p["status"] == "pending" for p in wave["providers"])
             and os.path.isdir(os.path.join(td, "reports")))
-    print("research-forge self-test:", "✅ PASS" if ok else "❌ FAIL")
+    print("expedition self-test:", "✅ PASS" if ok else "❌ FAIL")
     sys.exit(0 if ok else 1)
 
 
@@ -251,7 +251,7 @@ def main():
     if a.selftest:
         selftest()
     if not a.brief:
-        ap.error("--brief is required (produce brief.json first per /guild-research-wave)")
+        ap.error("--brief is required (produce brief.json first per /guild-expedition)")
     b = load_brief(a.brief)
     if a.slug:
         b["slug"] = _slugify(a.slug)
@@ -263,11 +263,11 @@ def main():
     out_dir = os.path.join(artifacts_root(root), "research", b["slug"])
     stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     m = forge(b, provs, out_dir, stamp=stamp)
-    print(f"research-forge · '{b['title']}' → {out_dir}")
+    print(f"expedition · '{b['title']}' → {out_dir}")
     print(f"  canonical brief: brief.md ({len(b['questions'])} questions)")
     print(f"  {len(provs)} provider prompts forged: {', '.join(provs)}")
-    print(f"  manifest: wave.yaml (all pending)\n")
-    print("Next (Wave — manual for now, browser automation lands next seam):")
+    print(f"  manifest: expedition.yaml (all pending)\n")
+    print("Next (Dispatch — manual for now, browser automation lands next seam):")
     for p in m["providers"]:
         print(f"  • {p['name']}: open {p['url']} — {p['deep_toggle']}")
         print(f"    paste {os.path.relpath(os.path.join(out_dir, p['prompt']), root)} → save result to {p['report']}")

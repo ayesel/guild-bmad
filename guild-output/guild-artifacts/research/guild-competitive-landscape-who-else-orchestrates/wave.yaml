@@ -1,0 +1,29 @@
+slug: guild-competitive-landscape-who-else-orchestrates
+title: GUILD competitive landscape — who else orchestrates AI design agents?
+created: 2026-07-03 02:02
+objective: Decide how to position and where to focus GUILD by mapping which existing tools/repos already
+  do what GUILD does (multi-agent, discipline-specialized design-to-handoff orchestration run inside AI
+  coding agents) — so we know if GUILD is genuinely differentiated, partially duplicative, or should integrate
+  rather than rebuild.
+providers:
+- slug: chatgpt
+  name: ChatGPT Deep Research
+  url: https://chatgpt.com/
+  deep_toggle: Click the '+' / tools menu and enable 'Deep research' before sending.
+  prompt: prompts/chatgpt.md
+  report: reports/chatgpt.md
+  status: running
+- slug: gemini
+  name: Gemini Deep Research
+  url: https://gemini.google.com/app
+  deep_toggle: Select 'Deep Research' from the model/tools selector, submit, then approve the plan.
+  prompt: prompts/gemini.md
+  report: reports/gemini.md
+  status: running
+- slug: claude
+  name: Claude Research
+  url: https://claude.ai/new
+  deep_toggle: Enable the 'Research' tool, then send.
+  prompt: prompts/claude.md
+  report: reports/claude.md
+  status: pending
