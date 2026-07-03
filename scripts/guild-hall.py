@@ -161,6 +161,9 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card b{font-size:14px;font-weight:660}
 .card .why{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
+.kmeta{display:grid;grid-template-columns:38px 1fr;gap:8px;margin-top:8px;align-items:baseline}
+.kmeta .klabel{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.kmeta .kv{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.5}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:10px}
@@ -531,8 +534,8 @@ def project_view(wf, pidx, view, sv="cards"):
             f'<span class="chip think">Guild recommends</span>'
             + (f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue</label>' if cmd != "top" else "")
             + f'</div><div class="why">{E(why)}</div>'
-            f'<div class="who" style="margin-top:6px">why: {E(because)}</div>'
-            f'<div class="who">cost: {E(cost)}</div>'
+            f'<div class="kmeta"><span class="klabel">why</span><span class="kv">{E(because)}</span></div>'
+            f'<div class="kmeta"><span class="klabel">cost</span><span class="kv">{E(cost)}</span></div>'
             + (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it — Guild opens an agent and starts</button>'
                f'<span class="who" style="align-self:center">or type {E(cmd)} yourself</span></div>' if cmd != "top" else "")
             + '</div>'
