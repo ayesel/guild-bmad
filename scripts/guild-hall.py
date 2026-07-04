@@ -200,6 +200,28 @@ html.railmin .rail>*:not(.railtog){display:none}
 html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 }
 @media(max-width:1180px){.ptog{display:none}}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 4px}
+.mtile{display:flex;flex-direction:column;gap:2px;padding:12px 13px 10px;border:1px solid var(--line-soft);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);min-height:82px;overflow:hidden;color:var(--ink)}
+.mtile:hover{border-color:var(--line)}
+.mtile .mlab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.mtile .mnum{font-size:27px;font-weight:700;line-height:1.05;letter-spacing:-.02em}
+.mtile .msub{font-size:10px;color:var(--ink-dim)}
+.mtile .spark{margin-top:auto;width:100%;height:20px;color:var(--denim-tx);opacity:.7}
+.mtile.hero{border-color:rgba(206,83,40,.42);background:linear-gradient(160deg,#2c1d11,#1f1b16)}
+.mtile.hero .mnum{color:var(--ember-tx)}
+.mtile.hero .mlab{color:var(--gold-tx)}
+.yourmove{border:1px solid var(--line);border-radius:12px;background:linear-gradient(150deg,#271c13,#1c1813);padding:15px 18px 16px;display:flex;flex-direction:column;gap:5px;margin:0 0 4px}
+.yourmove.calm{background:var(--panel);border-color:var(--line-soft)}
+.ymlab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-tx)}
+.yourmove.calm .ymlab{color:var(--sage-tx)}
+.ymtitle{font-size:19px;font-weight:670;letter-spacing:-.01em;line-height:1.22}
+.ymwhy{font-size:13px;color:var(--ink-dim);line-height:1.5;max-width:66ch}
+.ymacts{display:flex;gap:16px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.hbtn{background:var(--ember);color:#1d0f06;font-size:12px;font-weight:700;padding:0 18px;min-height:44px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.hbtn:hover{filter:brightness(1.08)}
+.hmore{font-size:12px;color:var(--ember-tx);font-weight:650}
+@media(max-width:1080px){.metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}.ymtitle{font-size:17px}}
 .mainpane .cardgrid.feed{grid-template-columns:1fr}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:64px;align-self:start;min-width:0}
 .railsect{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:12px 12px 9px}
@@ -421,6 +443,41 @@ def recommends(feed, project_path):
                      "/guild-quest", "checked: research, taste, runs, and decisions are all in place — this project is healthy",
                      "heavy — a full pipeline run; only start it deliberately"))
     return recs[:4]
+
+
+def sparkline(vals, w=112, h=20):
+    """Device-light inline-SVG sparkline (no charting lib). Empty string if no signal."""
+    vals = [v for v in (vals or [])]
+    if not vals or sum(vals) == 0:
+        return ""
+    n, mx = len(vals), (max(vals) or 1)
+    pts = []
+    for i, v in enumerate(vals):
+        x = round(i * (w / (n - 1)), 1) if n > 1 else 0
+        y = round(h - (v / mx) * (h - 3) - 1.5, 1)
+        pts.append(f"{x},{y}")
+    return (f'<svg class="spark" viewBox="0 0 {w} {h}" preserveAspectRatio="none" aria-hidden="true">'
+            f'<polyline points="{" ".join(pts)}" fill="none" stroke="currentColor" stroke-width="1.5" '
+            f'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
+def _day_buckets(times, days=12):
+    now = time.time()
+    b = [0] * days
+    for t in times:
+        try:
+            d = int((now - float(t)) / 86400)
+        except (TypeError, ValueError):
+            continue
+        if 0 <= d < days:
+            b[days - 1 - d] += 1
+    return b
+
+
+def mtile(href, num, label, sub="", spark="", accent=False):
+    return (f'<a class="mtile{" hero" if accent else ""}" href="{href}">'
+            f'<div class="mlab">{label}</div><div class="mnum">{num}</div>'
+            f'<div class="msub">{E(sub)}</div>{spark}</a>')
 
 
 def page(title, crumb, body, current=None):
@@ -683,7 +740,37 @@ def project_view(wf, pidx, view, sv="cards"):
                 sugg_rows = "".join(_srow(s) for s in ss)
             sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{sbar}{pager}'
                          f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
-        dsect = f'<h2 class="sect">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else ""
+        # ---- dashboard: signal metrics row + "your move" hero (owner-approved Desk pattern) ----
+        working = sum(1 for r in feed["runs"] if r.get("state") == "executing")
+        run_spark = sparkline(_day_buckets([os.path.getmtime(r["path"]) for r in feed["runs"] if os.path.exists(r.get("path", ""))]))
+        art_spark = sparkline(_day_buckets([it.get("mtime") for it in feed["library"]]))
+        metrics = ('<div class="metrics">'
+                   + mtile(f'/p/{pidx}?view=needs#decisions', ndec, "needs you", "decisions waiting" if ndec else "all clear", accent=(ndec > 0))
+                   + mtile(f'/p/{pidx}?view=runs', working, "agents working", "in flight" if working else "idle")
+                   + mtile(f'/p/{pidx}?view=runs', len(feed["runs"]), "runs", "step logs", run_spark)
+                   + mtile(f'/p/{pidx}?view=library', len(feed["library"]), "artifacts", "produced", art_spark)
+                   + mtile(f'/p/{pidx}?view=needs#improve', nsugg, "ideas", "Guild noticed")
+                   + '</div>')
+        decs = [i for i in its if i["kind"] == "decision" and i.get("id") != "note"]
+        if decs:
+            top, more = decs[0], len(decs) - 1
+            hero = (f'<div class="yourmove"><div class="ymlab">most urgent · your move</div>'
+                    f'<div class="ymtitle">{E(top["title"])}</div>'
+                    f'<div class="ymwhy">{E((top.get("why") or top.get("detail") or "")[:200])}</div>'
+                    f'<div class="ymacts"><a class="hbtn" href="#decisions">Review it &rarr;</a>'
+                    + (f'<a class="hmore" href="#decisions">{more} more move{"s" if more != 1 else ""} &rarr;</a>' if more > 0 else "")
+                    + '</div></div>')
+        elif rec_data and rec_data[0][2] != "top":
+            t, more = rec_data[0], len(rec_data) - 1
+            hero = (f'<div class="yourmove"><div class="ymlab">next move · recommended</div>'
+                    f'<div class="ymtitle">{E(t[0])}</div><div class="ymwhy">{E(t[1][:200])}</div>'
+                    f'<div class="ymacts"><button class="hbtn" onclick="run(this,{pidx},\'{E(t[2])}\')">Run it &rarr;</button>'
+                    + (f'<a class="hmore" href="#recs">{more} more &rarr;</a>' if more > 0 else "")
+                    + '</div></div>')
+        else:
+            hero = '<div class="yourmove calm"><div class="ymlab">all clear</div><div class="ymtitle">Nothing needs you</div><div class="ymwhy">Agents keep working; decisions land here when they are yours to make.</div></div>'
+        body = metrics + hero
+        dsect = f'<h2 class="sect" id="decisions">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else '<span id="decisions"></span>'
         body += dsect + f'<div class="cardgrid feed">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
         bmad_rows = "".join(
             f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
