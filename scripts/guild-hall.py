@@ -227,15 +227,15 @@ html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 .railsect{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:12px 12px 9px}
 .railh{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 8px;display:flex;flex-direction:column;gap:2px}
 .railh-sub{font-weight:400;letter-spacing:.01em;text-transform:none;font-size:10px;color:var(--ink-faint);font-family:var(--sans)}
-.raillist{display:flex;flex-direction:column;gap:2px}
-.rail .lib{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 9px;border:none;background:transparent;border-radius:8px;min-height:0}
-.rail .lib:hover{background:var(--panel2)}
-.rail .lib b{font-size:12px}
-.rail .lib .th{flex:0 0 auto}
-.rail .lib > span:not(.th){flex:1 1 90px;min-width:0}
-.rail .lib span div{display:none}
-.rail .lib .obtn{font-size:11px;padding:4px 11px;min-height:32px;margin-left:auto}
-.rail .lib .cardmodel{font-size:10px;min-height:32px;margin-right:0;order:3}
+.raillist{display:flex;flex-direction:column;gap:8px}
+.rail .lib{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:11px;border:1px solid var(--line-soft);background:var(--panel);border-radius:10px;margin:0;min-height:0}
+.rail .lib:hover{border-color:var(--line)}
+.rail .lib b{font-size:12.5px}
+.rail .lib .th{flex:0 0 auto;order:1;margin-top:1px}
+.rail .lib > span:not(.th){flex:1 1 60%;min-width:0;order:2;display:flex;flex-direction:column;gap:1px}
+.rail .lib span div{font-size:10.5px;color:var(--ink-faint);line-height:1.34;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rail .lib .cardmodel{order:3;flex:1 1 90px;min-height:32px;font-size:10px;max-width:none;margin:0}
+.rail .lib .obtn{order:4;flex:0 0 auto;font-size:11px;padding:5px 13px;min-height:32px;margin-left:auto}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:10px;background:#1c1813;padding:10px}
 .snav .navitem{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-dim);min-height:40px;position:relative}
 .snav .navitem .nvi{flex:0 0 18px;width:18px;text-align:center;font-size:13px;opacity:.85}
@@ -265,6 +265,26 @@ html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 .fbtn:hover{border-color:var(--line);color:var(--ink)}
 .fsep{width:1px;height:24px;background:var(--line-soft)}
 .fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11px}
+.filtermenu{position:relative;margin-left:auto}
+.fmbtn{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line);border-radius:8px;padding:0 13px;min-height:36px;background:var(--inset);user-select:none;white-space:nowrap}
+.fmbtn::-webkit-details-marker{display:none}
+.fmbtn:hover,.filtermenu[open] .fmbtn{color:var(--ink);border-color:var(--ink-faint)}
+.fmdot{width:6px;height:6px;border-radius:50%;background:var(--ember);display:inline-block}
+.fmpop{position:absolute;right:0;top:calc(100% + 6px);z-index:40;width:min(300px,86vw);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px;box-shadow:0 12px 34px rgba(8,5,3,.55);display:flex;flex-direction:column;gap:13px}
+.fmgroup{display:flex;flex-direction:column;gap:7px}
+.fmlab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.fmchips{display:flex;flex-wrap:wrap;gap:6px}
+.fmpop .fbtn{min-height:34px;font-size:11px}
+.fmpop .fsel{width:100%;min-height:38px}
+.widget{display:block}
+.widget[hidden]{display:none}
+.wtabs{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--inset);margin:0 0 14px}
+.wtab{border:none;background:transparent;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:650;color:var(--ink-dim);padding:0 16px;min-height:40px;display:inline-flex;align-items:center;gap:8px}
+.wtab+.wtab{border-left:1px solid var(--line)}
+.wtab:not(.on):hover{color:var(--ink);background:var(--panel2)}
+.wtab.on{background:var(--ember);color:#1d0f06}
+.wtab .wtc{font-family:var(--mono);font-size:11px;color:var(--ink-faint);background:var(--panel2);border-radius:10px;padding:1px 7px}
+.wtab.on .wtc{color:#1d0f06;background:rgba(29,15,6,.16)}
 .spage{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
 .ghead{margin:14px 2px 4px;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .wprov{cursor:pointer}.wprov input{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
@@ -633,28 +653,34 @@ def project_view(wf, pidx, view, sv="cards"):
     # Suggestion filters live WITH the suggestions (main content), not in the nav.
     sbar = ""
     if view == "needs" and ss:
-        sbar = ('<div class="sfilter">'
-                f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({nsugg})</button>'
-                f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({sfirm})</button>'
-                f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({nsugg - sfirm})</button>'
-                '<span class="fsep"></span>'
-                + "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{sicon[c]} {E(c)} ({n})</button>'
-                          for c, n in sorted(scats.items(), key=lambda kv: -kv[1]))
-                + f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen" style="margin-left:auto">'
-                + f'<option value="all">every screen ({len(sscreens)})</option>'
-                + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
-                + '</select></div>')
-    def nv(href, label, icon, cnt=None, on=False):
+        conf_chips = (f'<button class="fbtn on" data-k="conf" data-f="all" onclick="sflt(this)">All ({nsugg})</button>'
+                      f'<button class="fbtn" data-k="conf" data-f="firm" onclick="sflt(this)">Missing a basic ({sfirm})</button>'
+                      f'<button class="fbtn" data-k="conf" data-f="check" onclick="sflt(this)">Worth a look ({nsugg - sfirm})</button>')
+        cat_chips = "".join(f'<button class="fbtn" data-k="cat" data-f="{E(c)}" onclick="sflt(this)">{sicon[c]} {E(c)} ({n})</button>'
+                            for c, n in sorted(scats.items(), key=lambda kv: -kv[1]))
+        screen_sel = (f'<select class="fsel" onchange="sscr(this)" aria-label="filter by screen">'
+                      f'<option value="all">every screen ({len(sscreens)})</option>'
+                      + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
+                      + '</select>')
+        sbar = ('<details class="filtermenu"><summary class="fmbtn">'
+                '<span aria-hidden="true">⚑</span> Filters<span class="fmdot" id="fmdot" hidden></span></summary>'
+                '<div class="fmpop" role="menu">'
+                f'<div class="fmgroup"><span class="fmlab">Confidence</span><div class="fmchips">{conf_chips}</div></div>'
+                f'<div class="fmgroup"><span class="fmlab">Category</span><div class="fmchips">{cat_chips}</div></div>'
+                f'<div class="fmgroup"><span class="fmlab">Screen</span>{screen_sel}</div>'
+                '</div></details>')
+    def nv(href, label, icon, cnt=None, on=False, sec=None):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
-        return (f'<a href="{href}" class="navitem {"on" if on else ""}">'
+        extra = f' data-navsec="{sec}"' if sec else ""
+        return (f'<a href="{href}" class="navitem {"on" if on else ""}"{extra}>'
                 f'<span class="nvi" aria-hidden="true">{icon}</span><span class="nvl">{label}</span>{c}</a>')
     def grp(title, links):
         return f'<div class="ngrp"><div class="grp">{title}</div>' + "".join(links) + '</div>'
     side = ('<aside class="snav" aria-label="project navigation">'
             + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
             + grp("Decide", [
-                nv(f"/p/{pidx}?view=needs", "Needs you", "📥", ndec, view == "needs"),
-                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg),
+                nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", ndec, view == "needs", sec=("decisions" if ss else None)),
+                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg, sec=("improve" if ss else None)),
                 nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
                 nv(f"/expedition?p={pidx}", "Expedition", "🧭")])
             + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶", nruns, view == "runs")])
@@ -694,8 +720,8 @@ def project_view(wf, pidx, view, sv="cards"):
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
         roster_rows = "".join(
-            f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div style="font-size:11px;color:var(--ink-dim)">{job}</div></span>'
+            f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
+            f'<span><b>{name}</b><div>{E(job)}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in ROSTER)
         sugg_rows = ""
@@ -768,11 +794,19 @@ def project_view(wf, pidx, view, sv="cards"):
         else:
             hero = '<div class="yourmove calm"><div class="ymlab">all clear</div><div class="ymtitle">Nothing needs you</div><div class="ymwhy">Agents keep working; decisions land here when they are yours to make.</div></div>'
         body = metrics + hero
-        dsect = f'<h2 class="sect" id="decisions">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else '<span id="decisions"></span>'
-        body += dsect + f'<div class="cardgrid feed">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
+        # widget switcher: nav toggles between the Decisions and UX-improvements widgets
+        if ss:
+            body += (f'<div class="wtabs" role="tablist">'
+                     f'<button class="wtab on" data-sec="decisions" onclick="focusW(\'decisions\')">Decisions waiting <span class="wtc">{ndec}</span></button>'
+                     f'<button class="wtab" data-sec="improve" onclick="focusW(\'improve\')">UX improvements <span class="wtc">{nsugg}</span></button></div>')
+        # header text lives in the widget-tab when the toggle is present; keep just the anchor
+        dsect = '<span id="decisions"></span>' if ss else (f'<h2 class="sect" id="decisions">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else '<span id="decisions"></span>')
+        w_dec = f'<section class="widget" data-sec="decisions" id="w-decisions">{dsect}<div class="cardgrid feed">{cards}</div></section>'
+        w_imp = f'<section class="widget" data-sec="improve" id="w-improve" hidden>{sugg_rows}</section>' if ss else ""
+        body += w_dec + w_imp + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
         bmad_rows = "".join(
-            f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div style="font-size:11px;color:var(--ink-dim)">{job}</div></span>'
+            f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
+            f'<span><b>{name}</b><div>{E(job)}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in BMAD_ROSTER)
         # right rail — persistent so the page stays full even on a sparse project
@@ -820,6 +854,25 @@ def project_view(wf, pidx, view, sv="cards"):
 
 JS = """<script>
 function tpane(k){var d=document.documentElement;d.classList.toggle(k);try{localStorage.setItem('hall_'+k,d.classList.contains(k)?'1':'0');}catch(e){}}
+function focusW(sec){
+  if(!document.querySelector('.widget[data-sec="'+sec+'"]'))sec='decisions';
+  document.querySelectorAll('.widget[data-sec]').forEach(function(w){w.hidden=(w.getAttribute('data-sec')!==sec);});
+  document.querySelectorAll('.wtab[data-sec]').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-sec')===sec);});
+  document.querySelectorAll('.navitem[data-navsec]').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-navsec')===sec);});
+  try{localStorage.setItem('hall_sec',sec);}catch(e){}
+}
+(function(){
+  if(!document.querySelector('.widget[data-sec]'))return;
+  var sec='decisions';
+  try{if(localStorage.getItem('hall_sec')==='improve')sec='improve';}catch(e){}
+  if(location.hash==='#improve')sec='improve';
+  if(location.hash==='#decisions')sec='decisions';
+  focusW(sec);
+  window.addEventListener('hashchange',function(){
+    if(location.hash==='#improve')focusW('improve');
+    else if(location.hash==='#decisions'||location.hash==='')focusW('decisions');
+  });
+})();
 function launchCfg(){
   const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
   return {adapter: m ? m.value : 'codex', reuse: r ? r.checked : false};
