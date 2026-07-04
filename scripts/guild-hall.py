@@ -126,7 +126,8 @@ CSS = """
 *{box-sizing:border-box;margin:0;padding:0}
 :focus-visible{outline:2px solid var(--ember-tx);outline-offset:2px;border-radius:4px}
 body{background:linear-gradient(180deg,#12100e 0%,#100f0d 240px);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;
--webkit-font-smoothing:antialiased;max-width:min(1400px,94vw);margin:0 auto;padding:22px 18px 60px}
+-webkit-font-smoothing:antialiased;max-width:1400px;margin:0;padding:22px 26px 60px}
+@media(min-width:1720px){body{margin:0 auto}}
 @media(max-width:860px){body{max-width:100%;padding:16px 14px 48px}}
 a{color:inherit;text-decoration:none}
 .top{display:flex;align-items:center;gap:11px;margin-bottom:10px;position:sticky;top:0;z-index:40;background:linear-gradient(180deg,var(--bg) 82%,transparent);padding:10px 0 14px}
@@ -138,6 +139,14 @@ display:grid;place-items:center;color:#1a0f08;font-weight:800;font-size:14px}
 .topsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:7px 10px;min-height:38px;font-size:12px;max-width:220px}
 .top .home{font-size:12px;color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;padding:5px 13px;display:inline-flex;align-items:center;min-height:44px;margin-left:12px}
 .top .home:hover{color:var(--ink)}
+.runner{margin-left:auto;position:relative}
+.runner summary{list-style:none;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;border:1px solid var(--line);border-radius:9px;background:var(--inset);color:var(--ink-dim);font-size:12px;font-weight:650;cursor:pointer}
+.runner summary::-webkit-details-marker{display:none}
+.runner summary:before{content:"⚙";font-size:13px;color:currentColor}
+.runner[open] summary{color:var(--ink);border-color:var(--line)}
+.runcfg{position:absolute;right:0;top:46px;min-width:360px;max-width:min(520px,calc(100vw - 28px));z-index:80;display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;margin:0;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);box-shadow:0 12px 36px rgba(0,0,0,.45)}
+.runcfg .who{grid-column:1/-1}
+@media(max-width:700px){.runner{margin-left:0}.runcfg{left:0;right:auto;min-width:min(360px,calc(100vw - 28px))}}
 .kic{width:30px;height:30px;border-radius:8px;background:var(--inset);border:1px solid var(--line);
 display:inline-grid;place-items:center;font-size:14px;flex:0 0 auto}
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
@@ -150,27 +159,48 @@ border-radius:6px;padding:2px 8px;white-space:nowrap}
 .chip.proj{background:transparent;border:1px solid var(--line);color:var(--ink-faint)}.chip.proj::before{display:none}
 .swbar{display:flex;gap:10px;align-items:center;margin:2px 0 6px}
 .cardmodel{font-size:10.5px;padding:3px 6px;border-radius:7px;background:var(--inset);color:var(--ink-dim);border:1px solid var(--line-soft);min-height:44px;margin-right:6px;align-self:center}
-.runcfg{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line-soft);border-radius:10px;background:var(--panel)}
 .swlab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 .sw{font-size:11px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line-soft);border-radius:22px;padding:5px 14px;display:inline-flex;align-items:center;min-height:44px}
 .sw:hover{color:var(--ink);border-color:var(--line)}
 .sect{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
 .sect:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.card{border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);padding:16px;margin:8px 0;display:block;box-shadow:0 1px 2px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.16)}
+.card{border:1px solid var(--line-soft);border-radius:9px;background:#1e1a15;padding:14px;margin:8px 0;display:block;box-shadow:none}
 a.card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .card .row{display:flex;align-items:center;gap:10px}
 .card b{font-size:14px;font-weight:660}
-.card .why{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.5}
+.card .why{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.45}
 .card .who{font-size:11px;color:var(--ink-faint);margin-top:7px;font-family:var(--mono)}
+.brief{font-size:12px;color:var(--ink-dim);line-height:1.45;margin-top:5px;max-width:68ch}
+.metafold{margin-top:9px}
+.metafold summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;min-height:32px;display:inline-flex;align-items:center}
+.metafold summary::-webkit-details-marker{display:none}
+.metafold summary:before{content:"+";margin-right:7px;color:var(--ink-faint)}
+.metafold[open] summary:before{content:"–"}
 .kmeta{display:grid;grid-template-columns:38px 1fr;gap:8px;margin-top:8px;align-items:baseline}
 .kmeta .klabel{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
 .kmeta .kv{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.5}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
-.snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:10px}
+.shell.three{grid-template-columns:200px minmax(0,1fr) 288px;gap:20px}
+.mainpane{min-width:0}
+.mainpane .cardgrid.feed{grid-template-columns:1fr}
+.rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:64px;align-self:start;min-width:0}
+.railsect{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:12px 12px 9px}
+.railh{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 8px;display:flex;flex-direction:column;gap:2px}
+.railh-sub{font-weight:400;letter-spacing:.01em;text-transform:none;font-size:10px;color:var(--ink-faint);font-family:var(--sans)}
+.raillist{display:flex;flex-direction:column;gap:2px}
+.rail .lib{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 9px;border:none;background:transparent;border-radius:8px;min-height:0}
+.rail .lib:hover{background:var(--panel2)}
+.rail .lib b{font-size:12px}
+.rail .lib .th{flex:0 0 auto}
+.rail .lib > span:not(.th){flex:1 1 90px;min-width:0}
+.rail .lib span div{display:none}
+.rail .lib .obtn{font-size:11px;padding:4px 11px;min-height:32px;margin-left:auto}
+.rail .lib .cardmodel{font-size:10px;min-height:32px;margin-right:0;order:3}
+.snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:10px;background:#1c1813;padding:10px}
 .snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
-.snav a.on{background:rgba(206,83,40,.1);color:var(--ember-tx)}
+.snav a.on{background:var(--panel2);color:var(--ink)}
 .snav a:hover{background:var(--panel2);color:var(--ink)}
 .snav .grp{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
 .snav details.ngrp{margin:0}
@@ -185,7 +215,11 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .subfil .fbtn{font-size:11px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
 .subfil .fbtn:hover{border-color:var(--line-soft)}
 .subfil .fsel{font-size:11px}
-@media (max-width:860px){.shell{grid-template-columns:1fr;gap:14px}
+@media (max-width:1180px){.shell.three{grid-template-columns:200px minmax(0,1fr)}
+.shell.three .rail{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;position:static;gap:14px}
+.shell.three .railsect{flex:1 1 300px}}
+@media (max-width:860px){.shell,.shell.three{grid-template-columns:1fr;gap:14px}
+.shell.three .rail{grid-column:auto;flex-direction:column}
 .snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:0;background:transparent;border:none;border-radius:0}
 .snav details.ngrp{border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);padding:6px 9px;margin:0}
 .snav details.ngrp[open]{flex-basis:100%;margin-bottom:0}
@@ -206,20 +240,20 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .pick{margin-left:auto;font-size:11px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
 .pickbox{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
 .batchbar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:60;font-size:12px;box-shadow:0 6px 24px rgba(20,15,10,.5)}
-.batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#1d0f06;min-height:44px}
+.batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#1a0f08;min-height:44px}
 .batchbar .clearsel{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .obtn{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ember-tx);cursor:pointer;min-height:44px;margin-left:auto;flex-shrink:0}
 .obtn:hover{border-color:var(--ember-tx)}
 button{font-family:var(--sans)}
 .acts a{font-size:12px;font-weight:650;padding:7px 14px;border-radius:8px;border:1px solid var(--line-soft);background:transparent;color:var(--ember-tx);display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .acts button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
-background:var(--ember);color:#1d0f06;display:inline-flex;align-items:center;min-height:44px}
+background:var(--ember);color:#1a0f08;display:inline-flex;align-items:center;min-height:44px}
 .acts .quiet{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
 .acts .quiet:hover{color:var(--ink)}
 .acts button:hover,.acts a:hover{filter:brightness(1.12)}
 .acts button:active,.acts a:active{transform:scale(.96)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-.pcard{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:14px 15px}
+.pcard{border:1px solid var(--line-soft);border-radius:9px;background:#1c1813;padding:13px 14px}
 .pcard{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease}
 .pcard:hover{border-color:var(--line);transform:translateY(-2px)}
 .pcard b{font-size:14px}.pcard .ph{font-size:12px;color:var(--ink-dim);margin-top:4px}
@@ -232,9 +266,9 @@ border-radius:12px;padding:1px 8px;margin-left:auto}
 .tabs a{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-faint);border-bottom:2px solid transparent;display:inline-flex;align-items:center;min-height:44px}
 .tabs a.on{color:var(--ember-tx);border-bottom-color:var(--ember-tx)}
 .tabs a:hover{color:var(--ink-dim)}
-.quiet-empty{border:1px dashed var(--line);border-radius:11px;padding:24px;text-align:center;color:var(--ink-dim);
+.quiet-empty{border:1px dashed var(--line);border-radius:9px;padding:18px;text-align:center;color:var(--ink-dim);
 font-size:13px;margin:10px 0;line-height:1.6}
-.quiet-empty .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);margin-right:7px}
+.quiet-empty .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ink-faint);margin-right:7px}
 .tl{list-style:none;margin:8px 0}
 .tl li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12px;color:var(--ink-dim);line-height:1.5}
 .tl li:before{content:"✓";color:var(--sage-tx);font-weight:700;flex:0 0 auto}
@@ -289,6 +323,18 @@ ROSTER = [
     ("Guild Master", "🎯", "runs the whole pipeline — point it at a goal", "/guild-quest"),
 ]
 
+AGENT_METHODS = [
+    ("Ranger", "🔍", "Research", "Evidence, interviews, synthesis, method choice", "/guild-agent-ranger"),
+    ("Cartographer", "🗺️", "Structure", "IA, sitemaps, content models, navigation", "/guild-agent-cartographer"),
+    ("Rogue", "🔀", "Interaction", "Flows, wireframes, states, task paths", "/guild-agent-rogue"),
+    ("Mage", "🎨", "Visual", "Critique, polish, hierarchy, motion", "/guild-agent-mage"),
+    ("Warlock", "✍️", "Words", "Microcopy, empty states, naming, voice", "/guild-agent-warlock"),
+    ("Tinker", "🔧", "System", "Components, tokens, variants, Storybook", "/guild-agent-tinker"),
+    ("Sage", "🛡️", "Quality", "A11y, responsive, consistency, go/no-go", "/guild-agent-sage"),
+    ("Healer", "📦", "Handoff", "Specs, stories, annotations, release notes", "/guild-agent-healer"),
+    ("Guild Master", "🎯", "Orchestration", "Quest, sprint, review packet, routing", "/guild-agent-guild-master"),
+]
+
 def switcher(current=None):
     regs = projects()
     wf = _feed_mod()
@@ -326,8 +372,8 @@ def recommends(feed, project_path):
                      "top", f'checked: your inbox — {len(feed["needs_you"])} items waiting', "free — just your clicks"))
     if feed["spine_nuggets"] == 0:
         recs.append(("Give the brain evidence",
-                     "run /guild-spine-backfill (existing research) or /guild-research-synthesis (fresh)",
-                     "/guild-spine-backfill",
+                     "summon Ranger to build a research file from existing evidence, or synthesize fresh research",
+                     "/guild-agent-ranger — build the research file from existing evidence; if no real research exists, run research synthesis instead",
                      f"checked: this project has no research file yet ({artrel}) — so nothing here can point at evidence",
                      "medium — one agent session reading your existing docs (~5-15 min)"))
     if not has("design-direction") and not has("charter"):
@@ -338,8 +384,8 @@ def recommends(feed, project_path):
                      "light — ~10 min, mostly YOUR answers; saves tokens on every later run"))
     if os.path.isdir(os.path.join(project_path, "src")) and not feed["runs"]:
         recs.append(("Audit what's built",
-                     "/guild-auto-critique reviews every key screen for craft problems and missing basics in one pass",
-                     "/guild-auto-critique",
+                     "summon Mage for auto-critique: capture key screens, critique craft, and run the scripted gates",
+                     "/guild-agent-mage — run AC / auto-critique on the key screens, then report gate findings",
                      "checked: src/ exists but zero run records — real code Guild has never judged; unknown gaps compound into rework",
                      "medium-heavy — one agent per key screen; scripted gates are free"))
     if os.path.isdir(os.path.join(project_path, "src")) and not has("suggestions"):
@@ -350,8 +396,8 @@ def recommends(feed, project_path):
                      "free — scripted static sweep, seconds, no agent"))
     if feed["runs"] and not has("batched-review"):
         recs.append(("Get a decision packet",
-                     "/guild-pre-handoff turns findings into approve/waive decisions",
-                     "/guild-pre-handoff",
+                     "summon Sage for the pre-handoff decision packet: approve / waive / redo",
+                     "/guild-agent-sage — run PR / pre-handoff and compile one decision packet",
                      f'checked: {len(feed["runs"])} run(s) recorded but no batched-review packet — findings exist that never became decisions',
                      "light-medium — one agent compiling what already exists"))
     if not recs:
@@ -366,13 +412,13 @@ def page(title, crumb, body, current=None):
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
-            f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}</div>'
-            f'<div class="runcfg"><span class="swlab">Default model</span>'
+            f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}'
+            f'<details class="runner"><summary>Runner</summary><div class="runcfg"><span class="swlab">Default model</span>'
             f'<select id="runmodel" class="fsel" aria-label="model to launch runs with">'
-            f'<option value="claude-code">Claude</option><option value="codex">Codex</option>'
+            f'<option value="codex" selected>Codex</option><option value="claude-code">Claude</option>'
             f'<option value="gemini">Gemini</option><option value="cursor-agent">Cursor</option></select>'
-            f'<label class="pick"><input type="checkbox" id="runreuse"> reuse one pane</label>'
-            f'<span class="who" style="margin:0">seeds each card&#39;s picker — change any card individually · raids always use all 3 models</span></div>'
+            f'<label class="pick"><input type="checkbox" id="runreuse"> reuse one pane for short follow-ups</label>'
+            f'<span class="who" style="margin:0">Codex by default to conserve Claude · use Claude for judgment-heavy critique/research · raids always use all 3 models</span></div></details></div>'
             f'<main>{body}</main>'
             f'<div class="foot">GUILD HALL · your delegated-work inbox — agents do the work, decisions come to you. '
             f'Quiet inbox = agents working, nothing needs you.</div></body></html>')
@@ -484,7 +530,8 @@ def home(wf, view="inbox"):
     ndec = sum(1 for n in all_needs if n[1].get("id") != "note")
     nfyi = len(all_needs) - ndec
     hdr = f"{ndec} decisions" + (f", {nfyi} for your awareness" if nfyi else "")
-    body = (f'{hometabs}<h2 class="sect">Needs you — across every project ({hdr})</h2><div class="cardgrid">{inbox}</div>'
+    body = (f'{hometabs}<div class="brief">Across every project: {hdr}. Open a card only when the decision is yours.</div>'
+            f'<h2 class="sect">Needs you</h2><div class="cardgrid">{inbox}</div>'
             f'<h2 class="sect">Your projects</h2><div class="pgrid">{"".join(grid)}</div>{JS}')
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
@@ -548,19 +595,28 @@ def project_view(wf, pidx, view, sv="cards"):
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
-    body = f'<div style="font-size:11px;color:var(--ink-faint);margin:2px 2px 2px">{explain[view]}</div>' 
+    body = f'<div class="brief">{explain[view]}</div>'
+    rail = ""
     if view == "needs":
-        rec_rows = "".join(
+        rec_data = recommends(feed, p["path"])
+        def rec_card(title, why, cmd, because, cost, compact=False):
+            if cmd == "top":
+                return (f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b></div>'
+                        f'<div class="brief">{E(why)}</div></div>')
+            cta = "Run it" if compact else "Run it — Guild opens an agent and starts"
+            return (
             f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
-            f'<span class="chip think">Guild recommends</span>'
-            + (f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue</label>' if cmd != "top" else "")
-            + f'</div><div class="why">{E(why)}</div>'
-            f'<div class="kmeta"><span class="klabel">why</span><span class="kv">{E(because)}</span></div>'
-            f'<div class="kmeta"><span class="klabel">cost</span><span class="kv">{E(cost)}</span></div>'
-            + (f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">Run it — Guild opens an agent and starts</button>'
-               f'<span class="who" style="align-self:center">or type {E(cmd)} yourself</span></div>' if cmd != "top" else "")
-            + '</div>'
-            for title, why, cmd, because, cost in recommends(feed, p["path"]))
+            + f'</div><div class="brief">{E(why)}</div>'
+            + f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">{cta}</button></div>'
+            + f'<details class="metafold"><summary>Details, queue, model</summary>'
+               f'<div class="kmeta"><span class="klabel">why</span><span class="kv">{E(because)}</span></div>'
+               f'<div class="kmeta"><span class="klabel">cost</span><span class="kv">{E(cost)}</span></div>'
+               f'<label class="pick" style="margin-left:0"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue for batch</label>'
+               f'<div class="who">Manual command: {E(cmd)}</div></details></div>')
+        rec_rows = rec_card(*rec_data[0]) if rec_data else ""
+        if len(rec_data) > 1:
+            rec_rows += (f'<details class="metafold"><summary>More recommended runs ({len(rec_data)-1})</summary>'
+                         f'<div class="cardgrid">{"".join(rec_card(*r, compact=True) for r in rec_data[1:])}</div></details>')
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
@@ -610,14 +666,17 @@ def project_view(wf, pidx, view, sv="cards"):
             sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{sbar}{pager}'
                          f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
         dsect = f'<h2 class="sect">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else ""
-        body += dsect + f'<div class="cardgrid">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid">{rec_rows}</div>' \
-              + f'<h2 class="sect" id="roster">Your guild — summon a specialist</h2><div class="libgrid">{roster_rows}</div>'
+        body += dsect + f'<div class="cardgrid feed">{cards}</div>' + sugg_rows + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
         bmad_rows = "".join(
             f'<div class="lib"><span class="th" style="font-size:15px">{icon}</span>'
             f'<span><b>{name}</b><div style="font-size:11px;color:var(--ink-dim)">{job}</div></span>'
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in BMAD_ROSTER)
-        body += f'<h2 class="sect" id="bmad">The build council (BMAD) — plans and builds inside every full quest</h2><div class="libgrid">{bmad_rows}</div>'
+        # right rail — persistent so the page stays full even on a sparse project
+        rail = (f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+                f'<div class="raillist">{roster_rows}</div></section>'
+                f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
+                f'<div class="raillist">{bmad_rows}</div></section>')
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -648,13 +707,17 @@ def project_view(wf, pidx, view, sv="cards"):
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th" style="font-size:15px">{kicon(it["kind"])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
-    return page(p["name"], "a project in your hall", f'<div class="shell">{side}<div>{body}</div></div>' + JS, current=pidx)
+    if rail:
+        shell = f'<div class="shell three">{side}<main class="mainpane">{body}</main><aside class="rail">{rail}</aside></div>'
+    else:
+        shell = f'<div class="shell">{side}<main class="mainpane">{body}</main></div>'
+    return page(p["name"], "a project in your hall", shell + JS, current=pidx)
 
 
 JS = """<script>
 function launchCfg(){
   const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
-  return {adapter: m ? m.value : 'claude-code', reuse: r ? r.checked : false};
+  return {adapter: m ? m.value : 'codex', reuse: r ? r.checked : false};
 }
 (function(){
   const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
@@ -666,7 +729,7 @@ function launchCfg(){
   if (r) r.addEventListener('change', () => { try { localStorage.guildReuse = r.checked ? '1' : '0'; } catch(e){} });
 })();
 async function run(btn, pidx, cmd){
-  const cm = btn.parentNode.querySelector('.cardmodel'); const cfg = launchCfg();
+  const cm = btn.closest('.card,.lib')?.querySelector('.cardmodel'); const cfg = launchCfg();
   const label = btn.textContent; btn.disabled = true; btn.textContent = "launching agent…";
   const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({pidx, cmd, adapter: cm ? cm.value : cfg.adapter, reuse: cfg.reuse})});
@@ -773,7 +836,7 @@ async function explaunch(pidx){
   } catch (e) { st.innerHTML = '<div class="confirm" role="status">✗ ' + e + '</div>'; }
 }
 function injectCardModels(){
-  const g = (document.getElementById('runmodel')||{}).value || 'claude-code';
+  const g = (document.getElementById('runmodel')||{}).value || 'codex';
   document.querySelectorAll('button[onclick*="run(this,"]').forEach(b => {
     if (b.dataset.hasmodel) return;
     const oc = b.getAttribute('onclick') || '';
@@ -781,11 +844,17 @@ function injectCardModels(){
     b.dataset.hasmodel = '1';
     const s = document.createElement('select'); s.className = 'cardmodel';
     s.setAttribute('aria-label', 'model for this run');
-    [['claude-code','Claude'],['codex','Codex'],['gemini','Gemini'],['cursor-agent','Cursor']].forEach(([v,l]) => {
+    [['codex','Codex'],['claude-code','Claude'],['gemini','Gemini'],['cursor-agent','Cursor']].forEach(([v,l]) => {
       const o = document.createElement('option'); o.value = v; o.textContent = l;
       if (v === g) o.selected = true; s.appendChild(o);
     });
-    b.parentNode.insertBefore(s, b);
+    const fold = b.closest('.card,.lib')?.querySelector('.metafold');
+    if (fold) {
+      const line = document.createElement('div'); line.className = 'who'; line.textContent = 'Model override';
+      fold.appendChild(line); fold.appendChild(s);
+    } else {
+      b.parentNode.insertBefore(s, b);
+    }
   });
 }
 window.addEventListener('DOMContentLoaded', injectCardModels);
@@ -803,14 +872,14 @@ PLAYBOOK = [
     ("Set up your project \u00b7 once", [
         ("/guild-design-direction", "Tell Guild your taste ONCE \u2014 ~10 min of questions about look, feel, references. Every agent afterward designs to your answers instead of re-asking.", "light \u2014 mostly your answers"),
         ("/guild-charter", "Set the autonomy contract: what agents may decide alone vs. must bring to you. This is why your inbox stays quiet.", "light \u2014 a short conversation"),
-        ("/guild-spine-backfill", "Already have research docs, notes, interviews? This turns them into a research file Guild can cite, so decisions point at proof.", "medium \u2014 one agent reads your corpus"),
+        ("/guild-agent-ranger — build the research file from existing evidence", "Already have research docs, notes, interviews? Ranger turns them into a research file Guild can cite, so decisions point at proof.", "medium \u2014 one agent reads your corpus"),
     ]),
     ("Research your users \u00b7 Ranger \U0001f50d", [
-        ("/guild-research-synthesis", "Fresh research from zero \u2014 questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy \u2014 real research takes agent time"),
+        ("/guild-agent-ranger — run RS / research synthesis", "Fresh research from zero \u2014 questions, sources, verified facts. Every claim ends up either backed by a source or honestly cut.", "medium-heavy \u2014 real research takes agent time"),
         ("/ranger-raid", "Your research question answered three ways \u2014 Ranger runs on Claude, Codex, and Gemini in parallel and the strongest findings are synthesized. Use when the research really matters.", "heavy \u2014 3 models researching at once"),
     ]),
     ("Map the structure \u00b7 Cartographer \U0001f5fa\ufe0f", [
-        ("/guild-ia", "Plans the app's structure from the research \u2014 screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium \u2014 needs the research step first"),
+        ("/guild-agent-cartographer — run IA / information architecture", "Plans the app's structure from the research \u2014 screen map, flows, what lives where. It refuses to invent structure without evidence.", "medium \u2014 needs the research step first"),
     ]),
     ("Design the experience \u00b7 Rogue / Mage / Warlock", [
         ("/guild-design-sprint", "The design phases in sequence (research \u2192 interaction \u2192 visual \u2192 content \u2192 QA), no code build. For when you want designs to react to first.", "medium-heavy"),
@@ -820,10 +889,10 @@ PLAYBOOK = [
         ("/warlock-raid", "Content & copy three ways, best synthesized (Warlock \u270d\ufe0f).", "heavy \u2014 3 models"),
     ]),
     ("Judge & fix \u00b7 Sage \U0001f6e1\ufe0f", [
-        ("/guild-auto-critique", "Point it at a screen: Mage critiques like a design lead + every craft gate runs (spacing, type, tokens, states, motion, a11y). Findings, not vibes.", "medium \u2014 one agent per screen; gates are free"),
+        ("/guild-agent-mage — run AC / auto-critique", "Point Mage at a screen: critique like a design lead + every craft gate runs (spacing, type, tokens, states, motion, a11y). Findings, not vibes.", "medium \u2014 one agent per screen; gates are free"),
         ("/guild-comment", "Anything feel off? Say it in plain words. Guild builds 3 real fixed variants and sends you a pick note with rendered pixels \u2014 you choose, it applies.", "medium \u2014 3 real patches get built"),
         ("/sage-raid", "Design QA from three engines \u2014 three independent quality reads, reconciled into one go/no-go.", "heavy \u2014 3 models"),
-        ("/guild-pre-handoff", "Sweeps everything agents produced into ONE decision packet \u2014 approve / waive / redo. The end-of-run ritual before shipping.", "light-medium \u2014 compiles what exists"),
+        ("/guild-agent-sage — run PR / pre-handoff", "Sweeps everything agents produced into ONE decision packet \u2014 approve / waive / redo. The end-of-run ritual before shipping.", "light-medium \u2014 compiles what exists"),
     ]),
     ("Run the whole pipeline", [
         ("/guild-quest", "THE BIG ONE. Idea in, working app out. BMAD plans it (PM scopes \u2192 Analyst digs into requirements \u2192 Architect shapes the tech \u2192 Scrum Master cuts it into stories), Guild designs it, then it gets built and tested \u2014 agents handing off to each other. Start it and watch this Hall.", "heavy \u2014 a full pipeline; start deliberately"),
@@ -877,11 +946,17 @@ def playbook(pidx=None):
     runnable = pidx is not None
     pname = projects()[pidx]["name"] if runnable else None
     heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint", "/ranger-raid", "/rogue-raid", "/mage-raid", "/warlock-raid", "/sage-raid")
-    icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-spine-backfill": "📚",
-             "/guild-research-synthesis": "🔬", "/guild-expedition": "🔭", "/guild-ia": "🧭", "/guild-quest": "🏰",
+    icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-expedition": "🔭", "/guild-quest": "🏰",
              "/guild-design-sprint": "🖌️", "/guild-render": "🖼️", "/guild-raid": "⚔️",
-             "/guild-auto-critique": "🧪", "/guild-comment": "💬", "/guild-pre-handoff": "📦",
-             "/guild-agent-mage": "🧙", "/ranger-raid": "🔍", "/rogue-raid": "🔀", "/mage-raid": "🎨", "/warlock-raid": "✍️", "/sage-raid": "🛡️"}
+             "/guild-comment": "💬", "/guild-agent-ranger": "🔍", "/guild-agent-cartographer": "🗺️",
+             "/guild-agent-mage": "🎨", "/guild-agent-sage": "🛡️", "/guild-agent-guild-master": "🎯",
+             "/ranger-raid": "🔍", "/rogue-raid": "🔀", "/mage-raid": "🎨", "/warlock-raid": "✍️", "/sage-raid": "🛡️"}
+    agent_rows = "".join(
+        f'<div class="lib"><span class="th">{icon}</span><span><b>{E(name)}</b>'
+        f'<div class="m">{E(label)}</div><div style="font-size:11px;color:var(--ink-dim);margin-top:3px">{E(desc)}</div></span>'
+        + (f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button>' if runnable else '')
+        + '</div>'
+        for name, icon, label, desc, cmd in AGENT_METHODS)
     secs = []
     for title, cmds in PLAYBOOK:
         cards = []
@@ -890,24 +965,27 @@ def playbook(pidx=None):
                 '<div class="card feat"><div class="row"><span class="kic">🔭</span>'
                 '<b style="font-family:var(--mono);font-size:13px">/guild-expedition</b>'
                 '<span class="chip wait">medium</span></div>'
-                '<div class="why">Sends your question to several deep-research products at once as tabs in one browser '
-                '(ChatGPT, Gemini, Perplexity, Claude) and reconciles their reports — where they agree is '
-                'solid, where they disagree is what to look at. Different from a raid: a raid runs Guild&#39;s '
-                'own researcher on 3 reasoning models; an expedition harnesses the models&#39; own deep-research.</div>'
-                '<div class="who">cost: medium — several browser runs, ~10–15 min each</div>'
-                f'<div class="acts"><a href="/expedition?p={pidx}">Pick researchers &amp; run →</a></div></div>')
+                '<div class="brief">Send one research question to multiple deep-research products, then reconcile the reports.</div>'
+                f'<div class="acts"><a href="/expedition?p={pidx}">Pick researchers &amp; run →</a></div>'
+                '<details class="metafold"><summary>Details and cost</summary>'
+                '<div class="why">Opens ChatGPT, Gemini, Perplexity, Claude as tabs in one browser. Where they agree is solid; where they disagree is what to inspect. Different from a raid: a raid runs Guild&#39;s own researcher on 3 reasoning models.</div>'
+                '<div class="who">cost: medium — several browser runs, ~10–15 min each</div></details></div>')
         for cmd, what, cost in cmds:
             guard = (f"if(confirm('This starts a HEAVY run ({cmd}) on {pname} — proceed?'))" if cmd in heavy else "")
+            display_cmd, intent = (cmd.split(" — ", 1) + [""])[:2] if " — " in cmd else (cmd, "")
             act = (f'<div class="acts"><button onclick="{guard}run(this,{pidx},\'{E(cmd)}\')">Run on {E(pname)}</button>'
                    f'<label class="pick"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue</label></div>'
                    if runnable else f'<div class="who">open this Playbook from a project page to run it there</div>')
             tier = "heavy" if cmd in heavy else ("medium" if "medium" in cost else "light")
             tchip = {"light": "done", "medium": "wait", "heavy": "exec"}[tier]
             cards.append(f'<div class="card{" feat" if cmd in heavy else ""}"><div class="row">'
-                         f'<span class="kic">{icons.get(cmd, "▶")}</span>'
-                         f'<b style="font-family:var(--mono);font-size:13px">{E(cmd)}</b>'
+                         f'<span class="kic">{icons.get(display_cmd, "▶")}</span>'
+                         f'<b style="font-family:var(--mono);font-size:13px">{E(display_cmd)}</b>'
                          f'<span class="chip {tchip}">{tier}</span></div>'
-                         f'<div class="why">{E(what)}</div><div class="who">cost: {E(cost)}</div>{act}</div>')
+                         + (f'<div class="who">{E(intent)}</div>' if intent else '') +
+                         f'<div class="brief">{E(what.split(" — ")[0])}</div>{act}'
+                         f'<details class="metafold"><summary>Details and cost</summary>'
+                         f'<div class="why">{E(what)}</div><div class="who">cost: {E(cost)}</div></details></div>')
         secs.append(f'<h2 class="sect">{E(title)}</h2><div class="cardgrid">{"".join(cards)}</div>')
     # full catalog, straight from the real command files — never a stale hand-list
     cdir = os.path.join(os.path.dirname(HERE), ".claude", "commands")
@@ -926,15 +1004,14 @@ def playbook(pidx=None):
         rows.append(f'<div style="padding:7px 2px;border-bottom:1px solid var(--line-soft)">'
                     f'<b style="font-family:var(--mono);font-size:12px;color:var(--ember-tx)">/{E(f[:-3])}</b> '
                     f'<span style="font-size:12px;color:var(--ink-faint)">— {E(desc)}</span></div>')
-    catalog = (f'<details style="margin-top:22px"><summary style="cursor:pointer;font-size:12px;color:var(--ink-faint);'
-               f'font-weight:650">Every command Guild knows ({len(rows)}) — the full catalog, read live from the command files</summary>'
+    catalog = (f'<details class="metafold"><summary>Manual command surface ({len(rows)})</summary>'
                f'<div class="card" style="margin-top:10px">{"".join(rows)}</div></details>')
-    intro = ('<div class="card"><div class="why" style="font-size:13px">'
-             'You never need to memorize these. Guild recommends the right one at the right time on every project page — '
-             'with its reasoning and cost. This page is the map for when you want to drive yourself.</div></div>')
-    crumb = "what every command does, in plain words"
+    intro = ('<div class="quiet-empty" style="text-align:left">'
+             'Start with a specialist, not a catalog. Guild recommends work from each project page; this map is here when you want to drive directly.</div>')
+    agents = f'<h2 class="sect">Talk to an agent</h2><div class="libgrid">{agent_rows}</div>'
+    crumb = "pick an agent, not a command"
     title = f"Playbook \u00b7 {pname}" if runnable else "Playbook"
-    html = page(title, crumb, intro + "".join(secs) + catalog + JS, current=pidx)
+    html = page(title, crumb, intro + agents + "".join(secs) + catalog + JS, current=pidx)
     if runnable:
         html = html.replace('<a class="home" href="/">',
                             f'<a class="home" href="/p/{pidx}">← Back to {E(pname)}</a>'
@@ -1039,12 +1116,13 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/run":
             pr = projects()[req["pidx"]]
             cli = os.environ.get("ATRIUM_CLI_PATH", "atrium")
-            adapter = req.get("adapter") or "claude-code"
+            adapter = req.get("adapter") or "codex"
             if adapter not in ("claude-code", "codex", "gemini", "cursor-agent"):
-                adapter = "claude-code"
+                adapter = "codex"
             reuse = bool(req.get("reuse"))
             msg = (f'{req["cmd"]} — launched from GUILD Hall for the project at {pr["path"]}. '
-                   f'Work in that project; deliver results to its guild-artifacts and the Hall inbox.')
+                   f'Work in that project; deliver results to its guild-artifacts and the Hall inbox. '
+                   f'Keep context lean: load only task-relevant files, summarize before long follow-ups, and prefer a fresh pane after large runs.')
             runner_file = os.path.expanduser("~/.config/guild/hall-runner.yaml")
             import yaml as _y
             try:
@@ -1061,7 +1139,7 @@ class Handler(BaseHTTPRequestHandler):
                 if pane in live_ids:
                     m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
                     return self._send(json.dumps({"ok": m.returncode == 0,
-                        "message": f"sent to your {adapter} runner (same pane) — running {req['cmd']}" if m.returncode == 0
+                        "message": f"sent to your {adapter} runner (same pane; summarize/clear after large runs) — running {req['cmd']}" if m.returncode == 0
                                    else (m.stderr or "message failed")[:140]}), "application/json")
             split = []
             hallpane = next((x["id"] for x in panes
@@ -1083,7 +1161,7 @@ class Handler(BaseHTTPRequestHandler):
             time.sleep(4)   # let the adapter boot before the instruction lands
             m = subprocess.run([cli, "agent", "message", pane, msg], capture_output=True, text=True, timeout=30)
             ok = m.returncode == 0
-            where = (f"your new {adapter} runner (reused next time)" if reuse
+            where = (f"your new {adapter} runner (reuse only for short follow-ups)" if reuse
                      else "beside the Hall in this room" if split else "in a new room")
             return self._send(json.dumps({"ok": ok,
                 "message": f"{adapter} agent launched {where} — running {req['cmd']}" if ok
