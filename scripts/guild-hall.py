@@ -186,8 +186,8 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .mainpane{min-width:0}
 .ptog{border:1px solid var(--line-soft);background:var(--panel2);color:var(--ink-dim);width:26px;height:26px;border-radius:7px;cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;padding:0;transition:transform .15s ease,color .15s ease}
 .ptog:hover{color:var(--ink);border-color:var(--line)}
-.snav .navtog{align-self:flex-end;margin:-2px -2px 4px}
-.rail .railtog{align-self:flex-start;margin:0 0 2px}
+.snav .navtog{align-self:flex-end;position:sticky;top:0;z-index:3;margin:0 0 -4px}
+.rail .railtog{align-self:flex-end;position:sticky;top:0;z-index:3;margin:0 0 -20px}
 @media(min-width:1181px){
 html.navmin .shell.three{grid-template-columns:42px minmax(0,1fr) 288px}
 html.railmin .shell.three{grid-template-columns:200px minmax(0,1fr) 42px}
