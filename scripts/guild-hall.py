@@ -641,6 +641,63 @@ def home(wf, view="inbox"):
     return page("GUILD Hall", "everything you delegated, one inbox", body)
 
 
+def chrome(wf, pidx, active="needs", feed=None):
+    """Nav sidebar + context rail shared by every project page — keeps both sidebars always present."""
+    p = projects()[pidx]
+    if feed is None:
+        feed = wf.build(p["path"])
+    its = items_for(feed, p["name"])
+    ndec = sum(1 for i in its if i["kind"] == "decision")
+    nruns = sum(1 for i in its if i["kind"] == "run")
+    nsugg = 0
+    for base in ("_bmad-output", "guild-output"):
+        sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
+        if os.path.exists(sf):
+            import yaml as _y
+            nsugg = len((_y.safe_load(open(sf)) or {}).get("suggestions", []))
+            break
+    hs = nsugg > 0
+    def nv(href, label, icon, cnt=None, on=False, sec=None):
+        c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
+        extra = f' data-navsec="{sec}"' if sec else ""
+        return (f'<a href="{href}" class="navitem {"on" if on else ""}"{extra}>'
+                f'<span class="nvi" aria-hidden="true">{icon}</span><span class="nvl">{label}</span>{c}</a>')
+    def grp(title, links):
+        return f'<div class="ngrp"><div class="grp">{title}</div>' + "".join(links) + '</div>'
+    side = ('<aside class="snav" aria-label="project navigation">'
+            + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
+            + grp("Decide", [
+                nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", ndec, active == "needs", sec=("decisions" if hs else None)),
+                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg, sec=("improve" if hs else None)),
+                nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
+                nv(f"/expedition?p={pidx}", "Expedition", "🧭", on=(active == "expedition"))])
+            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶", nruns, active == "runs")])
+            + grp("Browse", [
+                nv(f"/p/{pidx}?view=library", "Library", "📚", len(feed["library"]), active == "library"),
+                nv(f"/playbook?p={pidx}", "Playbook", "📖", on=(active == "playbook"))])
+            + grp("People", [
+                nv(f"/p/{pidx}?view=needs#roster", "Your guild", "👥"),
+                nv(f"/p/{pidx}?view=needs#bmad", "Build council", "🛠")])
+            + '</aside>')
+    def _rrow(name, icon, job, cmd):
+        return (f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
+                f'<span><b>{name}</b><div>{E(job)}</div></span>'
+                f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>')
+    rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
+            f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+            f'<div class="raillist">{"".join(_rrow(*r) for r in ROSTER)}</div></section>'
+            f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
+            f'<div class="raillist">{"".join(_rrow(*r) for r in BMAD_ROSTER)}</div></section>')
+    return side, rail
+
+
+def project_shell(wf, pidx, active, inner):
+    """Wrap page-specific inner content in the standard project chrome (both sidebars + app shell)."""
+    side, rail = chrome(wf, pidx, active)
+    shell = f'<div class="shell three">{side}<section class="mainpane">{inner}</section><aside class="rail">{rail}</aside></div>'
+    return page(projects()[pidx]["name"], "a project in your hall", shell + JS, current=pidx, app=True)
+
+
 def project_view(wf, pidx, view, sv="cards"):
     regs = projects()
     p = regs[pidx]
@@ -682,40 +739,7 @@ def project_view(wf, pidx, view, sv="cards"):
                 f'<div class="fmgroup"><span class="fmlab">Category</span><div class="fmchips">{cat_chips}</div></div>'
                 f'<div class="fmgroup"><span class="fmlab">Screen</span>{screen_sel}</div>'
                 '</div></details>')
-    def nv(href, label, icon, cnt=None, on=False, sec=None):
-        c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
-        extra = f' data-navsec="{sec}"' if sec else ""
-        return (f'<a href="{href}" class="navitem {"on" if on else ""}"{extra}>'
-                f'<span class="nvi" aria-hidden="true">{icon}</span><span class="nvl">{label}</span>{c}</a>')
-    def grp(title, links):
-        return f'<div class="ngrp"><div class="grp">{title}</div>' + "".join(links) + '</div>'
-    side = ('<aside class="snav" aria-label="project navigation">'
-            + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
-            + grp("Decide", [
-                nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", ndec, view == "needs", sec=("decisions" if ss else None)),
-                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg, sec=("improve" if ss else None)),
-                nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
-                nv(f"/expedition?p={pidx}", "Expedition", "🧭")])
-            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶", nruns, view == "runs")])
-            + grp("Browse", [
-                nv(f"/p/{pidx}?view=library", "Library", "📚", len(feed["library"]), view == "library"),
-                nv(f"/playbook?p={pidx}", "Playbook", "📖")])
-            + grp("People", [
-                nv(f"/p/{pidx}?view=needs#roster", "Your guild", "👥"),
-                nv(f"/p/{pidx}?view=needs#bmad", "Build council", "🛠")])
-            + '</aside>')
-    # right rail (roster + build council) — present on EVERY project view
-    def _rrow(name, icon, job, cmd):
-        return (f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
-                f'<span><b>{name}</b><div>{E(job)}</div></span>'
-                f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>')
-    roster_rows = "".join(_rrow(*r) for r in ROSTER)
-    bmad_rows = "".join(_rrow(*r) for r in BMAD_ROSTER)
-    rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
-            f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
-            f'<div class="raillist">{roster_rows}</div></section>'
-            f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
-            f'<div class="raillist">{bmad_rows}</div></section>')
+    side, rail = chrome(wf, pidx, view, feed=feed)
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
@@ -1072,7 +1096,7 @@ def _exp_mod():
     return m
 
 
-def expedition_page(pidx):
+def expedition_page(wf, pidx):
     p = projects()[pidx]
     rf = _exp_mod()
     default = set(rf.DEFAULT_PROVIDERS)
@@ -1097,17 +1121,14 @@ def expedition_page(pidx):
               'Forge the brief &amp; launch the wave</button>'
               '<span class="who" style="align-self:center">opens each researcher as a tab in one browser</span></div>'
               '<div id="expstatus"></div>') % pidx
-    return page(f"Expedition · {p['name']}", "pick your researchers, then run",
-                f'<div class="shell"><aside class="snav" aria-label="sections">'
-                f'<a href="/p/{pidx}">← Back to {E(p["name"])}</a>'
-                f'<a href="/playbook?p={pidx}">Playbook</a></aside><div>{intro}{ask}{picker}{launch}</div></div>' + JS,
-                current=pidx)
+    inner = f'<h2 class="sect">Expedition — deep research wave</h2>{intro}{ask}{picker}{launch}'
+    return project_shell(wf, pidx, "expedition", inner)
 
 
-def playbook(pidx=None):
+def playbook(wf=None, pidx=None):
     import re as _re
-    runnable = pidx is not None
-    pname = projects()[pidx]["name"] if runnable else None
+    runnable = pidx is not None and wf is not None
+    pname = projects()[pidx]["name"] if pidx is not None else None
     heavy = ("/guild-quest", "/guild-raid", "/guild-design-sprint", "/ranger-raid", "/rogue-raid", "/mage-raid", "/warlock-raid", "/sage-raid")
     icons = {"/guild-design-direction": "🎨", "/guild-charter": "📜", "/guild-expedition": "🔭", "/guild-quest": "🏰",
              "/guild-design-sprint": "🖌️", "/guild-render": "🖼️", "/guild-raid": "⚔️",
@@ -1174,8 +1195,11 @@ def playbook(pidx=None):
     agents = f'<h2 class="sect">Talk to an agent</h2><div class="libgrid">{agent_rows}</div>'
     crumb = "pick an agent, not a command"
     title = f"Playbook \u00b7 {pname}" if runnable else "Playbook"
-    html = page(title, crumb, intro + agents + "".join(secs) + catalog + JS, current=pidx)
+    inner = '<h2 class="sect">Playbook</h2>' + intro + agents + "".join(secs) + catalog
     if runnable:
+        return project_shell(wf, pidx, "playbook", inner)
+    html = page(title, crumb, inner + JS, current=pidx)
+    if False:
         html = html.replace('<a class="home" href="/">',
                             f'<a class="home" href="/p/{pidx}">← Back to {E(pname)}</a>'
                             f'<a class="home" href="/">', 1)
@@ -1223,10 +1247,10 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == "/":
             return self._send(home(self.wf, q.get("view", ["inbox"])[0]))
         if u.path == "/expedition":
-            return self._send(expedition_page(int(q.get("p", ["0"])[0])))
+            return self._send(expedition_page(self.wf, int(q.get("p", ["0"])[0])))
         if u.path == "/playbook":
             pq = q.get("p", [None])[0]
-            return self._send(playbook(int(pq) if pq is not None else None))
+            return self._send(playbook(self.wf, int(pq)) if pq is not None else playbook())
         if u.path.startswith("/p/"):
             return self._send(project_view(self.wf, int(u.path[3:]), q.get("view", ["needs"])[0],
                                            q.get("sv", ["cards"])[0]))
@@ -1387,11 +1411,11 @@ def selftest():
             ok = ok and "Agents keep working" in pv2
             import re as _re
             used = set()
-            for html in (h, pv, rv, playbook(0), playbook()):
+            for html in (h, pv, rv, playbook(wf, 0), playbook()):
                 for m in _re.finditer(r'class="([^"]+)"', html):
                     used.update(c for c in m.group(1).split() if not c.startswith("shot"))
             unstyled = sorted(c for c in used if not _re.search(r"\." + _re.escape(c) + r"[ ,{:.>#\[]", CSS))
-            blob = (h + pv + rv + playbook(0)).lower()
+            blob = (h + pv + rv + playbook(wf, 0)).lower()
             leaked = [w for w in ("affordance", "fired pattern", "canon gap", "calibrated judgment",
                                   "spine.json", "evidence spine", "artifact model", "nugget") if w in blob]
             if leaked:
