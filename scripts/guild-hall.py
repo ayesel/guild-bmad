@@ -184,6 +184,22 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .shell{display:grid;grid-template-columns:212px minmax(0,1fr);gap:22px;align-items:start}
 .shell.three{grid-template-columns:200px minmax(0,1fr) 288px;gap:20px}
 .mainpane{min-width:0}
+.ptog{border:1px solid var(--line-soft);background:var(--panel2);color:var(--ink-dim);width:26px;height:26px;border-radius:7px;cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;padding:0;transition:transform .15s ease,color .15s ease}
+.ptog:hover{color:var(--ink);border-color:var(--line)}
+.snav .navtog{align-self:flex-end;margin:-2px -2px 4px}
+.rail .railtog{align-self:flex-start;margin:0 0 2px}
+@media(min-width:1181px){
+html.navmin .shell.three{grid-template-columns:42px minmax(0,1fr) 288px}
+html.railmin .shell.three{grid-template-columns:200px minmax(0,1fr) 42px}
+html.navmin.railmin .shell.three{grid-template-columns:42px minmax(0,1fr) 42px}
+html.navmin .snav{padding:8px 6px;background:transparent;border-color:transparent}
+html.navmin .snav>*:not(.navtog){display:none}
+html.navmin .snav .navtog{align-self:center;margin:0;transform:rotate(180deg)}
+html.railmin .rail{gap:0}
+html.railmin .rail>*:not(.railtog){display:none}
+html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
+}
+@media(max-width:1180px){.ptog{display:none}}
 .mainpane .cardgrid.feed{grid-template-columns:1fr}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:64px;align-self:start;min-width:0}
 .railsect{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:12px 12px 9px}
@@ -410,7 +426,8 @@ def recommends(feed, project_path):
 def page(title, crumb, body, current=None):
     home_link = "" if crumb.startswith("everything") else '<a class="home" href="/">Back to all projects</a>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style></head><body>'
+            f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style>'
+            f'<script>try{{var d=document.documentElement;["navmin","railmin"].forEach(function(k){{if(localStorage.getItem("hall_"+k)==="1")d.classList.add(k)}})}}catch(e){{}}</script></head><body>'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}'
             f'<details class="runner"><summary>Runner</summary><div class="runcfg"><span class="swlab">Default model</span>'
@@ -579,6 +596,7 @@ def project_view(wf, pidx, view, sv="cards"):
         return (f'<details class="ngrp"{" open" if open else ""}><summary class="grp">{title}</summary>'
                 + "".join(links) + '</details>')
     side = ('<aside class="snav" aria-label="project sections">'
+            + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
             + grp("Decide", [
                 nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs"),
                 nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg),
@@ -673,7 +691,8 @@ def project_view(wf, pidx, view, sv="cards"):
             f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
             for name, icon, job, cmd in BMAD_ROSTER)
         # right rail — persistent so the page stays full even on a sparse project
-        rail = (f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+        rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
+                f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
                 f'<div class="raillist">{roster_rows}</div></section>'
                 f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
                 f'<div class="raillist">{bmad_rows}</div></section>')
@@ -708,13 +727,14 @@ def project_view(wf, pidx, view, sv="cards"):
             body += (f'<div class="lib"><span class="th" style="font-size:15px">{kicon(it["kind"])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
     if rail:
-        shell = f'<div class="shell three">{side}<main class="mainpane">{body}</main><aside class="rail">{rail}</aside></div>'
+        shell = f'<div class="shell three">{side}<section class="mainpane">{body}</section><aside class="rail">{rail}</aside></div>'
     else:
-        shell = f'<div class="shell">{side}<main class="mainpane">{body}</main></div>'
+        shell = f'<div class="shell">{side}<section class="mainpane">{body}</section></div>'
     return page(p["name"], "a project in your hall", shell + JS, current=pidx)
 
 
 JS = """<script>
+function tpane(k){var d=document.documentElement;d.classList.toggle(k);try{localStorage.setItem('hall_'+k,d.classList.contains(k)?'1':'0');}catch(e){}}
 function launchCfg(){
   const m = document.getElementById('runmodel'), r = document.getElementById('runreuse');
   return {adapter: m ? m.value : 'codex', reuse: r ? r.checked : false};
