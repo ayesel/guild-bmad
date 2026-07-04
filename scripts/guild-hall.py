@@ -237,17 +237,15 @@ html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 .rail .lib .obtn{font-size:11px;padding:4px 11px;min-height:32px;margin-left:auto}
 .rail .lib .cardmodel{font-size:10px;min-height:32px;margin-right:0;order:3}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:10px;background:#1c1813;padding:10px}
-.snav a{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:44px;align-items:center}
-.snav a.on{background:var(--panel2);color:var(--ink)}
-.snav a:hover{background:var(--panel2);color:var(--ink)}
-.snav .grp{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:10px 4px 3px}
-.snav details.ngrp{margin:0}
-.snav details.ngrp[open]{margin-bottom:4px}
-.snav summary.grp{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;min-height:30px}
-.snav summary.grp::-webkit-details-marker{display:none}
-.snav summary.grp::before{content:"\\25be";font-size:9px;color:var(--ink-faint);transition:transform .15s ease}
-.snav details.ngrp:not([open]) summary.grp::before{transform:rotate(-90deg)}
-.snav summary.grp:hover{color:var(--ink-dim)}
+.snav .navitem{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-dim);min-height:40px;position:relative}
+.snav .navitem .nvi{flex:0 0 18px;width:18px;text-align:center;font-size:13px;opacity:.85}
+.snav .navitem .nvl{flex:1 1 auto}
+.snav .navitem:hover{background:var(--panel2);color:var(--ink)}
+.snav .navitem.on{background:var(--panel2);color:var(--ink)}
+.snav .navitem.on::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--ember)}
+.snav .navitem.on .cnt{color:var(--ember-tx)}
+.snav .grp{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:13px 10px 4px}
+.snav .ngrp:first-of-type .grp{margin-top:2px}
 .snav .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .subfil{margin:0 0 6px 14px;padding-left:10px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--line-soft)}
 .subfil .fbtn{font-size:11px;padding:4px 10px;border-color:transparent;text-align:left;justify-content:flex-start}
@@ -259,10 +257,8 @@ html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 @media (max-width:860px){.shell,.shell.three{grid-template-columns:1fr;gap:14px}
 .shell.three .rail{grid-column:auto;flex-direction:column}
 .snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:0;background:transparent;border:none;border-radius:0}
-.snav details.ngrp{border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);padding:6px 9px;margin:0}
-.snav details.ngrp[open]{flex-basis:100%;margin-bottom:0}
-.snav details.ngrp[open] summary.grp{margin-bottom:4px}
-.snav .grp{margin:0}}
+.snav .ngrp{border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);padding:6px 9px;margin:0;flex:1 1 220px}
+.snav .grp{margin:0 4px 4px}}
 .sfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
 .fbtn{font-size:11px;font-weight:700;padding:6px 13px;border-radius:18px;border:1px solid var(--line-soft);background:transparent;color:var(--ink-dim);cursor:pointer;min-height:44px}
 .fbtn.on{color:var(--ember-tx);border-color:rgba(206,83,40,.4);background:rgba(206,83,40,.08)}
@@ -327,10 +323,12 @@ display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var
 @media(min-width:1500px){.cardgrid{grid-template-columns:repeat(3,1fr)}}
 .card .why{max-width:64ch}
 .tl li{max-width:72ch}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto}
-.seg a{padding:6px 14px;font-size:11px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;letter-spacing:0;text-transform:none;font-family:var(--sans)}
-.seg a.on{background:rgba(206,83,40,.12);color:var(--ember-tx)}
-.seg a:hover{color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto;background:var(--inset)}
+.seg a{padding:6px 13px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;gap:5px;letter-spacing:0;text-transform:none;font-family:var(--sans)}
+.seg a+a{border-left:1px solid var(--line)}
+.seg a.on{background:var(--ember);color:#1d0f06}
+.seg a:not(.on):hover{color:var(--ink);background:var(--panel2)}
+.seg .segi{font-size:11px;opacity:.9}
 .sugc{border-left:3px solid var(--line-soft)}
 .sugc[data-conf="firm"]{border-left-color:var(--amber)}
 .sugc[data-conf="check"]{border-left-color:var(--denim)}
@@ -646,26 +644,26 @@ def project_view(wf, pidx, view, sv="cards"):
                 + f'<option value="all">every screen ({len(sscreens)})</option>'
                 + "".join(f'<option value="{E(s)}">{E("/".join(s.split("/")[-2:]))} ({sum(1 for x in ss if x["evidence"] == s)})</option>' for s in sscreens)
                 + '</select></div>')
-    def nv(href, label, cnt=None, on=False):
+    def nv(href, label, icon, cnt=None, on=False):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
-        return f'<a href="{href}" class="{"on" if on else ""}">{label}{c}</a>'
-    def grp(title, links, open=True):
-        return (f'<details class="ngrp"{" open" if open else ""}><summary class="grp">{title}</summary>'
-                + "".join(links) + '</details>')
-    side = ('<aside class="snav" aria-label="project sections">'
+        return (f'<a href="{href}" class="navitem {"on" if on else ""}">'
+                f'<span class="nvi" aria-hidden="true">{icon}</span><span class="nvl">{label}</span>{c}</a>')
+    def grp(title, links):
+        return f'<div class="ngrp"><div class="grp">{title}</div>' + "".join(links) + '</div>'
+    side = ('<aside class="snav" aria-label="project navigation">'
             + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
             + grp("Decide", [
-                nv(f"/p/{pidx}?view=needs", "Needs you", ndec, view == "needs"),
-                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", nsugg),
-                nv(f"/p/{pidx}?view=needs#recs", "What to run next"),
-                nv(f"/expedition?p={pidx}", "Expedition")])
-            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", nruns, view == "runs")], open=(view == "runs"))
+                nv(f"/p/{pidx}?view=needs", "Needs you", "📥", ndec, view == "needs"),
+                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg),
+                nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
+                nv(f"/expedition?p={pidx}", "Expedition", "🧭")])
+            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶", nruns, view == "runs")])
             + grp("Browse", [
-                nv(f"/p/{pidx}?view=library", "Library", len(feed["library"]), view == "library"),
-                nv(f"/playbook?p={pidx}", "Playbook")], open=(view == "library"))
+                nv(f"/p/{pidx}?view=library", "Library", "📚", len(feed["library"]), view == "library"),
+                nv(f"/playbook?p={pidx}", "Playbook", "📖")])
             + grp("People", [
-                nv(f"/p/{pidx}?view=needs#roster", "Your guild"),
-                nv(f"/p/{pidx}?view=needs#bmad", "Build council")], open=False)
+                nv(f"/p/{pidx}?view=needs#roster", "Your guild", "👥"),
+                nv(f"/p/{pidx}?view=needs#bmad", "Build council", "🛠")])
             + '</aside>')
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
@@ -702,9 +700,9 @@ def project_view(wf, pidx, view, sv="cards"):
             for name, icon, job, cmd in ROSTER)
         sugg_rows = ""
         if ss:
-            toggle = (f'<span class="seg">'
-                      f'<a href="/p/{pidx}?view=needs&sv=cards" class="{"on" if sv == "cards" else ""}">Cards</a>'
-                      f'<a href="/p/{pidx}?view=needs&sv=list" class="{"on" if sv == "list" else ""}">List</a></span>')
+            toggle = (f'<span class="seg" role="group" aria-label="view as cards or list">'
+                      f'<a href="/p/{pidx}?view=needs&sv=cards" class="{"on" if sv == "cards" else ""}"><span class="segi" aria-hidden="true">▦</span> Cards</a>'
+                      f'<a href="/p/{pidx}?view=needs&sv=list" class="{"on" if sv == "list" else ""}"><span class="segi" aria-hidden="true">☰</span> List</a></span>')
             pager = ('<div class="sfilter"><span class="spage" style="margin-left:0"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
                      '<b id="spglab" style="font-size:11px;min-width:86px;text-align:center"></b>'
                      '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span></div>') if sv == "cards" else ""
