@@ -200,6 +200,19 @@ html.railmin .rail>*:not(.railtog){display:none}
 html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
 }
 @media(max-width:1180px){.ptog{display:none}}
+/* ---- full-height app shell: header fixed, 3 columns each scroll independently ---- */
+body.app{height:100vh;max-width:none;margin:0;padding:0;overflow:hidden;display:flex;flex-direction:column}
+body.app .top{position:static;margin:0;padding:12px 22px;flex:0 0 auto;border-bottom:1px solid var(--line-soft);z-index:auto}
+body.app>main{flex:1 1 auto;min-height:0;max-width:none;margin:0;padding:0;overflow:hidden}
+body.app .shell{height:100%;gap:0;align-items:stretch}
+body.app .snav{position:static;height:100%;overflow-y:auto;border:none;border-right:1px solid var(--line-soft);border-radius:0;padding:14px 12px}
+body.app .mainpane{height:100%;overflow-y:auto;padding:22px 26px 44px}
+body.app .rail{position:static;height:100%;overflow-y:auto;border-left:1px solid var(--line-soft);border-radius:0;padding:16px 14px 40px}
+body.app .foot{display:none}
+@media(max-width:860px){body.app{height:auto;overflow:visible;display:block}
+body.app>main{overflow:visible}
+body.app .shell,body.app .snav,body.app .mainpane,body.app .rail{height:auto;overflow:visible}
+body.app .snav{border:none;padding:0}body.app .mainpane{padding:14px}body.app .rail{border:none;padding:0}}
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 4px}
 .mtile{display:flex;flex-direction:column;gap:2px;padding:12px 13px 10px;border:1px solid var(--line-soft);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);min-height:82px;overflow:hidden;color:var(--ink)}
 .mtile:hover{border-color:var(--line)}
@@ -498,11 +511,11 @@ def mtile(href, num, label, sub="", spark="", accent=False):
             f'<div class="msub">{E(sub)}</div>{spark}</a>')
 
 
-def page(title, crumb, body, current=None):
+def page(title, crumb, body, current=None, app=False):
     home_link = "" if crumb.startswith("everything") else '<a class="home" href="/">Back to all projects</a>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title) if title.startswith("GUILD") else "GUILD Hall · " + E(title)}</title><style>{CSS}</style>'
-            f'<script>try{{var d=document.documentElement;["navmin","railmin"].forEach(function(k){{if(localStorage.getItem("hall_"+k)==="1")d.classList.add(k)}})}}catch(e){{}}</script></head><body>'
+            f'<script>try{{var d=document.documentElement;["navmin","railmin"].forEach(function(k){{if(localStorage.getItem("hall_"+k)==="1")d.classList.add(k)}})}}catch(e){{}}</script></head><body class="{"app" if app else ""}">'
             f'<div class="top"><div class="gm">G</div><h1>{E(title)}</h1><span class="crumb">{crumb}</span>'
             f'<nav aria-label="switch project" style="display:contents">{switcher(current)}</nav>{home_link}'
             f'<details class="runner"><summary>Runner</summary><div class="runcfg"><span class="swlab">Default model</span>'
@@ -691,11 +704,22 @@ def project_view(wf, pidx, view, sv="cards"):
                 nv(f"/p/{pidx}?view=needs#roster", "Your guild", "👥"),
                 nv(f"/p/{pidx}?view=needs#bmad", "Build council", "🛠")])
             + '</aside>')
+    # right rail (roster + build council) — present on EVERY project view
+    def _rrow(name, icon, job, cmd):
+        return (f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
+                f'<span><b>{name}</b><div>{E(job)}</div></span>'
+                f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>')
+    roster_rows = "".join(_rrow(*r) for r in ROSTER)
+    bmad_rows = "".join(_rrow(*r) for r in BMAD_ROSTER)
+    rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
+            f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+            f'<div class="raillist">{roster_rows}</div></section>'
+            f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
+            f'<div class="raillist">{bmad_rows}</div></section>')
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
     body = f'<div class="brief">{explain[view]}</div>'
-    rail = ""
     if view == "needs":
         rec_data = recommends(feed, p["path"])
         def rec_card(title, why, cmd, because, cost, compact=False):
@@ -719,11 +743,6 @@ def project_view(wf, pidx, view, sv="cards"):
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
-        roster_rows = "".join(
-            f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div>{E(job)}</div></span>'
-            f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
-            for name, icon, job, cmd in ROSTER)
         sugg_rows = ""
         if ss:
             toggle = (f'<span class="seg" role="group" aria-label="view as cards or list">'
@@ -804,17 +823,6 @@ def project_view(wf, pidx, view, sv="cards"):
         w_dec = f'<section class="widget" data-sec="decisions" id="w-decisions">{dsect}<div class="cardgrid feed">{cards}</div></section>'
         w_imp = f'<section class="widget" data-sec="improve" id="w-improve" hidden>{sugg_rows}</section>' if ss else ""
         body += w_dec + w_imp + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
-        bmad_rows = "".join(
-            f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
-            f'<span><b>{name}</b><div>{E(job)}</div></span>'
-            f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>'
-            for name, icon, job, cmd in BMAD_ROSTER)
-        # right rail — persistent so the page stays full even on a sparse project
-        rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
-                f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
-                f'<div class="raillist">{roster_rows}</div></section>'
-                f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
-                f'<div class="raillist">{bmad_rows}</div></section>')
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -845,11 +853,8 @@ def project_view(wf, pidx, view, sv="cards"):
             when = time.strftime("%b %d %H:%M", time.localtime(it["mtime"]))
             body += (f'<div class="lib"><span class="th" style="font-size:15px">{kicon(it["kind"])}</span><span><b>{E(it["name"])}</b></span>'
                      f'<span class="m">{when} · <a href="/open?path={E(it["path"])}" style="color:var(--ember-tx)">open</a></span></div>')
-    if rail:
-        shell = f'<div class="shell three">{side}<section class="mainpane">{body}</section><aside class="rail">{rail}</aside></div>'
-    else:
-        shell = f'<div class="shell">{side}<section class="mainpane">{body}</section></div>'
-    return page(p["name"], "a project in your hall", shell + JS, current=pidx)
+    shell = f'<div class="shell three">{side}<section class="mainpane">{body}</section><aside class="rail">{rail}</aside></div>'
+    return page(p["name"], "a project in your hall", shell + JS, current=pidx, app=True)
 
 
 JS = """<script>
