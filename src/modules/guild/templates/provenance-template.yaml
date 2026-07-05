@@ -1,6 +1,7 @@
 # Component Provenance Map (GUILD-5). Every generated screen lists, PER element,
 # the full design-to-dev contract — stronger than generic prompt output, and it
-# catches drift before engineering. Embedded in /guild-handoff-spec output AND in
+# catches drift before engineering. Embedded in handoff-spec output
+# (/guild-agent-healer HS) AND in
 # BMAD stories (the guild: frontmatter links the screen's provenance).
 row_schema:
   element: ""             # what it is on the screen

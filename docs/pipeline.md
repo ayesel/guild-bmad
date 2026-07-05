@@ -28,7 +28,7 @@ Never go from PM straight to Dev on UI-facing work. Guild is the required layer 
 |---------|-------------|
 | `/guild-quest` | Full pipeline from scratch — BMAD planning through Guild design through build and documentation. One command. |
 | `/guild-design-sprint` | Design only — research through handoff. Stops before build. Use when you want to review artifacts before dev starts. |
-| `/guild-quick-sprint` | Skip research — design through sprint planning. Use when research already exists. |
+| `/guild-agent-guild-master QS` | Skip research — design through sprint planning. Use when research already exists. |
 | `/bmad-autonomous-build` | Build only — picks up from wherever sprint-status.yaml left off. Use when design is done and you just need to build. |
 
 ---
@@ -74,7 +74,7 @@ Mage synthesizes the answers into a **Design Direction Brief**. Every downstream
 
 ### Phase 0.5 — "Pour the Slab" · Foundation Gate
 
-**Command:** `/guild-system-foundation`
+**Command:** `/guild-agent-sage DSF` (design-system foundation)
 
 Sage audits the token and primitive layer before page-level work starts.
 
@@ -130,9 +130,9 @@ Critical findings from any lens loop back to the relevant design step before pro
 | Step | Agent/Tool | Output |
 |------|-----------|--------|
 | 10 | Healer | Dev handoff spec — component inventory, spacing, states, copy, ARIA |
-| 11 | Sage `/guild-pre-handoff` | Pre-handoff quality gate — NO-GO loops back |
-| 12 | `/guild-ux-spec` | UX_Design.md — BMAD-compatible, consumed by dev-story |
-| 13 | `/guild-jira-stories` | Dev subtasks with Given/When/Then acceptance criteria |
+| 11 | Sage `/guild-agent-sage PR` | Pre-handoff quality gate — NO-GO loops back |
+| 12 | Healer `/guild-agent-healer UX` | UX_Design.md — BMAD-compatible, consumed by dev-story |
+| 13 | Healer `/guild-agent-healer JS` | Dev subtasks with Given/When/Then acceptance criteria |
 | 13b | Architect `/implementation-readiness` | **Gate:** validates PRD + UX + Architecture + Epics are aligned before build starts |
 
 The implementation readiness check is **interactive**. It uses an adversarial approach to find gaps before they become build-loop bugs. A FAIL here stops the quest.

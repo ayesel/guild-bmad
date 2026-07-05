@@ -30,7 +30,7 @@ until DoD passes or a hard stop trips. The owner is shown the **converged result
 (1..N). If a hard stop trips before DoD, it escalates with the specific blocker.
 
 ## Modes
-- **On-demand:** `/guild-self-heal` (or the `/guild-design-sprint` loop variant).
+- **On-demand:** `/guild-agent-guild-master SH` (or the `/guild-design-sprint` loop variant).
 - **Schedulable:** an atrium cron / CI hook runs Observe→Detect on a cadence; gating drift opens a draft-PR or a Healer story per trust tier.
 
 ## Done when

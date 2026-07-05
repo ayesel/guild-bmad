@@ -228,9 +228,9 @@ def build_html(feed):
 </div>
 <nav class="quick">
 <button class="pri" onclick="g('/guild-quest')"><span class="qi">✦</span>Quest</button>
-<button onclick="g('/guild-diverge')"><span class="qi">⑂</span>Diverge</button>
-<button onclick="g('/guild-pre-handoff')"><span class="qi">✓</span>QA</button>
-<button onclick="g('/guild-self-heal')"><span class="qi">⟲</span>Heal</button>
+<button onclick="g('/guild-agent-mage DV')"><span class="qi">⑂</span>Diverge</button>
+<button onclick="g('/guild-agent-sage PR')"><span class="qi">✓</span>QA</button>
+<button onclick="g('/guild-agent-guild-master SH')"><span class="qi">⟲</span>Heal</button>
 </nav>
 <div class="tray"><div class="av">OP</div><div class="pp"><b>Operator</b><span>{E(f["root"])}</span></div></div>
 {JS}</body></html>"""

@@ -7,7 +7,7 @@ This replaces the holistic self-score with a pairwise, diverse-vendor jury.
 Config: `docs/guild/jury.yaml`. Scorer + guards: `scripts/bradley-terry.py`.
 
 ## Protocol
-1. **Candidates in.** From `/guild-diverge` (Verbalized Sampling + morphology) and/or
+1. **Candidates in.** From `/guild-agent-mage DV` (divergence engine — Verbalized Sampling + morphology) and/or
    the GUILD-34 prototype lane. Do NOT merge them (merging regresses to the mean).
 2. **Guard the jury.** `validate_jury(jury.yaml)` must pass: ≥3 judges, **disjoint
    vendors**, **generator vendor EXCLUDED** from its own jury, **order-swap on**.

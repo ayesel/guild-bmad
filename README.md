@@ -54,7 +54,7 @@ npx @ayesel/guild
 
 Then open Claude Code (`claude`) in that directory and try `/guild-design-direction`
 — Guild's *direction-first* gate. It's 6 short questions about taste; 90 seconds
-of your time. The next phase (`/guild-system-foundation`) materializes a real
+of your time. The next phase (`/guild-agent-sage DSF` — the design-system foundation gate) materializes a real
 token set + 3 primitive components binding only to those tokens, and runs the
 WCAG + motion gate against them.
 

@@ -36,15 +36,15 @@ Configure in `guild.config.yaml` at the project root.
 - `src/modules/guild/templates/` — Output templates (YAML)
 - `src/modules/guild/workflows/` — Pipeline workflow definitions
 - `_bmad/guild/agents/` — Compiled agents for short-name loading
-- `.claude/commands/guild-*.md` — Slash commands for all Guild menu items
+- `.claude/commands/guild-*.md` — 25 agent-fronted slash commands (agent launchers + hot paths; everything else routes through agent menus — see `docs/guild/command-surface-prune.md`)
 - `guild.config.yaml` — Guild configuration (bmad_mode, output_root)
 
 ## Running Guild
-- `/guild-master` — Load the orchestrator for full pipeline control
+- `/guild-agent-guild-master` — Load the orchestrator for full pipeline control
 - `/guild-design-sprint` — Run adaptive pipeline (auto-detects greenfield/brownfield and BMAD presence)
 - Individual agents: `/guild-agent-ranger`, `/guild-agent-mage`, `/guild-agent-rogue`, `/guild-agent-warlock`, `/guild-agent-sage`, `/guild-agent-healer`, `/guild-agent-tinker`, `/guild-agent-cartographer`
-- Individual commands: `/guild-heuristic-eval`, `/guild-critique`, `/guild-user-flow`, etc.
-- Raid skills (3-model comparison via atrium): `/guild-raid`, `/ranger-raid`, `/rogue-raid`, `/mage-raid`, `/warlock-raid`, `/sage-raid`, `/healer-raid`, `/guild-master-raid`
+- Specialist methods route through agent menus (e.g. `/guild-agent-ranger HE` for heuristic eval, `/guild-agent-rogue UF` for user flows) — full routing table in `docs/guild/command-surface-prune.md`
+- Raid skills (3-model comparison via atrium): `/guild-raid`, `/ranger-raid`, `/rogue-raid`, `/mage-raid`, `/warlock-raid`, `/sage-raid`, `/healer-raid`
 
 ## Maintenance & integrity
 

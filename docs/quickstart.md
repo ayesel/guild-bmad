@@ -99,7 +99,7 @@ the artifact every downstream agent reads before doing any visual work.
 Now build the system the rest of the pipeline binds to:
 
 ```
-/guild-system-foundation
+/guild-agent-sage DSF
 ```
 
 Tinker (design system engineer) reads your design-direction brief and produces:
