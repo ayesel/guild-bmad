@@ -45,6 +45,7 @@ Configure in `guild.config.yaml` at the project root.
 - Individual agents: `/guild-agent-ranger`, `/guild-agent-mage`, `/guild-agent-rogue`, `/guild-agent-warlock`, `/guild-agent-sage`, `/guild-agent-healer`, `/guild-agent-tinker`, `/guild-agent-cartographer`
 - Specialist methods route through agent menus (e.g. `/guild-agent-ranger HE` for heuristic eval, `/guild-agent-rogue UF` for user flows) — full routing table in `docs/guild/command-surface-prune.md`
 - Raid skills (3-model comparison via atrium): `/guild-raid`, `/ranger-raid`, `/rogue-raid`, `/mage-raid`, `/warlock-raid`, `/sage-raid`, `/healer-raid`
+- Hall dashboard (durable launchd server on :4400): `npm run hall` (status) / `npm run hall:install` / `npm run hall:restart` — managed by `scripts/hall-daemon.sh`, NOT an atrium workspace-command
 
 ## Maintenance & integrity
 

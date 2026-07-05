@@ -151,7 +151,10 @@
     "cd-onboarding-gate": "python3 scripts/cd-onboarding-gate.py --selftest",
     "cd-quest-seed": "python3 scripts/cd-quest-seed.py --selftest",
     "plan-gate": "python3 scripts/plan-gate.py --selftest",
-    "option-gallery": "python3 scripts/option-gallery.py --selftest"
+    "option-gallery": "python3 scripts/option-gallery.py --selftest",
+    "hall": "bash scripts/hall-daemon.sh status",
+    "hall:install": "bash scripts/hall-daemon.sh install",
+    "hall:restart": "bash scripts/hall-daemon.sh restart"
   },
   "keywords": [
     "design",
