@@ -1,6 +1,0 @@
----
-name: 'guild-card-sort'
-description: 'Design a card sort study to validate IA — taxonomy, analysis plan, participant count, Optimal Workshop setup'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "CS" — Card Sort study design with taxonomy and analysis plan

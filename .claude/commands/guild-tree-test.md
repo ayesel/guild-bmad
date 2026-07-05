@@ -1,6 +1,0 @@
----
-name: 'guild-tree-test'
-description: 'Cartographer designs a tree test with task scenarios and success criteria'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "TT" — Design a tree test with task scenarios and success criteria

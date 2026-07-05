@@ -42,15 +42,8 @@ if [[ "${1:-}" == "--uninstall" ]]; then
     echo -e "${GREEN}  ✓ Removed $GUILD_GLOBAL and global guild/bmad commands${NC}"
     # Remove the atrium skills we generated (only slugs that exist as repo commands)
     if [ -d "$ATRIUM_SKILLS" ]; then
-        removed=0
-        for f in "$GUILD_ROOT/.claude/commands/"guild-*.md \
-                 "$GUILD_ROOT/.claude/commands/"bmad-*.md \
-                 "$GUILD_ROOT/.claude/commands/"*-raid.md; do
-            [ -e "$f" ] || continue
-            slug="$(basename "$f" .md)"
-            if [ -d "$ATRIUM_SKILLS/$slug" ]; then rm -rf "$ATRIUM_SKILLS/$slug"; removed=$((removed+1)); fi
-        done
-        echo -e "${GREEN}  ✓ Removed $removed atrium skills from $ATRIUM_SKILLS${NC}"
+        rm -rf "$ATRIUM_SKILLS"/guild-* "$ATRIUM_SKILLS"/bmad-* "$ATRIUM_SKILLS"/*-raid 2>/dev/null || true
+        echo -e "${GREEN}  ✓ Removed generated atrium skills from $ATRIUM_SKILLS${NC}"
     fi
     exit 0
 fi
@@ -128,6 +121,7 @@ echo "  ✓ payload agent refs → absolute src path"
 # ── 2. Commands → ~/.claude/commands (with rewritten payload refs) ───────────
 echo -e "${GREEN}Installing commands...${NC}"
 mkdir -p "$CMD_DIR"
+rm -f "$CMD_DIR"/guild-*.md 2>/dev/null || true
 
 # Rewrite payload references to the absolute global path so they resolve from
 # ANY working directory. Two ref forms exist in the commands:
@@ -161,6 +155,7 @@ echo "  ✓ $count commands → $CMD_DIR (payload refs rewritten to $ABS_BMAD)"
 if [ -d "$HOME/.atrium" ]; then
     echo -e "${GREEN}Installing native atrium skills...${NC}"
     mkdir -p "$ATRIUM_SKILLS"
+    rm -rf "$ATRIUM_SKILLS"/guild-* 2>/dev/null || true
     _gsc_out="$(mktemp)"
     CMD_DIR="$CMD_DIR" ATRIUM_SKILLS="$ATRIUM_SKILLS" GSC_OUT="$_gsc_out" python3 <<'PY'
 import os, re, glob, datetime

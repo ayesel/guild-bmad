@@ -1,0 +1,10 @@
+task,method,run,operator_attention_proxy_decisionpts,interventions,wall_clock_min,files_read,artifacts_produced,findings,findings_evidence_backed,missed_checklist_items,false_positives_unusable,rework_min,quality_0_4,usable_deliverable_yn,notes
+1,baseline,1,4,0,5,2,1,8,8,0,0,0,3.0,y,single-shot usable; core diagnosis complete
+1,guild,1,10,0,14,3,1,11,7,0,4,0,3.3,y,4/5 gates clean; affordance-check ~40pct TP; +3 real coverage / +4 false-pos
+2,baseline,1,5,0,8,1,1,4,4,0,0,0,3.0,y,flow + top-3 risks
+2,guild,1,9,0,12,3,1,7,7,0,0,0,3.5,y,pattern-store REAL hit (owner shipped pattern) + phase-2 scope catch — strongest guild win
+3,baseline,1,5,0,7,2,1,6,5,0,0,0,3.0,y,reasoned PASS looks-right
+3,guild,1,8,0,10,3,1,6,6,0,0,0,3.2,y,3 gates all clean = measured PASS; confirmation not discovery on clean code
+4,baseline,1,1,0,0.3,1,1,1,1,0,0,0,4.0,y,20s single answer nails the brief
+4,guild,1,7,1,3,3,1,1,1,0,0,0,1.5,n,anti-brevity by design; fails one-answer brief unless operator overrides gates
+NOTE,,,,,,,,,,,,,,,"operator_attention_proxy_decisionpts = PROXY (operator decision-points), NOT human minutes. n=1 per cell = CASE STUDY not proof. run-2 rows intentionally omitted (see report)."

@@ -79,6 +79,32 @@ DETECT = {
 }
 
 
+# fix #3 (efficiency-benchmark 2026-07-04): search/filter/sort/complete-rollup + the big-table
+# recommended affordances are warranted ONLY for LARGE growable collections — NOT for a bounded,
+# daily-scoped, or fixed-slot collection (a day's food log doesn't need search/filter/sort). Demanding
+# them there is a false positive (it fired that way on Nourish /today in the benchmark).
+LARGE_ONLY_AFFORDANCES = {
+    "search", "filter", "sort", "complete-rollup",
+    "group-by", "sticky-header", "pagination-or-virtualization",
+}
+_BOUNDED_COLLECTION_SIG = re.compile(
+    r'\bSLOT|\bslots?\b|\bmeal|Breakfast|Lunch|Dinner|Snack'
+    r'|\bas const\b|\btoday\b|perDay|/day\b|\bdaily\b|dayEntries',
+    re.I,
+)
+_LARGE_COLLECTION_SIG = re.compile(
+    r'pagination|pageSize|virtual(iz)?|Load more|infinite|allFoods|foods?Db'
+    r'|search\w*food|\bbrowse\b|catalog|directory|allVendors',
+    re.I,
+)
+
+
+def is_bounded_collection(src):
+    """A collection is bounded (search/filter/sort NOT required) when it shows fixed-slot / daily-scoped
+    markers AND no large/growable-data markers. Conservative: clearly-large collections stay required."""
+    return bool(_BOUNDED_COLLECTION_SIG.search(src)) and not _LARGE_COLLECTION_SIG.search(src)
+
+
 def load_canon():
     import yaml
     return yaml.safe_load(open(CANON))["sets"]
@@ -90,9 +116,14 @@ def check(src, canon):
         if set_name not in canon or not re.search(fire_pat, src):
             continue
         fired.append(set_name)
+        bounded = set_name == "collection" and is_bounded_collection(src)
         rows = []
         for level in ("required", "recommended"):
             for aff in canon[set_name].get(level, []):
+                if bounded and aff in LARGE_ONLY_AFFORDANCES:
+                    rows.append({"affordance": aff, "level": level,
+                                 "status": "n/a (bounded collection)"})
+                    continue
                 pat = DETECT.get(aff, None)
                 if pat is None:
                     status = "manual-check"

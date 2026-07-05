@@ -1,6 +1,0 @@
----
-name: 'guild-tinker-atomize'
-description: 'Tinker decomposes a flat component into atomic structure (atoms to molecules to organisms)'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "AT" — Decompose a flat component into atomic structure (atoms, molecules, organisms)

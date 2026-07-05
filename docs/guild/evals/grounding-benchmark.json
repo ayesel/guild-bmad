@@ -1,0 +1,133 @@
+{
+  "name": "Guild grounding and hallucination benchmark",
+  "version": 1,
+  "policy": {
+    "max_unsupported_claim_rate": 0.0,
+    "fact_claims_require_source": true,
+    "assumptions_must_be_labeled": true
+  },
+  "cases": [
+    {
+      "id": "nourish-product-brief",
+      "task": "Summarize the product brief and identify design implications without inventing metrics, platforms, or user segments.",
+      "sources": [
+        {
+          "id": "NOURISH-1",
+          "text": "Nourish is a household meal-planning app for busy parents coordinating recurring meals."
+        },
+        {
+          "id": "NOURISH-2",
+          "text": "The primary workflow is choosing meals, assigning them to days, and keeping the weekly plan visible."
+        },
+        {
+          "id": "NOURISH-3",
+          "text": "The interface should stay lightweight because the target user often checks the plan between family tasks."
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "C1",
+          "text": "Nourish is for busy parents coordinating household meals.",
+          "sources": ["NOURISH-1"]
+        },
+        {
+          "id": "C2",
+          "text": "The core workflow is choosing meals, assigning them to days, and keeping the weekly plan visible.",
+          "sources": ["NOURISH-2"]
+        },
+        {
+          "id": "C3",
+          "text": "The design should stay lightweight because users may check it between family tasks.",
+          "sources": ["NOURISH-3"]
+        }
+      ],
+      "forbidden_phrases": [
+        "AI nutrition coach",
+        "grocery delivery integration",
+        "HIPAA",
+        "teen athletes",
+        "subscription conversion"
+      ]
+    },
+    {
+      "id": "guild-hall-surface",
+      "task": "Explain the Hall action surface after the command-sprawl prune without reviving retired commands as primary actions.",
+      "sources": [
+        {
+          "id": "HALL-1",
+          "text": "The Hall Playbook leads with Talk to an agent and nine agent rows."
+        },
+        {
+          "id": "HALL-2",
+          "text": "The manual command surface is collapsed and contains 25 commands."
+        },
+        {
+          "id": "HALL-3",
+          "text": "Retired singleton commands remain reachable through owning agents rather than as top-level slash commands."
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "C1",
+          "text": "The Hall Playbook now leads with Talk to an agent and nine agent rows.",
+          "sources": ["HALL-1"]
+        },
+        {
+          "id": "C2",
+          "text": "The manual command surface is collapsed and contains 25 commands.",
+          "sources": ["HALL-2"]
+        },
+        {
+          "id": "C3",
+          "text": "Retired singleton commands remain reachable through their owning agents.",
+          "sources": ["HALL-3"]
+        }
+      ],
+      "forbidden_phrases": [
+        "124 active commands",
+        "full command catalog",
+        "all commands are still top-level",
+        "every command Guild knows"
+      ]
+    }
+  ],
+  "golden_outputs": [
+    {
+      "id": "golden-pass",
+      "case_id": "nourish-product-brief",
+      "should_pass": true,
+      "claims": [
+        {
+          "kind": "fact",
+          "text": "Nourish is for busy parents coordinating household meals.",
+          "source": "NOURISH-1"
+        },
+        {
+          "kind": "fact",
+          "text": "The core workflow is choosing meals, assigning them to days, and keeping the weekly plan visible.",
+          "source": "NOURISH-2"
+        },
+        {
+          "kind": "assumption",
+          "text": "ASSUMPTION: A shopping-list handoff may become useful later, but it is not proven by this brief."
+        }
+      ]
+    },
+    {
+      "id": "golden-fail",
+      "case_id": "nourish-product-brief",
+      "should_pass": false,
+      "claims": [
+        {
+          "kind": "fact",
+          "text": "Nourish includes grocery delivery integration.",
+          "source": "NOURISH-1"
+        },
+        {
+          "kind": "fact",
+          "text": "The product targets teen athletes."
+        }
+      ]
+    }
+  ]
+}

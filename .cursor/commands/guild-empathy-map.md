@@ -1,6 +1,0 @@
----
-name: 'guild-empathy-map'
-description: 'Generate empathy maps for user segments'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/ranger.md, READ its entire contents, activate as the Ranger UX Researcher agent, then immediately execute menu item "EM" — Generate empathy maps for user segments

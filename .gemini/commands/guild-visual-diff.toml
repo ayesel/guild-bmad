@@ -1,4 +1,0 @@
-description = "Compare two states of a screen — before/after, design vs implementation"
-prompt = """
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/mage.md, READ its entire contents, activate as the Mage Visual Designer agent, then immediately execute menu item "VD" — Compare two states of a screen — before/after, design vs implementation
-"""

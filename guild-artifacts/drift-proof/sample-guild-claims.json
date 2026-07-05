@@ -1,0 +1,22 @@
+{
+  "id": "hall-agent-fronted-summary",
+  "case_id": "guild-hall-surface",
+  "artifact": "guild-artifacts/agent-fronted-face/verification.md",
+  "claims": [
+    {
+      "kind": "fact",
+      "text": "The Hall Playbook now leads with Talk to an agent and nine agent rows.",
+      "source": "HALL-1"
+    },
+    {
+      "kind": "fact",
+      "text": "The manual command surface is collapsed and contains 25 commands.",
+      "source": "HALL-2"
+    },
+    {
+      "kind": "fact",
+      "text": "Retired singleton commands remain reachable through their owning agents.",
+      "source": "HALL-3"
+    }
+  ]
+}

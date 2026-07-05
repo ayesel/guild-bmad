@@ -40,7 +40,7 @@ Open the researchers as **tabs in ONE browser — never a separate browser room 
 
 ## STEP 3 — RECONCILE INTO THE SPINE
 
-Once ≥2 reports are collected, hand them to the synthesis brain (`/guild-research-synthesis` reads `reports/*.md` as its corpus). Reconcile faithfully:
+Once ≥2 reports are collected, hand them to the synthesis brain (`/guild-agent-ranger (RS / research-synthesis)` reads `reports/*.md` as its corpus). Reconcile faithfully:
 
 - **Agreement across independent premium researchers = high confidence.** Where reports converge on a claim, it earns a strong `verified:true` nugget.
 - **Disagreement is the gold** — where reports diverge, DO NOT average them away. Surface the divergence explicitly as an open question for the owner; that is the signal the single-voice API path structurally cannot produce.

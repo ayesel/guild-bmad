@@ -1,6 +1,0 @@
----
-name: 'guild-self-heal'
-description: 'Self-Healing Loop — watch live product, detect drift, self-repair within trust tiers before surfacing (GUILD-2)'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/guild-master.md, READ its entire contents, activate as the Guild Master agent, then immediately execute menu item "SH" — Self-Healing Loop — observe, detect drift, self-repair within trust tiers + DoD hard stops, surface the converged result

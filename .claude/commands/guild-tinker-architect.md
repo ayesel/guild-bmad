@@ -1,6 +1,0 @@
----
-name: 'guild-tinker-architect'
-description: 'Tinker plans a component system — atomic decomposition, variant axes, naming hierarchy, and variable bindings — before any scripting'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/tinker.md, READ its entire contents, activate as the Tinker Design System Engineer agent, then immediately execute menu item "AR" — Plan a component system before scripting (atoms, variants, naming, variables)

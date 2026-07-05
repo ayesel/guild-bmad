@@ -1,6 +1,0 @@
----
-name: 'guild-content-model'
-description: 'Build a content model — content types, attributes, relationships, ownership, and lifecycle'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "CM" — Content Model with types, attributes, relationships, and ownership

@@ -1,6 +1,0 @@
----
-name: 'guild-claude-design-seed'
-description: 'Claude Design Seed — emit a Product Baseline + brand onboarding brief to paste into Claude Design so it generates on-spec (pairs with the Handoff Gate)'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/sage.md, READ its entire contents, activate as the Sage Design QA agent, then immediately execute menu item "CDS" — Claude Design Seed — emit a Product Baseline + brand onboarding brief to paste into Claude Design so it generates on-spec

@@ -1,6 +1,0 @@
----
-name: 'guild-nav-audit'
-description: 'Audit existing navigation against IA principles — clarity, completeness, depth, wayfinding, scent, and mental model alignment'
----
-
-IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL {project-root}/_bmad/guild/agents/cartographer.md, READ its entire contents, activate as the Cartographer Information Architect & System Mapper agent, then immediately execute menu item "NAV" — Navigation Audit against IA principles

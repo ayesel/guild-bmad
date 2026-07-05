@@ -111,6 +111,7 @@ install_guild() {
     echo "  ✓ Guild agents ($GUILD_AGENT_COUNT)"
 
     # Guild commands
+    rm -f "$TARGET/.claude/commands/guild-"*.md 2>/dev/null || true
     cp "$GUILD_ROOT/.claude/commands/guild-"*.md "$TARGET/.claude/commands/"
     GUILD_CMD_COUNT=$(ls "$GUILD_ROOT/.claude/commands/guild-"*.md 2>/dev/null | wc -l | tr -d ' ')
     echo "  ✓ Guild commands ($GUILD_CMD_COUNT)"
@@ -131,12 +132,14 @@ install_guild() {
     # Cross-IDE commands — synced when the target project already uses Cursor or Gemini
     if [ -d "$TARGET/.cursor" ]; then
         mkdir -p "$TARGET/.cursor/commands"
+        rm -f "$TARGET/.cursor/commands/guild-"*.md 2>/dev/null || true
         cp "$GUILD_ROOT/.cursor/commands/guild-"*.md "$TARGET/.cursor/commands/" 2>/dev/null || true
         CURSOR_CMD_COUNT=$(ls "$GUILD_ROOT/.cursor/commands/guild-"*.md 2>/dev/null | wc -l | tr -d ' ')
         echo "  ✓ Guild commands → Cursor ($CURSOR_CMD_COUNT in .cursor/commands)"
     fi
     if [ -d "$TARGET/.gemini" ]; then
         mkdir -p "$TARGET/.gemini/commands"
+        rm -f "$TARGET/.gemini/commands/guild-"*.toml 2>/dev/null || true
         cp "$GUILD_ROOT/.gemini/commands/guild-"*.toml "$TARGET/.gemini/commands/" 2>/dev/null || true
         GEMINI_CMD_COUNT=$(ls "$GUILD_ROOT/.gemini/commands/guild-"*.toml 2>/dev/null | wc -l | tr -d ' ')
         echo "  ✓ Guild commands → Gemini ($GEMINI_CMD_COUNT in .gemini/commands)"

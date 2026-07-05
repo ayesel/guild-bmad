@@ -133,6 +133,42 @@ done | sort | uniq -d)
 if [ -n "$dup" ]; then while IFS= read -r d; do fail "duplicate wiring: $d"; done <<< "$dup"; fi
 [ "$FAILURES" -eq "$before" ] && pass "no two commands share the same agent + menu code"
 
+# ── 9. Prompt/context token footprint stays within budget ─────────────
+section "Agent-fronted command surface"
+before=$FAILURES
+if python3 scripts/command-surface.py --check >/tmp/guild-command-surface.out 2>&1; then
+  pass "$(cat /tmp/guild-command-surface.out)"
+else
+  while IFS= read -r line; do
+    [ -n "$line" ] && fail "$line"
+  done < /tmp/guild-command-surface.out
+fi
+rm -f /tmp/guild-command-surface.out
+
+# ── 10. Prompt/context token footprint stays within budget ────────────
+section "Prompt/context token footprint budget"
+before=$FAILURES
+if python3 scripts/token-footprint.py --check >/tmp/guild-token-footprint.out 2>&1; then
+  pass "hot prompt surfaces stay within configured hard budgets"
+else
+  while IFS= read -r line; do
+    [ -n "$line" ] && fail "$line"
+  done < /tmp/guild-token-footprint.out
+fi
+rm -f /tmp/guild-token-footprint.out
+
+# ── 11. Source-grounding drift guard stays live ───────────────────────
+section "Source-grounding drift guard"
+before=$FAILURES
+if python3 scripts/drift-guard.py --check --outputs guild-artifacts/drift-proof/sample-guild-claims.json >/tmp/guild-drift-guard.out 2>&1; then
+  pass "grounding benchmark catches unsupported claims and passes grounded sample output"
+else
+  while IFS= read -r line; do
+    [ -n "$line" ] && fail "$line"
+  done < /tmp/guild-drift-guard.out
+fi
+rm -f /tmp/guild-drift-guard.out
+
 # ── Summary ───────────────────────────────────────────────────────────
 printf "\n${BLUE}────────────────────────────────────────${NC}\n"
 if [ "$FAILURES" -eq 0 ]; then

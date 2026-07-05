@@ -145,7 +145,7 @@ The brief asks 6 questions: anchor reference, personality adjectives, density, m
 
 ### Step 0.5: Design System Foundation Audit (Sage) — Claude (subagent)
 
-Invoke a Claude subagent to run `/guild-system-foundation`. Sage audits:
+Invoke a Claude subagent to run `/guild-agent-sage (DSF / design-system-foundation)`. Sage audits:
 - **Token layer:** color, spacing, motion, shadow, typography (scale + weights), radius
 - **Primitive layer:** Button, Input, Select, ChipGroup, Field, Card, Badge, IconButton, Tooltip, Skeleton
 - **Usage discipline:** inline `<select>`, hardcoded hex, raw `transition-all`, inline component definitions in pages
@@ -173,7 +173,7 @@ Launch 3 panes simultaneously:
 **Claude pane:** Visual audit of direct competitors (energy/property management tools)
 ```bash
 "$ATRIUM_CLI_PATH" pane create --type terminal --split "$ATRIUM_PANE_ID"
-# Launch Claude, brief it to run /guild-visual-audit on competitor products
+# Launch Claude, brief it to run /guild-agent-ranger (VA / visual-audit) on competitor products
 # MUST include: use --timeout 30000 on all browser screenshot commands, retry up to 3x, open a separate browser pane per competitor
 ```
 
@@ -212,7 +212,7 @@ Before proceeding to synthesis, verify:
 - DO NOT proceed to Phase 2 without visual evidence. The entire visual design phase depends on having actually seen the competitors and inspiration sources.
 
 ### Step 2: Research Synthesis — Claude synthesizes all 3 outputs
-Invoke a subagent to run `/guild-research-synthesis`. Feed it:
+Invoke a subagent to run `/guild-agent-ranger (RS / research-synthesis)`. Feed it:
 - Claude's competitor visual audit (with screenshot evidence)
 - Gemini's design inspiration findings (with screenshot evidence)
 - Codex's technical analysis
@@ -278,16 +278,16 @@ Merge findings.
 Invoke subagent → `/guild-agent-healer`. Complete dev handoff spec.
 
 ### Step 11: Pre-Handoff Gate — Claude + Codex
-**Claude:** Run `/guild-pre-handoff` quality gate.
+**Claude:** Run `/guild-agent-sage (PR / pre-handoff)` quality gate.
 **Codex:** Independently validate that the spec is implementable — check for missing states, ambiguous requirements, untestable acceptance criteria.
 
 Both must pass. If either flags NO-GO, loop back.
 
 ### Step 12: UX Spec — Claude
-Invoke subagent → `/guild-ux-spec`.
+Invoke subagent → `/guild-agent-healer (UX / ux-spec)`.
 
 ### Step 13: Generate Stories — Claude
-Invoke subagent → `/guild-jira-stories`.
+Invoke subagent → `/guild-agent-healer (JS / jira-stories)`.
 
 **Codex:** Review generated stories for technical accuracy and completeness.
 
