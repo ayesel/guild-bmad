@@ -10,14 +10,14 @@ providers:
   deep_toggle: Click the '+' / tools menu and enable 'Deep research' before sending.
   prompt: prompts/chatgpt.md
   report: reports/chatgpt.md
-  status: running
+  status: collected
 - slug: gemini
   name: Gemini Deep Research
   url: https://gemini.google.com/app
   deep_toggle: Select 'Deep Research' from the model/tools selector, submit, then approve the plan.
   prompt: prompts/gemini.md
   report: reports/gemini.md
-  status: running
+  status: collected
 - slug: claude
   name: Claude Research
   url: https://claude.ai/new
