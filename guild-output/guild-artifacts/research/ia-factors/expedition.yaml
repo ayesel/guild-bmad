@@ -23,5 +23,5 @@ providers:
   url: https://claude.ai/new
   deep_toggle: Enable the 'Research' tool, then send.
   prompt: prompts/claude.md
-  report: reports/claude.md
+  report: reports/claude-report.md
   status: collected
