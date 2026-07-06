@@ -207,4 +207,6 @@ reflow (4), loading honesty (9), scanability (13), saliency (14), affordance
 craft-gate suite (green-collapse per FIX #2) so the expanded audit doesn't
 regress the operator-attention win; saliency LOOK pass lands in auto-critique
 with its rubric stored beside `jury.yaml`. Upstream half wired 2026-07-05 (§6).
-IA sibling: `docs/guild/IA-FACTORS-RESEARCH-PROMPT.md` (Cartographer).*
+Siblings — the factors triptych: this doc = SPACE;
+`docs/guild/IA-FACTORS-RESEARCH-PROMPT.md` = STRUCTURE (Cartographer);
+`docs/guild/INTERACTION-FACTORS-RESEARCH-PROMPT.md` = TIME (Rogue/Mage).*
