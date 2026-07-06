@@ -1,0 +1,27 @@
+slug: interaction-factors
+title: Interaction factors — motion, micro-interactions, flow dynamics
+created: 2026-07-05 23:02
+objective: Decide which interaction/time-dimension gates Guild builds next (Rogue/Mage) and which transition/feedback/reversibility
+  fields become required on flow artifacts.
+providers:
+- slug: chatgpt
+  name: ChatGPT Deep Research
+  url: https://chatgpt.com/
+  deep_toggle: Click the '+' / tools menu and enable 'Deep research' before sending.
+  prompt: prompts/chatgpt.md
+  report: reports/chatgpt.md
+  status: running
+- slug: gemini
+  name: Gemini Deep Research
+  url: https://gemini.google.com/app
+  deep_toggle: Select 'Deep Research' from the model/tools selector, submit, then approve the plan.
+  prompt: prompts/gemini.md
+  report: reports/gemini.md
+  status: running
+- slug: claude
+  name: Claude Research
+  url: https://claude.ai/new
+  deep_toggle: Enable the 'Research' tool, then send.
+  prompt: prompts/claude.md
+  report: reports/claude.md
+  status: running

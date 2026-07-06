@@ -1,0 +1,28 @@
+{
+  "title": "Interaction factors — motion, micro-interactions, flow dynamics",
+  "slug": "interaction-factors",
+  "objective": "Decide which interaction/time-dimension gates Guild builds next (Rogue/Mage) and which transition/feedback/reversibility fields become required on flow artifacts.",
+  "context": "Guild already ships an 11-principle motion foundation (signature easing family, duration-scales-with-distance, asymmetric enter/exit), motion tokens with a hard gate, a duration envelope, and audit-side checks for duration/easing/reduced-motion presence and loading-indicator honesty. Products STILL feel clunky — principles without per-factor contracts gate nothing. Full specification with per-factor contract follows below.",
+  "questions": [
+    "What is the complete factor space of superb interaction over time (micro-interaction anatomy, feedback immediacy, undo-over-confirm, direct manipulation feel, choreography/stagger, spatial continuity, transition coverage, interruptibility, focus-through-time, latency choreography, modality parity, form timing, flow momentum, signature-moment budget, sound/haptics) — and what did we miss?",
+    "For each factor: what primary-source evidence, machine proxy (including proxies that DRIVE the app — event dispatch, frame capture, runtime traces), numeric thresholds, and honest MEASURE/LOOK/ASK tier?",
+    "Which checks are static, which require driving the app, which are frame-judged LOOK — and what blocks vs advises?",
+    "What must flow artifacts (state diagrams, user flows) REQUIRE per state pair and interactive element so interaction is designed at flow time, not applied as polish?",
+    "What is the eyes-only residue only a human watching/feeling the running artifact can verify?",
+    "Which interaction folklore fails verification, and where do authoritative sources genuinely disagree (durations, gesture thresholds, validation timing, optimistic-UI boundaries)?"
+  ],
+  "must_cover": [
+    "Saffer Microinteractions (trigger/rules/feedback/loops-modes)",
+    "Material motion spec + IBM Carbon motion + Apple HIG Motion/Feedback (note version dates)",
+    "W3C WCAG 2.3.3 and 2.2.2",
+    "NN/g animation and response-time research",
+    "Val Head, Willenskomer UI-animation principles",
+    "peer-reviewed perceived-performance and gesture studies"
+  ],
+  "exclude": [
+    "static rendered-surface factors (covered)",
+    "re-deriving the 11 motion principles or token-envelope checks",
+    "brand-motion taste (design-direction territory)"
+  ],
+  "sources_guidance": "Prefer primary sources and material from the last 18 months; cite every claim."
+}

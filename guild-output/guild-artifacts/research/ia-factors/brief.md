@@ -1,0 +1,29 @@
+# Research brief — IA factors — operational taxonomy for Cartographer gates
+
+**Objective (the decision this informs):** Decide which information-architecture structural-quality gates Guild builds next and which fields become required on Cartographer artifacts (sitemaps, content models, nav trees).
+
+**What we already know (don't re-derive this):**
+Guild's mental-model research is shipped (Jakob's law, recognition-over-recall, delegated-work inbox); spine/ia-evidence gates cover claim PROVENANCE but not structural QUALITY — a fully-cited IA still failed a blind comprehension test round 1. Heading/landmark presence is already gated elsewhere; the Hick's-law choice cap is rejected. Full specification with per-factor contract follows below.
+
+## Questions to answer
+1. What is the complete factor space of superb IA (labeling/scent, terminology consistency, classification schemes, depth vs breadth, wayfinding, mental-model conformance, task-flow efficiency, search vs browse, progressive disclosure, content-model coverage, addressability, cross-surface consistency, recovery paths, structural semantics) — and what did we miss?
+2. For each factor: what primary-source evidence, machine proxy over artifacts/DOM/vocabulary, numeric thresholds, and honest MEASURE/LOOK/ASK tier?
+3. Which checks run at artifact time (before build) vs render time, and what blocks vs advises?
+4. What is the eyes-only residue that only tree tests, card sorts, or blind comprehension can verify?
+5. Which IA folklore fails verification, and where do authoritative sources genuinely disagree?
+
+## Must cover
+- NN/g IA and navigation research
+- Rosenfeld/Morville/Arango Information Architecture (polar bear)
+- Spencer card-sorting and tree-testing literature
+- Krug
+- GOV.UK / Shopify Polaris / Atlassian IA guidelines
+- the three-click rule as a claim to test
+
+## Out of scope (do not spend time here)
+- rendered-surface visual factors (covered by prior research)
+- re-deriving mental-model findings
+- generic UX-process advice
+
+## Sourcing
+Prefer primary sources and material from the last 18 months; cite every claim.
