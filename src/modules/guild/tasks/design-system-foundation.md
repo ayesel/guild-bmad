@@ -116,6 +116,12 @@ const contrast = (fg,bg) => { const a=L(fg), b=L(bg), hi=Math.max(a,b), lo=Math.
 - `>= 3.0` → AA Large ⚠️ — **only** valid if the text is genuinely ≥18.66px, or ≥14px **bold**. Badge/tag text (12–14px medium) does NOT qualify; require 4.5.
 - `< required` → **FAIL ✗**. For every failure, propose the fix (walk fg darker to the next primitive step, e.g. positive.500 → positive.600; re-alias the semantic token — never inline an override on a screen).
 
+**APCA supplement (dark themes / thin type):** WCAG's ratio under-detects on dark
+backgrounds. For any dark theme, ALSO run `python3 ~/.claude/guild/scripts/apca-contrast.py
+--fg <hex> --bg <hex>` (fallback: scripts/) on the same pairs: target Lc ≥75 body,
+≥45 large/bold, ≥30 non-text (anti-slop-survey.md). WCAG AA remains the blocking
+line; APCA failures on a WCAG-passing dark pair are CONDITIONAL-class findings.
+
 A failing status or body-text pair is a **hard gate failure** (see step 6), not a warning — it is a shipping
 accessibility defect, and the whole point of the gate is to catch it before any screen is built on top of it.
 

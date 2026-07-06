@@ -95,6 +95,20 @@ opinion for measurement.
 - Size/weight/color hierarchy consistent?
 - Whitespace creating the right groupings?
 
+### 3b. Brand & Structural Honesty (anti-slop-survey.md)
+- Brand test: cover the nav/logo — could this first viewport belong to any other
+  brand? If yes, the branding is decoration, not identity.
+- Structural honesty: do structural devices encode something TRUE about the
+  content? Numbered markers (01/02/03) only if the content is actually a
+  sequence; eyebrows/dividers/labels only if they mark real boundaries —
+  structure that decorates instead of encodes is a slop tell.
+- Slop fingerprints: run `python3 ~/.claude/guild/scripts/slop-fingerprint-gate.py
+  --screen <src>` (fallback: scripts/) — deterministic aesthetic-genericness
+  tells (Inter-default hero, vibe-purple, glassmorphism, colored-left-border
+  cards, icon-topped card grids, badge-above-h1…). NEVER graded by eye/LLM —
+  the detector exists precisely because an LLM judging slop reintroduces the
+  bias being measured.
+
 ### 4. Spacing & Layout
 - On the 4/8/12/16/24/32/48 scale?
 - Proximity principle: related items closer than unrelated?

@@ -63,10 +63,25 @@ Capture: energy (still/subtle/expressive); signature reference (→ proposed eas
 
 Capture: temperature/feeling, reference palettes (1-2).
 
-#### 6. What to avoid
+#### 6. What to avoid (anti-references — first-class, highest-leverage input)
 > "Last one — what would make you cringe if I shipped it? Be specific. Could be a pattern (modal-everything, neumorphism, rainbow gradients), a vibe (corporate-PowerPoint, crypto-bro, generic-SaaS), or a competitor's exact look you don't want."
 
-Capture: 2-4 specific anti-patterns or anti-vibes.
+Capture: 2-4 specific anti-patterns or anti-vibes — then ALWAYS append the
+standing default banned list below (controlled evidence, anti-slop-survey.md:
+negative constraints are the single highest-impact context artifact; they ship
+whether or not the owner names any):
+
+```
+DEFAULT BANNED (always in effect unless the owner explicitly un-bans one):
+- Inter/Roboto/Arial as the hero/display face (body use is fine if tokenized)
+- Vibe-purple (#8B5CF6 family) gradients; purple→blue hero washes
+- Glassmorphism (backdrop-blur + translucent panels) as default surface style
+- Colored left-border cards; icon-topped card grids; badge floating above the H1
+- 01/02/03 numbered step rows when content isn't a sequence
+- Bounce/elastic easing on standard UI transitions
+- Card-in-card-in-panel nesting; uniform drop shadow on everything
+- Emoji as functional icons
+```
 
 ---
 
@@ -110,9 +125,17 @@ Capture: 2-4 specific anti-patterns or anti-vibes.
 - Reference palettes: {palette 1}, {palette 2}
 
 ## What to avoid
+Owner anti-references:
 - {anti-pattern 1}
 - {anti-pattern 2}
 - {anti-pattern 3}
+
+Default banned (standing, from the anti-slop survey — list any the owner
+explicitly un-banned, otherwise reproduce in full):
+- Inter/Roboto/Arial hero face · vibe-purple gradients · glassmorphism-by-default
+- colored-left-border cards · icon-topped card grids · badge-above-H1
+- non-sequence 01/02/03 rows · bounce/elastic easing · card-in-card nesting
+- uniform shadow spam · emoji-as-icons
 
 ## How downstream agents should use this
 

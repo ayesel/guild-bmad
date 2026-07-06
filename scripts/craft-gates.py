@@ -29,6 +29,7 @@ GATES = [
     ("token-lint", "token-lint.py", "--file", "src"),
     ("state-motion-req", "state-motion-req.py", "--screen", "src"),
     ("affordance-check", "affordance-check.py", "--screen", "src"),
+    ("slop-fingerprint", "slop-fingerprint-gate.py", "--screen", "src"),
     # css gate — only runs when a built stylesheet is supplied
     ("reduced-motion-gate", "reduced-motion-gate.py", "--screen", "css"),
 ]
@@ -104,9 +105,9 @@ def selftest():
     # The suite must at least locate its sibling gate scripts and run without crashing on a real file.
     present = [g[1] for g in GATES if os.path.exists(os.path.join(SCRIPTS_DIR, g[1]))]
     if len(present) < 5:
-        print(f"craft-gates self-test: ❌ FAIL — only {len(present)}/7 gate scripts found")
+        print(f"craft-gates self-test: ❌ FAIL — only {len(present)}/{len(GATES)} gate scripts found")
         return 1
-    print(f"craft-gates self-test: ✅ PASS — {len(present)}/7 gate scripts located; runner wired")
+    print(f"craft-gates self-test: ✅ PASS — {len(present)}/{len(GATES)} gate scripts located; runner wired")
     return 0
 
 
