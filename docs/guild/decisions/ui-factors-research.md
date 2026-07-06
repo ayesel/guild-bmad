@@ -176,9 +176,35 @@ this list — anything else claimed unmeasurable is padding:
 6. **Carbon motion guidance drifts between versions** (B) — always cite the
    dated current page; design-system numbers are moving targets.
 
+## 6. Addendum (2026-07-05) — token/component-layer enforcement (Tinker mapping)
+
+Prevention beats detection: a factor enforced at the design-system layer never
+fires at render time, which serves the ALIVE test directly ("first render was
+right; gates were backstop"). This maps each §2 factor to its upstream
+enforcement point. Wired into `tasks/design-system-foundation.md` step 4d
+(code side); when `design_surface` is figma/both the same checks run on Figma
+variables via Tinker `WC`/`TK`.
+
+| §2 factor | Upstream enforcement | Where | Status |
+|---|---|---|---|
+| 2 Contrast | Token-pair contrast incl. alias-chain resolution | foundation 4b / tinker-wcag | shipped |
+| 3 Focus/keyboard | Focus-indicator token (3:1 + 2.4.13 area) bound by every interactive primitive | foundation 4d.8 | NEW |
+| 5 State matrix | Component variants enumerate states — **MEASURE at DS layer** (LOOK at app level; the §5.5 split resolves upstream) | foundation 4c.3 + Storybook (tinker SB) | shipped, sharpened |
+| 6 Target size | Primitive hit-rect floor ≥24px (44 touch advise) | foundation 4d.8 | NEW |
+| 7 Craft vocabulary | Radius ≤4, single shadow light direction, border weights ≤3, icon size props ±15% | foundation 4d.1–4 | NEW |
+| 8 Readability | Type-scale + leading tokens (CPL stays page-level → Mage) | foundation step 2 | shipped (partial) |
+| 10 Theme parity | Role diff across modes, dark-mode contrast re-run, luminance-order stability, neutral temperature sign | foundation 4d.5+7 | NEW |
+| 11/12 Alignment/grouping | Spacing-scale + grid tokens (pane-level alignment stays Mage) | foundation step 2 | shipped (partial) |
+| 16 Motion | Duration envelope on tokens (flag >400ms, none >500ms std); signature easing; reduced-motion branch | foundation 4c + 4d.6 | extended |
+
+Not token-expressible (remain render-time Mage/Sage or LOOK): geometry (1),
+reflow (4), loading honesty (9), scanability (13), saliency (14), affordance
+(15), microcopy (17), trust (18), aesthetics (19).
+
 ---
 
 *Next actions: build order in §3; wire stages 1–5 into the conditional
 craft-gate suite (green-collapse per FIX #2) so the expanded audit doesn't
 regress the operator-attention win; saliency LOOK pass lands in auto-critique
-with its rubric stored beside `jury.yaml`.*
+with its rubric stored beside `jury.yaml`. Upstream half wired 2026-07-05 (§6).
+IA sibling: `docs/guild/IA-FACTORS-RESEARCH-PROMPT.md` (Cartographer).*

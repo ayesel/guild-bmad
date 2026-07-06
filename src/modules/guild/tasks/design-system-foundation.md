@@ -7,7 +7,7 @@ This is Sage's "is the foundation poured?" check, run alongside Mage. It's a **H
 
 ## When to run
 - After Phase 0 (Design Direction Brief), before Phase 1 (research) of any quest — so research is anchored AND the foundation is known
-- Standalone via `/guild-system-check` at any time
+- Standalone via `/guild-agent-sage SC` at any time
 - After every quest's design phase, to refresh the audit
 
 ## Output
@@ -134,12 +134,47 @@ layer most responsible for crafted-vs-generic, and the layer most often skipped.
 3. **State coverage on every interactive primitive.** For Button/Input/Toggle/Select/etc., verify all required
    states exist: `default, hover, focus-visible, active/pressed, disabled, loading` (+ `selected`/`error` where
    relevant). Missing states are the #1 source of "janky/unfinished." List any element missing states.
+   (This is the MEASURE-tier half of ui-factors factor 5: at the component layer the state matrix is
+   deterministic — variants enumerate states — whereas at app level it is only LOOK-tier. Gate it here.)
 4. **Reduced-motion is a designed branch.** A `@media (prefers-reduced-motion: reduce)` path exists and
    preserves feedback (doesn't just delete it).
 
 Failures here are **CONDITIONAL → FAIL** depending on severity: a missing signature easing or absent
 reduced-motion branch, or interactive primitives with no pressed/focus/loading states, block the gate — a
 generic-feeling or half-stated foundation propagates to every screen. For each gap, propose the token or state to add.
+
+### 4d. Audit craft vocabulary + theme parity — ui-factors upstream enforcement
+
+Per `docs/guild/decisions/ui-factors-research.md` (§2 factors 3, 6, 7, 9, 10, 16 and §6 mapping):
+these rendered-surface audit factors are cheapest to enforce at the token/primitive layer, where they
+are pure MEASURE. Mage's render-time gates are the backstop; this step is the prevention — a factor
+enforced here should never fire downstream.
+
+**Vocabulary discipline (CONDITIONAL-class flags, propose consolidations):**
+1. **Radius vocabulary** — count distinct non-zero radius token values: ≤4 passes; >4 = sprawl. Also
+   grep components for raw `border-radius` values (same defect class as raw hex).
+2. **Shadow light source** — parse every elevation token's `box-shadow` offsets: all y-offsets must
+   share one sign (single implied light source, conventionally down). Mixed directions = flag with the
+   offending tokens.
+3. **Border-weight vocabulary** — ≤3 distinct border widths across tokens + components.
+4. **Icon sizing** — the icon primitive enforces size props (no freeform); peer icons in one context
+   render within ±15% of each other.
+5. **Neutral temperature** — convert near-gray tokens to HSL; all should share one hue-temperature
+   sign (all cool or all warm). Mixed-temperature neutrals on one surface = flag.
+6. **Motion envelope** — standard-transition duration tokens: flag >400ms; none >500ms (NN/g audit
+   bound). Long durations are reserved for large-scale moves and named as such.
+
+**Hard items (FAIL — same class as 4b contrast):**
+7. **Theme parity** — if a second theme exists: every semantic role defined in BOTH modes (diff the
+   token maps; a role present in one and missing in the other = FAIL); re-run the step-4b contrast
+   pairs in dark mode (dark-mode AA loss = FAIL); role luminance order must not invert between modes
+   (`bg` vs `bg-subtle` etc.).
+8. **Focus + target primitives** — a focus-indicator token/style exists meeting WCAG 2.4.13 (≥3:1
+   focused-vs-unfocused delta, area ≥ a 1px-perimeter equivalent) and every interactive primitive
+   binds it; interactive primitives' default hit-rect ≥24px (advise 44px for touch-primary actions).
+
+When `design_surface` is figma/both, the same checks run on Figma variables via Tinker's `WC`
+(tinker-wcag) and `TK` (tinker-tokens) — this step is the code-side twin.
 
 ### 5. Generate gap report
 
@@ -187,7 +222,7 @@ Choose ONE:
 
 - **PASS** — All required tokens present, all required primitives extracted with variants, usage discipline within thresholds, **and every status/body-text contrast pair clears its WCAG AA threshold**. Quest proceeds.
 - **CONDITIONAL** — Minor gaps (1-2 tokens missing, 1-2 primitives missing). Quest may proceed but the gaps become Healer's first stories before any page-level work. **Contrast failures are never CONDITIONAL** — a sub-threshold pair is a shipping a11y defect; downgrade to FAIL.
-- **FAIL** — Significant gaps (3+ token categories missing, 3+ required primitives missing, usage discipline violations exceed thresholds, **any status/body-text pair fails WCAG AA contrast**, **OR motion fails step 4c** — no signature easing, no reduced-motion branch, raw transitions in components, or interactive primitives missing pressed/focus/loading states). Quest **STOPS**. The next agent task is to add the missing tokens/primitives, re-alias failing color tokens, and complete the motion + state layer BEFORE the next page touches the screen.
+- **FAIL** — Significant gaps (3+ token categories missing, 3+ required primitives missing, usage discipline violations exceed thresholds, **any status/body-text pair fails WCAG AA contrast**, **motion fails step 4c** — no signature easing, no reduced-motion branch, raw transitions in components, or interactive primitives missing pressed/focus/loading states — **OR a 4d hard item fails** — theme-parity role gap, dark-mode AA loss, or missing/unbound focus-indicator token). Quest **STOPS**. The next agent task is to add the missing tokens/primitives, re-alias failing color tokens, and complete the motion + state layer BEFORE the next page touches the screen.
 
 > Scale the primitive checklist to the product. The 10-primitive list is sized for a full app; for a small
 > surface (≤ a handful of screens) treat `Tooltip`/`Skeleton`/`IconButton`/`Select` as *recommended, not
@@ -234,6 +269,9 @@ Save the user's decision in the artifact. Whatever was chosen becomes the bindin
 ## Motion & interaction (step 4c)
 {motion tokens present? signature easing? reduced-motion branch? raw transitions in components? per-primitive state coverage — list any element missing pressed/focus/loading/disabled}
 
+## Craft vocabulary & theme parity (step 4d)
+{radius/border/shadow-direction/icon vocabulary counts vs budgets; neutral temperature sign; motion envelope; theme-parity role diff + dark-mode contrast re-run; focus-indicator token + target floor — hard items first}
+
 ## Remediation Plan
 {ordered list of tokens to add, primitives to extract, cleanups to apply, with file:line references}
 
@@ -260,6 +298,8 @@ Save the user's decision in the artifact. Whatever was chosen becomes the bindin
 - [ ] Verdict downgraded to FAIL if any status/body-text pair fails AA
 - [ ] Motion audited (step 4c): signature easing + role-based durations + stagger + reduced-motion branch present; no raw transitions in components
 - [ ] Interaction-state coverage checked on every interactive primitive (default/hover/focus/active/disabled/loading)
+- [ ] Craft vocabulary counted (step 4d): radii ≤4, single shadow light direction, border weights ≤3, icon variance ≤15%, neutral temperature consistent, motion envelope respected
+- [ ] Theme parity + focus/target hard items checked (step 4d): role diff across modes, dark-mode contrast re-run, focus-indicator token bound, ≥24px primitive hit-rects; any hard failure downgrades verdict to FAIL
 - [ ] Remediation plan is specific (file:line, proposed token names, proposed file paths) — not generic ("improve tokens")
 - [ ] User decision captured verbatim
 - [ ] Artifact saved to `{output_root}/guild-artifacts/design-system-foundation.md`
