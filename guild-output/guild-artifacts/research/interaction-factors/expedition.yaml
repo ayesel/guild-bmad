@@ -24,4 +24,4 @@ providers:
   deep_toggle: Enable the 'Research' tool, then send.
   prompt: prompts/claude.md
   report: reports/claude.md
-  status: running
+  status: collected
