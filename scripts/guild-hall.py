@@ -286,12 +286,13 @@ body.app .rail{border-left:none}}
 .fbtn:hover{border-color:var(--line);color:var(--ink)}
 .fsep{width:1px;height:24px;background:var(--line-soft)}
 .fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;font-size:11px}
-.filtermenu{position:relative;margin-left:auto}
+.filtermenu{position:relative}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
 .fmbtn{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line);border-radius:8px;padding:0 13px;min-height:36px;background:var(--inset);user-select:none;white-space:nowrap}
 .fmbtn::-webkit-details-marker{display:none}
 .fmbtn:hover,.filtermenu[open] .fmbtn{color:var(--ink);border-color:var(--ink-faint)}
 .fmdot{width:6px;height:6px;border-radius:50%;background:var(--ember);display:inline-block}
-.fmpop{position:absolute;right:0;top:calc(100% + 6px);z-index:40;width:min(300px,86vw);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px;box-shadow:0 12px 34px rgba(8,5,3,.55);display:flex;flex-direction:column;gap:13px}
+.fmpop{position:absolute;left:0;top:calc(100% + 6px);z-index:40;width:min(300px,86vw);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px;box-shadow:0 12px 34px rgba(8,5,3,.55);display:flex;flex-direction:column;gap:13px}
 .fmgroup{display:flex;flex-direction:column;gap:7px}
 .fmlab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
 .fmchips{display:flex;flex-wrap:wrap;gap:6px}
@@ -312,8 +313,13 @@ body.app .rail{border-left:none}}
 .wprov:has(.wsel:checked){border-color:rgba(213,94,46,.4);background:linear-gradient(150deg,#241a12,#1f1b16)}
 .card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(213,94,46,.32)}
 .card.feat .kic{background:rgba(213,94,46,.14);border-color:rgba(213,94,46,.3);font-size:16px}
-.pick{margin-left:auto;font-size:11px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:6px;align-items:center;min-height:44px;cursor:pointer;flex-shrink:0}
-.pickbox{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
+.pick{margin-left:auto;font-size:11px;font-weight:650;color:var(--ink-faint);display:inline-flex;gap:7px;align-items:center;min-height:36px;cursor:pointer;flex-shrink:0;border:1px solid var(--line-soft);border-radius:8px;padding:0 11px;user-select:none;transition:border-color .15s ease,color .15s ease}
+.pick:hover{color:var(--ink-dim);border-color:var(--line)}
+.pick:has(input:checked){color:var(--ember-tx);border-color:rgba(213,94,46,.45);background:rgba(213,94,46,.07)}
+.pick input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1.5px solid var(--ink-faint);border-radius:5px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent;flex-shrink:0}
+.pick input[type="checkbox"]:checked{background:var(--ember);border-color:var(--ember)}
+.pick input[type="checkbox"]:checked::after{content:"✓";font-size:10px;font-weight:800;color:#1d0f06;line-height:1}
+.pickbox{cursor:pointer}
 .batchbar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:60;font-size:12px;box-shadow:0 6px 24px rgba(20,15,10,.5)}
 .batchbar button{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--ember);color:#1a0f08;min-height:44px}
 .batchbar .clearsel{background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
@@ -364,15 +370,22 @@ display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var
 @media(min-width:1500px){.cardgrid{grid-template-columns:repeat(3,1fr)}}
 .card .why{max-width:64ch}
 .tl li{max-width:72ch}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto;background:var(--inset)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--inset)}
 .seg a{padding:6px 13px;font-size:12px;font-weight:650;color:var(--ink-dim);min-height:36px;display:inline-flex;align-items:center;gap:5px;letter-spacing:0;text-transform:none;font-family:var(--sans)}
 .seg a+a{border-left:1px solid var(--line)}
 .seg a.on{background:var(--ember);color:#1d0f06}
 .seg a:not(.on):hover{color:var(--ink);background:var(--panel2)}
 .seg .segi{font-size:11px;opacity:.9}
-.sugc{border-left:3px solid var(--line-soft)}
-.sugc[data-conf="firm"]{border-left-color:var(--amber)}
-.sugc[data-conf="check"]{border-left-color:var(--denim)}
+.sugc{position:relative}
+.sugc .shot{display:block;margin:-14px -14px 12px;border-bottom:1px solid var(--line-soft);border-radius:9px 9px 0 0;overflow:hidden;background:#141110}
+.sugc .shot img{display:block;width:100%;height:108px;object-fit:cover;object-position:top;opacity:.92;transition:opacity .15s ease}
+.sugc .shot:hover img{opacity:1}
+.srcopen{color:inherit;border-bottom:1px dotted var(--line);padding-bottom:1px;display:inline-flex;align-items:center;min-height:24px}
+.srcopen:hover{color:var(--ink-dim);border-bottom-color:var(--ink-faint)}
+.whorow{display:flex;align-items:center;gap:8px}
+.whorow .chip{flex-shrink:0}
+.whorow .srcopen{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.whorow .pick{min-height:30px;padding:0 9px}
 .acts .soft{background:rgba(213,94,46,.1);color:var(--ember-tx);border:1px solid rgba(213,94,46,.32)}
 .acts .soft:hover{background:rgba(213,94,46,.17)}
 .sugc .acts{align-items:center}
@@ -709,6 +722,24 @@ def project_shell(wf, pidx, active, inner):
     return page(projects()[pidx]["name"], "a project in your hall", shell + JS, current=pidx, app=True)
 
 
+def _shot_for(proj_path, evidence):
+    """Map a suggestion's evidence path (src/app/(app)/spend/page.tsx) to a captured
+    screenshot of that screen, if one exists in guild-artifacts/screenshots/.
+    Returns (output_base, filename, slug) or None."""
+    segs = [s for s in evidence.split("/") if s not in ("src", "app", "pages") and not s.startswith("(")]
+    segs = [s for s in segs if "." not in s]
+    slug = segs[-1] if segs else "home"
+    for base in ("_bmad-output", "guild-output"):
+        d = os.path.join(proj_path, base, "guild-artifacts", "screenshots")
+        if os.path.isdir(d):
+            pngs = sorted(f for f in os.listdir(d) if f.endswith(".png"))
+            for pref in (f"{slug}-desktop", slug):
+                for f in pngs:
+                    if f.startswith(pref):
+                        return base, f, slug
+    return None
+
+
 def project_view(wf, pidx, view, sv="cards"):
     regs = projects()
     p = regs[pidx]
@@ -783,9 +814,11 @@ def project_view(wf, pidx, view, sv="cards"):
             toggle = (f'<span class="seg" role="group" aria-label="view as cards or list">'
                       f'<a href="/p/{pidx}?view=needs&sv=cards" class="{"on" if sv == "cards" else ""}"><span class="segi" aria-hidden="true">▦</span> Cards</a>'
                       f'<a href="/p/{pidx}?view=needs&sv=list" class="{"on" if sv == "list" else ""}"><span class="segi" aria-hidden="true">☰</span> List</a></span>')
-            pager = ('<div class="sfilter"><span class="spage" style="margin-left:0"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
+            pager = ('<span class="spage"><button class="fbtn" onclick="spg(-1)" aria-label="previous page">←</button>'
                      '<b id="spglab" style="font-size:11px;min-width:86px;text-align:center"></b>'
-                     '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span></div>') if sv == "cards" else ""
+                     '<button class="fbtn" onclick="spg(1)" aria-label="next page">→</button></span>') if sv == "cards" else ""
+            qall = '<button class="fbtn" id="qallbtn" onclick="qall()">Queue all</button>'
+            shots = {ev: _shot_for(p["path"], ev) for ev in {s["evidence"] for s in ss}} if sv == "cards" else {}
 
             def _srow(s):
                 icon, cat = s.get("icon", "💡"), s.get("category", "polish")
@@ -798,12 +831,20 @@ def project_view(wf, pidx, view, sv="cards"):
                     return (f'<div class="lib sugc" {attrs}><span class="th" style="font-size:13px">{icon}</span>'
                             f'<span><b>{E(s["title"])}</b><div class="m">{E(s["why"][:110])}</div></span>'
                             f'<span class="chip proj" style="flex-shrink:0">{E(cat)}</span>{cchip}{pick}</div>')
-                return (f'<div class="card sugc" {attrs}><div class="row"><span class="kic">{icon}</span>'
+                sh = shots.get(s["evidence"])
+                shot = ""
+                if sh:
+                    url = f'/img?p={pidx}&b={sh[0]}&f={E(sh[1])}'
+                    shot = (f'<a class="shot" href="{url}" target="_blank" rel="noopener" title="open the {E(sh[2])} screen capture">'
+                            f'<img src="{url}" loading="lazy" alt="capture of the {E(sh[2])} screen"></a>')
+                src_link = (f'<a class="srcopen" href="/open?path={E(os.path.join(p["path"], s["evidence"]))}" '
+                            f'title="open the source file">{E(s["evidence"])}</a>')
+                return (f'<div class="card sugc" {attrs}>{shot}<div class="row"><span class="kic">{icon}</span>'
                         f'<b>{E(s["title"])}</b>{cchip}</div>'
                         f'<div class="why">{E(s["why"])}</div>'
-                        f'<div class="who"><span class="chip proj">{E(cat)}</span> {E(s["evidence"])}</div>'
+                        f'<div class="who whorow"><span class="chip proj">{E(cat)}</span> {src_link}{pick}</div>'
                         f'<div class="acts"><button class="soft" onclick="run(this,{pidx},\'/guild-comment {E(s["title"])} — {E(s["evidence"])}\')">'
-                        f'Have Guild fix it — 3 variants</button>{pick}</div></div>')
+                        f'Have Guild fix it — 3 variants</button></div></div>')
 
             if sv == "list":
                 bysrc = {}
@@ -816,7 +857,8 @@ def project_view(wf, pidx, view, sv="cards"):
                 sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
             else:
                 sugg_rows = "".join(_srow(s) for s in ss)
-            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed{toggle}</h2>{sbar}{pager}'
+            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed</h2>'
+                         f'<div class="toolbar">{sbar}{qall}{toggle}{pager}</div>'
                          f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
         # ---- dashboard: signal metrics row + "your move" hero (owner-approved Desk pattern) ----
         working = sum(1 for r in feed["runs"] if r.get("state") == "executing")
@@ -1017,6 +1059,18 @@ function sapply(){
   if (lab) lab.textContent = vis.length ? ((SP.page * per + 1) + '–' + Math.min(vis.length, (SP.page + 1) * per) + ' of ' + vis.length) : 'none match';
   document.querySelectorAll('#sgrid .ghead').forEach(h => {
     h.style.display = vis.some(c => c.dataset.screen == h.dataset.screen && c.style.display == '') ? '' : 'none'; });
+  const qb = document.getElementById('qallbtn');
+  if (qb) { const bs = vis.map(c => c.querySelector('.pickbox')).filter(b => b && !b.disabled);
+    qb.textContent = (bs.length && bs.every(b => b.checked)) ? 'Unqueue all' : 'Queue all'; }
+}
+function qall(){
+  const g = document.getElementById('sgrid'); if (!g) return;
+  const vis = [...g.querySelectorAll('[data-conf]')].filter(c => (SP.conf == 'all' || c.dataset.conf == SP.conf)
+    && (SP.cat == 'all' || c.dataset.cat == SP.cat) && (SP.screen == 'all' || c.dataset.screen == SP.screen));
+  const bs = vis.map(c => c.querySelector('.pickbox')).filter(b => b && !b.disabled);
+  const all = bs.length && bs.every(b => b.checked);
+  bs.forEach(b => { b.checked = !all; });
+  syncbar(); sapply();
 }
 window.addEventListener('DOMContentLoaded', sapply);
 async function explaunch(pidx){
@@ -1056,8 +1110,8 @@ function injectCardModels(){
   });
 }
 window.addEventListener('DOMContentLoaded', injectCardModels);
-function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); }
-document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) syncbar(); });
+function clearsel(){ document.querySelectorAll('.pickbox:checked').forEach(c => c.checked = false); syncbar(); sapply(); }
+document.addEventListener('change', e => { if (e.target.classList.contains('pickbox')) { syncbar(); sapply(); } });
 </script>"""
 
 
@@ -1302,6 +1356,23 @@ class Handler(BaseHTTPRequestHandler):
             elif os.path.exists(p):
                 subprocess.run(["open", p], capture_output=True)
             return self._send('<script>history.back()</script>')
+        if u.path == "/img":
+            pidx = int(q.get("p", ["0"])[0])
+            base = q.get("b", ["_bmad-output"])[0]
+            fn = q.get("f", [""])[0]
+            if base in ("_bmad-output", "guild-output"):
+                d = os.path.realpath(os.path.join(projects()[pidx]["path"], base, "guild-artifacts", "screenshots"))
+                fp = os.path.realpath(os.path.join(d, fn))
+                if fp.startswith(d + os.sep) and os.path.exists(fp):
+                    data = open(fp, "rb").read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.send_header("Cache-Control", "max-age=300")
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+            self.send_response(404); self.end_headers(); return
         if u.path == "/api/feed":
             pidx = int(q.get("pidx", ["0"])[0])
             return self._send(json.dumps(self.wf.build(projects()[pidx]["path"])), "application/json")
