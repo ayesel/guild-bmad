@@ -21,3 +21,36 @@
 First pass reported the `waiting for you` badge at 2.26:1 — **wrong.** It treated the badge's `rgba(201,151,31,.16)` background as opaque. Composited over the card it's cream-on-dark-gold and passes. Reading the source + compositing alpha corrected it. The real failure was the boring systemic one (`--ink-faint`), not the eye-catching badge. Measure with alpha compositing, not just the raw `color`/`background-color` strings.
 
 **Artifacts:** `hall-1280-full.png` (before), `hall-1280-after.png` (after).
+
+---
+
+# Audit #2 — Fable pass (2026-07-05)
+
+**Method:** alpha-composited contrast sweep over every visible text node (gradient stops walked to worst case), target-size + overflow checks, all 6 views at 1280, plus iframe-emulated 976/760px. Shipped as `7496d04`.
+
+| # | Finding (measured) | Fix |
+|---|--------------------|-----|
+| 1 | `.gm` logo "G" — 2.85:1 against the `--ember-deep` gradient stop | gradient → `#e06a3a → --ember`; worst stop now 4.9:1 |
+| 2 | Active widget-tab count pill — `#1d0f06` on dark-tinted ember = 3.78:1 | tint → `rgba(255,255,255,.22)` → 6.5:1 |
+| 3 | **Rail collapse toggle squashed to 26×17** — default `flex-shrink` in the overflowing rail column (WCAG 2.5.8 target ≥24×24) | `.ptog{flex-shrink:0}` → 26×26 both toggles |
+| 4 | Half-px type regression (roster names 12.5, descriptions + `.cardmodel` 10.5) — crept back in with the rail rebuild | normalized to 13/11 |
+| 5 | 9 tints still encoded the pre-fix ember `rgba(206,83,40,*)` | → `rgba(213,94,46,*)` matches `--ember` |
+| 6 | **861–1180px: locked 100vh shell split the viewport** — feed squeezed into a 358px scroll strip, roster rail permanently occupying the bottom half | app shell reverts to document flow ≤1180 (rail flows below, page scrolls) |
+| 7 | Hero "N more moves →" 19px hit area | `min-height:24px` inline-flex |
+| 8 | `/p/<non-numeric>` crashed the handler (connection dropped, empty reply) | digit-guard → clean 404 |
+
+**Proof:** post-fix sweep = 0 AA fails, 0 near-misses (<0.35 headroom), 0 half-px sizes, 0 sub-24px targets, 0 horizontal overflow — at 1280, 976 and 760. Selftest PASS.
+
+## Audit #2 addendum — sidebar pass (same day)
+
+Creator called out the sidebars; contrast math had passed but the *geometry* hadn't. Lesson: a clean AA sweep is necessary, not sufficient — look at anchoring, rhythm, and nesting with eyes + rects.
+
+| Finding (measured) | Fix |
+|---|---|
+| Both collapse toggles floated alone in a dead band; railtog overlapped the roster panel corner by 6px; pane content started ragged (107/91/105) | Toggles moved into real header rows (`DECIDE …‹` / `YOUR GUILD …›`); starts now 85/91/85 |
+| "UX improvements" was the only 2-line nav row (54px in a 40px rhythm) | → "Improvements" |
+| Roster = card-in-card-in-panel (railsect border+bg around outlined rows) | railsect flattened; rows gain 24px |
+| Runs "▶" monochrome glyph in a color-emoji icon set | → ▶️ |
+| Ranger/Tinker descriptions clipped mid-word at 2-line clamp | shortened; 0 clipped rows measured |
+
+Committed as `hall: sidebar audit — toggles live in header rows, flat roster, rhythm fixes`.
