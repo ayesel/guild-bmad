@@ -54,3 +54,16 @@ Creator called out the sidebars; contrast math had passed but the *geometry* had
 | Ranger/Tinker descriptions clipped mid-word at 2-line clamp | shortened; 0 clipped rows measured |
 
 Committed as `hall: sidebar audit — toggles live in header rows, flat roster, rhythm fixes`.
+
+## Audit #2 addendum 2 — spacing system (2026-07-06)
+
+Owner: "Guild is supposed to be superior at AI design... why are there so many spacing and padding issues? What do we need to add?"
+
+**Measured why:** 53% of all margin/padding/gap values in the Hall stylesheet were off the declared 4-base scale — 174 values, 25 distinct (a system needs ~8), led by 10px×22, 14px×20, 7px×12, 13px×10. The scale existed in Mage's rules but NOTHING enforced it; every value was a local hand-rolled decision, and rhythm inversions are the inevitable output. Same failure class as the geometry lesson: a factor listed as "known" but never wired as a MEASURE gate.
+
+**What was added:**
+1. All 174 values normalized onto {0,1,2,4,6,8,12,16,24,32,48} (74 declarations changed, paired negatives tracked).
+2. **Spacing lint in `--selftest`** — off-scale spacing now FAILS the build, permanently.
+3. Control-height vocabulary — toolbar mixed 36px controls with 44px pager pills → one 36px tier (popup chips 32px).
+
+**Standing rule:** when an audit dimension is discovered, it isn't "known" until it's a wired, failing check. The UI-FACTORS research prompt (docs/guild/UI-FACTORS-RESEARCH-PROMPT.md) exists to enumerate the remaining dimensions; each verdict factor should land as a gate like this one.
