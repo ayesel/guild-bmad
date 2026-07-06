@@ -87,7 +87,7 @@
     "validate": "bash scripts/validate.sh",
     "sync-compiled": "python3 scripts/sync-compiled.py",
     "postcompile": "python3 scripts/sync-compiled.py && bash scripts/validate.sh",
-    "selftest": "bash scripts/selftest-roundtrip.sh",
+    "selftest": "bash scripts/selftest-roundtrip.sh && python3 scripts/ia-graph-gate.py --selftest && python3 scripts/terminology-gate.py --selftest && python3 scripts/focus-gate.py --selftest && python3 scripts/interaction-gate.py --selftest",
     "build-context": "python3 scripts/build-context.py",
     "mcp": "node mcp/guild-mcp.mjs",
     "canvas": "python3 scripts/guild-canvas.py --render",
@@ -154,7 +154,11 @@
     "option-gallery": "python3 scripts/option-gallery.py --selftest",
     "hall": "bash scripts/hall-daemon.sh status",
     "hall:install": "bash scripts/hall-daemon.sh install",
-    "hall:restart": "bash scripts/hall-daemon.sh restart"
+    "hall:restart": "bash scripts/hall-daemon.sh restart",
+    "ia-graph-gate": "python3 scripts/ia-graph-gate.py",
+    "terminology-gate": "python3 scripts/terminology-gate.py",
+    "focus-gate": "python3 scripts/focus-gate.py",
+    "interaction-gate": "python3 scripts/interaction-gate.py"
   },
   "keywords": [
     "design",

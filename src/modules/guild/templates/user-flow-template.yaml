@@ -92,6 +92,18 @@ structure:
         - Error state
         - Disabled state (permissions/conditions not met)
 
+    - name: "Interaction Contract (REQUIRED — gates parse this)"
+      description: >
+        Per docs/guild/decisions/interaction-factors-research.md §4: every
+        step transition carries {motion|explicit cut}, feedback + latency
+        budget (default 100ms), reversibility class, focus handoff,
+        interruptible flag, and modality parity (keyboard + single-pointer +
+        hover degradation). Every async step declares optimistic vs
+        pessimistic. Back/refresh behavior declared per step (entered data
+        MUST survive). A blank field is an artifact-time defect. Use the
+        fenced yaml `interaction_contract:` block from the state-diagram
+        template, one entry per step transition.
+
     - name: "Design Decisions"
       description: >
         Key decisions made during flow design and their rationale.

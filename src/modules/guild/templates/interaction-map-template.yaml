@@ -34,6 +34,17 @@ structure:
         - Success/error animations
         - Skeleton screen specs
 
+    - name: "Element Interaction Contract (REQUIRED — gates parse this)"
+      description: >
+        Per docs/guild/decisions/interaction-factors-research.md §4: every
+        interactive element declares the Saffer four-part anatomy
+        (trigger / rules / feedback / loops-modes), a reduced-motion
+        feedback-preserving variant, optimistic-vs-pessimistic for async
+        actions, and a signature-moment flag (counts against the <=1
+        expressive-per-surface budget). An element left on browser-default
+        behavior where a designed interaction is declared = defect. Emit as
+        a fenced yaml `element_contract:` block per element.
+
     - name: "Keyboard Shortcuts"
       description: >
         Any keyboard shortcuts or accelerators:

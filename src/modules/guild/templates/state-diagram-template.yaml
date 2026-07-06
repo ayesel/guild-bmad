@@ -47,6 +47,33 @@ structure:
         For each transition:
         | From | To | Trigger | Guard Condition | Action | Duration |
 
+    - name: "Interaction Contract (REQUIRED — gates parse this)"
+      description: >
+        Per docs/guild/decisions/interaction-factors-research.md §4: every
+        reachable state pair MUST carry a complete contract. A blank field is
+        an artifact-time defect; a built transition contradicting its declared
+        field fails the transition-coverage diff. Emit as a fenced yaml block
+        so interaction-gate/coverage tooling can parse it.
+      format: |
+        ```yaml
+        interaction_contract:
+          - pair: Empty -> Loading
+            transition:                 # motion OR cut — never blank
+              motion:
+                pattern: fade-through   # container-transform | shared-axis | fade-through | fade
+                duration_token: motion.short
+                easing_token: ease-enter
+                reduced_motion_variant: opacity-swap   # must preserve feedback, never delete it
+            feedback: { channel: visual, latency_budget_ms: 100 }
+            reversibility: reversible   # reversible | soft-reversible (+undo_window_ms, undo_action_id) | irreversible (+confirm_gate)
+            focus_handoff: "#results-heading"
+            interruptible: true         # required true for standard transitions
+            modality_parity:
+              keyboard: Enter
+              single_pointer_alternative: tap
+              hover_degradation: n/a
+        ```
+
     - name: "State Content Specs"
       description: >
         What the user sees in each state:

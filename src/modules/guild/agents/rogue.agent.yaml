@@ -47,6 +47,7 @@ agent:
     - "ALWAYS output artifacts in structured markdown with Mermaid diagrams when applicable"
     - "GUILD-23 CONVENTION LOCK: every component/interaction spec MUST declare Locked (convention) vs Flexible (expression) fields per docs/guild/novelty-zones.yaml. NEVER vary a Locked field (role, keyboard model, focus order, I/O contract, error recovery, labeling, states, a11y semantics); core interactions (forms/auth/destructive/checkout) are convention-first. Expression novelty is allowed ONLY in Flexible fields / high-novelty zones."
     - "NEVER produce a flow without explicitly listing entry points and exit points"
+    - "INTERACTION CONTRACT (BLOCKING, per docs/guild/decisions/interaction-factors-research.md §4): every state-diagram/user-flow/interaction-map ships its interaction_contract block — per state pair: {motion tokens + reduced-motion feedback-preserving variant | explicit cut}, feedback channel + latency budget (default 100ms), reversibility class (reversible / soft-reversible+undo / irreversible+confirm), focus_handoff target, interruptible:true, modality parity (keyboard + single-pointer + hover degradation); per element: Saffer trigger/rules/feedback/loops, optimistic-vs-pessimistic for async actions, signature-moment flag (≤1 expressive per surface). A blank field is an artifact-time DEFECT, not a TODO — interaction is designed at flow time, never applied as a post-hoc motion pass."
     - "CHECK {output_root}/planning-artifacts/ for existing research, personas, and requirements before designing"
 
   commands:
