@@ -186,18 +186,25 @@ a.card:hover{border-color:var(--line);transform:translateX(3px)}
 .mainpane{min-width:0}
 .ptog{border:1px solid var(--line-soft);background:var(--panel2);color:var(--ink-dim);width:26px;height:26px;flex-shrink:0;border-radius:7px;cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;padding:0;transition:transform .15s ease,color .15s ease}
 .ptog:hover{color:var(--ink);border-color:var(--line)}
-.snav .navtog{align-self:flex-end;position:sticky;top:0;z-index:3;margin:0 0 -4px}
-.rail .railtog{align-self:flex-end;position:sticky;top:0;z-index:3;margin:0 0 -20px}
+.sbhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0}
+.snav .sbhead{margin:2px 0 4px}
+.snav .sbhead .grp{margin:0 10px}
+.rail .sbhead{margin-bottom:-4px}
+.rail .sbhead .railh{margin:0}
 @media(min-width:1181px){
 html.navmin .shell.three{grid-template-columns:42px minmax(0,1fr) 288px}
 html.railmin .shell.three{grid-template-columns:200px minmax(0,1fr) 42px}
 html.navmin.railmin .shell.three{grid-template-columns:42px minmax(0,1fr) 42px}
 html.navmin .snav{padding:8px 6px;background:transparent;border-color:transparent}
-html.navmin .snav>*:not(.navtog){display:none}
-html.navmin .snav .navtog{align-self:center;margin:0;transform:rotate(180deg)}
+html.navmin .snav>*:not(.sbhead){display:none}
+html.navmin .snav .sbhead{justify-content:center;margin:0}
+html.navmin .snav .sbhead .grp{display:none}
+html.navmin .snav .navtog{transform:rotate(180deg)}
 html.railmin .rail{gap:0}
-html.railmin .rail>*:not(.railtog){display:none}
-html.railmin .rail .railtog{align-self:center;transform:rotate(180deg)}
+html.railmin .rail>*:not(.sbhead){display:none}
+html.railmin .rail .sbhead{justify-content:center;margin:0}
+html.railmin .rail .sbhead .railh{display:none}
+html.railmin .rail .railtog{transform:rotate(180deg)}
 }
 @media(max-width:1180px){.ptog{display:none}}
 /* ---- full-height app shell: header fixed, 3 columns each scroll independently ---- */
@@ -238,7 +245,7 @@ body.app .rail{border-left:none}}
 @media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}.ymtitle{font-size:17px}}
 .mainpane .cardgrid.feed{grid-template-columns:1fr}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:64px;align-self:start;min-width:0}
-.railsect{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:12px 12px 9px}
+.railsect{padding:0}
 .railh{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 8px;display:flex;flex-direction:column;gap:2px}
 .railh-sub{font-weight:400;letter-spacing:.01em;text-transform:none;font-size:10px;color:var(--ink-faint);font-family:var(--sans)}
 .raillist{display:flex;flex-direction:column;gap:8px}
@@ -382,12 +389,12 @@ display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var
 
 
 ROSTER = [
-    ("Ranger", "🔍", "researches your users and market — interviews, synthesis, evidence", "/guild-agent-ranger"),
+    ("Ranger", "🔍", "researches users and market — interviews, evidence", "/guild-agent-ranger"),
     ("Cartographer", "🗺️", "organizes the product — IA, sitemaps, user flows on boards", "/guild-agent-cartographer"),
     ("Rogue", "🔀", "designs interactions — flows, wireframes, states", "/guild-agent-rogue"),
     ("Mage", "🎨", "designs visuals — critique, polish, motion, variants", "/guild-agent-mage"),
     ("Warlock", "✍️", "writes the words — microcopy, errors, voice", "/guild-agent-warlock"),
-    ("Tinker", "🔧", "builds the design system — components, tokens, Figma/Storybook", "/guild-agent-tinker"),
+    ("Tinker", "🔧", "builds the design system — components, tokens", "/guild-agent-tinker"),
     ("Sage", "🛡️", "quality gate — accessibility, consistency, go/no-go", "/guild-agent-sage"),
     ("Healer", "📦", "hands off to dev — specs, stories, tokens", "/guild-agent-healer"),
     ("Guild Master", "🎯", "runs the whole pipeline — point it at a goal", "/guild-quest"),
@@ -664,15 +671,17 @@ def chrome(wf, pidx, active="needs", feed=None):
         return (f'<a href="{href}" class="navitem {"on" if on else ""}"{extra}>'
                 f'<span class="nvi" aria-hidden="true">{icon}</span><span class="nvl">{label}</span>{c}</a>')
     def grp(title, links):
-        return f'<div class="ngrp"><div class="grp">{title}</div>' + "".join(links) + '</div>'
+        t = f'<div class="grp">{title}</div>' if title else ""
+        return f'<div class="ngrp">{t}' + "".join(links) + '</div>'
     side = ('<aside class="snav" aria-label="project navigation">'
-            + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button>'
-            + grp("Decide", [
+            + '<div class="sbhead"><div class="grp">Decide</div>'
+            + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button></div>'
+            + grp(None, [
                 nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", ndec, active == "needs", sec=("decisions" if hs else None)),
-                nv(f"/p/{pidx}?view=needs#improve", "UX improvements", "💡", nsugg, sec=("improve" if hs else None)),
+                nv(f"/p/{pidx}?view=needs#improve", "Improvements", "💡", nsugg, sec=("improve" if hs else None)),
                 nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
                 nv(f"/expedition?p={pidx}", "Expedition", "🧭", on=(active == "expedition"))])
-            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶", nruns, active == "runs")])
+            + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶️", nruns, active == "runs")])
             + grp("Browse", [
                 nv(f"/p/{pidx}?view=library", "Library", "📚", len(feed["library"]), active == "library"),
                 nv(f"/playbook?p={pidx}", "Playbook", "📖", on=(active == "playbook"))])
@@ -684,8 +693,9 @@ def chrome(wf, pidx, active="needs", feed=None):
         return (f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
                 f'<span><b>{name}</b><div>{E(job)}</div></span>'
                 f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>')
-    rail = ('<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button>'
-            f'<section class="railsect" id="roster"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+    rail = ('<div class="sbhead"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
+            '<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button></div>'
+            f'<section class="railsect" id="roster">'
             f'<div class="raillist">{"".join(_rrow(*r) for r in ROSTER)}</div></section>'
             f'<section class="railsect" id="bmad"><h3 class="railh">Build council <span class="railh-sub">plans &amp; builds in a full quest</span></h3>'
             f'<div class="raillist">{"".join(_rrow(*r) for r in BMAD_ROSTER)}</div></section>')
