@@ -24,6 +24,9 @@ TARGETS = {
     "ab-eval": "an ab-eval verdicts file [{pair,owner_pick}]",
 }
 
+def JS(x):
+    return json.dumps(x).replace('</', '<\\/')
+
 def note_html(a, b, pair_id, target, prompt, target_pane=None, a_html=None, b_html=None):
     framing = (f"Owner blind pick for pair {pair_id} (target={target}). Append to "
                f"{TARGETS.get(target, target)} — record the OWNER_PICK letter. {{payload}}")
@@ -74,7 +77,7 @@ button.zoom:hover{{color:var(--text);border-color:var(--muted)}}
   <iframe id="maxFrame" sandbox="allow-scripts"></iframe>
 </div>
 <script>
-var SRC={{A:{json.dumps(a_html or "")},B:{json.dumps(b_html or "")}}};
+var SRC={{A:{JS(a_html or "")},B:{JS(b_html or "")}}};
 var PAYLOADS={{A:{json.dumps(json.dumps({"pair": pair_id, "owner_pick": "A", "target": target}))},B:{json.dumps(json.dumps({"pair": pair_id, "owner_pick": "B", "target": target}))}}};
 var cur='A';
 function sendPick(payloadStr){{
@@ -82,7 +85,8 @@ function sendPick(payloadStr){{
  var tp={json.dumps(target_pane)}; if(tp){{msg.target=tp;}}   /* GUILD-79: explicit live target, no stale-pane drop */
  parent.postMessage(msg,'*');}}
 function openMax(letter){{cur=letter;var m=document.getElementById('max');m.classList.add('on');
- document.getElementById('maxFrame').srcdoc=SRC[cur];document.getElementById('maxWhich').textContent='Option '+cur;}}
+ var fr=document.getElementById('maxFrame');fr.srcdoc=SRC[cur];document.getElementById('maxWhich').textContent='Option '+cur;
+ fr.onload=function(){{try{{fr.contentWindow.postMessage('picknote:big','*');}}catch(_e){{}}}};}}
 function flip(){{openMax(cur==='A'?'B':'A');}}
 function closeMax(){{document.getElementById('max').classList.remove('on');}}
 document.addEventListener('click',function(e){{
@@ -180,7 +184,7 @@ button.zoom{{float:right;background:transparent;border:1px solid var(--border);c
 <iframe id="maxFrame" sandbox="allow-scripts"></iframe></div>
 <script>
 var LETTERS={_j.dumps(letters)};
-var SRC={{{",".join(f'{L}:{_j.dumps(htmls[L])}' for L in letters)}}};
+var SRC={{{",".join(f'{L}:{JS(htmls[L])}' for L in letters)}}};
 var ranking=[],cur=LETTERS[0];
 function remaining(){{return LETTERS.filter(function(l){{return ranking.indexOf(l)<0;}});}}
 function choose(L){{if(ranking.indexOf(L)>=0)return; ranking.push(L);
@@ -197,8 +201,9 @@ function choose(L){{if(ranking.indexOf(L)>=0)return; ranking.push(L);
  }} else {{document.getElementById('stage').textContent='Step '+(ranking.length+1)+': of the rest \u2014 which is best?';}}
 }}
 function openMax(L){{cur=L;document.getElementById('max').classList.add('on');
- document.getElementById('maxFrame').srcdoc=SRC[cur];
- document.getElementById('maxWhich').textContent='Option '+cur;}}
+ var fr=document.getElementById('maxFrame');fr.srcdoc=SRC[cur];
+ document.getElementById('maxWhich').textContent='Option '+cur;
+ fr.onload=function(){{try{{fr.contentWindow.postMessage('picknote:big','*');}}catch(_e){{}}}};}}
 function cycle(d){{var i=LETTERS.indexOf(cur);openMax(LETTERS[(i+d+LETTERS.length)%LETTERS.length]);}}
 document.addEventListener('click',function(e){{
  var z=e.target.closest('[data-zoom]'); if(z){{openMax(z.getAttribute('data-zoom'));return;}}
