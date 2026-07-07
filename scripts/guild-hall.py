@@ -32,7 +32,10 @@ E = html.escape
 _WF = None
 _BUILD_CACHE = {}
 _REFRESHING = set()
-_BUILD_TTL = 4.0  # a status inbox may lag reality by a few seconds; snappy pages matter more
+_BUILD_TTL = 60.0  # PERF goal 2026-07-07: 4s TTL caused rebuild storms — every page
+# spawned 5 concurrent SWR rebuild threads that starved the serving thread (GIL).
+# Mutations already clear the cache on POST, and stale-while-revalidate keeps reads
+# instant, so a minute of passive staleness costs nothing and buys steady 20ms pages.
 
 
 def _feed_mod():
@@ -236,7 +239,7 @@ body.app>main{overflow:visible}
 body.app .shell,body.app .snav,body.app .mainpane,body.app .rail{height:auto;overflow:visible}
 body.app .rail{border-left:none}}
 @media(max-width:860px){body.app .snav{border:none;padding:0}body.app .mainpane{padding:16px}body.app .rail{border:none;padding:0}}
-.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 0 4px}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 0 12px}
 .mtile{display:flex;flex-direction:column;gap:2px;padding:12px 12px 8px;border:1px solid var(--line-soft);border-radius:11px;background:linear-gradient(180deg,#241f18,#1f1b16);min-height:82px;overflow:hidden;color:var(--ink)}
 .mtile:hover{border-color:var(--line)}
 .mtile .mlab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
@@ -304,6 +307,9 @@ body.app .rail{border-left:none}}
 .fsel{background:var(--inset);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 8px;min-height:44px;font-size:11px}
 .filtermenu{position:relative}
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 8px}
+.wbar{margin:0 0 12px}.wbar .wtabs{margin:0}
+.impctl{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.botpager{justify-content:center;margin:12px 0 0}.botpager .spage{margin-left:0}
 .toolbar .fbtn{min-height:36px}
 .fmbtn{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--ink-dim);border:1px solid var(--line);border-radius:8px;padding:0 12px;min-height:36px;background:var(--inset);user-select:none;white-space:nowrap}
 .fmbtn::-webkit-details-marker{display:none}
@@ -454,7 +460,7 @@ def switcher(current=None):
         except Exception: n = 0
         opts.append(f'<option value="/p/{i}"{" selected" if current == i else ""}>'
                     f'{E(pr["name"])}{f" · {n} waiting" if n else ""}</option>')
-    return (f'<label class="swlab" for="projsel">Project</label>'
+    return (f'<label class="swlab" for="projsel" style="margin-left:auto">Project</label>'
             f'<select id="projsel" class="topsel" onchange="location.href=this.value" aria-label="switch project">'
             f'{"".join(opts)}</select>')
 
@@ -704,9 +710,8 @@ def chrome(wf, pidx, active="needs", feed=None):
             + '<div class="sbhead"><div class="grp">Decide</div>'
             + '<button class="ptog navtog" onclick="tpane(\'navmin\')" aria-label="collapse navigation" title="collapse sidebar">‹</button></div>'
             + grp(None, [
-                nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", ndec, active == "needs", sec=("decisions" if hs else None)),
-                nv(f"/p/{pidx}?view=needs#improve", "Improvements", "💡", nsugg, sec=("improve" if hs else None)),
-                nv(f"/p/{pidx}?view=needs#recs", "What to run next", "⚡"),
+                nv(f"/p/{pidx}?view=needs#decisions", "Needs you", "📥", (ndec + nsugg) or None, active == "needs", sec=("decisions" if hs else None)),
+                nv(f"/p/{pidx}?view=recs", "What to run next", "⚡", on=(active == "recs")),
                 nv(f"/expedition?p={pidx}", "Expedition", "🧭", on=(active == "expedition"))])
             + grp("Watch", [nv(f"/p/{pidx}?view=runs", "Runs", "▶️", nruns, active == "runs")])
             + grp("Browse", [
@@ -813,29 +818,11 @@ def project_view(wf, pidx, view, sv="cards"):
                 '</div></details>')
     side, rail = chrome(wf, pidx, view, feed=feed)
     explain = {"needs": "Decisions agents queued for you — everything else keeps moving without you.",
+               "recs": "What Guild would run next — recommended runs for this project, ranked.",
                "runs": "What agents did, step by step — each run is a checklist of completed work.",
                "library": "Everything this project produced, newest first."}
     body = f'<div class="brief">{explain[view]}</div>'
     if view == "needs":
-        rec_data = recommends(feed, p["path"])
-        def rec_card(title, why, cmd, because, cost, compact=False):
-            if cmd == "top":
-                return (f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b></div>'
-                        f'<div class="brief">{E(why)}</div></div>')
-            cta = "Run it" if compact else "Run it — Guild opens an agent and starts"
-            return (
-            f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
-            + f'</div><div class="brief">{E(why)}</div>'
-            + f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">{cta}</button></div>'
-            + f'<details class="metafold"><summary>Details, queue, model</summary>'
-               f'<div class="kmeta"><span class="klabel">why</span><span class="kv">{E(because)}</span></div>'
-               f'<div class="kmeta"><span class="klabel">cost</span><span class="kv">{E(cost)}</span></div>'
-               f'<label class="pick" style="margin-left:0"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue for batch</label>'
-               f'<div class="who">Manual command: {E(cmd)}</div></details></div>')
-        rec_rows = rec_card(*rec_data[0]) if rec_data else ""
-        if len(rec_data) > 1:
-            rec_rows += (f'<details class="metafold"><summary>More recommended runs ({len(rec_data)-1})</summary>'
-                         f'<div class="cardgrid">{"".join(rec_card(*r, compact=True) for r in rec_data[1:])}</div></details>')
         cards = "".join(decision_card(i, pidx) for i in its if i["kind"] == "decision") \
             or ('<div class="quiet-empty"><span class="pulse"></span>Nothing needs you in this project. '
                 'Agents keep working; decisions land here.</div>')
@@ -887,9 +874,8 @@ def project_view(wf, pidx, view, sv="cards"):
                 sugg_rows = f'<div style="grid-column:1/-1">{"".join(rows)}</div>'
             else:
                 sugg_rows = "".join(_srow(s) for s in ss)
-            sugg_rows = (f'<h2 class="sect" id="improve">UX improvements Guild noticed</h2>'
-                         f'<div class="toolbar">{sbar}{qall}{toggle}{pager}</div>'
-                         f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>')
+            botpager = f'<div class="toolbar botpager">{pager}</div>' if pager else ''
+            sugg_rows = (f'<div class="cardgrid" id="sgrid" data-mode="{sv}">{sugg_rows}</div>{botpager}')
         # ---- dashboard: signal metrics row + "your move" hero (owner-approved Desk pattern) ----
         working = sum(1 for r in feed["runs"] if r.get("state") == "executing")
         run_spark = sparkline(_day_buckets([os.path.getmtime(r["path"]) for r in feed["runs"] if os.path.exists(r.get("path", ""))]))
@@ -910,26 +896,47 @@ def project_view(wf, pidx, view, sv="cards"):
                     f'<div class="ymacts"><a class="hbtn" href="#decisions">Review it &rarr;</a>'
                     + (f'<a class="hmore" href="#decisions">{more} more move{"s" if more != 1 else ""} &rarr;</a>' if more > 0 else "")
                     + '</div></div>')
-        elif rec_data and rec_data[0][2] != "top":
-            t, more = rec_data[0], len(rec_data) - 1
-            hero = (f'<div class="yourmove"><div class="ymlab">next move · recommended</div>'
-                    f'<div class="ymtitle">{E(t[0])}</div><div class="ymwhy">{E(t[1][:200])}</div>'
-                    f'<div class="ymacts"><button class="hbtn" onclick="run(this,{pidx},\'{E(t[2])}\')">Run it &rarr;</button>'
-                    + (f'<a class="hmore" href="#recs">{more} more &rarr;</a>' if more > 0 else "")
-                    + '</div></div>')
         else:
-            hero = '<div class="yourmove calm"><div class="ymlab">all clear</div><div class="ymtitle">Nothing needs you</div><div class="ymwhy">Agents keep working; decisions land here when they are yours to make.</div></div>'
+            hero = ""
         body = metrics + hero
         # widget switcher: nav toggles between the Decisions and UX-improvements widgets
         if ss:
-            body += (f'<div class="wtabs" role="tablist">'
+            impctl = f'<span class="impctl" data-sec="improve" hidden>{sbar}{qall}{toggle}</span>'
+            body += (f'<div class="toolbar wbar" id="improve" role="tablist">'
+                     f'<span class="wtabs">'
                      f'<button class="wtab on" data-sec="decisions" onclick="focusW(\'decisions\')">Decisions waiting <span class="wtc">{ndec}</span></button>'
-                     f'<button class="wtab" data-sec="improve" onclick="focusW(\'improve\')">UX improvements <span class="wtc">{nsugg}</span></button></div>')
+                     f'<button class="wtab" data-sec="improve" onclick="focusW(\'improve\')">UX improvements <span class="wtc">{nsugg}</span></button>'
+                     f'</span>{impctl}</div>')
         # header text lives in the widget-tab when the toggle is present; keep just the anchor
         dsect = '<span id="decisions"></span>' if ss else (f'<h2 class="sect" id="decisions">Decisions waiting</h2>' if any(i["kind"] == "decision" for i in its) else '<span id="decisions"></span>')
         w_dec = f'<section class="widget" data-sec="decisions" id="w-decisions">{dsect}<div class="cardgrid feed">{cards}</div></section>'
         w_imp = f'<section class="widget" data-sec="improve" id="w-improve" hidden>{sugg_rows}</section>' if ss else ""
-        body += w_dec + w_imp + f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_rows}</div>'
+        body += w_dec + w_imp
+
+    elif view == "recs":
+        rec_data = recommends(feed, p["path"])
+        def rec_card(title, why, cmd, because, cost, compact=False):
+            if cmd == "top":
+                return (f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b></div>'
+                        f'<div class="brief">{E(why)}</div></div>')
+            cta = "Run it" if compact else "Run it — Guild opens an agent and starts"
+            return (
+            f'<div class="card"><div class="row"><span class="kic">→</span><b>{E(title)}</b>'
+            + f'</div><div class="brief">{E(why)}</div>'
+            + f'<div class="acts"><button onclick="run(this,{pidx},\'{E(cmd)}\')">{cta}</button></div>'
+            + f'<details class="metafold"><summary>Details, queue, model</summary>'
+               f'<div class="kmeta"><span class="klabel">why</span><span class="kv">{E(because)}</span></div>'
+               f'<div class="kmeta"><span class="klabel">cost</span><span class="kv">{E(cost)}</span></div>'
+               f'<label class="pick" style="margin-left:0"><input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{E(cmd)}">queue for batch</label>'
+               f'<div class="who">Manual command: {E(cmd)}</div></details></div>')
+        if rec_data:
+            body += f'<h2 class="sect" id="recs">What Guild would run next</h2><div class="cardgrid feed">{rec_card(*rec_data[0])}</div>'
+            if len(rec_data) > 1:
+                body += (f'<h2 class="sect">More it could run</h2>'
+                         f'<div class="cardgrid">{"".join(rec_card(*r, compact=True) for r in rec_data[1:])}</div>')
+        else:
+            body += ('<div class="quiet-empty"><span class="pulse"></span>Nothing to recommend right now — '
+                     'this project is healthy. Decisions and ideas live under "Needs you".</div>')
 
     elif view == "runs":
         for i in [x for x in its if x["kind"] == "run"]:
@@ -969,6 +976,7 @@ function tpane(k){var d=document.documentElement;d.classList.toggle(k);try{local
 function focusW(sec){
   if(!document.querySelector('.widget[data-sec="'+sec+'"]'))sec='decisions';
   document.querySelectorAll('.widget[data-sec]').forEach(function(w){w.hidden=(w.getAttribute('data-sec')!==sec);});
+  document.querySelectorAll('.impctl[data-sec]').forEach(function(e){e.hidden=(e.getAttribute('data-sec')!==sec);});
   document.querySelectorAll('.wtab[data-sec]').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-sec')===sec);});
   document.querySelectorAll('.navitem[data-navsec]').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-navsec')===sec);});
   try{localStorage.setItem('hall_sec',sec);}catch(e){}
@@ -1335,12 +1343,19 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
 
     def _send(self, body, ctype="text/html"):
-        data = body.encode()
-        self.send_response(200)
-        self.send_header("Content-Type", f"{ctype}; charset=utf-8")
-        self.send_header("Content-Length", str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
+        # PERF/RELIABILITY (goal 2026-07-07): a client that navigates away or a
+        # pane that closes mid-write raises BrokenPipe — never let that escape
+        # (under launchd it was killing the whole server: 22 respawns on record,
+        # each one a cold cache -> the slowness/silent-death spiral).
+        try:
+            data = body.encode()
+            self.send_response(200)
+            self.send_header("Content-Type", f"{ctype}; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # client gone; nothing to deliver, nothing to crash
 
     def do_GET(self):
         u = urlparse(self.path); q = parse_qs(u.query)
@@ -1569,6 +1584,14 @@ def main():
         for p in projects(): print(f'{p["name"]:<22} {p["path"]}')
         return
     if a.serve:
+        # Under launchd, SIGPIPE arrives with DEFAULT disposition — a disconnecting
+        # client could terminate the entire server. Ignore it; write errors surface
+        # as BrokenPipeError, which _send handles.
+        import signal as _signal
+        try:
+            _signal.signal(_signal.SIGPIPE, _signal.SIG_IGN)
+        except Exception:
+            pass
         Handler.wf = _feed_mod()
 
         def _prewarm():

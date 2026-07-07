@@ -204,20 +204,42 @@ def _cards():
 
 
 
+_WALK_PRUNE = {"node_modules", ".git", "dist", "build", ".next", ".venv", "__pycache__", "_backups"}
+
 def _design_system(root):
-    """Surface the project's design-system assets: Storybook, DTCG tokens, Claude Design bundles, DS specs."""
+    """Surface the project's design-system assets: Storybook, DTCG tokens, Claude Design bundles, DS specs.
+
+    PERF (goal 2026-07-07 'make GUILD extremely fast'): one bounded, PRUNED walk
+    (depth <=4, node_modules/.git/dist skipped BEFORE descent) replaces three
+    recursive ** globs that walked the whole tree — that was 83% of a
+    1.5s-per-project feed build (24k directory reads per page render)."""
+    import fnmatch
     ds = []
     if os.path.isdir(os.path.join(root, ".storybook")):
         ds.append({"name": "Storybook", "kind": "storybook", "path": os.path.join(root, ".storybook"),
                    "hint": "component workshop — run its dev server to browse"})
-    for pat in ("tokens*.json", "*.dtcg.json", "src/**/tokens*.json"):
-        for f in glob.glob(os.path.join(root, pat), recursive=True)[:2]:
-            if "node_modules" in f: continue
-            ds.append({"name": os.path.basename(f), "kind": "tokens", "path": f, "hint": "design tokens (DTCG)"})
-    for pat in ("*claude-design*", "**/cd-seed", "**/claude-design-bundle"):
-        for f in glob.glob(os.path.join(root, pat), recursive=True)[:2]:
-            if "node_modules" in f: continue
-            ds.append({"name": os.path.basename(f), "kind": "claude-design", "path": f, "hint": "Claude Design bundle"})
+    token_hits, cd_hits = [], []
+    base_depth = root.rstrip(os.sep).count(os.sep)
+    for dirpath, dirnames, filenames in os.walk(root):
+        depth = dirpath.count(os.sep) - base_depth
+        if depth >= 4:
+            dirnames[:] = []
+            continue
+        dirnames[:] = [d for d in dirnames if d not in _WALK_PRUNE]
+        for d in list(dirnames):
+            if d in ("cd-seed", "claude-design-bundle") or fnmatch.fnmatch(d, "*claude-design*"):
+                cd_hits.append(os.path.join(dirpath, d))
+        for f in filenames:
+            if fnmatch.fnmatch(f, "tokens*.json") or fnmatch.fnmatch(f, "*.dtcg.json"):
+                token_hits.append(os.path.join(dirpath, f))
+            elif fnmatch.fnmatch(f, "*claude-design*"):
+                cd_hits.append(os.path.join(dirpath, f))
+        if len(token_hits) >= 2 and len(cd_hits) >= 2:
+            break
+    for f in token_hits[:2]:
+        ds.append({"name": os.path.basename(f), "kind": "tokens", "path": f, "hint": "design tokens (DTCG)"})
+    for f in cd_hits[:2]:
+        ds.append({"name": os.path.basename(f), "kind": "claude-design", "path": f, "hint": "Claude Design bundle"})
     for f in (os.path.join(root, "docs", "guild", "design-system.yaml"),):
         if os.path.exists(f):
             ds.append({"name": "design-system.yaml", "kind": "ds-spec", "path": f, "hint": "Guild design-system spec"})

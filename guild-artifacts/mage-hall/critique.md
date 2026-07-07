@@ -67,3 +67,19 @@ Owner: "Guild is supposed to be superior at AI design... why are there so many s
 3. Control-height vocabulary — toolbar mixed 36px controls with 44px pager pills → one 36px tier (popup chips 32px).
 
 **Standing rule:** when an audit dimension is discovered, it isn't "known" until it's a wired, failing check. The UI-FACTORS research prompt (docs/guild/UI-FACTORS-RESEARCH-PROMPT.md) exists to enumerate the remaining dimensions; each verdict factor should land as a gate like this one.
+
+## Audit #2 addendum 3 — "how are things like this still happening?" (2026-07-07)
+
+Because every round I verified only the surface I had just changed. The ≤1180 rail
+mode shipped after checking it didn't split the viewport — nobody LOOKED at what the
+dropped rail rendered (950px full-width agent rows). Same class of miss, third time.
+
+Fixed this round: mid-band roster grid (260px auto-fill cards), roster multi-select
+(queue chips → existing batch bar = multi-summon), expedition verbatim toggle,
+one checkbox language everywhere, metrics auto-fit wrap, and navigation latency
+0.25–2.5s → 10–30ms (stale-while-revalidate feed cache + boot prewarm + mtime-cached
+suggestions.yaml — it was being yaml-parsed 5× per render). House Cup's 104 cards now
+show captures of the real UI (12 routes captured past the parent-identity gate).
+
+**Process change:** an audit pass is not done until the FULL page set is screenshotted
+at 3 widths (1280 / ~1100 / 760) and looked at — not just the region that changed.

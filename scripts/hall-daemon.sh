@@ -123,6 +123,12 @@ case "${1:-}" in
       echo "loaded: no (run: $0 install)"
     fi
     curl -s --max-time 3 -o /dev/null -w "http :$PORT -> %{http_code}\n" "http://localhost:$PORT/" 2>/dev/null || echo "http :$PORT -> unreachable"
+    # PERF budget probe (goal 2026-07-07): warm routes must answer <150ms.
+    for p in / /playbook /p/0 /p/1; do
+      t=$(curl -s --max-time 3 -o /dev/null -w "%{time_total}" "http://localhost:$PORT$p" 2>/dev/null || echo 9)
+      ms=$(awk "BEGIN{printf \"%d\", $t*1000}")
+      if [ "$ms" -gt 150 ]; then echo "  ✗ BUDGET $p ${ms}ms (>150ms)"; else echo "  ✓ $p ${ms}ms"; fi
+    done
     ;;
   *)
     echo "usage: $0 {install|uninstall|restart|status}   (PORT=$PORT)"; exit 1 ;;
