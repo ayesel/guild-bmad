@@ -24,6 +24,13 @@ TARGETS = {
     "ab-eval": "an ab-eval verdicts file [{pair,owner_pick}]",
 }
 
+def _ar(html_str):
+    """Wrapper HTMLs may declare data-ar="W/H"; used to size inline iframes to
+    the content's real shape (no dead space) instead of a fixed viewport height."""
+    import re as _re
+    m = _re.search(r'data-ar="(\d+)\s*/\s*(\d+)"', html_str or "")
+    return f"{m.group(1)}/{m.group(2)}" if m else None
+
 def JS(x):
     return json.dumps(x).replace('</', '<\\/')
 
@@ -35,8 +42,10 @@ def note_html(a, b, pair_id, target, prompt, target_pane=None, a_html=None, b_ht
         return (f'<button class="pick" data-send=\'{E(payload)}\'>Pick {letter}</button>')
     def opt(label, ref, html):  # GUILD-79: RENDER the design (live iframe), not just a filename
         letter = label[-1]
+        ar = _ar(html)
+        size = f"aspect-ratio:{ar};height:auto;max-height:70vh" if ar else "height:62vh"
         inner = (f'<iframe sandbox="allow-scripts" srcdoc="{E(html)}" '
-                 f'style="width:100%;height:62vh;border:0;border-radius:8px;background:#fff"></iframe>'
+                 f'style="width:100%;{size};border:0;border-radius:8px;background:#111"></iframe>'
                  ) if html else f'<p>{E(ref)}</p>'
         zoom = (f'<button class="zoom" data-zoom="{letter}" title="Maximize (then ←/→ to flip A/B, Esc to close)">⤢ maximize</button>'
                 if html else '')
@@ -45,7 +54,8 @@ def note_html(a, b, pair_id, target, prompt, target_pane=None, a_html=None, b_ht
 :root{{--bg:#1A1611;--surface:#221D17;--border:#3A332A;--text:#F4ECE1;--muted:#B8A88F;--ember:#E06E45}}
 body{{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 ui-sans-serif,system-ui;padding:16px}}
 h2{{font:600 15px ui-serif,Georgia;margin:0 0 4px}}.q{{color:var(--muted);font-size:12px;margin-bottom:14px}}
-.row{{display:flex;gap:12px}}.opt{{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}}
+.row{{display:flex;gap:12px;flex-wrap:wrap}}.row .opt{{min-width:260px}}
+@media (max-width:720px){{.row{{flex-direction:column}}}}.opt{{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}}
 .opt h3{{margin:0 0 8px;font-size:13px;color:var(--ember)}}.opt p{{color:var(--muted);font-size:12px;margin:0}}
 .picks{{display:flex;gap:10px;margin-top:14px}}
 button.pick{{flex:1;background:var(--ember);border:0;color:#1A1611;font-weight:600;border-radius:8px;padding:11px;font-size:13px;cursor:pointer}}
@@ -151,7 +161,7 @@ def set_note_html(set_id, target, prompt, letters, htmls, target_pane=None):
         f'<button class="zoom" data-zoom="{L}">\u2924 maximize</button>'
         f'<span class="rankbadge" id="badge{L}"></span></h3>'
         f'<iframe sandbox="allow-scripts" srcdoc="{E(htmls[L])}" '
-        f'style="width:100%;height:52vh;border:0;border-radius:8px;background:#fff"></iframe>'
+        f'style="width:100%;{("aspect-ratio:" + _ar(htmls[L]) + ";height:auto;max-height:64vh") if _ar(htmls[L]) else "height:52vh"};border:0;border-radius:8px;background:#111"></iframe>'
         f'<button class="pick" data-rank="{L}">This one</button></div>'
         for L in letters)
     import json as _j
@@ -160,7 +170,8 @@ def set_note_html(set_id, target, prompt, letters, htmls, target_pane=None):
 body{{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 ui-sans-serif,system-ui;padding:16px}}
 h2{{font:600 15px ui-serif,Georgia;margin:0 0 4px}}.q{{color:var(--muted);font-size:12px;margin-bottom:6px}}
 #stage{{color:var(--ember);font-weight:600;font-size:13px;margin-bottom:12px}}
-.row{{display:flex;gap:12px}}.opt{{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}}
+.row{{display:flex;gap:12px;flex-wrap:wrap}}.row .opt{{min-width:260px}}
+@media (max-width:720px){{.row{{flex-direction:column}}}}.opt{{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}}
 .opt h3{{margin:0 0 8px;font-size:13px;color:var(--ember)}}
 .opt.done{{opacity:.45}}.opt.done button.pick{{visibility:hidden}}
 .rankbadge{{margin-left:8px;color:var(--text);font-size:12px}}
