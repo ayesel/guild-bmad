@@ -1,0 +1,5 @@
+Create a single self-contained React file (pricing.tsx, Tailwind utility classes,
+no imports beyond react and lucide-react) for the pricing page of "Notely", a
+note-taking SaaS: hero section, 3 pricing plans (Free/Pro/Team, Pro highlighted),
+and a short FAQ teaser (3 questions). Desktop-first, dark-mode-agnostic. Write
+ONLY the file, complete and compilable.

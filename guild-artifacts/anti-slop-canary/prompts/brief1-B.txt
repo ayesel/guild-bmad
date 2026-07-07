@@ -1,0 +1,14 @@
+Create a single self-contained React file (pricing.tsx, Tailwind utility classes,
+no imports beyond react and lucide-react) for the pricing page of "Notely", a
+note-taking SaaS: hero section, 3 pricing plans (Free/Pro/Team, Pro highlighted),
+and a short FAQ teaser (3 questions). Desktop-first, dark-mode-agnostic. Write
+ONLY the file, complete and compilable.
+
+CONSTRAINTS — the following are BANNED, do not use any of them:
+- Inter/Roboto/Arial as the hero/display font
+- Vibe-purple (#8B5CF6 family) or purple-to-blue gradients
+- Glassmorphism (backdrop-blur + translucent panels) as surface style
+- Colored left-border cards; icon-topped card grids; a badge/pill floating above the h1
+- 01/02/03 numbered step rows unless content is truly sequential
+- Bounce/elastic easing; card-in-card nesting; the same drop shadow on everything
+- Emoji used as functional icons

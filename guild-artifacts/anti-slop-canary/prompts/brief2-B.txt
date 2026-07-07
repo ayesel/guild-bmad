@@ -1,0 +1,15 @@
+Create a single self-contained React file (dashboard.tsx, Tailwind utility
+classes, no imports beyond react and lucide-react) for the home dashboard of
+"Stride", a fitness web app: greeting header with date, 4 stat cards (steps,
+calories, active minutes, streak), and a weekly-activity section with a simple
+bar visualization (divs, no chart lib). Write ONLY the file, complete and
+compilable.
+
+CONSTRAINTS — the following are BANNED, do not use any of them:
+- Inter/Roboto/Arial as the hero/display font
+- Vibe-purple (#8B5CF6 family) or purple-to-blue gradients
+- Glassmorphism (backdrop-blur + translucent panels) as surface style
+- Colored left-border cards; icon-topped card grids; a badge/pill floating above the h1
+- 01/02/03 numbered step rows unless content is truly sequential
+- Bounce/elastic easing; card-in-card nesting; the same drop shadow on everything
+- Emoji used as functional icons
