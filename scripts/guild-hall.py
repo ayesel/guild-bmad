@@ -31,6 +31,7 @@ E = html.escape
 
 _WF = None
 _BUILD_CACHE = {}
+_REFRESHING = set()
 _BUILD_TTL = 4.0  # a status inbox may lag reality by a few seconds; snappy pages matter more
 
 
@@ -44,10 +45,24 @@ def _feed_mod():
         m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
         _raw = m.build
 
+        def _rebuild(path):
+            try:
+                _BUILD_CACHE[path] = (time.time(), _raw(path))
+            finally:
+                _REFRESHING.discard(path)
+
         def cached_build(path):
             now = time.time()
             hit = _BUILD_CACHE.get(path)
             if hit and now - hit[0] < _BUILD_TTL:
+                return hit[1]
+            if hit:
+                # stale-while-revalidate: navigation stays instant; a background
+                # thread refreshes this feed. POSTs still clear the cache, so
+                # mutations always render fresh.
+                if path not in _REFRESHING:
+                    _REFRESHING.add(path)
+                    threading.Thread(target=_rebuild, args=(path,), daemon=True).start()
                 return hit[1]
             res = _raw(path)
             _BUILD_CACHE[path] = (now, res)
@@ -241,8 +256,8 @@ body.app .rail{border-left:none}}
 .hbtn{background:var(--ember);color:#1d0f06;font-size:12px;font-weight:700;padding:0 16px;min-height:44px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
 .hbtn:hover{filter:brightness(1.08)}
 .hmore{font-size:12px;color:var(--ember-tx);font-weight:650;display:inline-flex;align-items:center;min-height:24px}
-@media(max-width:1080px){.metrics{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}.ymtitle{font-size:17px}}
+@media(max-width:1080px){.metrics{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+@media(max-width:620px){.ymtitle{font-size:16px}}
 .mainpane .cardgrid.feed{grid-template-columns:1fr}
 .rail{display:flex;flex-direction:column;gap:16px;position:sticky;top:64px;align-self:start;min-width:0}
 .railsect{padding:0}
@@ -257,6 +272,7 @@ body.app .rail{border-left:none}}
 .rail .lib span div{font-size:11px;color:var(--ink-faint);line-height:1.34;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rail .lib .cardmodel{order:3;flex:1 1 90px;min-height:32px;font-size:10px;max-width:none;margin:0}
 .rail .lib .obtn{order:4;flex:0 0 auto;font-size:11px;padding:4px 12px;min-height:32px;margin-left:auto}
+.rail .lib .rpick{order:5;flex:0 0 auto;min-height:32px;padding:0 8px;margin-left:0}
 .snav{position:sticky;top:64px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-soft);border-radius:10px;background:#1c1813;padding:8px}
 .snav .navitem{display:flex;align-items:center;gap:8px;padding:8px 8px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-dim);min-height:40px;position:relative}
 .snav .navitem .nvi{flex:0 0 18px;width:18px;text-align:center;font-size:13px;opacity:.85}
@@ -273,8 +289,8 @@ body.app .rail{border-left:none}}
 .subfil .fbtn:hover{border-color:var(--line-soft)}
 .subfil .fsel{font-size:11px}
 @media (max-width:1180px){.shell.three{grid-template-columns:200px minmax(0,1fr)}
-.shell.three .rail{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;position:static;gap:16px}
-.shell.three .railsect{flex:1 1 300px}}
+.shell.three .rail{grid-column:1/-1;position:static;gap:16px}
+.shell.three .raillist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}}
 @media (max-width:860px){.shell,.shell.three{grid-template-columns:1fr;gap:16px}
 .shell.three .rail{grid-column:auto;flex-direction:column}
 .snav{position:static;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:0;background:transparent;border:none;border-radius:0}
@@ -310,7 +326,10 @@ body.app .rail{border-left:none}}
 .wtab.on .wtc{color:#1d0f06;background:rgba(255,255,255,.22)}
 .spage{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
 .ghead{margin:16px 2px 4px;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
-.wprov{cursor:pointer}.wprov input{width:16px;height:16px;accent-color:var(--ember);cursor:pointer}
+.wprov{cursor:pointer}
+.wprov input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink-faint);border-radius:5px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent;flex-shrink:0}
+.wprov input[type="checkbox"]:checked{background:var(--ember);border-color:var(--ember)}
+.wprov input[type="checkbox"]:checked::after{content:"✓";font-size:11px;font-weight:800;color:#1d0f06;line-height:1}
 .wprov:has(.wsel:checked){border-color:rgba(213,94,46,.4);background:linear-gradient(150deg,#241a12,#1f1b16)}
 .card.feat{background:linear-gradient(150deg,#2c1d11,#1f1b16);border-color:rgba(213,94,46,.32)}
 .card.feat .kic{background:rgba(213,94,46,.14);border-color:rgba(213,94,46,.3);font-size:16px}
@@ -671,13 +690,7 @@ def chrome(wf, pidx, active="needs", feed=None):
     its = items_for(feed, p["name"])
     ndec = sum(1 for i in its if i["kind"] == "decision")
     nruns = sum(1 for i in its if i["kind"] == "run")
-    nsugg = 0
-    for base in ("_bmad-output", "guild-output"):
-        sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
-        if os.path.exists(sf):
-            import yaml as _y
-            nsugg = len((_y.safe_load(open(sf)) or {}).get("suggestions", []))
-            break
+    nsugg = len(_suggestions_for(p["path"]))
     hs = nsugg > 0
     def nv(href, label, icon, cnt=None, on=False, sec=None):
         c = f'<span class="cnt">{cnt}</span>' if cnt is not None else ""
@@ -706,6 +719,8 @@ def chrome(wf, pidx, active="needs", feed=None):
     def _rrow(name, icon, job, cmd):
         return (f'<div class="lib" title="{E(name)} — {E(job)}"><span class="th" style="font-size:15px">{icon}</span>'
                 f'<span><b>{name}</b><div>{E(job)}</div></span>'
+                f'<label class="pick rpick" title="queue {E(name)} — summon several agents at once">'
+                f'<input type="checkbox" class="pickbox" data-pidx="{pidx}" data-cmd="{cmd}"></label>'
                 f'<button class="obtn" onclick="run(this,{pidx},\'{cmd}\')">Summon</button></div>')
     rail = ('<div class="sbhead"><h3 class="railh">Your guild <span class="railh-sub">summon a specialist</span></h3>'
             '<button class="ptog railtog" onclick="tpane(\'railmin\')" aria-label="collapse context panel" title="collapse panel">›</button></div>'
@@ -721,6 +736,26 @@ def project_shell(wf, pidx, active, inner):
     side, rail = chrome(wf, pidx, active)
     shell = f'<div class="shell three">{side}<section class="mainpane">{inner}</section><aside class="rail">{rail}</aside></div>'
     return page(projects()[pidx]["name"], "a project in your hall", shell + JS, current=pidx, app=True)
+
+
+_SUGG_CACHE = {}
+
+
+def _suggestions_for(proj_path):
+    """suggestions.yaml, mtime-cached — pure-python yaml parsing of a 100-entry
+    file costs ~70ms and used to run several times per page render."""
+    for base in ("_bmad-output", "guild-output"):
+        sf = os.path.join(proj_path, base, "guild-artifacts", "suggestions.yaml")
+        if os.path.exists(sf):
+            mt = os.path.getmtime(sf)
+            hit = _SUGG_CACHE.get(sf)
+            if hit and hit[0] == mt:
+                return hit[1]
+            import yaml as _y
+            ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
+            _SUGG_CACHE[sf] = (mt, ss)
+            return ss
+    return []
 
 
 def _shot_for(proj_path, evidence):
@@ -748,13 +783,7 @@ def project_view(wf, pidx, view, sv="cards"):
     its = items_for(feed, p["name"])
     ndec = sum(1 for i in its if i["kind"] == "decision")
     nruns = sum(1 for i in its if i["kind"] == "run")
-    ss = []
-    for base in ("_bmad-output", "guild-output"):
-        sf = os.path.join(p["path"], base, "guild-artifacts", "suggestions.yaml")
-        if os.path.exists(sf):
-            import yaml as _y
-            ss = (_y.safe_load(open(sf)) or {}).get("suggestions", [])
-            break
+    ss = _suggestions_for(p["path"])
     nsugg = len(ss)
     sfirm = sum(1 for s in ss if s["confidence"] == "firm")
     scats, sicon = {}, {}
@@ -1079,8 +1108,11 @@ async function explaunch(pidx){
   const st = document.getElementById('expstatus');
   if (!provs.length) { st.innerHTML = '<div class="confirm" role="status">Pick at least one researcher first.</div>'; return; }
   const ask = (document.getElementById('expask').value || '').trim();
+  const verbatim = (document.getElementById('expverbatim')||{}).checked;
   const cmd = '/guild-expedition — providers: ' + provs.join(', ')
-    + (ask ? ' — rough ask: ' + ask : ' — ask me for the rough question, then forge and run the wave');
+    + (ask ? (verbatim ? ' — use this question VERBATIM as the brief, do not reword it: ' + ask
+                       : ' — rough ask: ' + ask)
+           : ' — ask me for the rough question, then forge and run the wave');
   st.innerHTML = '<div class="confirm" role="status">launching ' + provs.length + ' researcher' + (provs.length>1?'s':'') + '…</div>';
   try {
     const r = await fetch('/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pidx, cmd, ...launchCfg()})});
@@ -1181,7 +1213,9 @@ def expedition_page(wf, pidx):
            '<textarea id="expask" placeholder="A rough question is fine — Guild sharpens it into the brief. '
            'e.g. \'what mental model should Guild&#39;s UI adopt so it feels like a real app?\'" '
            'style="width:100%;min-height:90px;background:var(--inset);color:var(--ink);border:1px solid var(--line);'
-           'border-radius:10px;padding:12px;font:inherit;font-size:13px"></textarea>')
+           'border-radius:10px;padding:12px;font:inherit;font-size:13px"></textarea>'
+           '<label class="pick" style="margin:8px 0 0;margin-left:0"><input type="checkbox" id="expverbatim">'
+           'use my wording as-is — skip the sharpening pass</label>')
     picker = f'<h2 class="sect">Pick your researchers</h2><div class="cardgrid">{cards}</div>'
     launch = ('<div class="acts" style="margin-top:16px"><button onclick="explaunch(%d)">'
               'Forge the brief &amp; launch the wave</button>'
@@ -1536,6 +1570,12 @@ def main():
         return
     if a.serve:
         Handler.wf = _feed_mod()
+
+        def _prewarm():
+            for pr in projects():
+                try: Handler.wf.build(pr["path"])
+                except Exception: pass
+        threading.Thread(target=_prewarm, daemon=True).start()
         # ThreadingHTTPServer: a slow /run (subprocess + boot wait) must never block
         # other requests, or the pane appears dead. daemon_threads so shutdown is clean.
         srv = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
