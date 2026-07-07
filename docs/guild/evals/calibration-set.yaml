@@ -21,6 +21,15 @@ labels:
     why: "richer, more potential to be user-friendly; A cleaner but more basic (the checkbox one)"
     source: rendered-visual
 
+  # Hall home-screen feel, round-robin 1/3 (rendered stills, blind, 2026-07-06).
+  # De-blinded: A=variant-a, B=variant-b (map in .blind-map.jsonl). Owner picked A.
+  - id: CAL-4
+    pair: [hall-feel-variant-a, hall-feel-variant-b]
+    owner_pick: hall-feel-variant-a
+    blind_pick: A
+    why: "blind visual pick via rendered pick note (no rationale text captured)"
+    source: rendered-visual
+
 # Real-signal winners (A/B test / HEART proxy) for the offline-online gap meta-metric.
 online_winners: []
   - { pair: "regen-hall-feel-bva", picked: "b:Composed", rejected: "a:Fluid", source: "comment-regenerate", comment: "Owner (2026-07-02, live use): "I still feel like the UI for this is clunky." Com...", date: "2026-07-02" }

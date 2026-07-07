@@ -31,10 +31,13 @@ def note_html(a, b, pair_id, target, prompt, target_pane=None, a_html=None, b_ht
         payload = json.dumps({"pair": pair_id, "owner_pick": letter, "target": target})
         return (f'<button class="pick" data-send=\'{E(payload)}\'>Pick {letter}</button>')
     def opt(label, ref, html):  # GUILD-79: RENDER the design (live iframe), not just a filename
+        letter = label[-1]
         inner = (f'<iframe sandbox="allow-scripts" srcdoc="{E(html)}" '
                  f'style="width:100%;height:62vh;border:0;border-radius:8px;background:#fff"></iframe>'
                  ) if html else f'<p>{E(ref)}</p>'
-        return f'<div class="opt"><h3>{label}</h3>{inner}</div>'
+        zoom = (f'<button class="zoom" data-zoom="{letter}" title="Maximize (then ←/→ to flip A/B, Esc to close)">⤢ maximize</button>'
+                if html else '')
+        return f'<div class="opt"><h3>{label} {zoom}</h3>{inner}</div>'
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 :root{{--bg:#1A1611;--surface:#221D17;--border:#3A332A;--text:#F4ECE1;--muted:#B8A88F;--ember:#E06E45}}
 body{{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 ui-sans-serif,system-ui;padding:16px}}
@@ -44,15 +47,56 @@ h2{{font:600 15px ui-serif,Georgia;margin:0 0 4px}}.q{{color:var(--muted);font-s
 .picks{{display:flex;gap:10px;margin-top:14px}}
 button.pick{{flex:1;background:var(--ember);border:0;color:#1A1611;font-weight:600;border-radius:8px;padding:11px;font-size:13px;cursor:pointer}}
 button.pick:hover{{filter:brightness(1.08)}}
+button.zoom{{float:right;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer}}
+button.zoom:hover{{color:var(--text);border-color:var(--muted)}}
+#max{{display:none;position:fixed;inset:0;background:rgba(10,8,6,.96);z-index:50;padding:14px;flex-direction:column;gap:10px}}
+#max.on{{display:flex}}
+#max .bar{{display:flex;align-items:center;gap:10px}}
+#max .bar .which{{font:600 14px ui-serif,Georgia;color:var(--ember);min-width:90px}}
+#max .bar button{{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}}
+#max .bar button:hover{{border-color:var(--muted)}}
+#max .bar .hint{{color:var(--muted);font-size:11px;margin-left:auto}}
+#max iframe{{flex:1;width:100%;border:0;border-radius:8px;background:#fff}}
+#max button.pick{{flex:0 0 auto;padding:11px 22px}}
 </style></head><body>
-<h2>Which is better?</h2><div class="q">{E(prompt)} — blind (you don't see which is which).</div>
+<h2>Which is better?</h2><div class="q">{E(prompt)} — blind (you don't see which is which). Tip: ⤢ maximize, then ←/→ flips A/B for direct comparison.</div>
 <div class="row">{opt("Option A", a, a_html)}{opt("Option B", b, b_html)}</div>
 <div class="picks">{pick_btn('A')}{pick_btn('B')}</div>
+<div id="max">
+  <div class="bar">
+    <span class="which" id="maxWhich">Option A</span>
+    <button id="prevB" title="Previous (←)">‹</button>
+    <button id="nextB" title="Next (→)">›</button>
+    <button class="pick" data-send-current="1">Pick this one</button>
+    <span class="hint">←/→ flip A/B · Esc close</span>
+    <button id="closeB" title="Close (Esc)">✕ close</button>
+  </div>
+  <iframe id="maxFrame" sandbox="allow-scripts"></iframe>
+</div>
 <script>
-document.addEventListener('click',function(e){{var b=e.target.closest('[data-send]');if(!b)return;
- var msg={{type:'send',payload:JSON.parse(b.getAttribute('data-send')),framing:{json.dumps(framing)}}};
+var SRC={{A:{json.dumps(a_html or "")},B:{json.dumps(b_html or "")}}};
+var PAYLOADS={{A:{json.dumps(json.dumps({"pair": pair_id, "owner_pick": "A", "target": target}))},B:{json.dumps(json.dumps({"pair": pair_id, "owner_pick": "B", "target": target}))}}};
+var cur='A';
+function sendPick(payloadStr){{
+ var msg={{type:'send',payload:JSON.parse(payloadStr),framing:{json.dumps(framing)}}};
  var tp={json.dumps(target_pane)}; if(tp){{msg.target=tp;}}   /* GUILD-79: explicit live target, no stale-pane drop */
- parent.postMessage(msg,'*');}});
+ parent.postMessage(msg,'*');}}
+function openMax(letter){{cur=letter;var m=document.getElementById('max');m.classList.add('on');
+ document.getElementById('maxFrame').srcdoc=SRC[cur];document.getElementById('maxWhich').textContent='Option '+cur;}}
+function flip(){{openMax(cur==='A'?'B':'A');}}
+function closeMax(){{document.getElementById('max').classList.remove('on');}}
+document.addEventListener('click',function(e){{
+ var z=e.target.closest('[data-zoom]'); if(z){{openMax(z.getAttribute('data-zoom'));return;}}
+ if(e.target.id==='prevB'||e.target.id==='nextB'){{flip();return;}}
+ if(e.target.id==='closeB'){{closeMax();return;}}
+ var c=e.target.closest('[data-send-current]'); if(c){{sendPick(PAYLOADS[cur]);closeMax();return;}}
+ var b=e.target.closest('[data-send]'); if(b){{sendPick(b.getAttribute('data-send'));}}
+}});
+document.addEventListener('keydown',function(e){{
+ var on=document.getElementById('max').classList.contains('on'); if(!on)return;
+ if(e.key==='ArrowLeft'||e.key==='ArrowRight'){{flip();e.preventDefault();}}
+ else if(e.key==='Escape'){{closeMax();}}
+}});
 </script></body></html>"""
 
 def render(a, b, pair_id, target, prompt, mapping, target_pane=None, a_file=None, b_file=None):
@@ -74,7 +118,9 @@ def selftest():
     # source/arm. The A<->arm mapping lives in --map-out, never in the note.
     h = note_html("screen-x.html", "screen-y.html", "P1", "ab-eval", "Nourish Today screen")
     body = h.split('<script>')[0]
-    two_opts = body.count('class="opt"') == 2 and h.count('class="pick"') == 2
+    # 2 inline pick buttons + 1 pick-from-maximize button (owner UX ask 2026-07-06:
+    # maximize view with arrow-key A/B flip)
+    two_opts = body.count('class="opt"') == 2 and h.count('class="pick"') == 3 and 'data-zoom' in h and 'ArrowLeft' in h
     no_arm_words = not any(w in h.lower() for w in ("merge", "select", "arm-", "source:"))  # script adds none
     posts = ('type:\'send\'' in h) and ('owner_pick' in h)
     print("GUILD-42/44 pairwise-capture — self-test")
