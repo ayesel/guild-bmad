@@ -30,6 +30,17 @@ labels:
     why: "blind visual pick via rendered pick note (no rationale text captured)"
     source: rendered-visual
 
+  # Hall home-screen feel, round-robin 3/3 (rendered stills, blind, 2026-07-06).
+  # De-blinded: A=variant-b, B=variant-c. Owner picked B = variant-c.
+  # NOTE: with CAL-4 (a>b) and this (c>b), variant-b ranks LAST in both blind
+  # picks — REFUTES the inferred 2026-07-02 hall-feel pick 'b (Composed)'.
+  - id: CAL-6
+    pair: [hall-feel-variant-b, hall-feel-variant-c]
+    owner_pick: hall-feel-variant-c
+    blind_pick: B
+    why: "blind visual pick via rendered pick note"
+    source: rendered-visual
+
 # Real-signal winners (A/B test / HEART proxy) for the offline-online gap meta-metric.
 online_winners: []
   - { pair: "regen-hall-feel-bva", picked: "b:Composed", rejected: "a:Fluid", source: "comment-regenerate", comment: "Owner (2026-07-02, live use): "I still feel like the UI for this is clunky." Com...", date: "2026-07-02" }

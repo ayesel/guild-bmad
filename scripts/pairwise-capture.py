@@ -131,6 +131,108 @@ def selftest():
     print(f"\n{'✅ PASS' if ok else '❌ FAIL'} — blind A/B (A↔arm map kept in --map-out, not the note); pick posts via send_to_agent.")
     sys.exit(0 if ok else 1)
 
+
+
+# ── SET-RANK MODE (owner UX ask 2026-07-06: "why 10 notes for the same screens") ──
+# ONE note per candidate set; owner clicks best then second-best; the note emits a
+# single full-ranking payload; all pairwise labels are DERIVED from the ranking.
+# Round-robin pair notes are RETIRED for sets of 3+.
+
+def set_note_html(set_id, target, prompt, letters, htmls, target_pane=None):
+    framing = (f"Owner blind RANKING for set {set_id} (target={target}). Derive all "
+               f"pairwise labels from the ranking order and append to "
+               f"{TARGETS.get(target, target)}. {{payload}}")
+    opts = "".join(
+        f'<div class="opt" id="opt{L}"><h3>Option {L} '
+        f'<button class="zoom" data-zoom="{L}">\u2924 maximize</button>'
+        f'<span class="rankbadge" id="badge{L}"></span></h3>'
+        f'<iframe sandbox="allow-scripts" srcdoc="{E(htmls[L])}" '
+        f'style="width:100%;height:52vh;border:0;border-radius:8px;background:#fff"></iframe>'
+        f'<button class="pick" data-rank="{L}">This one</button></div>'
+        for L in letters)
+    import json as _j
+    return f"""<!doctype html><html><head><meta charset="utf-8"><style>
+:root{{--bg:#1A1611;--surface:#221D17;--border:#3A332A;--text:#F4ECE1;--muted:#B8A88F;--ember:#E06E45}}
+body{{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 ui-sans-serif,system-ui;padding:16px}}
+h2{{font:600 15px ui-serif,Georgia;margin:0 0 4px}}.q{{color:var(--muted);font-size:12px;margin-bottom:6px}}
+#stage{{color:var(--ember);font-weight:600;font-size:13px;margin-bottom:12px}}
+.row{{display:flex;gap:12px}}.opt{{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}}
+.opt h3{{margin:0 0 8px;font-size:13px;color:var(--ember)}}
+.opt.done{{opacity:.45}}.opt.done button.pick{{visibility:hidden}}
+.rankbadge{{margin-left:8px;color:var(--text);font-size:12px}}
+button.pick{{width:100%;margin-top:10px;background:var(--ember);border:0;color:#1A1611;font-weight:600;border-radius:8px;padding:10px;font-size:13px;cursor:pointer}}
+button.zoom{{float:right;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer}}
+#max{{display:none;position:fixed;inset:0;background:rgba(10,8,6,.96);z-index:50;padding:14px;flex-direction:column;gap:10px}}
+#max.on{{display:flex}}#max .bar{{display:flex;align-items:center;gap:10px}}
+#max .bar .which{{font:600 14px ui-serif,Georgia;color:var(--ember);min-width:90px}}
+#max .bar button{{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}}
+#max .bar .hint{{color:var(--muted);font-size:11px;margin-left:auto}}
+#max iframe{{flex:1;width:100%;border:0;border-radius:8px;background:#fff}}
+#max .pickcur{{background:var(--ember) !important;color:#1A1611 !important;border:0 !important;font-weight:600}}
+</style></head><body>
+<h2>Rank these</h2><div class="q">{E(prompt)} \u2014 blind. \u2924 maximize, \u2190/\u2192 cycles options.</div>
+<div id="stage">Step 1: pick the BEST.</div>
+<div class="row">{opts}</div>
+<div id="max"><div class="bar"><span class="which" id="maxWhich"></span>
+<button id="prevB">\u2039</button><button id="nextB">\u203a</button>
+<button class="pickcur" id="pickCur">This one</button>
+<span class="hint">\u2190/\u2192 cycle \u00b7 Esc close</span><button id="closeB">\u2715</button></div>
+<iframe id="maxFrame" sandbox="allow-scripts"></iframe></div>
+<script>
+var LETTERS={_j.dumps(letters)};
+var SRC={{{",".join(f'{L}:{_j.dumps(htmls[L])}' for L in letters)}}};
+var ranking=[],cur=LETTERS[0];
+function remaining(){{return LETTERS.filter(function(l){{return ranking.indexOf(l)<0;}});}}
+function choose(L){{if(ranking.indexOf(L)>=0)return; ranking.push(L);
+ document.getElementById('opt'+L).classList.add('done');
+ document.getElementById('badge'+L).textContent='#'+ranking.length;
+ var rem=remaining();
+ if(rem.length===1){{ranking.push(rem[0]);
+  document.getElementById('badge'+rem[0]).textContent='#'+ranking.length;
+  document.getElementById('opt'+rem[0]).classList.add('done');
+  document.getElementById('stage').textContent='Ranking sent: '+ranking.join(' > ')+' \u2713';
+  var msg={{type:'send',payload:{{set:{_j.dumps(set_id)},ranking:ranking,target:{_j.dumps(target)}}},framing:{_j.dumps(framing)}}};
+  var tp={_j.dumps(target_pane)}; if(tp)msg.target=tp;
+  parent.postMessage(msg,'*');
+ }} else {{document.getElementById('stage').textContent='Step '+(ranking.length+1)+': of the rest \u2014 which is best?';}}
+}}
+function openMax(L){{cur=L;document.getElementById('max').classList.add('on');
+ document.getElementById('maxFrame').srcdoc=SRC[cur];
+ document.getElementById('maxWhich').textContent='Option '+cur;}}
+function cycle(d){{var i=LETTERS.indexOf(cur);openMax(LETTERS[(i+d+LETTERS.length)%LETTERS.length]);}}
+document.addEventListener('click',function(e){{
+ var z=e.target.closest('[data-zoom]'); if(z){{openMax(z.getAttribute('data-zoom'));return;}}
+ if(e.target.id==='prevB'){{cycle(-1);return;}} if(e.target.id==='nextB'){{cycle(1);return;}}
+ if(e.target.id==='closeB'){{document.getElementById('max').classList.remove('on');return;}}
+ if(e.target.id==='pickCur'){{document.getElementById('max').classList.remove('on');choose(cur);return;}}
+ var r=e.target.closest('[data-rank]'); if(r){{choose(r.getAttribute('data-rank'));}}
+}});
+document.addEventListener('keydown',function(e){{
+ if(!document.getElementById('max').classList.contains('on'))return;
+ if(e.key==='ArrowLeft'){{cycle(-1);e.preventDefault();}}
+ else if(e.key==='ArrowRight'){{cycle(1);e.preventDefault();}}
+ else if(e.key==='Escape'){{document.getElementById('max').classList.remove('on');}}
+}});
+</script></body></html>"""
+
+
+def render_set(set_id, target, prompt, files, arms, mapping, target_pane=None):
+    letters = ["A", "B", "C", "D"][:len(files)]
+    htmls = {L: open(f).read() for L, f in zip(letters, files)}
+    body = set_note_html(set_id, target, prompt, letters, htmls, target_pane)
+    with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
+        f.write(body); tmp = f.name
+    r = subprocess.run([CLI, "note", "new", "--type", "html", "--title", f"Pick \u00b7 {set_id}",
+                        "--source", "agent", "--open", "--body", tmp, "--json"], text=True, capture_output=True)
+    os.unlink(tmp)
+    if r.returncode != 0: sys.exit(f"note new failed: {r.stderr.strip()}")
+    if mapping:
+        rec = {"set": set_id, "target": target}
+        rec.update({L: arm for L, arm in zip(letters, arms)})
+        open(mapping, "a").write(json.dumps(rec) + "\n")
+    print(f"blind RANKING note created for set {set_id} ({len(files)} options); letter\u2194arm map -> {mapping or '(not saved)'}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--a"); ap.add_argument("--b"); ap.add_argument("--pair-id", default="P1")
@@ -141,7 +243,14 @@ def main():
     ap.add_argument("--a-file", default=None, help="GUILD-79: HTML design to RENDER as Option A (live iframe, not a filename)")
     ap.add_argument("--b-file", default=None, help="HTML design to RENDER as Option B")
     ap.add_argument("--render", action="store_true"); ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--set-id", default=None, help="SET-RANK mode: one note ranks a whole candidate set")
+    ap.add_argument("--set-files", default=None, help="comma-separated HTML files (2-4) for set-rank mode")
+    ap.add_argument("--set-arms", default=None, help="comma-separated arm names aligned with --set-files")
     a = ap.parse_args()
+    if a.set_id and a.set_files:
+        files = [x.strip() for x in a.set_files.split(",")]
+        arms = [x.strip() for x in (a.set_arms or "").split(",")] if a.set_arms else [f"opt{i}" for i in range(len(files))]
+        render_set(a.set_id, a.target, a.prompt, files, arms, a.map_out, a.target_pane); return
     if a.selftest: selftest()
     if a.render and a.a and a.b:
         render(a.a, a.b, a.pair_id, a.target, a.prompt, a.map_out, a.target_pane, a.a_file, a.b_file); return
